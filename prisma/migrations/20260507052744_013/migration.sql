@@ -1,0 +1,37 @@
+-- CreateTable
+CREATE TABLE `Printer` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(191) NOT NULL,
+    `location` VARCHAR(191) NOT NULL,
+    `phone` VARCHAR(191) NULL,
+    `email` VARCHAR(191) NULL,
+    `is_deleted` BOOLEAN NOT NULL DEFAULT false,
+    `updatedAt` DATETIME(3) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `deletedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `PrintOrder` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `quality` VARCHAR(191) NOT NULL,
+    `count` INTEGER NOT NULL,
+    `status` ENUM('NOT_STARTED', 'STARTED', 'ONPROGRESS', 'FAILED', 'COMPLETED', 'REPRINT') NOT NULL DEFAULT 'NOT_STARTED',
+    `memo` VARCHAR(191) NULL,
+    `tracking` ENUM('NOT_SET', 'SHORTAGE_DETECTED', 'NOT_READY', 'PRINTING', 'DISTRIBUTION', 'SALES') NOT NULL DEFAULT 'NOT_SET',
+    `startDate` DATETIME(3) NULL,
+    `endDate` DATETIME(3) NULL,
+    `printerId` INTEGER NOT NULL,
+    `edition` VARCHAR(191) NULL,
+    `is_deleted` BOOLEAN NOT NULL DEFAULT false,
+    `updatedAt` DATETIME(3) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `deletedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- AddForeignKey
+ALTER TABLE `PrintOrder` ADD CONSTRAINT `PrintOrder_printerId_fkey` FOREIGN KEY (`printerId`) REFERENCES `Printer`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

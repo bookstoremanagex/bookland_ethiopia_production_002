@@ -1,0 +1,30 @@
+-- CreateTable
+CREATE TABLE `Books` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `unique_identification_code` VARCHAR(191) NOT NULL,
+    `isbn` VARCHAR(191) NULL,
+    `title` VARCHAR(191) NOT NULL,
+    `author` VARCHAR(191) NOT NULL,
+    `translator` VARCHAR(191) NULL,
+    `designer` VARCHAR(191) NULL,
+    `language` VARCHAR(191) NOT NULL,
+    `edition` VARCHAR(191) NOT NULL,
+    `category` VARCHAR(191) NOT NULL,
+    `publication_year` VARCHAR(191) NOT NULL,
+    `print_batch_id` VARCHAR(191) NULL,
+    `book_sku` VARCHAR(191) NOT NULL,
+    `number_of_pages` INTEGER NULL,
+    `info` VARCHAR(191) NULL,
+    `book_image_url` VARCHAR(191) NULL,
+    `status` VARCHAR(191) NOT NULL DEFAULT 'available',
+    `is_deleted` BOOLEAN NOT NULL DEFAULT false,
+    `updatedAt` DATETIME(3) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `deletedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
+    UNIQUE INDEX `Books_unique_identification_code_key`(`unique_identification_code`),
+    UNIQUE INDEX `Books_book_sku_key`(`book_sku`),
+    INDEX `Books_book_sku_idx`(`book_sku`),
+    INDEX `Books_unique_identification_code_idx`(`unique_identification_code`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

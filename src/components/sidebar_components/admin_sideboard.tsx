@@ -1,0 +1,491 @@
+"use client";
+
+import { usePathname } from "next/navigation"
+import {
+    Home,
+    BookOpen,
+    Library,
+    Store,
+    Package,
+    Languages,
+    BadgeDollarSign,
+    BarChart3,
+    Settings,
+    UserCog,
+    ChevronRight,
+    PenTool,
+    ShoppingBag,
+    TableProperties,
+    BookCopy,
+    ShieldAlert,
+    Printer,
+    ClipboardList,
+    FileText,
+    CheckCircle2,
+    Clock,
+    User
+} from "lucide-react"
+
+import {
+    Sidebar,
+    SidebarContent,
+    SidebarFooter,
+    SidebarGroup,
+    SidebarGroupContent,
+    SidebarGroupLabel,
+    SidebarHeader,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
+    SidebarMenuSub,
+    SidebarMenuSubItem,
+    SidebarMenuSubButton,
+    SidebarProvider, // Added this as well for general sidebar context
+} from "@/components/ui/sidebar"
+import {
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
+} from "@/components/ui/collapsible"
+import { TooltipProvider } from "@/components/ui/tooltip"
+import { cn } from "@/lib/utils"
+
+import { useSidebarStore } from "@/store/use-sidebar-store"
+import React from "react";
+import Link from "next/link";
+
+const menuItems = [
+    { title: "Home", icon: Home, url: "/admin_dashboard" },
+    { title: "Profile", icon: User, url: "/admin_dashboard/profile" },
+    { title: "Books", icon: BookOpen, url: "/admin_dashboard/books" },
+    { title: "Book Shelf", icon: Library, url: "/admin_dashboard/books/shelf" },
+    { title: "Stores", icon: Store, url: "/admin_dashboard/stores" },
+    { title: "Damaged Books", icon: ShieldAlert, url: "/admin_dashboard/books/damaged" },
+    { title: "Book Shop", icon: ShoppingBag, url: "/admin_dashboard/book_shops" },
+    { title: "Statistics", icon: BarChart3, url: "/admin_dashboard/statistics" },
+]
+
+export function AdminAppSidebar() {
+    const pathname = usePathname()
+    const { isMounted, setMounted, activePath, setActivePath } = useSidebarStore()
+
+    React.useEffect(() => {
+        setMounted(true)
+        setActivePath(pathname)
+    }, [pathname, setMounted, setActivePath])
+
+    const activeUrl = React.useMemo(() => {
+        if (!isMounted) return ""
+        
+        // Sort items by length descending to match most specific path first
+        const sortedItems = [...menuItems].sort((a, b) => b.url.length - a.url.length)
+        
+        for (const item of sortedItems) {
+            // Special handling for root path (Home)
+            if (item.url === "/admin_dashboard") {
+                if (activePath === "/admin_dashboard") return item.url
+                continue
+            }
+            
+            if (activePath === item.url || activePath.startsWith(item.url + "/")) {
+                return item.url
+            }
+        }
+        
+        return ""
+    }, [isMounted, activePath])
+
+    return (
+        <TooltipProvider delayDuration={0}>
+            <Sidebar>
+                <SidebarHeader className="p-4 font-bold text-xl border-b">
+                    Admin Panel
+                </SidebarHeader>
+                <SidebarContent>
+                    <SidebarGroup>
+                        <SidebarGroupLabel>Management</SidebarGroupLabel>
+                        <SidebarGroupContent>
+                            <SidebarMenu>
+                                {/* Non-Expandable Items */}
+                                {menuItems.map((item) => {
+                                    const active = activeUrl === item.url
+                                    return (
+                                        <SidebarMenuItem key={item.title}>
+                                            <SidebarMenuButton
+                                                asChild
+                                                tooltip={item.title}
+                                                isActive={active}
+                                                className={cn(
+                                                    "transition-all duration-300 rounded-lg h-10 px-4",
+                                                    "hover:bg-primarycolor/10 hover:text-primarycolor",
+                                                    "data-[active=true]:bg-primarycolor data-[active=true]:text-white data-[active=true]:font-black data-[active=true]:shadow-lg data-[active=true]:shadow-primarycolor/30"
+                                                )}
+                                            >
+                                                <Link href={item.url}>
+                                                    <item.icon className={cn("w-5 h-5", active ? "text-white" : "text-primarycolor")} />
+                                                    <span className={cn(active ? "text-white" : "text-foreground")}>{item.title}</span>
+                                                </Link>
+                                            </SidebarMenuButton>
+                                        </SidebarMenuItem>
+                                    )
+                                })}
+
+                                {/* Expandable Section: Production */}
+                                <Collapsible asChild className="group/collapsible" defaultOpen={isMounted && activePath?.includes("/admin_dashboard/production")}>
+                                    <SidebarMenuItem>
+                                        <CollapsibleTrigger asChild>
+                                            <SidebarMenuButton
+                                                tooltip="Production"
+                                                className={cn(
+                                                    "transition-all duration-300 h-10 px-4",
+                                                    isMounted && activePath?.includes("/admin_dashboard/production") ? "bg-primarycolor/10 text-primarycolor font-black" : "hover:bg-primarycolor/5 text-foreground"
+                                                )}
+                                            >
+                                                <Package className={cn("w-5 h-5", (isMounted && activePath?.includes("/admin_dashboard/production")) ? "text-primarycolor" : "text-primarycolor/70")} />
+                                                <span>Production</span>
+                                                <ChevronRight className="ml-auto w-4 h-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                                            </SidebarMenuButton>
+                                        </CollapsibleTrigger>
+                                        <CollapsibleContent>
+                                            <SidebarMenuSub>
+                                                <SidebarMenuSubItem>
+                                                    <SidebarMenuSubButton
+                                                        asChild
+                                                        isActive={isMounted && (activePath === "/admin_dashboard/production/books" || activePath.startsWith("/admin_dashboard/production/books/"))}
+                                                        className={cn(
+                                                            "transition-all duration-300 rounded-lg h-9 px-4",
+                                                            "data-[active=true]:bg-primarycolor data-[active=true]:text-white data-[active=true]:font-black data-[active=true]:shadow-md data-[active=true]:shadow-primarycolor/20",
+                                                            "hover:bg-primarycolor/10 hover:text-primarycolor"
+                                                        )}
+                                                    >
+                                                        <Link href="/admin_dashboard/production/books">
+                                                            <BookOpen className={cn("w-4 h-4", (isMounted && activePath === "/admin_dashboard/production/books") ? "text-white" : "text-primarycolor/70")} />
+                                                            <span>Books</span>
+                                                        </Link>
+                                                    </SidebarMenuSubButton>
+                                                </SidebarMenuSubItem>
+                                            </SidebarMenuSub>
+                                        </CollapsibleContent>
+                                    </SidebarMenuItem>
+                                </Collapsible>
+
+                                {/* Expandable Section: Translations */}
+                                <Collapsible asChild className="group/collapsible" defaultOpen={isMounted && (activePath?.includes("/admin_dashboard/production/translators") || activePath?.includes("/admin_dashboard/production/translation_work"))}>
+                                    <SidebarMenuItem>
+                                        <CollapsibleTrigger asChild>
+                                            <SidebarMenuButton
+                                                tooltip="Translations"
+                                                className={cn(
+                                                    "transition-all duration-300 h-10 px-4",
+                                                    isMounted && (activePath?.includes("/admin_dashboard/production/translators") || activePath?.includes("/admin_dashboard/production/translation_work")) ? "bg-primarycolor/10 text-primarycolor font-black" : "hover:bg-primarycolor/5 text-foreground"
+                                                )}
+                                            >
+                                                <Languages className={cn("w-5 h-5", (isMounted && (activePath?.includes("/admin_dashboard/production/translators") || activePath?.includes("/admin_dashboard/production/translation_work"))) ? "text-primarycolor" : "text-primarycolor/70")} />
+                                                <span>Translations</span>
+                                                <ChevronRight className="ml-auto w-4 h-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                                            </SidebarMenuButton>
+                                        </CollapsibleTrigger>
+                                        <CollapsibleContent>
+                                            <SidebarMenuSub>
+                                                <SidebarMenuSubItem>
+                                                    <SidebarMenuSubButton
+                                                        asChild
+                                                        isActive={isMounted && (activePath === "/admin_dashboard/production/translators" || activePath.startsWith("/admin_dashboard/production/translators/"))}
+                                                        className={cn(
+                                                            "transition-all duration-300 rounded-lg h-9 px-4",
+                                                            "data-[active=true]:bg-primarycolor data-[active=true]:text-white data-[active=true]:font-black data-[active=true]:shadow-md data-[active=true]:shadow-primarycolor/20",
+                                                            "hover:bg-primarycolor/10 hover:text-primarycolor"
+                                                        )}
+                                                    >
+                                                        <Link href="/admin_dashboard/production/translators">
+                                                            <Languages className={cn("w-4 h-4", (isMounted && activePath === "/admin_dashboard/production/translators") ? "text-white" : "text-primarycolor/70")} />
+                                                            <span>Translators</span>
+                                                        </Link>
+                                                    </SidebarMenuSubButton>
+                                                </SidebarMenuSubItem>
+                                                <SidebarMenuSubItem>
+                                                    <SidebarMenuSubButton
+                                                        asChild
+                                                        isActive={isMounted && (activePath === "/admin_dashboard/production/translation_work" || activePath.startsWith("/admin_dashboard/production/translation_work/"))}
+                                                        className={cn(
+                                                            "transition-all duration-300 rounded-lg h-9 px-4",
+                                                            "data-[active=true]:bg-primarycolor data-[active=true]:text-white data-[active=true]:font-black data-[active=true]:shadow-md data-[active=true]:shadow-primarycolor/20",
+                                                            "hover:bg-primarycolor/10 hover:text-primarycolor"
+                                                        )}
+                                                    >
+                                                        <Link href="/admin_dashboard/production/translation_work">
+                                                            <PenTool className={cn("w-4 h-4", (isMounted && activePath === "/admin_dashboard/production/translation_work") ? "text-white" : "text-primarycolor/70")} />
+                                                            <span>Translation Work</span>
+                                                        </Link>
+                                                    </SidebarMenuSubButton>
+                                                </SidebarMenuSubItem>
+                                            </SidebarMenuSub>
+                                        </CollapsibleContent>
+                                    </SidebarMenuItem>
+                                </Collapsible>
+
+                                {/* Expandable Section: Printing */}
+                                <Collapsible asChild className="group/collapsible" defaultOpen={isMounted && activePath?.includes("/admin_dashboard/printing")}>
+                                    <SidebarMenuItem>
+                                        <CollapsibleTrigger asChild>
+                                            <SidebarMenuButton
+                                                tooltip="Printing"
+                                                className={cn(
+                                                    "transition-all duration-300 h-10 px-4",
+                                                    isMounted && activePath?.includes("/admin_dashboard/printing") ? "bg-primarycolor/10 text-primarycolor font-black" : "hover:bg-primarycolor/5 text-foreground"
+                                                )}
+                                            >
+                                                <Printer className={cn("w-5 h-5", (isMounted && activePath?.includes("/admin_dashboard/printing")) ? "text-primarycolor" : "text-primarycolor/70")} />
+                                                <span>Printing</span>
+                                                <ChevronRight className="ml-auto w-4 h-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                                            </SidebarMenuButton>
+                                        </CollapsibleTrigger>
+                                        <CollapsibleContent>
+                                            <SidebarMenuSub>
+                                                <SidebarMenuSubItem>
+                                                    <SidebarMenuSubButton
+                                                        asChild
+                                                        isActive={isMounted && (activePath === "/admin_dashboard/printing/printers" || activePath.startsWith("/admin_dashboard/printing/printers/"))}
+                                                        className={cn(
+                                                            "transition-all duration-300 rounded-lg h-9 px-4",
+                                                            "data-[active=true]:bg-primarycolor data-[active=true]:text-white data-[active=true]:font-black data-[active=true]:shadow-md data-[active=true]:shadow-primarycolor/20",
+                                                            "hover:bg-primarycolor/10 hover:text-primarycolor"
+                                                        )}
+                                                    >
+                                                        <Link href="/admin_dashboard/printing/printers">
+                                                            <Printer className={cn("w-4 h-4", (isMounted && activePath === "/admin_dashboard/printing/printers") ? "text-white" : "text-primarycolor/70")} />
+                                                            <span>Printers</span>
+                                                        </Link>
+                                                    </SidebarMenuSubButton>
+                                                </SidebarMenuSubItem>
+                                                <SidebarMenuSubItem>
+                                                    <SidebarMenuSubButton
+                                                        asChild
+                                                        isActive={isMounted && (activePath === "/admin_dashboard/printing/manage" || activePath.startsWith("/admin_dashboard/printing/manage/"))}
+                                                        className={cn(
+                                                            "transition-all duration-300 rounded-lg h-9 px-4",
+                                                            "data-[active=true]:bg-primarycolor data-[active=true]:text-white data-[active=true]:font-black data-[active=true]:shadow-md data-[active=true]:shadow-primarycolor/20",
+                                                            "hover:bg-primarycolor/10 hover:text-primarycolor"
+                                                        )}
+                                                    >
+                                                        <Link href="/admin_dashboard/printing/manage">
+                                                            <ClipboardList className={cn("w-4 h-4", (isMounted && activePath === "/admin_dashboard/printing/manage") ? "text-white" : "text-primarycolor/70")} />
+                                                            <span>Manage Printing</span>
+                                                        </Link>
+                                                    </SidebarMenuSubButton>
+                                                </SidebarMenuSubItem>
+                                            </SidebarMenuSub>
+                                        </CollapsibleContent>
+                                    </SidebarMenuItem>
+                                </Collapsible>
+
+                                {/* Expandable Section: Finance */}
+                                <Collapsible asChild className="group/collapsible" defaultOpen={isMounted && activePath?.includes("/admin_dashboard/finance")}>
+                                    <SidebarMenuItem>
+                                        <CollapsibleTrigger asChild>
+                                            <SidebarMenuButton
+                                                tooltip="Finance"
+                                                className={cn(
+                                                    "transition-all duration-300 h-10 px-4",
+                                                    isMounted && activePath?.includes("/admin_dashboard/finance") ? "bg-primarycolor/10 text-primarycolor font-black" : "hover:bg-primarycolor/5 text-foreground"
+                                                )}
+                                            >
+                                                <BadgeDollarSign className={cn("w-5 h-5", (isMounted && activePath?.includes("/admin_dashboard/finance")) ? "text-primarycolor" : "text-primarycolor/70")} />
+                                                <span>Finance</span>
+                                                <ChevronRight className="ml-auto w-4 h-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                                            </SidebarMenuButton>
+                                        </CollapsibleTrigger>
+                                        <CollapsibleContent>
+                                            <SidebarMenuSub>
+                                                <SidebarMenuSubItem>
+                                                    <SidebarMenuSubButton
+                                                        asChild
+                                                        isActive={isMounted && (activePath === "/admin_dashboard/finance/book_shop" || activePath.startsWith("/admin_dashboard/finance/book_shop/"))}
+                                                        className={cn(
+                                                            "transition-all duration-300 rounded-lg h-9 px-4",
+                                                            "data-[active=true]:bg-primarycolor data-[active=true]:text-white data-[active=true]:font-black data-[active=true]:shadow-md data-[active=true]:shadow-primarycolor/20",
+                                                            "hover:bg-primarycolor/10 hover:text-primarycolor"
+                                                        )}
+                                                    >
+                                                        <Link href="/admin_dashboard/finance/book_shop">
+                                                            <ShoppingBag className={cn("w-4 h-4", (isMounted && activePath === "/admin_dashboard/finance/book_shop") ? "text-white" : "text-primarycolor/70")} />
+                                                            <span>Book Shop</span>
+                                                        </Link>
+                                                    </SidebarMenuSubButton>
+                                                </SidebarMenuSubItem>
+                                                <SidebarMenuSubItem>
+                                                    <SidebarMenuSubButton
+                                                        asChild
+                                                        isActive={isMounted && (activePath === "/admin_dashboard/finance/books" || activePath.startsWith("/admin_dashboard/finance/books/"))}
+                                                        className={cn(
+                                                            "transition-all duration-300 rounded-lg h-9 px-4",
+                                                            "data-[active=true]:bg-primarycolor data-[active=true]:text-white data-[active=true]:font-black data-[active=true]:shadow-md data-[active=true]:shadow-primarycolor/20",
+                                                            "hover:bg-primarycolor/10 hover:text-primarycolor"
+                                                        )}
+                                                    >
+                                                        <Link href="/admin_dashboard/finance/books">
+                                                            <BookOpen className={cn("w-4 h-4", (isMounted && activePath === "/admin_dashboard/finance/books") ? "text-white" : "text-primarycolor/70")} />
+                                                            <span>Books</span>
+                                                        </Link>
+                                                    </SidebarMenuSubButton>
+                                                </SidebarMenuSubItem>
+                                                <SidebarMenuSubItem>
+
+                                                </SidebarMenuSubItem>
+                                                <SidebarMenuSubItem>
+                                                    <SidebarMenuSubButton
+                                                        asChild
+                                                        isActive={isMounted && (activePath === "/admin_dashboard/finance/shop_table" || activePath.startsWith("/admin_dashboard/finance/shop_table/"))}
+                                                        className={cn(
+                                                            "transition-all duration-300 rounded-lg h-9 px-4",
+                                                            "data-[active=true]:bg-primarycolor data-[active=true]:text-white data-[active=true]:font-black data-[active=true]:shadow-md data-[active=true]:shadow-primarycolor/20",
+                                                            "hover:bg-primarycolor/10 hover:text-primarycolor"
+                                                        )}
+                                                    >
+                                                        <Link href="/admin_dashboard/finance/shop_table">
+                                                            <TableProperties className={cn("w-4 h-4", (isMounted && activePath === "/admin_dashboard/finance/shop_table") ? "text-white" : "text-primarycolor/70")} />
+                                                            <span>Shop Table</span>
+                                                        </Link>
+                                                    </SidebarMenuSubButton>
+                                                </SidebarMenuSubItem>
+                                                <SidebarMenuSubItem>
+                                                    <SidebarMenuSubButton
+                                                        asChild
+                                                        isActive={isMounted && (activePath === "/admin_dashboard/finance/edition_table" || activePath.startsWith("/admin_dashboard/finance/edition_table/"))}
+                                                        className={cn(
+                                                            "transition-all duration-300 rounded-lg h-9 px-4",
+                                                            "data-[active=true]:bg-primarycolor data-[active=true]:text-white data-[active=true]:font-black data-[active=true]:shadow-md data-[active=true]:shadow-primarycolor/20",
+                                                            "hover:bg-primarycolor/10 hover:text-primarycolor"
+                                                        )}
+                                                    >
+                                                        <Link href="/admin_dashboard/finance/edition_table">
+                                                            <BookCopy className={cn("w-4 h-4", (isMounted && activePath === "/admin_dashboard/finance/edition_table") ? "text-white" : "text-primarycolor/70")} />
+                                                            <span>Edition Table</span>
+                                                        </Link>
+                                                    </SidebarMenuSubButton>
+                                                </SidebarMenuSubItem>
+                                            </SidebarMenuSub>
+                                        </CollapsibleContent>
+                                    </SidebarMenuItem>
+                                </Collapsible>
+
+                                {/* Expandable Section: Reports */}
+                                <Collapsible asChild className="group/collapsible" defaultOpen={isMounted && activePath?.includes("/admin_dashboard/reports")}>
+                                    <SidebarMenuItem>
+                                        <CollapsibleTrigger asChild>
+                                            <SidebarMenuButton
+                                                tooltip="Reports"
+                                                className={cn(
+                                                    "transition-all duration-300 h-10 px-4",
+                                                    isMounted && activePath?.includes("/admin_dashboard/reports") ? "bg-primarycolor/10 text-primarycolor font-black" : "hover:bg-primarycolor/5 text-foreground"
+                                                )}
+                                            >
+                                                <FileText className={cn("w-5 h-5", (isMounted && activePath?.includes("/admin_dashboard/reports")) ? "text-primarycolor" : "text-primarycolor/70")} />
+                                                <span>Reports</span>
+                                                <ChevronRight className="ml-auto w-4 h-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                                            </SidebarMenuButton>
+                                        </CollapsibleTrigger>
+                                        <CollapsibleContent>
+                                            <SidebarMenuSub>
+                                                <SidebarMenuSubItem>
+                                                    <SidebarMenuSubButton
+                                                        asChild
+                                                        isActive={isMounted && (activePath === "/admin_dashboard/reports/completed_deliveries" || activePath.startsWith("/admin_dashboard/reports/completed_deliveries/"))}
+                                                        className={cn(
+                                                            "transition-all duration-300 rounded-lg h-9 px-4",
+                                                            "data-[active=true]:bg-primarycolor data-[active=true]:text-white data-[active=true]:font-black data-[active=true]:shadow-md data-[active=true]:shadow-primarycolor/20",
+                                                            "hover:bg-primarycolor/10 hover:text-primarycolor"
+                                                        )}
+                                                    >
+                                                        <Link href="/admin_dashboard/reports/completed_deliveries">
+                                                            <CheckCircle2 className={cn("w-4 h-4", (isMounted && activePath === "/admin_dashboard/reports/completed_deliveries") ? "text-white" : "text-primarycolor/70")} />
+                                                            <span>Completed Deliveries</span>
+                                                        </Link>
+                                                    </SidebarMenuSubButton>
+                                                </SidebarMenuSubItem>
+                                                <SidebarMenuSubItem>
+                                                    <SidebarMenuSubButton
+                                                        asChild
+                                                        isActive={isMounted && (activePath === "/admin_dashboard/reports/pending_deliveries" || activePath.startsWith("/admin_dashboard/reports/pending_deliveries/"))}
+                                                        className={cn(
+                                                            "transition-all duration-300 rounded-lg h-9 px-4",
+                                                            "data-[active=true]:bg-primarycolor data-[active=true]:text-white data-[active=true]:font-black data-[active=true]:shadow-md data-[active=true]:shadow-primarycolor/20",
+                                                            "hover:bg-primarycolor/10 hover:text-primarycolor"
+                                                        )}
+                                                    >
+                                                        <Link href="/admin_dashboard/reports/pending_deliveries">
+                                                            <Clock className={cn("w-4 h-4", (isMounted && activePath === "/admin_dashboard/reports/pending_deliveries") ? "text-white" : "text-primarycolor/70")} />
+                                                            <span>Pending Deliveries</span>
+                                                        </Link>
+                                                    </SidebarMenuSubButton>
+                                                </SidebarMenuSubItem>
+                                            </SidebarMenuSub>
+                                        </CollapsibleContent>
+                                    </SidebarMenuItem>
+                                </Collapsible>
+
+                                {/* Expandable Section: Settings */}
+                                <Collapsible asChild className="group/collapsible">
+                                    <SidebarMenuItem>
+                                        <CollapsibleTrigger asChild>
+                                            <SidebarMenuButton
+                                                tooltip="Settings"
+                                                className={cn(
+                                                    "transition-all duration-300 h-10 px-4",
+                                                    isMounted && activePath?.includes("/admin_dashboard/settings") ? "bg-primarycolor/10 text-primarycolor font-black" : "hover:bg-primarycolor/5 text-foreground"
+                                                )}
+                                            >
+                                                <Settings className={cn("w-5 h-5", (isMounted && activePath?.includes("/admin_dashboard/settings")) ? "text-primarycolor" : "text-primarycolor/70")} />
+                                                <span>Settings</span>
+                                                <ChevronRight className="ml-auto w-4 h-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                                            </SidebarMenuButton>
+                                        </CollapsibleTrigger>
+                                        <CollapsibleContent>
+                                            <SidebarMenuSub>
+                                                <SidebarMenuSubItem>
+                                                    <SidebarMenuSubButton
+                                                        asChild
+                                                        isActive={isMounted && (activePath === "/admin_dashboard/settings/accounts" || activePath.startsWith("/admin_dashboard/settings/accounts/"))}
+                                                        className={cn(
+                                                            "transition-all duration-300 rounded-lg h-9 px-4",
+                                                            "data-[active=true]:bg-primarycolor data-[active=true]:text-white data-[active=true]:font-black data-[active=true]:shadow-md data-[active=true]:shadow-primarycolor/20",
+                                                            "hover:bg-primarycolor/10 hover:text-primarycolor"
+                                                        )}
+                                                    >
+                                                        <Link href="/admin_dashboard/settings/accounts">
+                                                            <UserCog className={cn("w-4 h-4", (isMounted && activePath === "/admin_dashboard/settings/accounts") ? "text-white" : "text-primarycolor/70")} />
+                                                            <span>Accounts</span>
+                                                        </Link>
+                                                    </SidebarMenuSubButton>
+                                                </SidebarMenuSubItem>
+                                                <SidebarMenuSubItem>
+                                                    <SidebarMenuSubButton
+                                                        asChild
+                                                        isActive={isMounted && (activePath === "/admin_dashboard/settings/menus" || activePath.startsWith("/admin_dashboard/settings/menus/"))}
+                                                        className={cn(
+                                                            "transition-all duration-300 rounded-lg h-9 px-4",
+                                                            "data-[active=true]:bg-primarycolor data-[active=true]:text-white data-[active=true]:font-black data-[active=true]:shadow-md data-[active=true]:shadow-primarycolor/20",
+                                                            "hover:bg-primarycolor/10 hover:text-primarycolor"
+                                                        )}
+                                                    >
+                                                        <Link href="/admin_dashboard/settings/menus">
+                                                            <TableProperties className={cn("w-4 h-4", (isMounted && activePath === "/admin_dashboard/settings/menus") ? "text-white" : "text-primarycolor/70")} />
+                                                            <span>Menu Management</span>
+                                                        </Link>
+                                                    </SidebarMenuSubButton>
+                                                </SidebarMenuSubItem>
+                                            </SidebarMenuSub>
+                                        </CollapsibleContent>
+                                    </SidebarMenuItem>
+                                </Collapsible>
+                            </SidebarMenu>
+                        </SidebarGroupContent>
+                    </SidebarGroup>
+                </SidebarContent>
+                <SidebarFooter className="p-4 border-t text-[10px] font-bold uppercase tracking-widest text-muted-foreground bg-primarycolor/5">
+                    © 2026 Admin Dashboard
+                </SidebarFooter>
+            </Sidebar>
+        </TooltipProvider>
+    )
+}
