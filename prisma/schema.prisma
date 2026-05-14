@@ -1,5 +1,6 @@
 generator client {
-  provider      = "prisma-client"
+  //provider      = "prisma-client"
+    provider      = "prisma-client-js"
   output        = "../src/generated/prisma"
   // Vercel runs Linux (RHEL/OpenSSL 3); local dev is often Windows — include both engines.
   binaryTargets = ["native", "rhel-openssl-3.0.x"]
