@@ -51,7 +51,7 @@ export default function Home() {
             </div>
 
             <h1 className="text-3xl lg:text-4xl font-black leading-tight mb-6 tracking-tight group-hover/card:scale-105 transition-transform duration-700 origin-left">
-              Manage your <br /> inventory with <br /> ease.
+              MManage yourr <br /> inventory with <br /> ease.
             </h1>
             <p className="text-primarycolor/20 text-white/80 text-lg font-medium max-w-sm leading-relaxed">
               Access your dashboard to track sales, manage books, and oversee your entire store operations from one place.
