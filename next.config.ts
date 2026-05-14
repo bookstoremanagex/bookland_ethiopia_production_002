@@ -6,7 +6,8 @@ const nextConfig: NextConfig = {
   // binaries into each serverless bundle on Vercel.
   // Glob `**` matches every route (including `/`); see next/dist/build/collect-build-traces.js + picomatch `contains`.
   outputFileTracingIncludes: {
-    "**": ["./src/generated/prisma/**/*"],
+   // "**": ["./src/generated/prisma/**/*"],
+    '/**/*': ['./node_modules/.prisma/client/**/*'],
   },
   serverExternalPackages: ["@prisma/client", "prisma"],
 };
