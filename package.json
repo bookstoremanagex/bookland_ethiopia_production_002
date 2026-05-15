@@ -5,8 +5,10 @@
   "scripts": {
     "postinstall": "prisma generate",
     "dev": "next dev --turbopack",
-    "build": "prisma generate  && next build --turbopack",
-
+    "verify:prisma-engines": "node scripts/verify-prisma-engines.mjs",
+    "check:database": "node scripts/check-database.mjs",
+    "prebuild": "prisma generate && node scripts/verify-prisma-engines.mjs && node scripts/check-database.mjs",
+    "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint"
   },
