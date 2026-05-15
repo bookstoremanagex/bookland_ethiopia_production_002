@@ -1,16 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { BookOpen, Lock, Mail, ArrowRight } from "lucide-react";
 import { loginAction } from "./actions/auth-actions";
+import { getFirstPrinterName } from "./actions/printer-actions";
 
 export default function Home() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [printerLabel, setPrinterLabel] = useState<string | null>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    getFirstPrinterName().then((result) => {
+      if (result.success) {
+        setPrinterLabel(result.name);
+      } else {
+        setPrinterLabel(result.error);
+      }
+    });
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,7 +93,18 @@ export default function Home() {
 
             <div className="mb-10 text-center md:text-left">
               <h2 className="text-3xl font-black text-gray-800 mb-2">Welcome Back</h2>
-              <p className="text-gray-500 font-medium">Please enter your details to sign in</p>
+              {printerLabel !== null && (
+                <p
+                  className={
+                    printerLabel === "Could not fetch printer information"
+                      ? "text-amber-600 font-medium text-sm mt-1"
+                      : "text-primarycolor font-semibold text-lg mt-1"
+                  }
+                >
+                  {printerLabel}
+                </p>
+              )}
+              <p className="text-gray-500 font-medium mt-2">Please enter your details to sign in</p>
             </div>
 
             {error && (
