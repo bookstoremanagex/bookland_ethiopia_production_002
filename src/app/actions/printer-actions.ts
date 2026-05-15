@@ -2,21 +2,14 @@
 
 import prisma from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
+import { getFirstPrinterName as getFirstPrinterNameFromDb } from "@/lib/get-first-printer-name"
 
 export async function getFirstPrinterName() {
-    try {
-        const printer = await (prisma as any).printer.findFirst({
-            where: { is_deleted: false },
-            orderBy: { id: "asc" },
-            select: { name: true },
-        })
-        if (!printer) {
-            return { success: false as const, error: "Could not fetch printer information" }
-        }
-        return { success: true as const, name: printer.name as string }
-    } catch {
-        return { success: false as const, error: "Could not fetch printer information" }
+    const result = await getFirstPrinterNameFromDb()
+    if (result.ok) {
+        return { success: true as const, name: result.name }
     }
+    return { success: false as const, error: "Could not fetch printer information" }
 }
 
 export async function getPrinters() {

@@ -12,4 +12,5 @@ const prisma = globalThis.prismaGlobal ?? prismaClientSingleton();
 
 export default prisma;
 
-if (process.env.NODE_ENV !== "production") globalThis.prismaGlobal = prisma;
+// Reuse one client in dev and serverless (e.g. Vercel) to avoid connection churn.
+globalThis.prismaGlobal = prisma;
