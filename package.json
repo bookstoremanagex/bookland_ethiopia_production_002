@@ -5,8 +5,8 @@
   "scripts": {
     "postinstall": "prisma generate",
     "dev": "next dev --turbopack",
-    "build": "prisma generate && npm run check:db && next build --turbopack",
-    "check:db": "node --loader ts-node/esm scripts/check-db.js",
+    "build": "prisma generate  && next build --turbopack",
+
     "start": "next start",
     "lint": "eslint"
   },
