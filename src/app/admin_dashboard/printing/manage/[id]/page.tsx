@@ -2,8 +2,13 @@ import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import PrintOrderDetailClient from "./PrintOrderDetailClient";
 
-export default async function PrintOrderDetailPage({ params }: { params: { id: string } }) {
-    const orderId = parseInt(params.id);
+export default async function PrintOrderDetailPage({
+    params,
+}: {
+    params: Promise<{ id: string }>;
+}) {
+    const { id } = await params;
+    const orderId = parseInt(id);
 
     const [order, printers, editions] = await Promise.all([
         (prisma as any).printorder.findUnique({

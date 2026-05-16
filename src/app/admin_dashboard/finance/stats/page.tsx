@@ -18,11 +18,10 @@ import {
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-export default async function FinanceStatsPage({
-    searchParams
-}: {
-    searchParams: { range?: string }
+export default async function FinanceStatsPage(props: {
+    searchParams: Promise<{ range?: string }>;
 }) {
+    const searchParams = await props.searchParams;
     const range = searchParams.range || "all";
 
     const getStartDate = () => {

@@ -8,7 +8,7 @@ import { notFound } from 'next/navigation';
 import ProjectDetailsClient from './ProjectDetailsClient';
 
 interface ProjectDetailsPageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export default async function ProjectDetailsPage({ params }: { params: Promise<{ id: string }> }) {

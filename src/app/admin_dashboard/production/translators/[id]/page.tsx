@@ -17,11 +17,12 @@ import { Button } from '../../../../../components/ui/button';
 import { cn } from '../../../../../lib/utils';
 
 interface TranslatorDetailsPageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export default async function TranslatorDetailsPage({ params }: TranslatorDetailsPageProps) {
-  const response = await getTranslatorById(Number(params.id));
+  const { id } = await params;
+  const response = await getTranslatorById(Number(id));
 
   if (!response.success || !response.data) {
     notFound();
