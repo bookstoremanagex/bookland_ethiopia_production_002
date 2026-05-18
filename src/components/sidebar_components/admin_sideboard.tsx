@@ -23,7 +23,9 @@ import {
     FileText,
     CheckCircle2,
     Clock,
-    User
+    User,
+    Bell,
+    History
 } from "lucide-react"
 
 import {
@@ -56,6 +58,7 @@ import Link from "next/link";
 
 const menuItems = [
     { title: "Home", icon: Home, url: "/admin_dashboard" },
+    { title: "Notifications", icon: Bell, url: "/admin_dashboard/notifications" },
     { title: "Profile", icon: User, url: "/admin_dashboard/profile" },
     { title: "Books", icon: BookOpen, url: "/admin_dashboard/books" },
     { title: "Book Shelf", icon: Library, url: "/admin_dashboard/books/shelf" },
@@ -63,6 +66,7 @@ const menuItems = [
     { title: "Damaged Books", icon: ShieldAlert, url: "/admin_dashboard/books/damaged" },
     { title: "Book Shop", icon: ShoppingBag, url: "/admin_dashboard/book_shops" },
     { title: "Statistics", icon: BarChart3, url: "/admin_dashboard/statistics" },
+    { title: "Activity Log", icon: History, url: "/admin_dashboard/activity_log" },
 ]
 
 export function AdminAppSidebar() {

@@ -21,6 +21,7 @@ model accounts {
   updatedAt      DateTime
   createdAt      DateTime       @default(now())
   deletedAt      DateTime       @default(now())
+  activitylogs   activityLogs[]
   name           String         @default("namesample")
   damagedbooks   damagedbooks[]
   roles          roles[]
@@ -262,6 +263,46 @@ model translatorbook {
 
   @@index([bookId], map: "TranslatorBook_bookId_fkey")
   @@index([translator_id], map: "TranslatorBook_translator_id_fkey")
+}
+
+model notification {
+  id                Int             @id @default(autoincrement())
+  title             String?
+  message           String?
+  details           String?         @db.LongText
+  type              String?
+  notification_to   notification_to @default(ADMIN)
+  notification_from String?
+  is_read           Boolean         @default(false)
+  is_deleted        Boolean         @default(false)
+  updatedAt         DateTime
+  createdAt         DateTime        @default(now())
+  deletedAt         DateTime        @default(now())
+}
+
+model activityLogs {
+  id         Int      @id @default(autoincrement())
+  account    accounts @relation(fields: [accountId], references: [id], onDelete: Cascade, map: "ActivityLogs_accountId_fkey")
+  accountId  Int
+  action     String   @db.Text
+  details    String?  @db.LongText
+  ipAddress  String?
+  userAgent  String?  @db.Text
+  is_deleted Boolean  @default(false)
+  updatedAt  DateTime
+  createdAt  DateTime @default(now())
+  deletedAt  DateTime @default(now())
+}
+
+enum notification_to {
+  ADMIN
+  FINANCE
+  OPERATION_MANAGER
+  DATA_VIEWER
+  DELIVERY_AND_SALES
+  INVENTORY_MANAGER
+  RETAIL_MANAGER
+  PRINTER
 }
 
 enum damagedbooks_type {

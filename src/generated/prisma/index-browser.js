@@ -325,6 +325,34 @@ exports.Prisma.TranslatorbookScalarFieldEnum = {
   deletedAt: 'deletedAt'
 };
 
+exports.Prisma.NotificationScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  message: 'message',
+  details: 'details',
+  type: 'type',
+  notification_to: 'notification_to',
+  notification_from: 'notification_from',
+  is_read: 'is_read',
+  is_deleted: 'is_deleted',
+  updatedAt: 'updatedAt',
+  createdAt: 'createdAt',
+  deletedAt: 'deletedAt'
+};
+
+exports.Prisma.ActivityLogsScalarFieldEnum = {
+  id: 'id',
+  accountId: 'accountId',
+  action: 'action',
+  details: 'details',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  is_deleted: 'is_deleted',
+  updatedAt: 'updatedAt',
+  createdAt: 'createdAt',
+  deletedAt: 'deletedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -418,6 +446,21 @@ exports.Prisma.translatorOrderByRelevanceFieldEnum = {
   phoneNumber: 'phoneNumber',
   email: 'email'
 };
+
+exports.Prisma.notificationOrderByRelevanceFieldEnum = {
+  title: 'title',
+  message: 'message',
+  details: 'details',
+  type: 'type',
+  notification_from: 'notification_from'
+};
+
+exports.Prisma.activityLogsOrderByRelevanceFieldEnum = {
+  action: 'action',
+  details: 'details',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent'
+};
 exports.books_productionstatus = exports.$Enums.books_productionstatus = {
   ON_PRODUCTION: 'ON_PRODUCTION',
   TRANSLATION: 'TRANSLATION',
@@ -463,6 +506,17 @@ exports.translatorbook_Status = exports.$Enums.translatorbook_Status = {
   COMPLETED: 'COMPLETED'
 };
 
+exports.notification_to = exports.$Enums.notification_to = {
+  ADMIN: 'ADMIN',
+  FINANCE: 'FINANCE',
+  OPERATION_MANAGER: 'OPERATION_MANAGER',
+  DATA_VIEWER: 'DATA_VIEWER',
+  DELIVERY_AND_SALES: 'DELIVERY_AND_SALES',
+  INVENTORY_MANAGER: 'INVENTORY_MANAGER',
+  RETAIL_MANAGER: 'RETAIL_MANAGER',
+  PRINTER: 'PRINTER'
+};
+
 exports.Prisma.ModelName = {
   accounts: 'accounts',
   bookedition: 'bookedition',
@@ -477,7 +531,9 @@ exports.Prisma.ModelName = {
   roles: 'roles',
   stores: 'stores',
   translator: 'translator',
-  translatorbook: 'translatorbook'
+  translatorbook: 'translatorbook',
+  notification: 'notification',
+  activityLogs: 'activityLogs'
 };
 
 /**

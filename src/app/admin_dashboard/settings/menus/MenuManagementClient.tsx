@@ -21,7 +21,9 @@ import {
     FileText,
     Settings,
     User,
-    Loader2
+    Loader2,
+    Bell,
+    History
 } from 'lucide-react'
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -83,6 +85,7 @@ function TagIcon(props: any) {
 }
 
 const AVAILABLE_MENUS = [
+    { id: "notifications", label: "Notifications", icon: Bell },
     { id: "profile", label: "Profile", icon: User },
     { id: "books", label: "Books", icon: BookOpen },
     { id: "shelf", label: "Book Shelf", icon: Library },
@@ -90,6 +93,7 @@ const AVAILABLE_MENUS = [
     { id: "damaged", label: "Damaged Books", icon: ShieldAlert },
     { id: "shop", label: "Book Shop", icon: ShoppingBag },
     { id: "statistics", label: "Statistics", icon: BarChart3 },
+    { id: "activity_log", label: "Activity Log", icon: History },
     { id: "production", label: "Production", icon: Package },
     { id: "translations", label: "Translations", icon: Languages },
     { id: "printing", label: "Printing", icon: Printer },

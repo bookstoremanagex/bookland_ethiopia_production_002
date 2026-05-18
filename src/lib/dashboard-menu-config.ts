@@ -17,7 +17,9 @@ import {
     BookCopy,
     CheckCircle2,
     Clock,
-    ClipboardList
+    ClipboardList,
+    Bell,
+    History
 } from "lucide-react"
 
 export interface MenuItem {
@@ -36,6 +38,7 @@ export interface SubMenuItem {
 
 export const ALL_DASHBOARD_MENUS: MenuItem[] = [
     { id: "home", title: "Home", icon: Home, path: "" },
+    { id: "notifications", title: "Notifications", icon: Bell, path: "notifications" },
     { id: "profile", title: "Profile", icon: User, path: "profile" },
     { id: "books", title: "Books", icon: BookOpen, path: "books" },
     { id: "shelf", title: "Book Shelf", icon: Library, path: "books/shelf" },
@@ -43,6 +46,7 @@ export const ALL_DASHBOARD_MENUS: MenuItem[] = [
     { id: "damaged", title: "Damaged Books", icon: ShieldAlert, path: "books/damaged" },
     { id: "shop", title: "Book Shop", icon: ShoppingBag, path: "book_shops" },
     { id: "statistics", title: "Statistics", icon: BarChart3, path: "statistics" },
+    { id: "activity_log", title: "Activity Log", icon: History, path: "activity_log" },
     { 
         id: "production", 
         title: "Production", 
