@@ -3,6 +3,50 @@
 import prisma from "../../lib/prisma";
 import { bookSchema, type BookFormValues } from "../../lib/validation/book-schema";
 import { revalidatePath } from "next/cache";
+import { put, del } from "@vercel/blob";
+
+// Helper function to delete Vercel Blob file if URL points to it
+async function deleteBlobIfExists(url: string | null | undefined) {
+  if (!url) return;
+  if (url.includes("public.blob.vercel-storage.com")) {
+    try {
+      await del(url);
+      console.log("Successfully deleted old Vercel Blob cover:", url);
+    } catch (error) {
+      console.error("Failed to delete Vercel Blob cover:", url, error);
+    }
+  }
+}
+
+// Upload cover image to Vercel Blob
+export async function uploadBookImageAction(formData: FormData) {
+  try {
+    const file = formData.get("file") as File;
+    if (!file) {
+      return { success: false, error: "No file provided" };
+    }
+
+    // Convert file to Buffer for server-side upload safety
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    // Keep file extension and make name unique
+    const fileExtension = file.name.split(".").pop();
+    const cleanFileName = `book_covers/${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${fileExtension}`;
+
+    const blob = await put(cleanFileName, buffer, {
+      access: "public",
+    });
+
+    return { success: true, url: blob.url };
+  } catch (error: any) {
+    console.error("Failed to upload image to Vercel Blob:", error);
+    return {
+      success: false,
+      error: error?.message || "Failed to upload image to Vercel Blob"
+    };
+  }
+}
 
 export async function createBook(data: BookFormValues) {
   const result = bookSchema.safeParse(data);
@@ -31,15 +75,22 @@ export async function createBook(data: BookFormValues) {
     return { success: true, data: book };
   } catch (error: any) {
     console.error("Failed to create book in database:", error);
-    return { 
-      success: false, 
-      error: error?.message || "Failed to save book to database" 
+    return {
+      success: false,
+      error: error?.message || "Failed to save book to database"
     };
   }
 }
 
 export async function updateBook(id: string, data: Partial<BookFormValues>) {
   try {
+    // 1. Fetch current book to get its existing cover URL
+    const currentBook = await (prisma as any).books.findUnique({
+      where: { unique_identification_code: id },
+      select: { book_image_url: true }
+    });
+
+    // 2. Perform the update
     const book = await (prisma as any).books.update({
       where: { unique_identification_code: id },
       data: {
@@ -47,6 +98,15 @@ export async function updateBook(id: string, data: Partial<BookFormValues>) {
         updatedAt: new Date(),
       },
     });
+
+    // 3. Delete old blob from Vercel Blob if the cover URL changed and update was successful
+    if (
+      currentBook &&
+      currentBook.book_image_url &&
+      currentBook.book_image_url !== data.book_image_url
+    ) {
+      await deleteBlobIfExists(currentBook.book_image_url);
+    }
 
     revalidatePath(`/admin_dashboard/books/${id}`);
     revalidatePath("/admin_dashboard/books");
@@ -59,14 +119,26 @@ export async function updateBook(id: string, data: Partial<BookFormValues>) {
 
 export async function deleteBook(id: string) {
   try {
+    // 1. Fetch current book to get its image URL before deleting
+    const currentBook = await (prisma as any).books.findUnique({
+      where: { unique_identification_code: id },
+      select: { book_image_url: true }
+    });
+
+    // 2. Soft-delete the book in database
     await (prisma as any).books.update({
       where: { unique_identification_code: id },
-      data: { 
-        is_deleted: true, 
+      data: {
+        is_deleted: true,
         deletedAt: new Date(),
         updatedAt: new Date()
       },
     });
+
+    // 3. Delete the image from Vercel Blob if it exists and is a Vercel Blob URL
+    if (currentBook && currentBook.book_image_url) {
+      await deleteBlobIfExists(currentBook.book_image_url);
+    }
 
     revalidatePath("/admin_dashboard/books");
     return { success: true };

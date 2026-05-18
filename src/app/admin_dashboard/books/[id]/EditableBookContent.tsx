@@ -23,7 +23,7 @@ import {
 import { Button } from '../../../../components/ui/button';
 import { Input } from '../../../../components/ui/input';
 import { cn } from '../../../../lib/utils';
-import { updateBook } from '../../../actions/book-actions';
+import { updateBook, uploadBookImageAction } from '../../../actions/book-actions';
 import { updateTranslationProjectStatus } from '../../../actions/translation-project-actions';
 import { toast } from 'sonner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../../components/ui/tabs";
@@ -51,14 +51,42 @@ export default function EditableBookContent({ book: initialBook, bookShops }: Ed
   const pathname = usePathname();
   const dashboardRoot = pathname.split('/').slice(0, 2).join('/');
 
+  // States for Image Upload
+  const [imageType, setImageType] = useState<"upload" | "link">("upload");
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 4 * 1024 * 1024) {
+        toast.error("File size must be less than 4MB");
+        return;
+      }
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleStartEdit = (field: string, value: any) => {
     setEditingField(field);
     setEditValue(value);
+    if (field === 'book_image_url') {
+      setImageType(value ? 'link' : 'upload');
+      setImageFile(null);
+      setImagePreview(null);
+    }
   };
 
   const handleCancelEdit = () => {
     setEditingField(null);
     setEditValue(null);
+    setImageFile(null);
+    setImagePreview(null);
   };
 
   const handleSaveEdit = async (field: string) => {
@@ -74,6 +102,44 @@ export default function EditableBookContent({ book: initialBook, bookShops }: Ed
       }
     } catch (error) {
       toast.error("An error occurred");
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const handleSaveImage = async () => {
+    setIsUpdating(true);
+    try {
+      let finalImageUrl = editValue || "";
+
+      if (imageType === "upload" && imageFile) {
+        const formData = new FormData();
+        formData.append("file", imageFile);
+
+        const uploadRes = await uploadBookImageAction(formData);
+        if (!uploadRes.success) {
+          toast.error(uploadRes.error || "Failed to upload image");
+          setIsUpdating(false);
+          return;
+        }
+        finalImageUrl = uploadRes.url || "";
+      }
+
+      const response = await updateBook(book.unique_identification_code, {
+        book_image_url: finalImageUrl || null,
+      });
+
+      if (response.success) {
+        setBook(response.data);
+        toast.success("Updated cover image successfully");
+        setEditingField(null);
+        setImageFile(null);
+        setImagePreview(null);
+      } else {
+        toast.error(response.error || "Failed to update cover image");
+      }
+    } catch (error) {
+      toast.error("An error occurred while updating cover image");
     } finally {
       setIsUpdating(false);
     }
@@ -268,22 +334,95 @@ export default function EditableBookContent({ book: initialBook, bookShops }: Ed
                 </div>
                 <div>
                   <h3 className="text-2xl font-black text-primarycolor uppercase tracking-tight">Update <span className="text-secondarycolor">Cover</span></h3>
-                  <p className="text-muted-foreground font-bold">Provide a direct link to the book cover image.</p>
+                  <p className="text-muted-foreground font-bold">Upload a cover image or provide a link.</p>
                 </div>
               </div>
 
-              <div className="space-y-4">
-                <Input
-                  value={editValue ?? ''}
-                  onChange={(e) => setEditValue(e.target.value)}
-                  placeholder="https://images.unsplash.com/..."
-                  className="h-16 px-6 rounded-2xl border-2 font-bold text-lg"
-                />
+              <div className="space-y-6">
                 <div className="flex gap-4">
-                  <Button className="flex-1 h-14 rounded-2xl font-black uppercase tracking-widest bg-primarycolor hover:bg-secondarycolor" onClick={() => handleSaveEdit('book_image_url')} disabled={isUpdating}>
-                    {isUpdating ? "Updating..." : "Save Image"}
+                  <button
+                    type="button"
+                    onClick={() => setImageType("upload")}
+                    className={cn(
+                      "flex-1 py-3 px-4 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest border-2 transition-all cursor-pointer",
+                      imageType === "upload"
+                        ? "bg-primarycolor text-white border-primarycolor"
+                        : "bg-white text-primarycolor/70 border-primarycolor/10 hover:border-primarycolor/20"
+                    )}
+                  >
+                    Upload File
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setImageType("link")}
+                    className={cn(
+                      "flex-1 py-3 px-4 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest border-2 transition-all cursor-pointer",
+                      imageType === "link"
+                        ? "bg-primarycolor text-white border-primarycolor"
+                        : "bg-white text-primarycolor/70 border-primarycolor/10 hover:border-primarycolor/20"
+                    )}
+                  >
+                    Provide Link
+                  </button>
+                </div>
+
+                {imageType === "upload" ? (
+                  <div className="space-y-4">
+                    <div className={cn(
+                      "border-2 border-dashed border-primarycolor/20 rounded-xl p-8 text-center bg-white cursor-pointer hover:border-primarycolor/40 transition-colors relative flex flex-col items-center justify-center min-h-[160px]",
+                      imageFile && "border-solid border-primarycolor/30"
+                    )}>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileChange}
+                        className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                      />
+                      {imagePreview ? (
+                        <div className="flex flex-col items-center gap-4">
+                          <img
+                            src={imagePreview}
+                            alt="Preview"
+                            className="w-24 h-36 object-cover rounded-lg shadow-md border-2 border-primarycolor/10"
+                          />
+                          <span className="text-xs font-bold text-secondarycolor/80 bg-primarycolor/5 px-3 py-1 rounded-full">
+                            {imageFile?.name} ({(imageFile!.size / 1024).toFixed(1)} KB)
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="space-y-2">
+                          <div className="text-primarycolor font-black text-2xl uppercase tracking-widest">+</div>
+                          <div className="text-sm font-bold text-secondarycolor">Click to upload cover image</div>
+                          <div className="text-xs text-muted-foreground font-semibold">Supports JPG, PNG, WEBP (Max 4MB)</div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-2 group">
+                    <Input
+                      value={editValue ?? ''}
+                      onChange={(e) => setEditValue(e.target.value)}
+                      placeholder="https://images.unsplash.com/..."
+                      className="h-16 px-6 rounded-2xl border-2 font-bold text-lg"
+                    />
+                  </div>
+                )}
+
+                <div className="flex gap-4">
+                  <Button 
+                    className="flex-1 h-14 rounded-2xl font-black uppercase tracking-widest bg-primarycolor hover:bg-secondarycolor" 
+                    onClick={handleSaveImage} 
+                    disabled={isUpdating}
+                  >
+                    {isUpdating ? (
+                      <div className="flex items-center justify-center gap-2">
+                        <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        Saving...
+                      </div>
+                    ) : "Save Image"}
                   </Button>
-                  <Button variant="outline" className="flex-1 h-14 rounded-2xl font-black uppercase tracking-widest border-2" onClick={handleCancelEdit}>Cancel</Button>
+                  <Button variant="outline" className="flex-1 h-14 rounded-2xl font-black uppercase tracking-widest border-2" onClick={handleCancelEdit} disabled={isUpdating}>Cancel</Button>
                 </div>
               </div>
             </div>

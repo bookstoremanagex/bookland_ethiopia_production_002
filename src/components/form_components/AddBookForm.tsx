@@ -7,7 +7,7 @@ import { bookSchema, type BookFormValues } from "../../lib/validation/book-schem
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { cn } from "../../lib/utils";
-import { createBook } from "../../app/actions/book-actions";
+import { createBook, uploadBookImageAction } from "../../app/actions/book-actions";
 import { useRouter, usePathname } from "next/navigation";
 import { toast } from "sonner";
 
@@ -19,6 +19,28 @@ export function AddBookForm({ className }: AddBookFormProps) {
   const router = useRouter();
   const pathname = usePathname();
   const dashboardRoot = pathname.split('/').slice(0, 2).join('/');
+  
+  const [imageType, setImageType] = React.useState<"upload" | "link">("upload");
+  const [imageFile, setImageFile] = React.useState<File | null>(null);
+  const [imagePreview, setImagePreview] = React.useState<string | null>(null);
+  const [isUploading, setIsUploading] = React.useState(false);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 4 * 1024 * 1024) {
+        toast.error("File size must be less than 4MB");
+        return;
+      }
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const {
     register,
     handleSubmit,
@@ -46,20 +68,43 @@ export function AddBookForm({ className }: AddBookFormProps) {
   });
 
   const onSubmit = async (data: BookFormValues) => {
+    setIsUploading(true);
     try {
-      const response = await createBook(data);
+      let finalImageUrl = data.book_image_url || "";
+
+      if (imageType === "upload" && imageFile) {
+        const formData = new FormData();
+        formData.append("file", imageFile);
+        
+        const uploadRes = await uploadBookImageAction(formData);
+        if (!uploadRes.success) {
+          toast.error(uploadRes.error || "Failed to upload cover image");
+          setIsUploading(false);
+          return;
+        }
+        finalImageUrl = uploadRes.url || "";
+      }
+
+      const response = await createBook({
+        ...data,
+        book_image_url: finalImageUrl,
+      });
 
       if (response.success) {
-        toast.success("Book added successfully!")
+        toast.success("Book added successfully!");
         reset();
+        setImageFile(null);
+        setImagePreview(null);
         router.push(`${dashboardRoot}/books`);
         router.refresh();
       } else {
-        alert(response.error || "Failed to add book. Please try again.");
+        toast.error(response.error || "Failed to add book. Please try again.");
       }
     } catch (error) {
       console.error("Error submitting form:", error);
-      alert("An unexpected error occurred. Please try again.");
+      toast.error("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -287,17 +332,80 @@ export function AddBookForm({ className }: AddBookFormProps) {
             </div>
           </div>
 
-          {/* Book Image URL */}
-          <div className="space-y-2 group">
-            <label htmlFor="book_image_url" className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor">
-              Book Image URL
+          {/* Cover Image Selection Options */}
+          <div className="space-y-4 border-2 border-primarycolor/10 rounded-2xl p-6 bg-primarycolor/5">
+            <label className="text-sm font-semibold text-secondarycolor block">
+              Book Cover Image
             </label>
-            <Input
-              id="book_image_url"
-              placeholder="https://example.com/image.jpg"
-              {...register("book_image_url")}
-              className="border-primarycolor/20 focus:border-primarycolor focus:ring-primarycolor/20"
-            />
+            <div className="flex gap-4">
+              <button
+                type="button"
+                onClick={() => setImageType("upload")}
+                className={cn(
+                  "flex-1 py-3 px-4 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest border-2 transition-all cursor-pointer",
+                  imageType === "upload"
+                    ? "bg-primarycolor text-white border-primarycolor"
+                    : "bg-white text-primarycolor/70 border-primarycolor/10 hover:border-primarycolor/20"
+                )}
+              >
+                Upload File
+              </button>
+              <button
+                type="button"
+                onClick={() => setImageType("link")}
+                className={cn(
+                  "flex-1 py-3 px-4 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest border-2 transition-all cursor-pointer",
+                  imageType === "link"
+                    ? "bg-primarycolor text-white border-primarycolor"
+                    : "bg-white text-primarycolor/70 border-primarycolor/10 hover:border-primarycolor/20"
+                )}
+              >
+                Provide Link
+              </button>
+            </div>
+
+            {imageType === "upload" ? (
+              <div className="space-y-4">
+                <div className={cn(
+                  "border-2 border-dashed border-primarycolor/20 rounded-xl p-8 text-center bg-white cursor-pointer hover:border-primarycolor/40 transition-colors relative flex flex-col items-center justify-center min-h-[160px]",
+                  imageFile && "border-solid border-primarycolor/30"
+                )}>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                  />
+                  {imagePreview ? (
+                    <div className="flex flex-col items-center gap-4">
+                      <img
+                        src={imagePreview}
+                        alt="Preview"
+                        className="w-24 h-36 object-cover rounded-lg shadow-md border-2 border-primarycolor/10"
+                      />
+                      <span className="text-xs font-bold text-secondarycolor/80 bg-primarycolor/5 px-3 py-1 rounded-full">
+                        {imageFile?.name} ({(imageFile!.size / 1024).toFixed(1)} KB)
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <div className="text-primarycolor font-black text-2xl uppercase tracking-widest">+</div>
+                      <div className="text-sm font-bold text-secondarycolor">Click to upload cover image</div>
+                      <div className="text-xs text-muted-foreground font-semibold">Supports JPG, PNG, WEBP (Max 4MB)</div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-2 group">
+                <Input
+                  id="book_image_url"
+                  placeholder="https://example.com/image.jpg"
+                  {...register("book_image_url")}
+                  className="border-primarycolor/20 focus:border-primarycolor focus:ring-primarycolor/20 h-12"
+                />
+              </div>
+            )}
           </div>
 
           {/* Info / Description */}
@@ -318,21 +426,25 @@ export function AddBookForm({ className }: AddBookFormProps) {
             <Button
               type="button"
               variant="outline"
-              onClick={() => reset()}
-              disabled={isSubmitting}
+              onClick={() => {
+                reset();
+                setImageFile(null);
+                setImagePreview(null);
+              }}
+              disabled={isSubmitting || isUploading}
               className="h-14 px-6 rounded-xl md:rounded-2xl border-2 font-black uppercase tracking-widest text-[10px] md:text-xs"
             >
               Reset Form
             </Button>
             <Button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || isUploading}
               className="h-14 px-10 bg-primarycolor hover:bg-secondarycolor text-white font-black rounded-xl md:rounded-2xl shadow-xl shadow-primarycolor/20 transition-all duration-300 transform active:scale-95 uppercase tracking-widest text-[10px] md:text-xs"
             >
-              {isSubmitting ? (
+              {isSubmitting || isUploading ? (
                 <div className="flex items-center gap-2">
                   <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Adding...
+                  {isUploading && !isSubmitting ? "Uploading image..." : "Adding..."}
                 </div>
               ) : (
                 "Save Book"
