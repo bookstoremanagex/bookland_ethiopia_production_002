@@ -39,9 +39,9 @@ export default async function AdminHomePage() {
   });
 
   const productionMap: any = {
-    'ON_PRODUCTION': { status: 'In Production', fill: '#1e293b', count: 0 },
-    'FINISHED': { status: 'Completed', fill: '#10b981', count: 0 },
-    'CANCELLED': { status: 'Cancelled', fill: '#f43f5e', count: 0 }
+    'ON_PRODUCTION': { status: 'In production', fill: '#408A71', count: 0 },
+    'FINISHED': { status: 'Completed', fill: '#285A48', count: 0 },
+    'CANCELLED': { status: 'Cancelled', fill: '#c2410c', count: 0 }
   };
 
   books.forEach(b => {
@@ -72,8 +72,10 @@ export default async function AdminHomePage() {
   };
 
   return (
-    <div className="p-6 md:p-10">
-      <DashboardContainer data={dashboardData} />
+    <div className="min-h-full bg-gradient-to-b from-slate-50 via-white to-primarycolor/[0.04]">
+      <div className="mx-auto max-w-[1600px] px-4 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-12">
+        <DashboardContainer data={dashboardData} />
+      </div>
     </div>
   );
 }

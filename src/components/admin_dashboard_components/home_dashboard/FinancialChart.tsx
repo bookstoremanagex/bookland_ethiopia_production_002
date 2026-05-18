@@ -1,83 +1,94 @@
-"use client"
+"use client";
 
-import { Bar, BarChart, CartesianGrid, XAxis, ResponsiveContainer, Tooltip } from "recharts"
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  XAxis,
+  ResponsiveContainer,
+} from "recharts";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
+} from "@/components/ui/chart";
 
 interface FinancialChartProps {
-    data: {
-        name: string;
-        revenue: number;
-        debt: number;
-    }[]
+  data: {
+    name: string;
+    revenue: number;
+    debt: number;
+  }[];
 }
 
 const chartConfig = {
   revenue: {
     label: "Revenue",
-    color: "hsl(var(--chart-1))",
+    color: "var(--color-primarycolor)",
   },
   debt: {
-    label: "Debt",
-    color: "hsl(var(--chart-2))",
+    label: "Outstanding",
+    color: "var(--color-secondarycolor)",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 export function FinancialChart({ data }: FinancialChartProps) {
   return (
-    <Card className="rounded-[2.5rem] border-2 border-primarycolor/5 shadow-2xl overflow-hidden">
-      <CardHeader className="p-8 pb-4">
-        <CardTitle className="text-2xl font-black text-primarycolor uppercase tracking-tighter italic">
-          Financial <span className="text-secondarycolor not-italic">Performance</span>
+    <Card className="h-full rounded-2xl border border-slate-200/80 bg-white shadow-sm lg:rounded-3xl">
+      <CardHeader className="space-y-1 border-b border-slate-100 px-6 pb-4 pt-6 sm:px-8">
+        <CardTitle className="text-lg font-semibold tracking-tight text-slate-900 sm:text-xl">
+          Revenue & outstanding
         </CardTitle>
-        <CardDescription className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-          Revenue vs Outstanding Debt per month
+        <CardDescription className="text-sm leading-relaxed text-slate-600">
+          Comparison of gross revenue and pending amounts across the sample
+          periods.
         </CardDescription>
       </CardHeader>
-      <CardContent className="p-8 pt-0">
-        <ChartContainer config={chartConfig} className="min-h-[300px] w-full">
+      <CardContent className="px-4 pb-6 pt-4 sm:px-8 sm:pb-8">
+        <ChartContainer config={chartConfig} className="min-h-[280px] w-full sm:min-h-[300px]">
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={data}>
-                <CartesianGrid vertical={false} strokeDasharray="3 3" strokeOpacity={0.1} />
-                <XAxis
-                    dataKey="name"
-                    tickLine={false}
-                    tickMargin={10}
-                    axisLine={false}
-                    tickFormatter={(value) => value.slice(0, 3)}
-                    className="text-[10px] font-bold uppercase"
-                />
-                <ChartTooltip
-                    cursor={false}
-                    content={<ChartTooltipContent indicator="dashed" />}
-                />
-                <Bar 
-                    dataKey="revenue" 
-                    fill="#1e293b" 
-                    radius={8} 
-                    name="Gross Revenue"
-                />
-                <Bar 
-                    dataKey="debt" 
-                    fill="#f43f5e" 
-                    radius={8} 
-                    name="Pending Debt"
-                />
+            <BarChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+              <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-slate-200" />
+              <XAxis
+                dataKey="name"
+                tickLine={false}
+                tickMargin={10}
+                axisLine={false}
+                tick={{ fill: "#64748b", fontSize: 12 }}
+              />
+              <ChartTooltip cursor={{ fill: "rgba(64, 138, 113, 0.06)" }} content={<ChartTooltipContent indicator="dashed" />} />
+              <Bar
+                dataKey="revenue"
+                fill="#408A71"
+                radius={[6, 6, 0, 0]}
+                name="Gross revenue"
+              />
+              <Bar
+                dataKey="debt"
+                fill="#285A48"
+                radius={[6, 6, 0, 0]}
+                name="Outstanding"
+              />
             </BarChart>
           </ResponsiveContainer>
         </ChartContainer>
+        <div className="mt-4 flex flex-wrap gap-4 border-t border-slate-100 pt-4 text-xs text-slate-600">
+          <span className="inline-flex items-center gap-2">
+            <span className="size-2.5 rounded-sm bg-[#408A71]" /> Revenue
+          </span>
+          <span className="inline-flex items-center gap-2">
+            <span className="size-2.5 rounded-sm bg-[#285A48]" /> Outstanding
+          </span>
+        </div>
       </CardContent>
     </Card>
-  )
+  );
 }

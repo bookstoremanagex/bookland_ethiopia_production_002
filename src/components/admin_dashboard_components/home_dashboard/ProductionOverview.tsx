@@ -1,73 +1,75 @@
-"use client"
+"use client";
 
-import { Pie, PieChart, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts"
+import { Pie, PieChart, Cell, ResponsiveContainer, Legend } from "recharts";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
+} from "@/components/ui/chart";
 
 interface ProductionOverviewProps {
-    data: {
-        status: string;
-        count: number;
-        fill: string;
-    }[]
+  data: {
+    status: string;
+    count: number;
+    fill: string;
+  }[];
 }
 
 const chartConfig = {
   count: {
     label: "Books",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 export function ProductionOverview({ data }: ProductionOverviewProps) {
   return (
-    <Card className="rounded-[2.5rem] border-2 border-primarycolor/5 shadow-2xl overflow-hidden flex flex-col">
-      <CardHeader className="p-8 pb-4">
-        <CardTitle className="text-2xl font-black text-primarycolor uppercase tracking-tighter italic">
-          Production <span className="text-secondarycolor not-italic">Status</span>
+    <Card className="flex h-full flex-col rounded-2xl border border-slate-200/80 bg-white shadow-sm lg:rounded-3xl">
+      <CardHeader className="space-y-1 border-b border-slate-100 px-6 pb-4 pt-6">
+        <CardTitle className="text-lg font-semibold tracking-tight text-slate-900 sm:text-xl">
+          Production pipeline
         </CardTitle>
-        <CardDescription className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-          Book lifecycle distribution
+        <CardDescription className="text-sm leading-relaxed text-slate-600">
+          How titles are distributed across production states.
         </CardDescription>
       </CardHeader>
-      <CardContent className="flex-1 p-8 pt-0">
-        <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[300px]">
+      <CardContent className="flex flex-1 flex-col px-4 pb-6 pt-2 sm:px-6">
+        <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[280px] w-full sm:max-h-[300px]">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
-                <ChartTooltip
-                    cursor={false}
-                    content={<ChartTooltipContent hideLabel />}
-                />
-                <Pie
-                    data={data}
-                    dataKey="count"
-                    nameKey="status"
-                    innerRadius={60}
-                    strokeWidth={5}
-                >
-                    {data.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.fill} />
-                    ))}
-                </Pie>
-                <Legend 
-                    verticalAlign="bottom" 
-                    height={36}
-                    formatter={(value) => <span className="text-[10px] font-black uppercase tracking-widest text-primarycolor">{value}</span>}
-                />
+              <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+              <Pie
+                data={data}
+                dataKey="count"
+                nameKey="status"
+                innerRadius={70}
+                outerRadius={105}
+                strokeWidth={2}
+                stroke="#fff"
+                paddingAngle={2}
+              >
+                {data.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.fill} />
+                ))}
+              </Pie>
+              <Legend
+                verticalAlign="bottom"
+                height={40}
+                formatter={(value) => (
+                  <span className="text-xs font-medium text-slate-700">{value}</span>
+                )}
+              />
             </PieChart>
           </ResponsiveContainer>
         </ChartContainer>
       </CardContent>
     </Card>
-  )
+  );
 }

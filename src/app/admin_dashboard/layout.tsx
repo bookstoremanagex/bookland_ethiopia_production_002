@@ -12,8 +12,10 @@ export default function AdminLayout({
   return (
     <SidebarProvider>
       <AdminAppSidebar />
-      <main className="w-full">
-        <SidebarTrigger />
+      <main className="w-full min-h-screen bg-transparent font-sans text-slate-800 antialiased">
+        <div className="sticky top-0 z-10 flex items-center gap-2 border-b border-primarycolor/10 bg-white/80 px-3 py-2 backdrop-blur-md md:px-4">
+          <SidebarTrigger className="text-primarycolor hover:bg-primarycolor/10" />
+        </div>
         {children}
       </main>
     </SidebarProvider>
