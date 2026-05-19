@@ -24,7 +24,30 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: `
+          try {
+            const color = localStorage.getItem('primarycolor');
+            if (color) {
+              document.documentElement.style.setProperty('--primarycolor', color);
+              
+              // Darken color 20% for secondarycolor
+              let num = parseInt(color.replace("#",""), 16);
+              let R = (num >> 16) - 30;
+              let G = ((num >> 8) & 0x00FF) - 30;
+              let B = (num & 0x0000FF) - 30;
+              
+              R = R < 0 ? 0 : R;
+              G = G < 0 ? 0 : G;
+              B = B < 0 ? 0 : B;
+              
+              const secondary = "#" + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1);
+              document.documentElement.style.setProperty('--secondarycolor', secondary);
+            }
+          } catch (e) {}
+        ` }} />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

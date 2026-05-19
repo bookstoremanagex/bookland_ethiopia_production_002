@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation"
 import {
+    Palette,
     Home,
     BookOpen,
     Library,
@@ -584,6 +585,22 @@ export function AdminAppSidebar() {
                                                         <Link href="/admin_dashboard/settings/menus">
                                                             <TableProperties className={cn("w-4 h-4", (isMounted && activePath === "/admin_dashboard/settings/menus") ? "text-white" : "text-primarycolor/70")} />
                                                             <span>Menu Management</span>
+                                                        </Link>
+                                                    </SidebarMenuSubButton>
+                                                </SidebarMenuSubItem>
+                                                <SidebarMenuSubItem>
+                                                    <SidebarMenuSubButton
+                                                        asChild
+                                                        isActive={isMounted && (activePath === "/admin_dashboard/settings/theme" || activePath.startsWith("/admin_dashboard/settings/theme/"))}
+                                                        className={cn(
+                                                            "transition-all duration-300 rounded-lg h-9 px-4",
+                                                            "data-[active=true]:bg-primarycolor data-[active=true]:text-white data-[active=true]:font-black data-[active=true]:shadow-md data-[active=true]:shadow-primarycolor/20",
+                                                            "hover:bg-primarycolor/10 hover:text-primarycolor"
+                                                        )}
+                                                    >
+                                                        <Link href="/admin_dashboard/settings/theme">
+                                                            <Palette className={cn("w-4 h-4", (isMounted && activePath === "/admin_dashboard/settings/theme") ? "text-white" : "text-primarycolor/70")} />
+                                                            <span>Theme Customization</span>
                                                         </Link>
                                                     </SidebarMenuSubButton>
                                                 </SidebarMenuSubItem>

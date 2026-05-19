@@ -445,3 +445,10 @@ model approval_documents {
   updatedAt      DateTime  @default(now())
   createdAt      DateTime  @default(now())
 }
+
+model settings {
+  id           Int      @id @default(autoincrement())
+  primaryColor String   @default("#408A71")
+  updatedAt    DateTime @default(now())
+  createdAt    DateTime @default(now())
+}

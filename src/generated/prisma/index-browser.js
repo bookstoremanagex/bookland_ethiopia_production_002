@@ -442,6 +442,13 @@ exports.Prisma.Approval_documentsScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.SettingsScalarFieldEnum = {
+  id: 'id',
+  primaryColor: 'primaryColor',
+  updatedAt: 'updatedAt',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -602,6 +609,10 @@ exports.Prisma.approval_documentsOrderByRelevanceFieldEnum = {
   details: 'details',
   memo: 'memo'
 };
+
+exports.Prisma.settingsOrderByRelevanceFieldEnum = {
+  primaryColor: 'primaryColor'
+};
 exports.books_productionstatus = exports.$Enums.books_productionstatus = {
   ON_PRODUCTION: 'ON_PRODUCTION',
   TRANSLATION: 'TRANSLATION',
@@ -680,7 +691,8 @@ exports.Prisma.ModelName = {
   print_agreements: 'print_agreements',
   delivery_notes: 'delivery_notes',
   invoices: 'invoices',
-  approval_documents: 'approval_documents'
+  approval_documents: 'approval_documents',
+  settings: 'settings'
 };
 
 /**

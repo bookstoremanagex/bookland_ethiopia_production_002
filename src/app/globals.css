@@ -5,8 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --color-primarycolor: #408A71;
-  --color-secondarycolor: #285A48;
+  --color-primarycolor: var(--primarycolor, #408A71);
+  --color-secondarycolor: var(--secondarycolor, #285A48);
   --color-tertiarycolor: #B0E4CC;
   --color-quaternarycolor: #091413;
 
