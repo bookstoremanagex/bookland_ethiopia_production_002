@@ -175,6 +175,7 @@ exports.Prisma.BooksScalarFieldEnum = {
   isbn: 'isbn',
   title: 'title',
   author: 'author',
+  pen_name: 'pen_name',
   translator: 'translator',
   designer: 'designer',
   language: 'language',
@@ -305,6 +306,7 @@ exports.Prisma.TranslatorScalarFieldEnum = {
   name: 'name',
   phoneNumber: 'phoneNumber',
   email: 'email',
+  pen_name: 'pen_name',
   is_deleted: 'is_deleted',
   updatedAt: 'updatedAt',
   createdAt: 'createdAt',
@@ -353,6 +355,16 @@ exports.Prisma.ActivityLogsScalarFieldEnum = {
   deletedAt: 'deletedAt'
 };
 
+exports.Prisma.NotesScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  note_content: 'note_content',
+  accountId: 'accountId',
+  is_deleted: 'is_deleted',
+  updatedAt: 'updatedAt',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -381,6 +393,7 @@ exports.Prisma.booksOrderByRelevanceFieldEnum = {
   isbn: 'isbn',
   title: 'title',
   author: 'author',
+  pen_name: 'pen_name',
   translator: 'translator',
   designer: 'designer',
   language: 'language',
@@ -444,7 +457,8 @@ exports.Prisma.storesOrderByRelevanceFieldEnum = {
 exports.Prisma.translatorOrderByRelevanceFieldEnum = {
   name: 'name',
   phoneNumber: 'phoneNumber',
-  email: 'email'
+  email: 'email',
+  pen_name: 'pen_name'
 };
 
 exports.Prisma.notificationOrderByRelevanceFieldEnum = {
@@ -460,6 +474,11 @@ exports.Prisma.activityLogsOrderByRelevanceFieldEnum = {
   details: 'details',
   ipAddress: 'ipAddress',
   userAgent: 'userAgent'
+};
+
+exports.Prisma.notesOrderByRelevanceFieldEnum = {
+  title: 'title',
+  note_content: 'note_content'
 };
 exports.books_productionstatus = exports.$Enums.books_productionstatus = {
   ON_PRODUCTION: 'ON_PRODUCTION',
@@ -533,7 +552,8 @@ exports.Prisma.ModelName = {
   translator: 'translator',
   translatorbook: 'translatorbook',
   notification: 'notification',
-  activityLogs: 'activityLogs'
+  activityLogs: 'activityLogs',
+  notes: 'notes'
 };
 
 /**

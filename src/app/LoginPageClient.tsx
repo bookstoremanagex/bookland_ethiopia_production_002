@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { BookOpen, Lock, Mail, ArrowRight } from "lucide-react";
 import { loginAction } from "./actions/auth-actions";
+import { toast } from "sonner";
 
 type LoginPageClientProps = {
   printerName: string | null;
@@ -29,7 +30,7 @@ export default function LoginPageClient({
 
     try {
       const result = await loginAction(email, password);
-      
+
       if (result.success && result.redirectPath) {
         router.push(result.redirectPath);
       } else {
@@ -61,7 +62,7 @@ export default function LoginPageClient({
             </div>
 
             <h1 className="text-3xl lg:text-4xl font-black leading-tight mb-6 tracking-tight group-hover/card:scale-105 transition-transform duration-700 origin-left">
-              Manage yourr <br /> inventory with <br /> ease.
+              Manage your <br /> inventory with <br /> ease.
             </h1>
             <p className="text-primarycolor/20 text-white/80 text-lg font-medium max-w-sm leading-relaxed">
               Access your dashboard to track sales, manage books, and oversee your entire store operations from one place.
@@ -91,16 +92,6 @@ export default function LoginPageClient({
 
             <div className="mb-10 text-center md:text-left">
               <h2 className="text-3xl font-black text-gray-800 mb-2">Welcome Back</h2>
-              {printerFetchFailed ? (
-                <p className="text-amber-600 font-medium text-sm mt-1">
-                  Could not fetch printer information
-                </p>
-              ) : printerName ? (
-                <p className="text-primarycolor font-semibold text-lg mt-1">{printerName}</p>
-              ) : null}
-              <p className="text-gray-500 font-mono text-xs mt-2 break-all">
-                DBURL---{databaseUrl || "(not set)"}
-              </p>
               <p className="text-gray-500 font-medium mt-2">Please enter your details to sign in</p>
             </div>
 
@@ -159,9 +150,18 @@ export default function LoginPageClient({
                   </div>
                   <span className="text-sm font-medium text-gray-600 group-hover:text-gray-900 transition-colors">Remember me</span>
                 </label>
-                <a href="#" className="text-sm font-bold text-primarycolor hover:text-primarycolor/80 transition-colors">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    toast.info("Please contact the administrator to reset your password.", {
+                      description: "Contact details can be requested from the admin."
+                    });
+                  }}
+                  className="text-sm font-bold text-primarycolor hover:text-primarycolor/80 transition-colors bg-transparent border-none p-0 outline-none cursor-pointer"
+                >
                   Forgot password?
-                </a>
+                </button>
               </div>
 
               <button

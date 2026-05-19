@@ -93,6 +93,11 @@ export type notification = $Result.DefaultSelection<Prisma.$notificationPayload>
  * 
  */
 export type activityLogs = $Result.DefaultSelection<Prisma.$activityLogsPayload>
+/**
+ * Model notes
+ * 
+ */
+export type notes = $Result.DefaultSelection<Prisma.$notesPayload>
 
 /**
  * Enums
@@ -474,6 +479,16 @@ export class PrismaClient<
     * ```
     */
   get activityLogs(): Prisma.activityLogsDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.notes`: Exposes CRUD operations for the **notes** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Notes
+    * const notes = await prisma.notes.findMany()
+    * ```
+    */
+  get notes(): Prisma.notesDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -930,7 +945,8 @@ export namespace Prisma {
     translator: 'translator',
     translatorbook: 'translatorbook',
     notification: 'notification',
-    activityLogs: 'activityLogs'
+    activityLogs: 'activityLogs',
+    notes: 'notes'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -949,7 +965,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "accounts" | "bookedition" | "bookeditionstores" | "books" | "bookshopeditions" | "bookshopes" | "damagedbooks" | "dashboardmenu" | "printer" | "printorder" | "roles" | "stores" | "translator" | "translatorbook" | "notification" | "activityLogs"
+      modelProps: "accounts" | "bookedition" | "bookeditionstores" | "books" | "bookshopeditions" | "bookshopes" | "damagedbooks" | "dashboardmenu" | "printer" | "printorder" | "roles" | "stores" | "translator" | "translatorbook" | "notification" | "activityLogs" | "notes"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2009,6 +2025,72 @@ export namespace Prisma {
           }
         }
       }
+      notes: {
+        payload: Prisma.$notesPayload<ExtArgs>
+        fields: Prisma.notesFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.notesFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$notesPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.notesFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$notesPayload>
+          }
+          findFirst: {
+            args: Prisma.notesFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$notesPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.notesFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$notesPayload>
+          }
+          findMany: {
+            args: Prisma.notesFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$notesPayload>[]
+          }
+          create: {
+            args: Prisma.notesCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$notesPayload>
+          }
+          createMany: {
+            args: Prisma.notesCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.notesDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$notesPayload>
+          }
+          update: {
+            args: Prisma.notesUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$notesPayload>
+          }
+          deleteMany: {
+            args: Prisma.notesDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.notesUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.notesUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$notesPayload>
+          }
+          aggregate: {
+            args: Prisma.NotesAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateNotes>
+          }
+          groupBy: {
+            args: Prisma.notesGroupByArgs<ExtArgs>
+            result: $Utils.Optional<NotesGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.notesCountArgs<ExtArgs>
+            result: $Utils.Optional<NotesCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2121,6 +2203,7 @@ export namespace Prisma {
     translatorbook?: translatorbookOmit
     notification?: notificationOmit
     activityLogs?: activityLogsOmit
+    notes?: notesOmit
   }
 
   /* Types for Logging */
@@ -2201,12 +2284,14 @@ export namespace Prisma {
    */
 
   export type AccountsCountOutputType = {
+    notes: number
     activitylogs: number
     damagedbooks: number
     roles: number
   }
 
   export type AccountsCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    notes?: boolean | AccountsCountOutputTypeCountNotesArgs
     activitylogs?: boolean | AccountsCountOutputTypeCountActivitylogsArgs
     damagedbooks?: boolean | AccountsCountOutputTypeCountDamagedbooksArgs
     roles?: boolean | AccountsCountOutputTypeCountRolesArgs
@@ -2221,6 +2306,13 @@ export namespace Prisma {
      * Select specific fields to fetch from the AccountsCountOutputType
      */
     select?: AccountsCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * AccountsCountOutputType without action
+   */
+  export type AccountsCountOutputTypeCountNotesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: notesWhereInput
   }
 
   /**
@@ -2718,6 +2810,7 @@ export namespace Prisma {
     createdAt?: boolean
     deletedAt?: boolean
     name?: boolean
+    notes?: boolean | accounts$notesArgs<ExtArgs>
     activitylogs?: boolean | accounts$activitylogsArgs<ExtArgs>
     damagedbooks?: boolean | accounts$damagedbooksArgs<ExtArgs>
     roles?: boolean | accounts$rolesArgs<ExtArgs>
@@ -2741,6 +2834,7 @@ export namespace Prisma {
 
   export type accountsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "account_type" | "account_email" | "password" | "account_status" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt" | "name", ExtArgs["result"]["accounts"]>
   export type accountsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    notes?: boolean | accounts$notesArgs<ExtArgs>
     activitylogs?: boolean | accounts$activitylogsArgs<ExtArgs>
     damagedbooks?: boolean | accounts$damagedbooksArgs<ExtArgs>
     roles?: boolean | accounts$rolesArgs<ExtArgs>
@@ -2750,6 +2844,7 @@ export namespace Prisma {
   export type $accountsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "accounts"
     objects: {
+      notes: Prisma.$notesPayload<ExtArgs>[]
       activitylogs: Prisma.$activityLogsPayload<ExtArgs>[]
       damagedbooks: Prisma.$damagedbooksPayload<ExtArgs>[]
       roles: Prisma.$rolesPayload<ExtArgs>[]
@@ -3105,6 +3200,7 @@ export namespace Prisma {
    */
   export interface Prisma__accountsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    notes<T extends accounts$notesArgs<ExtArgs> = {}>(args?: Subset<T, accounts$notesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$notesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     activitylogs<T extends accounts$activitylogsArgs<ExtArgs> = {}>(args?: Subset<T, accounts$activitylogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$activityLogsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     damagedbooks<T extends accounts$damagedbooksArgs<ExtArgs> = {}>(args?: Subset<T, accounts$damagedbooksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$damagedbooksPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     roles<T extends accounts$rolesArgs<ExtArgs> = {}>(args?: Subset<T, accounts$rolesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$rolesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -3487,6 +3583,30 @@ export namespace Prisma {
      * Limit how many accounts to delete.
      */
     limit?: number
+  }
+
+  /**
+   * accounts.notes
+   */
+  export type accounts$notesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the notes
+     */
+    select?: notesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the notes
+     */
+    omit?: notesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: notesInclude<ExtArgs> | null
+    where?: notesWhereInput
+    orderBy?: notesOrderByWithRelationInput | notesOrderByWithRelationInput[]
+    cursor?: notesWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: NotesScalarFieldEnum | NotesScalarFieldEnum[]
   }
 
   /**
@@ -5897,6 +6017,7 @@ export namespace Prisma {
     isbn: string | null
     title: string | null
     author: string | null
+    pen_name: string | null
     translator: string | null
     designer: string | null
     language: string | null
@@ -5923,6 +6044,7 @@ export namespace Prisma {
     isbn: string | null
     title: string | null
     author: string | null
+    pen_name: string | null
     translator: string | null
     designer: string | null
     language: string | null
@@ -5949,6 +6071,7 @@ export namespace Prisma {
     isbn: number
     title: number
     author: number
+    pen_name: number
     translator: number
     designer: number
     language: number
@@ -5987,6 +6110,7 @@ export namespace Prisma {
     isbn?: true
     title?: true
     author?: true
+    pen_name?: true
     translator?: true
     designer?: true
     language?: true
@@ -6013,6 +6137,7 @@ export namespace Prisma {
     isbn?: true
     title?: true
     author?: true
+    pen_name?: true
     translator?: true
     designer?: true
     language?: true
@@ -6039,6 +6164,7 @@ export namespace Prisma {
     isbn?: true
     title?: true
     author?: true
+    pen_name?: true
     translator?: true
     designer?: true
     language?: true
@@ -6151,7 +6277,8 @@ export namespace Prisma {
     unique_identification_code: string
     isbn: string | null
     title: string
-    author: string
+    author: string | null
+    pen_name: string | null
     translator: string | null
     designer: string | null
     language: string
@@ -6197,6 +6324,7 @@ export namespace Prisma {
     isbn?: boolean
     title?: boolean
     author?: boolean
+    pen_name?: boolean
     translator?: boolean
     designer?: boolean
     language?: boolean
@@ -6229,6 +6357,7 @@ export namespace Prisma {
     isbn?: boolean
     title?: boolean
     author?: boolean
+    pen_name?: boolean
     translator?: boolean
     designer?: boolean
     language?: boolean
@@ -6249,7 +6378,7 @@ export namespace Prisma {
     default_edition_id?: boolean
   }
 
-  export type booksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "unique_identification_code" | "isbn" | "title" | "author" | "translator" | "designer" | "language" | "edition" | "category" | "publication_year" | "print_batch_id" | "book_sku" | "number_of_pages" | "info" | "book_image_url" | "status" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt" | "productionstatus" | "default_edition_id", ExtArgs["result"]["books"]>
+  export type booksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "unique_identification_code" | "isbn" | "title" | "author" | "pen_name" | "translator" | "designer" | "language" | "edition" | "category" | "publication_year" | "print_batch_id" | "book_sku" | "number_of_pages" | "info" | "book_image_url" | "status" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt" | "productionstatus" | "default_edition_id", ExtArgs["result"]["books"]>
   export type booksInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     bookedition?: boolean | books$bookeditionArgs<ExtArgs>
     damagedbooks?: boolean | books$damagedbooksArgs<ExtArgs>
@@ -6269,7 +6398,8 @@ export namespace Prisma {
       unique_identification_code: string
       isbn: string | null
       title: string
-      author: string
+      author: string | null
+      pen_name: string | null
       translator: string | null
       designer: string | null
       language: string
@@ -6665,6 +6795,7 @@ export namespace Prisma {
     readonly isbn: FieldRef<"books", 'String'>
     readonly title: FieldRef<"books", 'String'>
     readonly author: FieldRef<"books", 'String'>
+    readonly pen_name: FieldRef<"books", 'String'>
     readonly translator: FieldRef<"books", 'String'>
     readonly designer: FieldRef<"books", 'String'>
     readonly language: FieldRef<"books", 'String'>
@@ -15507,6 +15638,7 @@ export namespace Prisma {
     name: string | null
     phoneNumber: string | null
     email: string | null
+    pen_name: string | null
     is_deleted: boolean | null
     updatedAt: Date | null
     createdAt: Date | null
@@ -15518,6 +15650,7 @@ export namespace Prisma {
     name: string | null
     phoneNumber: string | null
     email: string | null
+    pen_name: string | null
     is_deleted: boolean | null
     updatedAt: Date | null
     createdAt: Date | null
@@ -15529,6 +15662,7 @@ export namespace Prisma {
     name: number
     phoneNumber: number
     email: number
+    pen_name: number
     is_deleted: number
     updatedAt: number
     createdAt: number
@@ -15550,6 +15684,7 @@ export namespace Prisma {
     name?: true
     phoneNumber?: true
     email?: true
+    pen_name?: true
     is_deleted?: true
     updatedAt?: true
     createdAt?: true
@@ -15561,6 +15696,7 @@ export namespace Prisma {
     name?: true
     phoneNumber?: true
     email?: true
+    pen_name?: true
     is_deleted?: true
     updatedAt?: true
     createdAt?: true
@@ -15572,6 +15708,7 @@ export namespace Prisma {
     name?: true
     phoneNumber?: true
     email?: true
+    pen_name?: true
     is_deleted?: true
     updatedAt?: true
     createdAt?: true
@@ -15667,9 +15804,10 @@ export namespace Prisma {
 
   export type TranslatorGroupByOutputType = {
     id: number
-    name: string
+    name: string | null
     phoneNumber: string | null
     email: string | null
+    pen_name: string | null
     is_deleted: boolean
     updatedAt: Date
     createdAt: Date
@@ -15700,6 +15838,7 @@ export namespace Prisma {
     name?: boolean
     phoneNumber?: boolean
     email?: boolean
+    pen_name?: boolean
     is_deleted?: boolean
     updatedAt?: boolean
     createdAt?: boolean
@@ -15715,13 +15854,14 @@ export namespace Prisma {
     name?: boolean
     phoneNumber?: boolean
     email?: boolean
+    pen_name?: boolean
     is_deleted?: boolean
     updatedAt?: boolean
     createdAt?: boolean
     deletedAt?: boolean
   }
 
-  export type translatorOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "phoneNumber" | "email" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt", ExtArgs["result"]["translator"]>
+  export type translatorOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "phoneNumber" | "email" | "pen_name" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt", ExtArgs["result"]["translator"]>
   export type translatorInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     translatorbook?: boolean | translator$translatorbookArgs<ExtArgs>
     _count?: boolean | TranslatorCountOutputTypeDefaultArgs<ExtArgs>
@@ -15734,9 +15874,10 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
-      name: string
+      name: string | null
       phoneNumber: string | null
       email: string | null
+      pen_name: string | null
       is_deleted: boolean
       updatedAt: Date
       createdAt: Date
@@ -16115,6 +16256,7 @@ export namespace Prisma {
     readonly name: FieldRef<"translator", 'String'>
     readonly phoneNumber: FieldRef<"translator", 'String'>
     readonly email: FieldRef<"translator", 'String'>
+    readonly pen_name: FieldRef<"translator", 'String'>
     readonly is_deleted: FieldRef<"translator", 'Boolean'>
     readonly updatedAt: FieldRef<"translator", 'DateTime'>
     readonly createdAt: FieldRef<"translator", 'DateTime'>
@@ -19565,6 +19707,995 @@ export namespace Prisma {
 
 
   /**
+   * Model notes
+   */
+
+  export type AggregateNotes = {
+    _count: NotesCountAggregateOutputType | null
+    _avg: NotesAvgAggregateOutputType | null
+    _sum: NotesSumAggregateOutputType | null
+    _min: NotesMinAggregateOutputType | null
+    _max: NotesMaxAggregateOutputType | null
+  }
+
+  export type NotesAvgAggregateOutputType = {
+    id: number | null
+    accountId: number | null
+  }
+
+  export type NotesSumAggregateOutputType = {
+    id: number | null
+    accountId: number | null
+  }
+
+  export type NotesMinAggregateOutputType = {
+    id: number | null
+    title: string | null
+    note_content: string | null
+    accountId: number | null
+    is_deleted: boolean | null
+    updatedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type NotesMaxAggregateOutputType = {
+    id: number | null
+    title: string | null
+    note_content: string | null
+    accountId: number | null
+    is_deleted: boolean | null
+    updatedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type NotesCountAggregateOutputType = {
+    id: number
+    title: number
+    note_content: number
+    accountId: number
+    is_deleted: number
+    updatedAt: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type NotesAvgAggregateInputType = {
+    id?: true
+    accountId?: true
+  }
+
+  export type NotesSumAggregateInputType = {
+    id?: true
+    accountId?: true
+  }
+
+  export type NotesMinAggregateInputType = {
+    id?: true
+    title?: true
+    note_content?: true
+    accountId?: true
+    is_deleted?: true
+    updatedAt?: true
+    createdAt?: true
+  }
+
+  export type NotesMaxAggregateInputType = {
+    id?: true
+    title?: true
+    note_content?: true
+    accountId?: true
+    is_deleted?: true
+    updatedAt?: true
+    createdAt?: true
+  }
+
+  export type NotesCountAggregateInputType = {
+    id?: true
+    title?: true
+    note_content?: true
+    accountId?: true
+    is_deleted?: true
+    updatedAt?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type NotesAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which notes to aggregate.
+     */
+    where?: notesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of notes to fetch.
+     */
+    orderBy?: notesOrderByWithRelationInput | notesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: notesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` notes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` notes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned notes
+    **/
+    _count?: true | NotesCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: NotesAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: NotesSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: NotesMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: NotesMaxAggregateInputType
+  }
+
+  export type GetNotesAggregateType<T extends NotesAggregateArgs> = {
+        [P in keyof T & keyof AggregateNotes]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateNotes[P]>
+      : GetScalarType<T[P], AggregateNotes[P]>
+  }
+
+
+
+
+  export type notesGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: notesWhereInput
+    orderBy?: notesOrderByWithAggregationInput | notesOrderByWithAggregationInput[]
+    by: NotesScalarFieldEnum[] | NotesScalarFieldEnum
+    having?: notesScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: NotesCountAggregateInputType | true
+    _avg?: NotesAvgAggregateInputType
+    _sum?: NotesSumAggregateInputType
+    _min?: NotesMinAggregateInputType
+    _max?: NotesMaxAggregateInputType
+  }
+
+  export type NotesGroupByOutputType = {
+    id: number
+    title: string | null
+    note_content: string
+    accountId: number
+    is_deleted: boolean
+    updatedAt: Date
+    createdAt: Date
+    _count: NotesCountAggregateOutputType | null
+    _avg: NotesAvgAggregateOutputType | null
+    _sum: NotesSumAggregateOutputType | null
+    _min: NotesMinAggregateOutputType | null
+    _max: NotesMaxAggregateOutputType | null
+  }
+
+  type GetNotesGroupByPayload<T extends notesGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<NotesGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof NotesGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], NotesGroupByOutputType[P]>
+            : GetScalarType<T[P], NotesGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type notesSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    note_content?: boolean
+    accountId?: boolean
+    is_deleted?: boolean
+    updatedAt?: boolean
+    createdAt?: boolean
+    accounts?: boolean | accountsDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["notes"]>
+
+
+
+  export type notesSelectScalar = {
+    id?: boolean
+    title?: boolean
+    note_content?: boolean
+    accountId?: boolean
+    is_deleted?: boolean
+    updatedAt?: boolean
+    createdAt?: boolean
+  }
+
+  export type notesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "note_content" | "accountId" | "is_deleted" | "updatedAt" | "createdAt", ExtArgs["result"]["notes"]>
+  export type notesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    accounts?: boolean | accountsDefaultArgs<ExtArgs>
+  }
+
+  export type $notesPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "notes"
+    objects: {
+      accounts: Prisma.$accountsPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      title: string | null
+      note_content: string
+      accountId: number
+      is_deleted: boolean
+      updatedAt: Date
+      createdAt: Date
+    }, ExtArgs["result"]["notes"]>
+    composites: {}
+  }
+
+  type notesGetPayload<S extends boolean | null | undefined | notesDefaultArgs> = $Result.GetResult<Prisma.$notesPayload, S>
+
+  type notesCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<notesFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: NotesCountAggregateInputType | true
+    }
+
+  export interface notesDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['notes'], meta: { name: 'notes' } }
+    /**
+     * Find zero or one Notes that matches the filter.
+     * @param {notesFindUniqueArgs} args - Arguments to find a Notes
+     * @example
+     * // Get one Notes
+     * const notes = await prisma.notes.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends notesFindUniqueArgs>(args: SelectSubset<T, notesFindUniqueArgs<ExtArgs>>): Prisma__notesClient<$Result.GetResult<Prisma.$notesPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Notes that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {notesFindUniqueOrThrowArgs} args - Arguments to find a Notes
+     * @example
+     * // Get one Notes
+     * const notes = await prisma.notes.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends notesFindUniqueOrThrowArgs>(args: SelectSubset<T, notesFindUniqueOrThrowArgs<ExtArgs>>): Prisma__notesClient<$Result.GetResult<Prisma.$notesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Notes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {notesFindFirstArgs} args - Arguments to find a Notes
+     * @example
+     * // Get one Notes
+     * const notes = await prisma.notes.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends notesFindFirstArgs>(args?: SelectSubset<T, notesFindFirstArgs<ExtArgs>>): Prisma__notesClient<$Result.GetResult<Prisma.$notesPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Notes that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {notesFindFirstOrThrowArgs} args - Arguments to find a Notes
+     * @example
+     * // Get one Notes
+     * const notes = await prisma.notes.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends notesFindFirstOrThrowArgs>(args?: SelectSubset<T, notesFindFirstOrThrowArgs<ExtArgs>>): Prisma__notesClient<$Result.GetResult<Prisma.$notesPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Notes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {notesFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Notes
+     * const notes = await prisma.notes.findMany()
+     * 
+     * // Get first 10 Notes
+     * const notes = await prisma.notes.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const notesWithIdOnly = await prisma.notes.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends notesFindManyArgs>(args?: SelectSubset<T, notesFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$notesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Notes.
+     * @param {notesCreateArgs} args - Arguments to create a Notes.
+     * @example
+     * // Create one Notes
+     * const Notes = await prisma.notes.create({
+     *   data: {
+     *     // ... data to create a Notes
+     *   }
+     * })
+     * 
+     */
+    create<T extends notesCreateArgs>(args: SelectSubset<T, notesCreateArgs<ExtArgs>>): Prisma__notesClient<$Result.GetResult<Prisma.$notesPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Notes.
+     * @param {notesCreateManyArgs} args - Arguments to create many Notes.
+     * @example
+     * // Create many Notes
+     * const notes = await prisma.notes.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends notesCreateManyArgs>(args?: SelectSubset<T, notesCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Notes.
+     * @param {notesDeleteArgs} args - Arguments to delete one Notes.
+     * @example
+     * // Delete one Notes
+     * const Notes = await prisma.notes.delete({
+     *   where: {
+     *     // ... filter to delete one Notes
+     *   }
+     * })
+     * 
+     */
+    delete<T extends notesDeleteArgs>(args: SelectSubset<T, notesDeleteArgs<ExtArgs>>): Prisma__notesClient<$Result.GetResult<Prisma.$notesPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Notes.
+     * @param {notesUpdateArgs} args - Arguments to update one Notes.
+     * @example
+     * // Update one Notes
+     * const notes = await prisma.notes.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends notesUpdateArgs>(args: SelectSubset<T, notesUpdateArgs<ExtArgs>>): Prisma__notesClient<$Result.GetResult<Prisma.$notesPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Notes.
+     * @param {notesDeleteManyArgs} args - Arguments to filter Notes to delete.
+     * @example
+     * // Delete a few Notes
+     * const { count } = await prisma.notes.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends notesDeleteManyArgs>(args?: SelectSubset<T, notesDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Notes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {notesUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Notes
+     * const notes = await prisma.notes.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends notesUpdateManyArgs>(args: SelectSubset<T, notesUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Notes.
+     * @param {notesUpsertArgs} args - Arguments to update or create a Notes.
+     * @example
+     * // Update or create a Notes
+     * const notes = await prisma.notes.upsert({
+     *   create: {
+     *     // ... data to create a Notes
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Notes we want to update
+     *   }
+     * })
+     */
+    upsert<T extends notesUpsertArgs>(args: SelectSubset<T, notesUpsertArgs<ExtArgs>>): Prisma__notesClient<$Result.GetResult<Prisma.$notesPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Notes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {notesCountArgs} args - Arguments to filter Notes to count.
+     * @example
+     * // Count the number of Notes
+     * const count = await prisma.notes.count({
+     *   where: {
+     *     // ... the filter for the Notes we want to count
+     *   }
+     * })
+    **/
+    count<T extends notesCountArgs>(
+      args?: Subset<T, notesCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], NotesCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Notes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotesAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends NotesAggregateArgs>(args: Subset<T, NotesAggregateArgs>): Prisma.PrismaPromise<GetNotesAggregateType<T>>
+
+    /**
+     * Group by Notes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {notesGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends notesGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: notesGroupByArgs['orderBy'] }
+        : { orderBy?: notesGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, notesGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetNotesGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the notes model
+   */
+  readonly fields: notesFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for notes.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__notesClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    accounts<T extends accountsDefaultArgs<ExtArgs> = {}>(args?: Subset<T, accountsDefaultArgs<ExtArgs>>): Prisma__accountsClient<$Result.GetResult<Prisma.$accountsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the notes model
+   */
+  interface notesFieldRefs {
+    readonly id: FieldRef<"notes", 'Int'>
+    readonly title: FieldRef<"notes", 'String'>
+    readonly note_content: FieldRef<"notes", 'String'>
+    readonly accountId: FieldRef<"notes", 'Int'>
+    readonly is_deleted: FieldRef<"notes", 'Boolean'>
+    readonly updatedAt: FieldRef<"notes", 'DateTime'>
+    readonly createdAt: FieldRef<"notes", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * notes findUnique
+   */
+  export type notesFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the notes
+     */
+    select?: notesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the notes
+     */
+    omit?: notesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: notesInclude<ExtArgs> | null
+    /**
+     * Filter, which notes to fetch.
+     */
+    where: notesWhereUniqueInput
+  }
+
+  /**
+   * notes findUniqueOrThrow
+   */
+  export type notesFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the notes
+     */
+    select?: notesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the notes
+     */
+    omit?: notesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: notesInclude<ExtArgs> | null
+    /**
+     * Filter, which notes to fetch.
+     */
+    where: notesWhereUniqueInput
+  }
+
+  /**
+   * notes findFirst
+   */
+  export type notesFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the notes
+     */
+    select?: notesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the notes
+     */
+    omit?: notesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: notesInclude<ExtArgs> | null
+    /**
+     * Filter, which notes to fetch.
+     */
+    where?: notesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of notes to fetch.
+     */
+    orderBy?: notesOrderByWithRelationInput | notesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for notes.
+     */
+    cursor?: notesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` notes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` notes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of notes.
+     */
+    distinct?: NotesScalarFieldEnum | NotesScalarFieldEnum[]
+  }
+
+  /**
+   * notes findFirstOrThrow
+   */
+  export type notesFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the notes
+     */
+    select?: notesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the notes
+     */
+    omit?: notesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: notesInclude<ExtArgs> | null
+    /**
+     * Filter, which notes to fetch.
+     */
+    where?: notesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of notes to fetch.
+     */
+    orderBy?: notesOrderByWithRelationInput | notesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for notes.
+     */
+    cursor?: notesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` notes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` notes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of notes.
+     */
+    distinct?: NotesScalarFieldEnum | NotesScalarFieldEnum[]
+  }
+
+  /**
+   * notes findMany
+   */
+  export type notesFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the notes
+     */
+    select?: notesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the notes
+     */
+    omit?: notesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: notesInclude<ExtArgs> | null
+    /**
+     * Filter, which notes to fetch.
+     */
+    where?: notesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of notes to fetch.
+     */
+    orderBy?: notesOrderByWithRelationInput | notesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing notes.
+     */
+    cursor?: notesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` notes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` notes.
+     */
+    skip?: number
+    distinct?: NotesScalarFieldEnum | NotesScalarFieldEnum[]
+  }
+
+  /**
+   * notes create
+   */
+  export type notesCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the notes
+     */
+    select?: notesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the notes
+     */
+    omit?: notesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: notesInclude<ExtArgs> | null
+    /**
+     * The data needed to create a notes.
+     */
+    data: XOR<notesCreateInput, notesUncheckedCreateInput>
+  }
+
+  /**
+   * notes createMany
+   */
+  export type notesCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many notes.
+     */
+    data: notesCreateManyInput | notesCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * notes update
+   */
+  export type notesUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the notes
+     */
+    select?: notesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the notes
+     */
+    omit?: notesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: notesInclude<ExtArgs> | null
+    /**
+     * The data needed to update a notes.
+     */
+    data: XOR<notesUpdateInput, notesUncheckedUpdateInput>
+    /**
+     * Choose, which notes to update.
+     */
+    where: notesWhereUniqueInput
+  }
+
+  /**
+   * notes updateMany
+   */
+  export type notesUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update notes.
+     */
+    data: XOR<notesUpdateManyMutationInput, notesUncheckedUpdateManyInput>
+    /**
+     * Filter which notes to update
+     */
+    where?: notesWhereInput
+    /**
+     * Limit how many notes to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * notes upsert
+   */
+  export type notesUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the notes
+     */
+    select?: notesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the notes
+     */
+    omit?: notesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: notesInclude<ExtArgs> | null
+    /**
+     * The filter to search for the notes to update in case it exists.
+     */
+    where: notesWhereUniqueInput
+    /**
+     * In case the notes found by the `where` argument doesn't exist, create a new notes with this data.
+     */
+    create: XOR<notesCreateInput, notesUncheckedCreateInput>
+    /**
+     * In case the notes was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<notesUpdateInput, notesUncheckedUpdateInput>
+  }
+
+  /**
+   * notes delete
+   */
+  export type notesDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the notes
+     */
+    select?: notesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the notes
+     */
+    omit?: notesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: notesInclude<ExtArgs> | null
+    /**
+     * Filter which notes to delete.
+     */
+    where: notesWhereUniqueInput
+  }
+
+  /**
+   * notes deleteMany
+   */
+  export type notesDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which notes to delete
+     */
+    where?: notesWhereInput
+    /**
+     * Limit how many notes to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * notes without action
+   */
+  export type notesDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the notes
+     */
+    select?: notesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the notes
+     */
+    omit?: notesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: notesInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -19641,6 +20772,7 @@ export namespace Prisma {
     isbn: 'isbn',
     title: 'title',
     author: 'author',
+    pen_name: 'pen_name',
     translator: 'translator',
     designer: 'designer',
     language: 'language',
@@ -19798,6 +20930,7 @@ export namespace Prisma {
     name: 'name',
     phoneNumber: 'phoneNumber',
     email: 'email',
+    pen_name: 'pen_name',
     is_deleted: 'is_deleted',
     updatedAt: 'updatedAt',
     createdAt: 'createdAt',
@@ -19858,6 +20991,19 @@ export namespace Prisma {
   export type ActivityLogsScalarFieldEnum = (typeof ActivityLogsScalarFieldEnum)[keyof typeof ActivityLogsScalarFieldEnum]
 
 
+  export const NotesScalarFieldEnum: {
+    id: 'id',
+    title: 'title',
+    note_content: 'note_content',
+    accountId: 'accountId',
+    is_deleted: 'is_deleted',
+    updatedAt: 'updatedAt',
+    createdAt: 'createdAt'
+  };
+
+  export type NotesScalarFieldEnum = (typeof NotesScalarFieldEnum)[keyof typeof NotesScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -19898,6 +21044,7 @@ export namespace Prisma {
     isbn: 'isbn',
     title: 'title',
     author: 'author',
+    pen_name: 'pen_name',
     translator: 'translator',
     designer: 'designer',
     language: 'language',
@@ -19988,7 +21135,8 @@ export namespace Prisma {
   export const translatorOrderByRelevanceFieldEnum: {
     name: 'name',
     phoneNumber: 'phoneNumber',
-    email: 'email'
+    email: 'email',
+    pen_name: 'pen_name'
   };
 
   export type translatorOrderByRelevanceFieldEnum = (typeof translatorOrderByRelevanceFieldEnum)[keyof typeof translatorOrderByRelevanceFieldEnum]
@@ -20013,6 +21161,14 @@ export namespace Prisma {
   };
 
   export type activityLogsOrderByRelevanceFieldEnum = (typeof activityLogsOrderByRelevanceFieldEnum)[keyof typeof activityLogsOrderByRelevanceFieldEnum]
+
+
+  export const notesOrderByRelevanceFieldEnum: {
+    title: 'title',
+    note_content: 'note_content'
+  };
+
+  export type notesOrderByRelevanceFieldEnum = (typeof notesOrderByRelevanceFieldEnum)[keyof typeof notesOrderByRelevanceFieldEnum]
 
 
   /**
@@ -20114,6 +21270,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"accounts"> | Date | string
     deletedAt?: DateTimeFilter<"accounts"> | Date | string
     name?: StringFilter<"accounts"> | string
+    notes?: NotesListRelationFilter
     activitylogs?: ActivityLogsListRelationFilter
     damagedbooks?: DamagedbooksListRelationFilter
     roles?: RolesListRelationFilter
@@ -20130,6 +21287,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     deletedAt?: SortOrder
     name?: SortOrder
+    notes?: notesOrderByRelationAggregateInput
     activitylogs?: activityLogsOrderByRelationAggregateInput
     damagedbooks?: damagedbooksOrderByRelationAggregateInput
     roles?: rolesOrderByRelationAggregateInput
@@ -20150,6 +21308,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"accounts"> | Date | string
     deletedAt?: DateTimeFilter<"accounts"> | Date | string
     name?: StringFilter<"accounts"> | string
+    notes?: NotesListRelationFilter
     activitylogs?: ActivityLogsListRelationFilter
     damagedbooks?: DamagedbooksListRelationFilter
     roles?: RolesListRelationFilter
@@ -20419,7 +21578,8 @@ export namespace Prisma {
     unique_identification_code?: StringFilter<"books"> | string
     isbn?: StringNullableFilter<"books"> | string | null
     title?: StringFilter<"books"> | string
-    author?: StringFilter<"books"> | string
+    author?: StringNullableFilter<"books"> | string | null
+    pen_name?: StringNullableFilter<"books"> | string | null
     translator?: StringNullableFilter<"books"> | string | null
     designer?: StringNullableFilter<"books"> | string | null
     language?: StringFilter<"books"> | string
@@ -20448,7 +21608,8 @@ export namespace Prisma {
     unique_identification_code?: SortOrder
     isbn?: SortOrderInput | SortOrder
     title?: SortOrder
-    author?: SortOrder
+    author?: SortOrderInput | SortOrder
+    pen_name?: SortOrderInput | SortOrder
     translator?: SortOrderInput | SortOrder
     designer?: SortOrderInput | SortOrder
     language?: SortOrder
@@ -20482,7 +21643,8 @@ export namespace Prisma {
     NOT?: booksWhereInput | booksWhereInput[]
     isbn?: StringNullableFilter<"books"> | string | null
     title?: StringFilter<"books"> | string
-    author?: StringFilter<"books"> | string
+    author?: StringNullableFilter<"books"> | string | null
+    pen_name?: StringNullableFilter<"books"> | string | null
     translator?: StringNullableFilter<"books"> | string | null
     designer?: StringNullableFilter<"books"> | string | null
     language?: StringFilter<"books"> | string
@@ -20510,7 +21672,8 @@ export namespace Prisma {
     unique_identification_code?: SortOrder
     isbn?: SortOrderInput | SortOrder
     title?: SortOrder
-    author?: SortOrder
+    author?: SortOrderInput | SortOrder
+    pen_name?: SortOrderInput | SortOrder
     translator?: SortOrderInput | SortOrder
     designer?: SortOrderInput | SortOrder
     language?: SortOrder
@@ -20544,7 +21707,8 @@ export namespace Prisma {
     unique_identification_code?: StringWithAggregatesFilter<"books"> | string
     isbn?: StringNullableWithAggregatesFilter<"books"> | string | null
     title?: StringWithAggregatesFilter<"books"> | string
-    author?: StringWithAggregatesFilter<"books"> | string
+    author?: StringNullableWithAggregatesFilter<"books"> | string | null
+    pen_name?: StringNullableWithAggregatesFilter<"books"> | string | null
     translator?: StringNullableWithAggregatesFilter<"books"> | string | null
     designer?: StringNullableWithAggregatesFilter<"books"> | string | null
     language?: StringWithAggregatesFilter<"books"> | string
@@ -21251,9 +22415,10 @@ export namespace Prisma {
     OR?: translatorWhereInput[]
     NOT?: translatorWhereInput | translatorWhereInput[]
     id?: IntFilter<"translator"> | number
-    name?: StringFilter<"translator"> | string
+    name?: StringNullableFilter<"translator"> | string | null
     phoneNumber?: StringNullableFilter<"translator"> | string | null
     email?: StringNullableFilter<"translator"> | string | null
+    pen_name?: StringNullableFilter<"translator"> | string | null
     is_deleted?: BoolFilter<"translator"> | boolean
     updatedAt?: DateTimeFilter<"translator"> | Date | string
     createdAt?: DateTimeFilter<"translator"> | Date | string
@@ -21263,9 +22428,10 @@ export namespace Prisma {
 
   export type translatorOrderByWithRelationInput = {
     id?: SortOrder
-    name?: SortOrder
+    name?: SortOrderInput | SortOrder
     phoneNumber?: SortOrderInput | SortOrder
     email?: SortOrderInput | SortOrder
+    pen_name?: SortOrderInput | SortOrder
     is_deleted?: SortOrder
     updatedAt?: SortOrder
     createdAt?: SortOrder
@@ -21279,9 +22445,10 @@ export namespace Prisma {
     AND?: translatorWhereInput | translatorWhereInput[]
     OR?: translatorWhereInput[]
     NOT?: translatorWhereInput | translatorWhereInput[]
-    name?: StringFilter<"translator"> | string
+    name?: StringNullableFilter<"translator"> | string | null
     phoneNumber?: StringNullableFilter<"translator"> | string | null
     email?: StringNullableFilter<"translator"> | string | null
+    pen_name?: StringNullableFilter<"translator"> | string | null
     is_deleted?: BoolFilter<"translator"> | boolean
     updatedAt?: DateTimeFilter<"translator"> | Date | string
     createdAt?: DateTimeFilter<"translator"> | Date | string
@@ -21291,9 +22458,10 @@ export namespace Prisma {
 
   export type translatorOrderByWithAggregationInput = {
     id?: SortOrder
-    name?: SortOrder
+    name?: SortOrderInput | SortOrder
     phoneNumber?: SortOrderInput | SortOrder
     email?: SortOrderInput | SortOrder
+    pen_name?: SortOrderInput | SortOrder
     is_deleted?: SortOrder
     updatedAt?: SortOrder
     createdAt?: SortOrder
@@ -21310,9 +22478,10 @@ export namespace Prisma {
     OR?: translatorScalarWhereWithAggregatesInput[]
     NOT?: translatorScalarWhereWithAggregatesInput | translatorScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"translator"> | number
-    name?: StringWithAggregatesFilter<"translator"> | string
+    name?: StringNullableWithAggregatesFilter<"translator"> | string | null
     phoneNumber?: StringNullableWithAggregatesFilter<"translator"> | string | null
     email?: StringNullableWithAggregatesFilter<"translator"> | string | null
+    pen_name?: StringNullableWithAggregatesFilter<"translator"> | string | null
     is_deleted?: BoolWithAggregatesFilter<"translator"> | boolean
     updatedAt?: DateTimeWithAggregatesFilter<"translator"> | Date | string
     createdAt?: DateTimeWithAggregatesFilter<"translator"> | Date | string
@@ -21582,6 +22751,74 @@ export namespace Prisma {
     deletedAt?: DateTimeWithAggregatesFilter<"activityLogs"> | Date | string
   }
 
+  export type notesWhereInput = {
+    AND?: notesWhereInput | notesWhereInput[]
+    OR?: notesWhereInput[]
+    NOT?: notesWhereInput | notesWhereInput[]
+    id?: IntFilter<"notes"> | number
+    title?: StringNullableFilter<"notes"> | string | null
+    note_content?: StringFilter<"notes"> | string
+    accountId?: IntFilter<"notes"> | number
+    is_deleted?: BoolFilter<"notes"> | boolean
+    updatedAt?: DateTimeFilter<"notes"> | Date | string
+    createdAt?: DateTimeFilter<"notes"> | Date | string
+    accounts?: XOR<AccountsScalarRelationFilter, accountsWhereInput>
+  }
+
+  export type notesOrderByWithRelationInput = {
+    id?: SortOrder
+    title?: SortOrderInput | SortOrder
+    note_content?: SortOrder
+    accountId?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+    accounts?: accountsOrderByWithRelationInput
+    _relevance?: notesOrderByRelevanceInput
+  }
+
+  export type notesWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: notesWhereInput | notesWhereInput[]
+    OR?: notesWhereInput[]
+    NOT?: notesWhereInput | notesWhereInput[]
+    title?: StringNullableFilter<"notes"> | string | null
+    note_content?: StringFilter<"notes"> | string
+    accountId?: IntFilter<"notes"> | number
+    is_deleted?: BoolFilter<"notes"> | boolean
+    updatedAt?: DateTimeFilter<"notes"> | Date | string
+    createdAt?: DateTimeFilter<"notes"> | Date | string
+    accounts?: XOR<AccountsScalarRelationFilter, accountsWhereInput>
+  }, "id">
+
+  export type notesOrderByWithAggregationInput = {
+    id?: SortOrder
+    title?: SortOrderInput | SortOrder
+    note_content?: SortOrder
+    accountId?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+    _count?: notesCountOrderByAggregateInput
+    _avg?: notesAvgOrderByAggregateInput
+    _max?: notesMaxOrderByAggregateInput
+    _min?: notesMinOrderByAggregateInput
+    _sum?: notesSumOrderByAggregateInput
+  }
+
+  export type notesScalarWhereWithAggregatesInput = {
+    AND?: notesScalarWhereWithAggregatesInput | notesScalarWhereWithAggregatesInput[]
+    OR?: notesScalarWhereWithAggregatesInput[]
+    NOT?: notesScalarWhereWithAggregatesInput | notesScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"notes"> | number
+    title?: StringNullableWithAggregatesFilter<"notes"> | string | null
+    note_content?: StringWithAggregatesFilter<"notes"> | string
+    accountId?: IntWithAggregatesFilter<"notes"> | number
+    is_deleted?: BoolWithAggregatesFilter<"notes"> | boolean
+    updatedAt?: DateTimeWithAggregatesFilter<"notes"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"notes"> | Date | string
+  }
+
   export type accountsCreateInput = {
     account_type: string
     account_email: string
@@ -21592,6 +22829,7 @@ export namespace Prisma {
     createdAt?: Date | string
     deletedAt?: Date | string
     name?: string
+    notes?: notesCreateNestedManyWithoutAccountsInput
     activitylogs?: activityLogsCreateNestedManyWithoutAccountInput
     damagedbooks?: damagedbooksCreateNestedManyWithoutAccountsInput
     roles?: rolesCreateNestedManyWithoutAccountsInput
@@ -21608,6 +22846,7 @@ export namespace Prisma {
     createdAt?: Date | string
     deletedAt?: Date | string
     name?: string
+    notes?: notesUncheckedCreateNestedManyWithoutAccountsInput
     activitylogs?: activityLogsUncheckedCreateNestedManyWithoutAccountInput
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutAccountsInput
     roles?: rolesUncheckedCreateNestedManyWithoutAccountsInput
@@ -21623,6 +22862,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     name?: StringFieldUpdateOperationsInput | string
+    notes?: notesUpdateManyWithoutAccountsNestedInput
     activitylogs?: activityLogsUpdateManyWithoutAccountNestedInput
     damagedbooks?: damagedbooksUpdateManyWithoutAccountsNestedInput
     roles?: rolesUpdateManyWithoutAccountsNestedInput
@@ -21639,6 +22879,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     name?: StringFieldUpdateOperationsInput | string
+    notes?: notesUncheckedUpdateManyWithoutAccountsNestedInput
     activitylogs?: activityLogsUncheckedUpdateManyWithoutAccountNestedInput
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutAccountsNestedInput
     roles?: rolesUncheckedUpdateManyWithoutAccountsNestedInput
@@ -21934,7 +23175,8 @@ export namespace Prisma {
     unique_identification_code: string
     isbn?: string | null
     title: string
-    author: string
+    author?: string | null
+    pen_name?: string | null
     translator?: string | null
     designer?: string | null
     language: string
@@ -21963,7 +23205,8 @@ export namespace Prisma {
     unique_identification_code: string
     isbn?: string | null
     title: string
-    author: string
+    author?: string | null
+    pen_name?: string | null
     translator?: string | null
     designer?: string | null
     language: string
@@ -21991,7 +23234,8 @@ export namespace Prisma {
     unique_identification_code?: StringFieldUpdateOperationsInput | string
     isbn?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
-    author?: StringFieldUpdateOperationsInput | string
+    author?: NullableStringFieldUpdateOperationsInput | string | null
+    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     translator?: NullableStringFieldUpdateOperationsInput | string | null
     designer?: NullableStringFieldUpdateOperationsInput | string | null
     language?: StringFieldUpdateOperationsInput | string
@@ -22020,7 +23264,8 @@ export namespace Prisma {
     unique_identification_code?: StringFieldUpdateOperationsInput | string
     isbn?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
-    author?: StringFieldUpdateOperationsInput | string
+    author?: NullableStringFieldUpdateOperationsInput | string | null
+    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     translator?: NullableStringFieldUpdateOperationsInput | string | null
     designer?: NullableStringFieldUpdateOperationsInput | string | null
     language?: StringFieldUpdateOperationsInput | string
@@ -22049,7 +23294,8 @@ export namespace Prisma {
     unique_identification_code: string
     isbn?: string | null
     title: string
-    author: string
+    author?: string | null
+    pen_name?: string | null
     translator?: string | null
     designer?: string | null
     language: string
@@ -22074,7 +23320,8 @@ export namespace Prisma {
     unique_identification_code?: StringFieldUpdateOperationsInput | string
     isbn?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
-    author?: StringFieldUpdateOperationsInput | string
+    author?: NullableStringFieldUpdateOperationsInput | string | null
+    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     translator?: NullableStringFieldUpdateOperationsInput | string | null
     designer?: NullableStringFieldUpdateOperationsInput | string | null
     language?: StringFieldUpdateOperationsInput | string
@@ -22100,7 +23347,8 @@ export namespace Prisma {
     unique_identification_code?: StringFieldUpdateOperationsInput | string
     isbn?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
-    author?: StringFieldUpdateOperationsInput | string
+    author?: NullableStringFieldUpdateOperationsInput | string | null
+    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     translator?: NullableStringFieldUpdateOperationsInput | string | null
     designer?: NullableStringFieldUpdateOperationsInput | string | null
     language?: StringFieldUpdateOperationsInput | string
@@ -22841,9 +24089,10 @@ export namespace Prisma {
   }
 
   export type translatorCreateInput = {
-    name: string
+    name?: string | null
     phoneNumber?: string | null
     email?: string | null
+    pen_name?: string | null
     is_deleted?: boolean
     updatedAt: Date | string
     createdAt?: Date | string
@@ -22853,9 +24102,10 @@ export namespace Prisma {
 
   export type translatorUncheckedCreateInput = {
     id?: number
-    name: string
+    name?: string | null
     phoneNumber?: string | null
     email?: string | null
+    pen_name?: string | null
     is_deleted?: boolean
     updatedAt: Date | string
     createdAt?: Date | string
@@ -22864,9 +24114,10 @@ export namespace Prisma {
   }
 
   export type translatorUpdateInput = {
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
+    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22876,9 +24127,10 @@ export namespace Prisma {
 
   export type translatorUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
+    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22888,9 +24140,10 @@ export namespace Prisma {
 
   export type translatorCreateManyInput = {
     id?: number
-    name: string
+    name?: string | null
     phoneNumber?: string | null
     email?: string | null
+    pen_name?: string | null
     is_deleted?: boolean
     updatedAt: Date | string
     createdAt?: Date | string
@@ -22898,9 +24151,10 @@ export namespace Prisma {
   }
 
   export type translatorUpdateManyMutationInput = {
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
+    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22909,9 +24163,10 @@ export namespace Prisma {
 
   export type translatorUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
+    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -23200,6 +24455,72 @@ export namespace Prisma {
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type notesCreateInput = {
+    title?: string | null
+    note_content: string
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    accounts: accountsCreateNestedOneWithoutNotesInput
+  }
+
+  export type notesUncheckedCreateInput = {
+    id?: number
+    title?: string | null
+    note_content: string
+    accountId: number
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+  }
+
+  export type notesUpdateInput = {
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    note_content?: StringFieldUpdateOperationsInput | string
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: accountsUpdateOneRequiredWithoutNotesNestedInput
+  }
+
+  export type notesUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    note_content?: StringFieldUpdateOperationsInput | string
+    accountId?: IntFieldUpdateOperationsInput | number
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type notesCreateManyInput = {
+    id?: number
+    title?: string | null
+    note_content: string
+    accountId: number
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+  }
+
+  export type notesUpdateManyMutationInput = {
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    note_content?: StringFieldUpdateOperationsInput | string
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type notesUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    note_content?: StringFieldUpdateOperationsInput | string
+    accountId?: IntFieldUpdateOperationsInput | number
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[]
@@ -23242,6 +24563,12 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type NotesListRelationFilter = {
+    every?: notesWhereInput
+    some?: notesWhereInput
+    none?: notesWhereInput
+  }
+
   export type ActivityLogsListRelationFilter = {
     every?: activityLogsWhereInput
     some?: activityLogsWhereInput
@@ -23258,6 +24585,10 @@ export namespace Prisma {
     every?: rolesWhereInput
     some?: rolesWhereInput
     none?: rolesWhereInput
+  }
+
+  export type notesOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type activityLogsOrderByRelationAggregateInput = {
@@ -23706,6 +25037,7 @@ export namespace Prisma {
     isbn?: SortOrder
     title?: SortOrder
     author?: SortOrder
+    pen_name?: SortOrder
     translator?: SortOrder
     designer?: SortOrder
     language?: SortOrder
@@ -23737,6 +25069,7 @@ export namespace Prisma {
     isbn?: SortOrder
     title?: SortOrder
     author?: SortOrder
+    pen_name?: SortOrder
     translator?: SortOrder
     designer?: SortOrder
     language?: SortOrder
@@ -23763,6 +25096,7 @@ export namespace Prisma {
     isbn?: SortOrder
     title?: SortOrder
     author?: SortOrder
+    pen_name?: SortOrder
     translator?: SortOrder
     designer?: SortOrder
     language?: SortOrder
@@ -24387,6 +25721,7 @@ export namespace Prisma {
     name?: SortOrder
     phoneNumber?: SortOrder
     email?: SortOrder
+    pen_name?: SortOrder
     is_deleted?: SortOrder
     updatedAt?: SortOrder
     createdAt?: SortOrder
@@ -24402,6 +25737,7 @@ export namespace Prisma {
     name?: SortOrder
     phoneNumber?: SortOrder
     email?: SortOrder
+    pen_name?: SortOrder
     is_deleted?: SortOrder
     updatedAt?: SortOrder
     createdAt?: SortOrder
@@ -24413,6 +25749,7 @@ export namespace Prisma {
     name?: SortOrder
     phoneNumber?: SortOrder
     email?: SortOrder
+    pen_name?: SortOrder
     is_deleted?: SortOrder
     updatedAt?: SortOrder
     createdAt?: SortOrder
@@ -24632,6 +25969,59 @@ export namespace Prisma {
     accountId?: SortOrder
   }
 
+  export type notesOrderByRelevanceInput = {
+    fields: notesOrderByRelevanceFieldEnum | notesOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type notesCountOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    note_content?: SortOrder
+    accountId?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type notesAvgOrderByAggregateInput = {
+    id?: SortOrder
+    accountId?: SortOrder
+  }
+
+  export type notesMaxOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    note_content?: SortOrder
+    accountId?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type notesMinOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    note_content?: SortOrder
+    accountId?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type notesSumOrderByAggregateInput = {
+    id?: SortOrder
+    accountId?: SortOrder
+  }
+
+  export type notesCreateNestedManyWithoutAccountsInput = {
+    create?: XOR<notesCreateWithoutAccountsInput, notesUncheckedCreateWithoutAccountsInput> | notesCreateWithoutAccountsInput[] | notesUncheckedCreateWithoutAccountsInput[]
+    connectOrCreate?: notesCreateOrConnectWithoutAccountsInput | notesCreateOrConnectWithoutAccountsInput[]
+    createMany?: notesCreateManyAccountsInputEnvelope
+    connect?: notesWhereUniqueInput | notesWhereUniqueInput[]
+  }
+
   export type activityLogsCreateNestedManyWithoutAccountInput = {
     create?: XOR<activityLogsCreateWithoutAccountInput, activityLogsUncheckedCreateWithoutAccountInput> | activityLogsCreateWithoutAccountInput[] | activityLogsUncheckedCreateWithoutAccountInput[]
     connectOrCreate?: activityLogsCreateOrConnectWithoutAccountInput | activityLogsCreateOrConnectWithoutAccountInput[]
@@ -24651,6 +26041,13 @@ export namespace Prisma {
     connectOrCreate?: rolesCreateOrConnectWithoutAccountsInput | rolesCreateOrConnectWithoutAccountsInput[]
     createMany?: rolesCreateManyAccountsInputEnvelope
     connect?: rolesWhereUniqueInput | rolesWhereUniqueInput[]
+  }
+
+  export type notesUncheckedCreateNestedManyWithoutAccountsInput = {
+    create?: XOR<notesCreateWithoutAccountsInput, notesUncheckedCreateWithoutAccountsInput> | notesCreateWithoutAccountsInput[] | notesUncheckedCreateWithoutAccountsInput[]
+    connectOrCreate?: notesCreateOrConnectWithoutAccountsInput | notesCreateOrConnectWithoutAccountsInput[]
+    createMany?: notesCreateManyAccountsInputEnvelope
+    connect?: notesWhereUniqueInput | notesWhereUniqueInput[]
   }
 
   export type activityLogsUncheckedCreateNestedManyWithoutAccountInput = {
@@ -24684,6 +26081,20 @@ export namespace Prisma {
 
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
+  }
+
+  export type notesUpdateManyWithoutAccountsNestedInput = {
+    create?: XOR<notesCreateWithoutAccountsInput, notesUncheckedCreateWithoutAccountsInput> | notesCreateWithoutAccountsInput[] | notesUncheckedCreateWithoutAccountsInput[]
+    connectOrCreate?: notesCreateOrConnectWithoutAccountsInput | notesCreateOrConnectWithoutAccountsInput[]
+    upsert?: notesUpsertWithWhereUniqueWithoutAccountsInput | notesUpsertWithWhereUniqueWithoutAccountsInput[]
+    createMany?: notesCreateManyAccountsInputEnvelope
+    set?: notesWhereUniqueInput | notesWhereUniqueInput[]
+    disconnect?: notesWhereUniqueInput | notesWhereUniqueInput[]
+    delete?: notesWhereUniqueInput | notesWhereUniqueInput[]
+    connect?: notesWhereUniqueInput | notesWhereUniqueInput[]
+    update?: notesUpdateWithWhereUniqueWithoutAccountsInput | notesUpdateWithWhereUniqueWithoutAccountsInput[]
+    updateMany?: notesUpdateManyWithWhereWithoutAccountsInput | notesUpdateManyWithWhereWithoutAccountsInput[]
+    deleteMany?: notesScalarWhereInput | notesScalarWhereInput[]
   }
 
   export type activityLogsUpdateManyWithoutAccountNestedInput = {
@@ -24734,6 +26145,20 @@ export namespace Prisma {
     decrement?: number
     multiply?: number
     divide?: number
+  }
+
+  export type notesUncheckedUpdateManyWithoutAccountsNestedInput = {
+    create?: XOR<notesCreateWithoutAccountsInput, notesUncheckedCreateWithoutAccountsInput> | notesCreateWithoutAccountsInput[] | notesUncheckedCreateWithoutAccountsInput[]
+    connectOrCreate?: notesCreateOrConnectWithoutAccountsInput | notesCreateOrConnectWithoutAccountsInput[]
+    upsert?: notesUpsertWithWhereUniqueWithoutAccountsInput | notesUpsertWithWhereUniqueWithoutAccountsInput[]
+    createMany?: notesCreateManyAccountsInputEnvelope
+    set?: notesWhereUniqueInput | notesWhereUniqueInput[]
+    disconnect?: notesWhereUniqueInput | notesWhereUniqueInput[]
+    delete?: notesWhereUniqueInput | notesWhereUniqueInput[]
+    connect?: notesWhereUniqueInput | notesWhereUniqueInput[]
+    update?: notesUpdateWithWhereUniqueWithoutAccountsInput | notesUpdateWithWhereUniqueWithoutAccountsInput[]
+    updateMany?: notesUpdateManyWithWhereWithoutAccountsInput | notesUpdateManyWithWhereWithoutAccountsInput[]
+    deleteMany?: notesScalarWhereInput | notesScalarWhereInput[]
   }
 
   export type activityLogsUncheckedUpdateManyWithoutAccountNestedInput = {
@@ -25492,6 +26917,20 @@ export namespace Prisma {
     update?: XOR<XOR<accountsUpdateToOneWithWhereWithoutActivitylogsInput, accountsUpdateWithoutActivitylogsInput>, accountsUncheckedUpdateWithoutActivitylogsInput>
   }
 
+  export type accountsCreateNestedOneWithoutNotesInput = {
+    create?: XOR<accountsCreateWithoutNotesInput, accountsUncheckedCreateWithoutNotesInput>
+    connectOrCreate?: accountsCreateOrConnectWithoutNotesInput
+    connect?: accountsWhereUniqueInput
+  }
+
+  export type accountsUpdateOneRequiredWithoutNotesNestedInput = {
+    create?: XOR<accountsCreateWithoutNotesInput, accountsUncheckedCreateWithoutNotesInput>
+    connectOrCreate?: accountsCreateOrConnectWithoutNotesInput
+    upsert?: accountsUpsertWithoutNotesInput
+    connect?: accountsWhereUniqueInput
+    update?: XOR<XOR<accountsUpdateToOneWithWhereWithoutNotesInput, accountsUpdateWithoutNotesInput>, accountsUncheckedUpdateWithoutNotesInput>
+  }
+
   export type NestedIntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[]
@@ -25815,6 +27254,33 @@ export namespace Prisma {
     _max?: NestedEnumnotification_toFilter<$PrismaModel>
   }
 
+  export type notesCreateWithoutAccountsInput = {
+    title?: string | null
+    note_content: string
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+  }
+
+  export type notesUncheckedCreateWithoutAccountsInput = {
+    id?: number
+    title?: string | null
+    note_content: string
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+  }
+
+  export type notesCreateOrConnectWithoutAccountsInput = {
+    where: notesWhereUniqueInput
+    create: XOR<notesCreateWithoutAccountsInput, notesUncheckedCreateWithoutAccountsInput>
+  }
+
+  export type notesCreateManyAccountsInputEnvelope = {
+    data: notesCreateManyAccountsInput | notesCreateManyAccountsInput[]
+    skipDuplicates?: boolean
+  }
+
   export type activityLogsCreateWithoutAccountInput = {
     action: string
     details?: string | null
@@ -25912,6 +27378,35 @@ export namespace Prisma {
   export type rolesCreateManyAccountsInputEnvelope = {
     data: rolesCreateManyAccountsInput | rolesCreateManyAccountsInput[]
     skipDuplicates?: boolean
+  }
+
+  export type notesUpsertWithWhereUniqueWithoutAccountsInput = {
+    where: notesWhereUniqueInput
+    update: XOR<notesUpdateWithoutAccountsInput, notesUncheckedUpdateWithoutAccountsInput>
+    create: XOR<notesCreateWithoutAccountsInput, notesUncheckedCreateWithoutAccountsInput>
+  }
+
+  export type notesUpdateWithWhereUniqueWithoutAccountsInput = {
+    where: notesWhereUniqueInput
+    data: XOR<notesUpdateWithoutAccountsInput, notesUncheckedUpdateWithoutAccountsInput>
+  }
+
+  export type notesUpdateManyWithWhereWithoutAccountsInput = {
+    where: notesScalarWhereInput
+    data: XOR<notesUpdateManyMutationInput, notesUncheckedUpdateManyWithoutAccountsInput>
+  }
+
+  export type notesScalarWhereInput = {
+    AND?: notesScalarWhereInput | notesScalarWhereInput[]
+    OR?: notesScalarWhereInput[]
+    NOT?: notesScalarWhereInput | notesScalarWhereInput[]
+    id?: IntFilter<"notes"> | number
+    title?: StringNullableFilter<"notes"> | string | null
+    note_content?: StringFilter<"notes"> | string
+    accountId?: IntFilter<"notes"> | number
+    is_deleted?: BoolFilter<"notes"> | boolean
+    updatedAt?: DateTimeFilter<"notes"> | Date | string
+    createdAt?: DateTimeFilter<"notes"> | Date | string
   }
 
   export type activityLogsUpsertWithWhereUniqueWithoutAccountInput = {
@@ -26014,7 +27509,8 @@ export namespace Prisma {
     unique_identification_code: string
     isbn?: string | null
     title: string
-    author: string
+    author?: string | null
+    pen_name?: string | null
     translator?: string | null
     designer?: string | null
     language: string
@@ -26042,7 +27538,8 @@ export namespace Prisma {
     unique_identification_code: string
     isbn?: string | null
     title: string
-    author: string
+    author?: string | null
+    pen_name?: string | null
     translator?: string | null
     designer?: string | null
     language: string
@@ -26190,7 +27687,8 @@ export namespace Prisma {
     unique_identification_code?: StringFieldUpdateOperationsInput | string
     isbn?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
-    author?: StringFieldUpdateOperationsInput | string
+    author?: NullableStringFieldUpdateOperationsInput | string | null
+    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     translator?: NullableStringFieldUpdateOperationsInput | string | null
     designer?: NullableStringFieldUpdateOperationsInput | string | null
     language?: StringFieldUpdateOperationsInput | string
@@ -26218,7 +27716,8 @@ export namespace Prisma {
     unique_identification_code?: StringFieldUpdateOperationsInput | string
     isbn?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
-    author?: StringFieldUpdateOperationsInput | string
+    author?: NullableStringFieldUpdateOperationsInput | string | null
+    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     translator?: NullableStringFieldUpdateOperationsInput | string | null
     designer?: NullableStringFieldUpdateOperationsInput | string | null
     language?: StringFieldUpdateOperationsInput | string
@@ -26984,6 +28483,7 @@ export namespace Prisma {
     createdAt?: Date | string
     deletedAt?: Date | string
     name?: string
+    notes?: notesCreateNestedManyWithoutAccountsInput
     activitylogs?: activityLogsCreateNestedManyWithoutAccountInput
     roles?: rolesCreateNestedManyWithoutAccountsInput
   }
@@ -26999,6 +28499,7 @@ export namespace Prisma {
     createdAt?: Date | string
     deletedAt?: Date | string
     name?: string
+    notes?: notesUncheckedCreateNestedManyWithoutAccountsInput
     activitylogs?: activityLogsUncheckedCreateNestedManyWithoutAccountInput
     roles?: rolesUncheckedCreateNestedManyWithoutAccountsInput
   }
@@ -27012,7 +28513,8 @@ export namespace Prisma {
     unique_identification_code: string
     isbn?: string | null
     title: string
-    author: string
+    author?: string | null
+    pen_name?: string | null
     translator?: string | null
     designer?: string | null
     language: string
@@ -27040,7 +28542,8 @@ export namespace Prisma {
     unique_identification_code: string
     isbn?: string | null
     title: string
-    author: string
+    author?: string | null
+    pen_name?: string | null
     translator?: string | null
     designer?: string | null
     language: string
@@ -27177,6 +28680,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     name?: StringFieldUpdateOperationsInput | string
+    notes?: notesUpdateManyWithoutAccountsNestedInput
     activitylogs?: activityLogsUpdateManyWithoutAccountNestedInput
     roles?: rolesUpdateManyWithoutAccountsNestedInput
   }
@@ -27192,6 +28696,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     name?: StringFieldUpdateOperationsInput | string
+    notes?: notesUncheckedUpdateManyWithoutAccountsNestedInput
     activitylogs?: activityLogsUncheckedUpdateManyWithoutAccountNestedInput
     roles?: rolesUncheckedUpdateManyWithoutAccountsNestedInput
   }
@@ -27211,7 +28716,8 @@ export namespace Prisma {
     unique_identification_code?: StringFieldUpdateOperationsInput | string
     isbn?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
-    author?: StringFieldUpdateOperationsInput | string
+    author?: NullableStringFieldUpdateOperationsInput | string | null
+    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     translator?: NullableStringFieldUpdateOperationsInput | string | null
     designer?: NullableStringFieldUpdateOperationsInput | string | null
     language?: StringFieldUpdateOperationsInput | string
@@ -27239,7 +28745,8 @@ export namespace Prisma {
     unique_identification_code?: StringFieldUpdateOperationsInput | string
     isbn?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
-    author?: StringFieldUpdateOperationsInput | string
+    author?: NullableStringFieldUpdateOperationsInput | string | null
+    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     translator?: NullableStringFieldUpdateOperationsInput | string | null
     designer?: NullableStringFieldUpdateOperationsInput | string | null
     language?: StringFieldUpdateOperationsInput | string
@@ -27511,6 +29018,7 @@ export namespace Prisma {
     createdAt?: Date | string
     deletedAt?: Date | string
     name?: string
+    notes?: notesCreateNestedManyWithoutAccountsInput
     activitylogs?: activityLogsCreateNestedManyWithoutAccountInput
     damagedbooks?: damagedbooksCreateNestedManyWithoutAccountsInput
   }
@@ -27526,6 +29034,7 @@ export namespace Prisma {
     createdAt?: Date | string
     deletedAt?: Date | string
     name?: string
+    notes?: notesUncheckedCreateNestedManyWithoutAccountsInput
     activitylogs?: activityLogsUncheckedCreateNestedManyWithoutAccountInput
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutAccountsInput
   }
@@ -27556,6 +29065,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     name?: StringFieldUpdateOperationsInput | string
+    notes?: notesUpdateManyWithoutAccountsNestedInput
     activitylogs?: activityLogsUpdateManyWithoutAccountNestedInput
     damagedbooks?: damagedbooksUpdateManyWithoutAccountsNestedInput
   }
@@ -27571,6 +29081,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     name?: StringFieldUpdateOperationsInput | string
+    notes?: notesUncheckedUpdateManyWithoutAccountsNestedInput
     activitylogs?: activityLogsUncheckedUpdateManyWithoutAccountNestedInput
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutAccountsNestedInput
   }
@@ -27728,7 +29239,8 @@ export namespace Prisma {
     unique_identification_code: string
     isbn?: string | null
     title: string
-    author: string
+    author?: string | null
+    pen_name?: string | null
     translator?: string | null
     designer?: string | null
     language: string
@@ -27756,7 +29268,8 @@ export namespace Prisma {
     unique_identification_code: string
     isbn?: string | null
     title: string
-    author: string
+    author?: string | null
+    pen_name?: string | null
     translator?: string | null
     designer?: string | null
     language: string
@@ -27785,9 +29298,10 @@ export namespace Prisma {
   }
 
   export type translatorCreateWithoutTranslatorbookInput = {
-    name: string
+    name?: string | null
     phoneNumber?: string | null
     email?: string | null
+    pen_name?: string | null
     is_deleted?: boolean
     updatedAt: Date | string
     createdAt?: Date | string
@@ -27796,9 +29310,10 @@ export namespace Prisma {
 
   export type translatorUncheckedCreateWithoutTranslatorbookInput = {
     id?: number
-    name: string
+    name?: string | null
     phoneNumber?: string | null
     email?: string | null
+    pen_name?: string | null
     is_deleted?: boolean
     updatedAt: Date | string
     createdAt?: Date | string
@@ -27825,7 +29340,8 @@ export namespace Prisma {
     unique_identification_code?: StringFieldUpdateOperationsInput | string
     isbn?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
-    author?: StringFieldUpdateOperationsInput | string
+    author?: NullableStringFieldUpdateOperationsInput | string | null
+    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     translator?: NullableStringFieldUpdateOperationsInput | string | null
     designer?: NullableStringFieldUpdateOperationsInput | string | null
     language?: StringFieldUpdateOperationsInput | string
@@ -27853,7 +29369,8 @@ export namespace Prisma {
     unique_identification_code?: StringFieldUpdateOperationsInput | string
     isbn?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
-    author?: StringFieldUpdateOperationsInput | string
+    author?: NullableStringFieldUpdateOperationsInput | string | null
+    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     translator?: NullableStringFieldUpdateOperationsInput | string | null
     designer?: NullableStringFieldUpdateOperationsInput | string | null
     language?: StringFieldUpdateOperationsInput | string
@@ -27888,9 +29405,10 @@ export namespace Prisma {
   }
 
   export type translatorUpdateWithoutTranslatorbookInput = {
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
+    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27899,9 +29417,10 @@ export namespace Prisma {
 
   export type translatorUncheckedUpdateWithoutTranslatorbookInput = {
     id?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
+    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27918,6 +29437,7 @@ export namespace Prisma {
     createdAt?: Date | string
     deletedAt?: Date | string
     name?: string
+    notes?: notesCreateNestedManyWithoutAccountsInput
     damagedbooks?: damagedbooksCreateNestedManyWithoutAccountsInput
     roles?: rolesCreateNestedManyWithoutAccountsInput
   }
@@ -27933,6 +29453,7 @@ export namespace Prisma {
     createdAt?: Date | string
     deletedAt?: Date | string
     name?: string
+    notes?: notesUncheckedCreateNestedManyWithoutAccountsInput
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutAccountsInput
     roles?: rolesUncheckedCreateNestedManyWithoutAccountsInput
   }
@@ -27963,6 +29484,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     name?: StringFieldUpdateOperationsInput | string
+    notes?: notesUpdateManyWithoutAccountsNestedInput
     damagedbooks?: damagedbooksUpdateManyWithoutAccountsNestedInput
     roles?: rolesUpdateManyWithoutAccountsNestedInput
   }
@@ -27978,8 +29500,96 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     name?: StringFieldUpdateOperationsInput | string
+    notes?: notesUncheckedUpdateManyWithoutAccountsNestedInput
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutAccountsNestedInput
     roles?: rolesUncheckedUpdateManyWithoutAccountsNestedInput
+  }
+
+  export type accountsCreateWithoutNotesInput = {
+    account_type: string
+    account_email: string
+    password: string
+    account_status?: boolean
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    name?: string
+    activitylogs?: activityLogsCreateNestedManyWithoutAccountInput
+    damagedbooks?: damagedbooksCreateNestedManyWithoutAccountsInput
+    roles?: rolesCreateNestedManyWithoutAccountsInput
+  }
+
+  export type accountsUncheckedCreateWithoutNotesInput = {
+    id?: number
+    account_type: string
+    account_email: string
+    password: string
+    account_status?: boolean
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    name?: string
+    activitylogs?: activityLogsUncheckedCreateNestedManyWithoutAccountInput
+    damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutAccountsInput
+    roles?: rolesUncheckedCreateNestedManyWithoutAccountsInput
+  }
+
+  export type accountsCreateOrConnectWithoutNotesInput = {
+    where: accountsWhereUniqueInput
+    create: XOR<accountsCreateWithoutNotesInput, accountsUncheckedCreateWithoutNotesInput>
+  }
+
+  export type accountsUpsertWithoutNotesInput = {
+    update: XOR<accountsUpdateWithoutNotesInput, accountsUncheckedUpdateWithoutNotesInput>
+    create: XOR<accountsCreateWithoutNotesInput, accountsUncheckedCreateWithoutNotesInput>
+    where?: accountsWhereInput
+  }
+
+  export type accountsUpdateToOneWithWhereWithoutNotesInput = {
+    where?: accountsWhereInput
+    data: XOR<accountsUpdateWithoutNotesInput, accountsUncheckedUpdateWithoutNotesInput>
+  }
+
+  export type accountsUpdateWithoutNotesInput = {
+    account_type?: StringFieldUpdateOperationsInput | string
+    account_email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    account_status?: BoolFieldUpdateOperationsInput | boolean
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: StringFieldUpdateOperationsInput | string
+    activitylogs?: activityLogsUpdateManyWithoutAccountNestedInput
+    damagedbooks?: damagedbooksUpdateManyWithoutAccountsNestedInput
+    roles?: rolesUpdateManyWithoutAccountsNestedInput
+  }
+
+  export type accountsUncheckedUpdateWithoutNotesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    account_type?: StringFieldUpdateOperationsInput | string
+    account_email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    account_status?: BoolFieldUpdateOperationsInput | boolean
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: StringFieldUpdateOperationsInput | string
+    activitylogs?: activityLogsUncheckedUpdateManyWithoutAccountNestedInput
+    damagedbooks?: damagedbooksUncheckedUpdateManyWithoutAccountsNestedInput
+    roles?: rolesUncheckedUpdateManyWithoutAccountsNestedInput
+  }
+
+  export type notesCreateManyAccountsInput = {
+    id?: number
+    title?: string | null
+    note_content: string
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
   }
 
   export type activityLogsCreateManyAccountInput = {
@@ -28016,6 +29626,32 @@ export namespace Prisma {
     updatedAt: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+  }
+
+  export type notesUpdateWithoutAccountsInput = {
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    note_content?: StringFieldUpdateOperationsInput | string
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type notesUncheckedUpdateWithoutAccountsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    note_content?: StringFieldUpdateOperationsInput | string
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type notesUncheckedUpdateManyWithoutAccountsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    note_content?: StringFieldUpdateOperationsInput | string
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type activityLogsUpdateWithoutAccountInput = {

@@ -6,6 +6,11 @@ generator client {
   binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
+generator client_standard {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+}
+
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
@@ -21,6 +26,7 @@ model accounts {
   updatedAt      DateTime
   createdAt      DateTime       @default(now())
   deletedAt      DateTime       @default(now())
+  notes          notes[]
   activitylogs   activityLogs[]
   name           String         @default("namesample")
   damagedbooks   damagedbooks[]
@@ -78,7 +84,8 @@ model books {
   unique_identification_code String                  @unique(map: "Books_unique_identification_code_key")
   isbn                       String?
   title                      String
-  author                     String
+  author                     String?
+  pen_name                   String?
   translator                 String?
   designer                   String?
   language                   String
@@ -236,9 +243,10 @@ model stores {
 
 model translator {
   id             Int              @id @default(autoincrement())
-  name           String
+  name           String?
   phoneNumber    String?
   email          String?
+  pen_name       String?
   is_deleted     Boolean          @default(false)
   updatedAt      DateTime
   createdAt      DateTime         @default(now())
@@ -292,6 +300,17 @@ model activityLogs {
   updatedAt  DateTime
   createdAt  DateTime @default(now())
   deletedAt  DateTime @default(now())
+}
+
+model notes {
+  id           Int      @id @default(autoincrement())
+  title        String?
+  note_content String   @db.Text
+  accounts     accounts @relation(fields: [accountId], references: [id], onDelete: Cascade, map: "Notes_accountId_fkey")
+  accountId    Int
+  is_deleted   Boolean  @default(false)
+  updatedAt    DateTime
+  createdAt    DateTime @default(now())
 }
 
 enum notification_to {

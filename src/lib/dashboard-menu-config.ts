@@ -39,6 +39,7 @@ export interface SubMenuItem {
 export const ALL_DASHBOARD_MENUS: MenuItem[] = [
     { id: "home", title: "Home", icon: Home, path: "" },
     { id: "notifications", title: "Notifications", icon: Bell, path: "notifications" },
+    { id: "notes", title: "Notes", icon: FileText, path: "notes" },
     { id: "profile", title: "Profile", icon: User, path: "profile" },
     { id: "books", title: "Books", icon: BookOpen, path: "books" },
     { id: "shelf", title: "Book Shelf", icon: Library, path: "books/shelf" },

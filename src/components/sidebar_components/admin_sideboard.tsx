@@ -59,6 +59,7 @@ import Link from "next/link";
 const menuItems = [
     { title: "Home", icon: Home, url: "/admin_dashboard" },
     { title: "Notifications", icon: Bell, url: "/admin_dashboard/notifications" },
+    { title: "Notes", icon: FileText, url: "/admin_dashboard/notes" },
     { title: "Profile", icon: User, url: "/admin_dashboard/profile" },
     { title: "Books", icon: BookOpen, url: "/admin_dashboard/books" },
     { title: "Book Shelf", icon: Library, url: "/admin_dashboard/books/shelf" },
