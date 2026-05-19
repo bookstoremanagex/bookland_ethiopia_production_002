@@ -4,11 +4,9 @@ import { getAllStores } from '../../../../actions/store-inventory-actions';
 import { notFound } from 'next/navigation';
 import EditionDetailsClient from './EditionDetailsClient';
 
-interface EditionDetailsPageProps {
-  params: Promise<{ id: string }>;
-}
+export const dynamic = "force-dynamic";
 
-export default async function EditionDetailsPage({ params }: EditionDetailsPageProps) {
+export default async function EditionDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const [response, storesRes] = await Promise.all([
     getEditionById(Number(id)),
