@@ -14,7 +14,7 @@ export default async function NotesPage() {
   }
 
   const response = await getNotes();
-  const notes = response.success ? response.data.map(note => ({
+  const notes = response.success ? response.data.map((note: any) => ({
     ...note,
     createdAt: note.createdAt.toISOString(),
     updatedAt: note.updatedAt.toISOString()
