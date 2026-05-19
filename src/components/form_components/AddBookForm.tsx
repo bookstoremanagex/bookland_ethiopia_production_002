@@ -51,6 +51,7 @@ export function AddBookForm({ className }: AddBookFormProps) {
     defaultValues: {
       title: "",
       author: "",
+      pen_name: "",
       isbn: "",
       translator: "",
       designer: "",
@@ -159,6 +160,19 @@ export function AddBookForm({ className }: AddBookFormProps) {
               {errors.author && (
                 <p className="text-xs font-medium text-destructive animate-in fade-in slide-in-from-top-1">{errors.author.message}</p>
               )}
+            </div>
+
+            {/* Pen Name */}
+            <div className="space-y-2 group">
+              <label htmlFor="pen_name" className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor">
+                Pen Name
+              </label>
+              <Input
+                id="pen_name"
+                placeholder="Enter pen name"
+                {...register("pen_name")}
+                className="border-primarycolor/20 focus:border-primarycolor focus:ring-primarycolor/20"
+              />
             </div>
 
             {/* ISBN */}

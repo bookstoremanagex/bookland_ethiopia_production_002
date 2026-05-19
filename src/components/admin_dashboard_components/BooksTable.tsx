@@ -35,6 +35,7 @@ export type Book = {
   isbn: string | null;
   title: string;
   author: string;
+  pen_name: string | null;
   edition: string;
   category: string;
   status: string;
@@ -85,7 +86,20 @@ export function BooksTable({ data }: BooksTableProps) {
     {
       accessorKey: "author",
       header: "Author",
-      cell: ({ row }) => <div className="font-medium text-secondarycolor/80">{row.getValue("author")}</div>,
+      cell: ({ row }) => {
+        const author = row.getValue("author") as string;
+        const penName = row.original.pen_name;
+        return (
+          <div className="flex flex-col">
+            <div className="font-medium text-secondarycolor/80">{author}</div>
+            {penName && (
+              <div className="text-[10px] font-black text-secondarycolor/40 italic uppercase tracking-wider">
+                {penName}
+              </div>
+            )}
+          </div>
+        );
+      },
     },
     {
       accessorKey: "edition",
@@ -250,9 +264,14 @@ export function BooksTable({ data }: BooksTableProps) {
                       </h3>
                       <span className="text-[10px] font-black text-secondarycolor/30 tabular-nums">#{book.id}</span>
                     </div>
-                    <p className="text-sm font-black text-secondarycolor/80 flex items-center gap-2">
+                    <p className="text-sm font-black text-secondarycolor/80 flex items-center gap-2 flex-wrap">
                       <span className="size-2 rounded-full bg-primarycolor animate-pulse" />
                       {book.author}
+                      {book.pen_name && (
+                        <span className="text-xs font-medium text-secondarycolor/50 italic">
+                          ({book.pen_name})
+                        </span>
+                      )}
                     </p>
                     <div className="flex flex-wrap gap-2 pt-2">
                       <span className="text-[10px] font-black bg-primarycolor/10 text-primarycolor px-3 py-1.5 rounded-xl uppercase tracking-tighter border-2 border-primarycolor/20">

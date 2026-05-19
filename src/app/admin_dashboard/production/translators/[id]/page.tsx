@@ -51,9 +51,19 @@ export default async function TranslatorDetailsPage({ params }: TranslatorDetail
                 <span className="text-[10px] font-black uppercase tracking-widest text-secondarycolor/60">Expert Resource</span>
               </div>
               <h1 className="text-4xl font-black text-primarycolor uppercase tracking-tighter leading-none">{translator.name}</h1>
-              <p className="text-muted-foreground font-bold tracking-tight mt-1 flex items-center gap-2">
-                Certified Production Partner
-              </p>
+              <div className="flex flex-wrap items-center gap-2 mt-1">
+                <p className="text-muted-foreground font-bold tracking-tight">
+                  Certified Production Partner
+                </p>
+                {translator.pen_name && (
+                  <>
+                    <div className="size-1 rounded-full bg-primarycolor/20" />
+                    <span className="text-xs font-black uppercase tracking-widest text-secondarycolor bg-secondarycolor/5 border border-secondarycolor/10 px-2 py-0.5 rounded-lg italic">
+                      Pen Name: {translator.pen_name}
+                    </span>
+                  </>
+                )}
+              </div>
             </div>
           </div>
 

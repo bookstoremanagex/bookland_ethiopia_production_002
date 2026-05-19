@@ -32,6 +32,7 @@ import { cn } from "../../lib/utils";
 export type Translator = {
   id: number;
   name: string;
+  pen_name: string | null;
   email: string | null;
   phoneNumber: string | null;
   _count?: {
@@ -55,6 +56,15 @@ export const columns: ColumnDef<Translator>[] = [
         </div>
       );
     },
+  },
+  {
+    accessorKey: "pen_name",
+    header: "Pen Name",
+    cell: ({ row }) => (
+      <div className="text-secondarycolor font-bold italic">
+        {row.getValue("pen_name") || "—"}
+      </div>
+    ),
   },
   {
     accessorKey: "email",
@@ -128,6 +138,15 @@ export function TranslatorsTable({ data }: TranslatorsTableProps) {
           </div>
         );
       },
+    },
+    {
+      accessorKey: "pen_name",
+      header: "Pen Name",
+      cell: ({ row }) => (
+        <div className="text-secondarycolor font-bold italic">
+          {row.getValue("pen_name") || "—"}
+        </div>
+      ),
     },
     {
       accessorKey: "email",

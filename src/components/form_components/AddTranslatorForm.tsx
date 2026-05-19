@@ -28,6 +28,7 @@ export function AddTranslatorForm() {
       name: "",
       email: "",
       phoneNumber: "",
+      pen_name: "",
     },
   });
 
@@ -75,20 +76,35 @@ export function AddTranslatorForm() {
         className="bg-card rounded-[1.8rem] md:rounded-[2.5rem] border-2 border-primarycolor/10 shadow-2xl overflow-hidden transition-all duration-300 hover:border-primarycolor/20 p-6 md:p-10 space-y-6 md:space-y-10"
       >
         <div className="space-y-6">
-          {/* Name */}
-          <div className="space-y-2 group">
-            <label htmlFor="name" className="text-sm font-black text-secondarycolor uppercase tracking-widest ml-1">
-              Full Name <span className="text-destructive">*</span>
-            </label>
-            <Input
-              id="name"
-              placeholder="Enter translator's full name"
-              {...register("name")}
-              className="h-14 px-6 bg-background/50 border-primarycolor/10 focus:border-primarycolor focus:ring-primarycolor/5 rounded-2xl transition-all text-lg font-medium"
-            />
-            {errors.name && (
-              <p className="text-xs font-bold text-destructive animate-in fade-in slide-in-from-top-1 ml-1">{errors.name.message}</p>
-            )}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Name */}
+            <div className="space-y-2 group">
+              <label htmlFor="name" className="text-sm font-black text-secondarycolor uppercase tracking-widest ml-1">
+                Full Name <span className="text-destructive">*</span>
+              </label>
+              <Input
+                id="name"
+                placeholder="Enter translator's full name"
+                {...register("name")}
+                className="h-14 px-6 bg-background/50 border-primarycolor/10 focus:border-primarycolor focus:ring-primarycolor/5 rounded-2xl transition-all text-lg font-medium"
+              />
+              {errors.name && (
+                <p className="text-xs font-bold text-destructive animate-in fade-in slide-in-from-top-1 ml-1">{errors.name.message}</p>
+              )}
+            </div>
+
+            {/* Pen Name */}
+            <div className="space-y-2 group">
+              <label htmlFor="pen_name" className="text-sm font-black text-secondarycolor uppercase tracking-widest ml-1">
+                Pen Name
+              </label>
+              <Input
+                id="pen_name"
+                placeholder="Enter translator's pen name"
+                {...register("pen_name")}
+                className="h-14 px-6 bg-background/50 border-primarycolor/10 focus:border-primarycolor focus:ring-primarycolor/5 rounded-2xl transition-all text-lg font-medium"
+              />
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

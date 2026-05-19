@@ -155,6 +155,12 @@ export default function BasicInfo({
                         <h4 className="text-[10px] font-black text-primarycolor/60 uppercase tracking-[0.2em]">Author</h4>
                         <p className="text-sm font-bold text-secondarycolor">{book.author}</p>
                     </div>
+                    {book.pen_name && (
+                      <div className="space-y-1">
+                          <h4 className="text-[10px] font-black text-primarycolor/60 uppercase tracking-[0.2em]">Pen Name</h4>
+                          <p className="text-sm font-bold text-secondarycolor italic">{book.pen_name}</p>
+                      </div>
+                    )}
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primarycolor/10 border border-primarycolor/20 text-[9px] font-black text-primarycolor uppercase tracking-widest mt-2">
                         <Layers className="size-3" /> Edition {book.edition}
                     </div>
@@ -175,6 +181,7 @@ export default function BasicInfo({
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-1 md:gap-4">
                         <div className="hidden lg:block">{renderEditableField('title', 'Book Title', BookOpen)}</div>
                         <div className="hidden lg:block">{renderEditableField('author', 'Lead Author', User)}</div>
+                        {renderEditableField('pen_name', 'Pen Name', User)}
                         {renderEditableField('language', 'Language', Globe)}
                         {renderEditableField('category', 'Book Category', Layers)}
                         {renderEditableField('publication_year', 'Year', Calendar)}
