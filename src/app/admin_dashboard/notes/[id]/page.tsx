@@ -9,7 +9,7 @@ interface PageProps {
 }
 
 export const dynamic = "force-dynamic";
-
+//testline
 export default async function NoteDetailPage({ params }: PageProps) {
   const session = await getCurrentSession();
 
