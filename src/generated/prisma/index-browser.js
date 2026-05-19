@@ -365,6 +365,83 @@ exports.Prisma.NotesScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.ContractsScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  party: 'party',
+  type: 'type',
+  status: 'status',
+  details: 'details',
+  value: 'value',
+  memo: 'memo',
+  dateSigned: 'dateSigned',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  is_deleted: 'is_deleted',
+  updatedAt: 'updatedAt',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.Print_agreementsScalarFieldEnum = {
+  id: 'id',
+  bookTitle: 'bookTitle',
+  printerName: 'printerName',
+  quantity: 'quantity',
+  status: 'status',
+  commencementDate: 'commencementDate',
+  cost: 'cost',
+  terms: 'terms',
+  memo: 'memo',
+  is_deleted: 'is_deleted',
+  updatedAt: 'updatedAt',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.Delivery_notesScalarFieldEnum = {
+  id: 'id',
+  deliveryNumber: 'deliveryNumber',
+  receiverName: 'receiverName',
+  driverName: 'driverName',
+  vehiclePlate: 'vehiclePlate',
+  status: 'status',
+  deliveryDate: 'deliveryDate',
+  items: 'items',
+  memo: 'memo',
+  is_deleted: 'is_deleted',
+  updatedAt: 'updatedAt',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.InvoicesScalarFieldEnum = {
+  id: 'id',
+  invoiceNumber: 'invoiceNumber',
+  customerName: 'customerName',
+  amount: 'amount',
+  status: 'status',
+  dueDate: 'dueDate',
+  issueDate: 'issueDate',
+  imageUrl: 'imageUrl',
+  memo: 'memo',
+  is_deleted: 'is_deleted',
+  updatedAt: 'updatedAt',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.Approval_documentsScalarFieldEnum = {
+  id: 'id',
+  documentNumber: 'documentNumber',
+  title: 'title',
+  requestedBy: 'requestedBy',
+  approvedBy: 'approvedBy',
+  status: 'status',
+  approvalDate: 'approvalDate',
+  details: 'details',
+  memo: 'memo',
+  is_deleted: 'is_deleted',
+  updatedAt: 'updatedAt',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -480,6 +557,51 @@ exports.Prisma.notesOrderByRelevanceFieldEnum = {
   title: 'title',
   note_content: 'note_content'
 };
+
+exports.Prisma.contractsOrderByRelevanceFieldEnum = {
+  title: 'title',
+  party: 'party',
+  type: 'type',
+  status: 'status',
+  details: 'details',
+  memo: 'memo'
+};
+
+exports.Prisma.print_agreementsOrderByRelevanceFieldEnum = {
+  bookTitle: 'bookTitle',
+  printerName: 'printerName',
+  status: 'status',
+  terms: 'terms',
+  memo: 'memo'
+};
+
+exports.Prisma.delivery_notesOrderByRelevanceFieldEnum = {
+  deliveryNumber: 'deliveryNumber',
+  receiverName: 'receiverName',
+  driverName: 'driverName',
+  vehiclePlate: 'vehiclePlate',
+  status: 'status',
+  items: 'items',
+  memo: 'memo'
+};
+
+exports.Prisma.invoicesOrderByRelevanceFieldEnum = {
+  invoiceNumber: 'invoiceNumber',
+  customerName: 'customerName',
+  status: 'status',
+  imageUrl: 'imageUrl',
+  memo: 'memo'
+};
+
+exports.Prisma.approval_documentsOrderByRelevanceFieldEnum = {
+  documentNumber: 'documentNumber',
+  title: 'title',
+  requestedBy: 'requestedBy',
+  approvedBy: 'approvedBy',
+  status: 'status',
+  details: 'details',
+  memo: 'memo'
+};
 exports.books_productionstatus = exports.$Enums.books_productionstatus = {
   ON_PRODUCTION: 'ON_PRODUCTION',
   TRANSLATION: 'TRANSLATION',
@@ -553,7 +675,12 @@ exports.Prisma.ModelName = {
   translatorbook: 'translatorbook',
   notification: 'notification',
   activityLogs: 'activityLogs',
-  notes: 'notes'
+  notes: 'notes',
+  contracts: 'contracts',
+  print_agreements: 'print_agreements',
+  delivery_notes: 'delivery_notes',
+  invoices: 'invoices',
+  approval_documents: 'approval_documents'
 };
 
 /**

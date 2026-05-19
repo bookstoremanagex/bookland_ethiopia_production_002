@@ -25,7 +25,12 @@ import {
     Clock,
     User,
     Bell,
-    History
+    History,
+    FolderOpen,
+    FileSignature,
+    Truck,
+    Receipt,
+    FileCheck
 } from "lucide-react"
 
 import {
@@ -276,6 +281,109 @@ export function AdminAppSidebar() {
                                                         <Link href="/admin_dashboard/printing/manage">
                                                             <ClipboardList className={cn("w-4 h-4", (isMounted && activePath === "/admin_dashboard/printing/manage") ? "text-white" : "text-primarycolor/70")} />
                                                             <span>Manage Printing</span>
+                                                        </Link>
+                                                    </SidebarMenuSubButton>
+                                                </SidebarMenuSubItem>
+                                            </SidebarMenuSub>
+                                        </CollapsibleContent>
+                                    </SidebarMenuItem>
+                                </Collapsible>
+
+                                {/* Expandable Section: Document Managment */}
+                                <Collapsible asChild className="group/collapsible" defaultOpen={isMounted && activePath?.includes("/admin_dashboard/document_management")}>
+                                    <SidebarMenuItem>
+                                        <CollapsibleTrigger asChild>
+                                            <SidebarMenuButton
+                                                tooltip="Document Managment"
+                                                className={cn(
+                                                    "transition-all duration-300 h-10 px-4",
+                                                    isMounted && activePath?.includes("/admin_dashboard/document_management") ? "bg-primarycolor/10 text-primarycolor font-black" : "hover:bg-primarycolor/5 text-foreground"
+                                                )}
+                                            >
+                                                <FolderOpen className={cn("w-5 h-5", (isMounted && activePath?.includes("/admin_dashboard/document_management")) ? "text-primarycolor" : "text-primarycolor/70")} />
+                                                <span>Document Managment</span>
+                                                <ChevronRight className="ml-auto w-4 h-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                                            </SidebarMenuButton>
+                                        </CollapsibleTrigger>
+                                        <CollapsibleContent>
+                                            <SidebarMenuSub>
+                                                <SidebarMenuSubItem>
+                                                    <SidebarMenuSubButton
+                                                        asChild
+                                                        isActive={isMounted && (activePath === "/admin_dashboard/document_management/contracts" || activePath.startsWith("/admin_dashboard/document_management/contracts/"))}
+                                                        className={cn(
+                                                            "transition-all duration-300 rounded-lg h-9 px-4",
+                                                            "data-[active=true]:bg-primarycolor data-[active=true]:text-white data-[active=true]:font-black data-[active=true]:shadow-md data-[active=true]:shadow-primarycolor/20",
+                                                            "hover:bg-primarycolor/10 hover:text-primarycolor"
+                                                        )}
+                                                    >
+                                                        <Link href="/admin_dashboard/document_management/contracts">
+                                                            <FileSignature className={cn("w-4 h-4", (isMounted && activePath === "/admin_dashboard/document_management/contracts") ? "text-white" : "text-primarycolor/70")} />
+                                                            <span>Contracts</span>
+                                                        </Link>
+                                                    </SidebarMenuSubButton>
+                                                </SidebarMenuSubItem>
+                                                <SidebarMenuSubItem>
+                                                    <SidebarMenuSubButton
+                                                        asChild
+                                                        isActive={isMounted && (activePath === "/admin_dashboard/document_management/print_agreements" || activePath.startsWith("/admin_dashboard/document_management/print_agreements/"))}
+                                                        className={cn(
+                                                            "transition-all duration-300 rounded-lg h-9 px-4",
+                                                            "data-[active=true]:bg-primarycolor data-[active=true]:text-white data-[active=true]:font-black data-[active=true]:shadow-md data-[active=true]:shadow-primarycolor/20",
+                                                            "hover:bg-primarycolor/10 hover:text-primarycolor"
+                                                        )}
+                                                    >
+                                                        <Link href="/admin_dashboard/document_management/print_agreements">
+                                                            <FileText className={cn("w-4 h-4", (isMounted && activePath === "/admin_dashboard/document_management/print_agreements") ? "text-white" : "text-primarycolor/70")} />
+                                                            <span>Print agreements</span>
+                                                        </Link>
+                                                    </SidebarMenuSubButton>
+                                                </SidebarMenuSubItem>
+                                                <SidebarMenuSubItem>
+                                                    <SidebarMenuSubButton
+                                                        asChild
+                                                        isActive={isMounted && (activePath === "/admin_dashboard/document_management/delivery_notes" || activePath.startsWith("/admin_dashboard/document_management/delivery_notes/"))}
+                                                        className={cn(
+                                                            "transition-all duration-300 rounded-lg h-9 px-4",
+                                                            "data-[active=true]:bg-primarycolor data-[active=true]:text-white data-[active=true]:font-black data-[active=true]:shadow-md data-[active=true]:shadow-primarycolor/20",
+                                                            "hover:bg-primarycolor/10 hover:text-primarycolor"
+                                                        )}
+                                                    >
+                                                        <Link href="/admin_dashboard/document_management/delivery_notes">
+                                                            <Truck className={cn("w-4 h-4", (isMounted && activePath === "/admin_dashboard/document_management/delivery_notes") ? "text-white" : "text-primarycolor/70")} />
+                                                            <span>Delivery notes</span>
+                                                        </Link>
+                                                    </SidebarMenuSubButton>
+                                                </SidebarMenuSubItem>
+                                                <SidebarMenuSubItem>
+                                                    <SidebarMenuSubButton
+                                                        asChild
+                                                        isActive={isMounted && (activePath === "/admin_dashboard/document_management/invoices" || activePath.startsWith("/admin_dashboard/document_management/invoices/"))}
+                                                        className={cn(
+                                                            "transition-all duration-300 rounded-lg h-9 px-4",
+                                                            "data-[active=true]:bg-primarycolor data-[active=true]:text-white data-[active=true]:font-black data-[active=true]:shadow-md data-[active=true]:shadow-primarycolor/20",
+                                                            "hover:bg-primarycolor/10 hover:text-primarycolor"
+                                                        )}
+                                                    >
+                                                        <Link href="/admin_dashboard/document_management/invoices">
+                                                            <Receipt className={cn("w-4 h-4", (isMounted && activePath === "/admin_dashboard/document_management/invoices") ? "text-white" : "text-primarycolor/70")} />
+                                                            <span>Invoices</span>
+                                                        </Link>
+                                                    </SidebarMenuSubButton>
+                                                </SidebarMenuSubItem>
+                                                <SidebarMenuSubItem>
+                                                    <SidebarMenuSubButton
+                                                        asChild
+                                                        isActive={isMounted && (activePath === "/admin_dashboard/document_management/approval_documents" || activePath.startsWith("/admin_dashboard/document_management/approval_documents/"))}
+                                                        className={cn(
+                                                            "transition-all duration-300 rounded-lg h-9 px-4",
+                                                            "data-[active=true]:bg-primarycolor data-[active=true]:text-white data-[active=true]:font-black data-[active=true]:shadow-md data-[active=true]:shadow-primarycolor/20",
+                                                            "hover:bg-primarycolor/10 hover:text-primarycolor"
+                                                        )}
+                                                    >
+                                                        <Link href="/admin_dashboard/document_management/approval_documents">
+                                                            <FileCheck className={cn("w-4 h-4", (isMounted && activePath === "/admin_dashboard/document_management/approval_documents") ? "text-white" : "text-primarycolor/70")} />
+                                                            <span>Approval documents</span>
                                                         </Link>
                                                     </SidebarMenuSubButton>
                                                 </SidebarMenuSubItem>

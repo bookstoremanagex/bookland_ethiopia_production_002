@@ -98,6 +98,31 @@ export type activityLogs = $Result.DefaultSelection<Prisma.$activityLogsPayload>
  * 
  */
 export type notes = $Result.DefaultSelection<Prisma.$notesPayload>
+/**
+ * Model contracts
+ * 
+ */
+export type contracts = $Result.DefaultSelection<Prisma.$contractsPayload>
+/**
+ * Model print_agreements
+ * 
+ */
+export type print_agreements = $Result.DefaultSelection<Prisma.$print_agreementsPayload>
+/**
+ * Model delivery_notes
+ * 
+ */
+export type delivery_notes = $Result.DefaultSelection<Prisma.$delivery_notesPayload>
+/**
+ * Model invoices
+ * 
+ */
+export type invoices = $Result.DefaultSelection<Prisma.$invoicesPayload>
+/**
+ * Model approval_documents
+ * 
+ */
+export type approval_documents = $Result.DefaultSelection<Prisma.$approval_documentsPayload>
 
 /**
  * Enums
@@ -489,6 +514,56 @@ export class PrismaClient<
     * ```
     */
   get notes(): Prisma.notesDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.contracts`: Exposes CRUD operations for the **contracts** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Contracts
+    * const contracts = await prisma.contracts.findMany()
+    * ```
+    */
+  get contracts(): Prisma.contractsDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.print_agreements`: Exposes CRUD operations for the **print_agreements** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Print_agreements
+    * const print_agreements = await prisma.print_agreements.findMany()
+    * ```
+    */
+  get print_agreements(): Prisma.print_agreementsDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.delivery_notes`: Exposes CRUD operations for the **delivery_notes** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Delivery_notes
+    * const delivery_notes = await prisma.delivery_notes.findMany()
+    * ```
+    */
+  get delivery_notes(): Prisma.delivery_notesDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.invoices`: Exposes CRUD operations for the **invoices** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Invoices
+    * const invoices = await prisma.invoices.findMany()
+    * ```
+    */
+  get invoices(): Prisma.invoicesDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.approval_documents`: Exposes CRUD operations for the **approval_documents** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Approval_documents
+    * const approval_documents = await prisma.approval_documents.findMany()
+    * ```
+    */
+  get approval_documents(): Prisma.approval_documentsDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -946,7 +1021,12 @@ export namespace Prisma {
     translatorbook: 'translatorbook',
     notification: 'notification',
     activityLogs: 'activityLogs',
-    notes: 'notes'
+    notes: 'notes',
+    contracts: 'contracts',
+    print_agreements: 'print_agreements',
+    delivery_notes: 'delivery_notes',
+    invoices: 'invoices',
+    approval_documents: 'approval_documents'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -965,7 +1045,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "accounts" | "bookedition" | "bookeditionstores" | "books" | "bookshopeditions" | "bookshopes" | "damagedbooks" | "dashboardmenu" | "printer" | "printorder" | "roles" | "stores" | "translator" | "translatorbook" | "notification" | "activityLogs" | "notes"
+      modelProps: "accounts" | "bookedition" | "bookeditionstores" | "books" | "bookshopeditions" | "bookshopes" | "damagedbooks" | "dashboardmenu" | "printer" | "printorder" | "roles" | "stores" | "translator" | "translatorbook" | "notification" | "activityLogs" | "notes" | "contracts" | "print_agreements" | "delivery_notes" | "invoices" | "approval_documents"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2091,6 +2171,336 @@ export namespace Prisma {
           }
         }
       }
+      contracts: {
+        payload: Prisma.$contractsPayload<ExtArgs>
+        fields: Prisma.contractsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.contractsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$contractsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.contractsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$contractsPayload>
+          }
+          findFirst: {
+            args: Prisma.contractsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$contractsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.contractsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$contractsPayload>
+          }
+          findMany: {
+            args: Prisma.contractsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$contractsPayload>[]
+          }
+          create: {
+            args: Prisma.contractsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$contractsPayload>
+          }
+          createMany: {
+            args: Prisma.contractsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.contractsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$contractsPayload>
+          }
+          update: {
+            args: Prisma.contractsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$contractsPayload>
+          }
+          deleteMany: {
+            args: Prisma.contractsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.contractsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.contractsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$contractsPayload>
+          }
+          aggregate: {
+            args: Prisma.ContractsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateContracts>
+          }
+          groupBy: {
+            args: Prisma.contractsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ContractsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.contractsCountArgs<ExtArgs>
+            result: $Utils.Optional<ContractsCountAggregateOutputType> | number
+          }
+        }
+      }
+      print_agreements: {
+        payload: Prisma.$print_agreementsPayload<ExtArgs>
+        fields: Prisma.print_agreementsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.print_agreementsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$print_agreementsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.print_agreementsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$print_agreementsPayload>
+          }
+          findFirst: {
+            args: Prisma.print_agreementsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$print_agreementsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.print_agreementsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$print_agreementsPayload>
+          }
+          findMany: {
+            args: Prisma.print_agreementsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$print_agreementsPayload>[]
+          }
+          create: {
+            args: Prisma.print_agreementsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$print_agreementsPayload>
+          }
+          createMany: {
+            args: Prisma.print_agreementsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.print_agreementsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$print_agreementsPayload>
+          }
+          update: {
+            args: Prisma.print_agreementsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$print_agreementsPayload>
+          }
+          deleteMany: {
+            args: Prisma.print_agreementsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.print_agreementsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.print_agreementsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$print_agreementsPayload>
+          }
+          aggregate: {
+            args: Prisma.Print_agreementsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePrint_agreements>
+          }
+          groupBy: {
+            args: Prisma.print_agreementsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Print_agreementsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.print_agreementsCountArgs<ExtArgs>
+            result: $Utils.Optional<Print_agreementsCountAggregateOutputType> | number
+          }
+        }
+      }
+      delivery_notes: {
+        payload: Prisma.$delivery_notesPayload<ExtArgs>
+        fields: Prisma.delivery_notesFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.delivery_notesFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$delivery_notesPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.delivery_notesFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$delivery_notesPayload>
+          }
+          findFirst: {
+            args: Prisma.delivery_notesFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$delivery_notesPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.delivery_notesFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$delivery_notesPayload>
+          }
+          findMany: {
+            args: Prisma.delivery_notesFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$delivery_notesPayload>[]
+          }
+          create: {
+            args: Prisma.delivery_notesCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$delivery_notesPayload>
+          }
+          createMany: {
+            args: Prisma.delivery_notesCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.delivery_notesDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$delivery_notesPayload>
+          }
+          update: {
+            args: Prisma.delivery_notesUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$delivery_notesPayload>
+          }
+          deleteMany: {
+            args: Prisma.delivery_notesDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.delivery_notesUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.delivery_notesUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$delivery_notesPayload>
+          }
+          aggregate: {
+            args: Prisma.Delivery_notesAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateDelivery_notes>
+          }
+          groupBy: {
+            args: Prisma.delivery_notesGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Delivery_notesGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.delivery_notesCountArgs<ExtArgs>
+            result: $Utils.Optional<Delivery_notesCountAggregateOutputType> | number
+          }
+        }
+      }
+      invoices: {
+        payload: Prisma.$invoicesPayload<ExtArgs>
+        fields: Prisma.invoicesFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.invoicesFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$invoicesPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.invoicesFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$invoicesPayload>
+          }
+          findFirst: {
+            args: Prisma.invoicesFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$invoicesPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.invoicesFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$invoicesPayload>
+          }
+          findMany: {
+            args: Prisma.invoicesFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$invoicesPayload>[]
+          }
+          create: {
+            args: Prisma.invoicesCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$invoicesPayload>
+          }
+          createMany: {
+            args: Prisma.invoicesCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.invoicesDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$invoicesPayload>
+          }
+          update: {
+            args: Prisma.invoicesUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$invoicesPayload>
+          }
+          deleteMany: {
+            args: Prisma.invoicesDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.invoicesUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.invoicesUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$invoicesPayload>
+          }
+          aggregate: {
+            args: Prisma.InvoicesAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateInvoices>
+          }
+          groupBy: {
+            args: Prisma.invoicesGroupByArgs<ExtArgs>
+            result: $Utils.Optional<InvoicesGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.invoicesCountArgs<ExtArgs>
+            result: $Utils.Optional<InvoicesCountAggregateOutputType> | number
+          }
+        }
+      }
+      approval_documents: {
+        payload: Prisma.$approval_documentsPayload<ExtArgs>
+        fields: Prisma.approval_documentsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.approval_documentsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$approval_documentsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.approval_documentsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$approval_documentsPayload>
+          }
+          findFirst: {
+            args: Prisma.approval_documentsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$approval_documentsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.approval_documentsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$approval_documentsPayload>
+          }
+          findMany: {
+            args: Prisma.approval_documentsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$approval_documentsPayload>[]
+          }
+          create: {
+            args: Prisma.approval_documentsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$approval_documentsPayload>
+          }
+          createMany: {
+            args: Prisma.approval_documentsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.approval_documentsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$approval_documentsPayload>
+          }
+          update: {
+            args: Prisma.approval_documentsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$approval_documentsPayload>
+          }
+          deleteMany: {
+            args: Prisma.approval_documentsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.approval_documentsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.approval_documentsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$approval_documentsPayload>
+          }
+          aggregate: {
+            args: Prisma.Approval_documentsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateApproval_documents>
+          }
+          groupBy: {
+            args: Prisma.approval_documentsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Approval_documentsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.approval_documentsCountArgs<ExtArgs>
+            result: $Utils.Optional<Approval_documentsCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2204,6 +2614,11 @@ export namespace Prisma {
     notification?: notificationOmit
     activityLogs?: activityLogsOmit
     notes?: notesOmit
+    contracts?: contractsOmit
+    print_agreements?: print_agreementsOmit
+    delivery_notes?: delivery_notesOmit
+    invoices?: invoicesOmit
+    approval_documents?: approval_documentsOmit
   }
 
   /* Types for Logging */
@@ -20696,6 +21111,5009 @@ export namespace Prisma {
 
 
   /**
+   * Model contracts
+   */
+
+  export type AggregateContracts = {
+    _count: ContractsCountAggregateOutputType | null
+    _avg: ContractsAvgAggregateOutputType | null
+    _sum: ContractsSumAggregateOutputType | null
+    _min: ContractsMinAggregateOutputType | null
+    _max: ContractsMaxAggregateOutputType | null
+  }
+
+  export type ContractsAvgAggregateOutputType = {
+    id: number | null
+    value: number | null
+  }
+
+  export type ContractsSumAggregateOutputType = {
+    id: number | null
+    value: number | null
+  }
+
+  export type ContractsMinAggregateOutputType = {
+    id: number | null
+    title: string | null
+    party: string | null
+    type: string | null
+    status: string | null
+    details: string | null
+    value: number | null
+    memo: string | null
+    dateSigned: Date | null
+    startDate: Date | null
+    endDate: Date | null
+    is_deleted: boolean | null
+    updatedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type ContractsMaxAggregateOutputType = {
+    id: number | null
+    title: string | null
+    party: string | null
+    type: string | null
+    status: string | null
+    details: string | null
+    value: number | null
+    memo: string | null
+    dateSigned: Date | null
+    startDate: Date | null
+    endDate: Date | null
+    is_deleted: boolean | null
+    updatedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type ContractsCountAggregateOutputType = {
+    id: number
+    title: number
+    party: number
+    type: number
+    status: number
+    details: number
+    value: number
+    memo: number
+    dateSigned: number
+    startDate: number
+    endDate: number
+    is_deleted: number
+    updatedAt: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ContractsAvgAggregateInputType = {
+    id?: true
+    value?: true
+  }
+
+  export type ContractsSumAggregateInputType = {
+    id?: true
+    value?: true
+  }
+
+  export type ContractsMinAggregateInputType = {
+    id?: true
+    title?: true
+    party?: true
+    type?: true
+    status?: true
+    details?: true
+    value?: true
+    memo?: true
+    dateSigned?: true
+    startDate?: true
+    endDate?: true
+    is_deleted?: true
+    updatedAt?: true
+    createdAt?: true
+  }
+
+  export type ContractsMaxAggregateInputType = {
+    id?: true
+    title?: true
+    party?: true
+    type?: true
+    status?: true
+    details?: true
+    value?: true
+    memo?: true
+    dateSigned?: true
+    startDate?: true
+    endDate?: true
+    is_deleted?: true
+    updatedAt?: true
+    createdAt?: true
+  }
+
+  export type ContractsCountAggregateInputType = {
+    id?: true
+    title?: true
+    party?: true
+    type?: true
+    status?: true
+    details?: true
+    value?: true
+    memo?: true
+    dateSigned?: true
+    startDate?: true
+    endDate?: true
+    is_deleted?: true
+    updatedAt?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ContractsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which contracts to aggregate.
+     */
+    where?: contractsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of contracts to fetch.
+     */
+    orderBy?: contractsOrderByWithRelationInput | contractsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: contractsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` contracts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` contracts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned contracts
+    **/
+    _count?: true | ContractsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ContractsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ContractsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ContractsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ContractsMaxAggregateInputType
+  }
+
+  export type GetContractsAggregateType<T extends ContractsAggregateArgs> = {
+        [P in keyof T & keyof AggregateContracts]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateContracts[P]>
+      : GetScalarType<T[P], AggregateContracts[P]>
+  }
+
+
+
+
+  export type contractsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: contractsWhereInput
+    orderBy?: contractsOrderByWithAggregationInput | contractsOrderByWithAggregationInput[]
+    by: ContractsScalarFieldEnum[] | ContractsScalarFieldEnum
+    having?: contractsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ContractsCountAggregateInputType | true
+    _avg?: ContractsAvgAggregateInputType
+    _sum?: ContractsSumAggregateInputType
+    _min?: ContractsMinAggregateInputType
+    _max?: ContractsMaxAggregateInputType
+  }
+
+  export type ContractsGroupByOutputType = {
+    id: number
+    title: string
+    party: string
+    type: string
+    status: string
+    details: string
+    value: number | null
+    memo: string | null
+    dateSigned: Date | null
+    startDate: Date | null
+    endDate: Date | null
+    is_deleted: boolean
+    updatedAt: Date
+    createdAt: Date
+    _count: ContractsCountAggregateOutputType | null
+    _avg: ContractsAvgAggregateOutputType | null
+    _sum: ContractsSumAggregateOutputType | null
+    _min: ContractsMinAggregateOutputType | null
+    _max: ContractsMaxAggregateOutputType | null
+  }
+
+  type GetContractsGroupByPayload<T extends contractsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ContractsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ContractsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ContractsGroupByOutputType[P]>
+            : GetScalarType<T[P], ContractsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type contractsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    party?: boolean
+    type?: boolean
+    status?: boolean
+    details?: boolean
+    value?: boolean
+    memo?: boolean
+    dateSigned?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    is_deleted?: boolean
+    updatedAt?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["contracts"]>
+
+
+
+  export type contractsSelectScalar = {
+    id?: boolean
+    title?: boolean
+    party?: boolean
+    type?: boolean
+    status?: boolean
+    details?: boolean
+    value?: boolean
+    memo?: boolean
+    dateSigned?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    is_deleted?: boolean
+    updatedAt?: boolean
+    createdAt?: boolean
+  }
+
+  export type contractsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "party" | "type" | "status" | "details" | "value" | "memo" | "dateSigned" | "startDate" | "endDate" | "is_deleted" | "updatedAt" | "createdAt", ExtArgs["result"]["contracts"]>
+
+  export type $contractsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "contracts"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      title: string
+      party: string
+      type: string
+      status: string
+      details: string
+      value: number | null
+      memo: string | null
+      dateSigned: Date | null
+      startDate: Date | null
+      endDate: Date | null
+      is_deleted: boolean
+      updatedAt: Date
+      createdAt: Date
+    }, ExtArgs["result"]["contracts"]>
+    composites: {}
+  }
+
+  type contractsGetPayload<S extends boolean | null | undefined | contractsDefaultArgs> = $Result.GetResult<Prisma.$contractsPayload, S>
+
+  type contractsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<contractsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ContractsCountAggregateInputType | true
+    }
+
+  export interface contractsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['contracts'], meta: { name: 'contracts' } }
+    /**
+     * Find zero or one Contracts that matches the filter.
+     * @param {contractsFindUniqueArgs} args - Arguments to find a Contracts
+     * @example
+     * // Get one Contracts
+     * const contracts = await prisma.contracts.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends contractsFindUniqueArgs>(args: SelectSubset<T, contractsFindUniqueArgs<ExtArgs>>): Prisma__contractsClient<$Result.GetResult<Prisma.$contractsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Contracts that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {contractsFindUniqueOrThrowArgs} args - Arguments to find a Contracts
+     * @example
+     * // Get one Contracts
+     * const contracts = await prisma.contracts.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends contractsFindUniqueOrThrowArgs>(args: SelectSubset<T, contractsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__contractsClient<$Result.GetResult<Prisma.$contractsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Contracts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {contractsFindFirstArgs} args - Arguments to find a Contracts
+     * @example
+     * // Get one Contracts
+     * const contracts = await prisma.contracts.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends contractsFindFirstArgs>(args?: SelectSubset<T, contractsFindFirstArgs<ExtArgs>>): Prisma__contractsClient<$Result.GetResult<Prisma.$contractsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Contracts that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {contractsFindFirstOrThrowArgs} args - Arguments to find a Contracts
+     * @example
+     * // Get one Contracts
+     * const contracts = await prisma.contracts.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends contractsFindFirstOrThrowArgs>(args?: SelectSubset<T, contractsFindFirstOrThrowArgs<ExtArgs>>): Prisma__contractsClient<$Result.GetResult<Prisma.$contractsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Contracts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {contractsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Contracts
+     * const contracts = await prisma.contracts.findMany()
+     * 
+     * // Get first 10 Contracts
+     * const contracts = await prisma.contracts.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const contractsWithIdOnly = await prisma.contracts.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends contractsFindManyArgs>(args?: SelectSubset<T, contractsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$contractsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Contracts.
+     * @param {contractsCreateArgs} args - Arguments to create a Contracts.
+     * @example
+     * // Create one Contracts
+     * const Contracts = await prisma.contracts.create({
+     *   data: {
+     *     // ... data to create a Contracts
+     *   }
+     * })
+     * 
+     */
+    create<T extends contractsCreateArgs>(args: SelectSubset<T, contractsCreateArgs<ExtArgs>>): Prisma__contractsClient<$Result.GetResult<Prisma.$contractsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Contracts.
+     * @param {contractsCreateManyArgs} args - Arguments to create many Contracts.
+     * @example
+     * // Create many Contracts
+     * const contracts = await prisma.contracts.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends contractsCreateManyArgs>(args?: SelectSubset<T, contractsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Contracts.
+     * @param {contractsDeleteArgs} args - Arguments to delete one Contracts.
+     * @example
+     * // Delete one Contracts
+     * const Contracts = await prisma.contracts.delete({
+     *   where: {
+     *     // ... filter to delete one Contracts
+     *   }
+     * })
+     * 
+     */
+    delete<T extends contractsDeleteArgs>(args: SelectSubset<T, contractsDeleteArgs<ExtArgs>>): Prisma__contractsClient<$Result.GetResult<Prisma.$contractsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Contracts.
+     * @param {contractsUpdateArgs} args - Arguments to update one Contracts.
+     * @example
+     * // Update one Contracts
+     * const contracts = await prisma.contracts.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends contractsUpdateArgs>(args: SelectSubset<T, contractsUpdateArgs<ExtArgs>>): Prisma__contractsClient<$Result.GetResult<Prisma.$contractsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Contracts.
+     * @param {contractsDeleteManyArgs} args - Arguments to filter Contracts to delete.
+     * @example
+     * // Delete a few Contracts
+     * const { count } = await prisma.contracts.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends contractsDeleteManyArgs>(args?: SelectSubset<T, contractsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Contracts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {contractsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Contracts
+     * const contracts = await prisma.contracts.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends contractsUpdateManyArgs>(args: SelectSubset<T, contractsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Contracts.
+     * @param {contractsUpsertArgs} args - Arguments to update or create a Contracts.
+     * @example
+     * // Update or create a Contracts
+     * const contracts = await prisma.contracts.upsert({
+     *   create: {
+     *     // ... data to create a Contracts
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Contracts we want to update
+     *   }
+     * })
+     */
+    upsert<T extends contractsUpsertArgs>(args: SelectSubset<T, contractsUpsertArgs<ExtArgs>>): Prisma__contractsClient<$Result.GetResult<Prisma.$contractsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Contracts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {contractsCountArgs} args - Arguments to filter Contracts to count.
+     * @example
+     * // Count the number of Contracts
+     * const count = await prisma.contracts.count({
+     *   where: {
+     *     // ... the filter for the Contracts we want to count
+     *   }
+     * })
+    **/
+    count<T extends contractsCountArgs>(
+      args?: Subset<T, contractsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ContractsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Contracts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContractsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ContractsAggregateArgs>(args: Subset<T, ContractsAggregateArgs>): Prisma.PrismaPromise<GetContractsAggregateType<T>>
+
+    /**
+     * Group by Contracts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {contractsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends contractsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: contractsGroupByArgs['orderBy'] }
+        : { orderBy?: contractsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, contractsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetContractsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the contracts model
+   */
+  readonly fields: contractsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for contracts.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__contractsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the contracts model
+   */
+  interface contractsFieldRefs {
+    readonly id: FieldRef<"contracts", 'Int'>
+    readonly title: FieldRef<"contracts", 'String'>
+    readonly party: FieldRef<"contracts", 'String'>
+    readonly type: FieldRef<"contracts", 'String'>
+    readonly status: FieldRef<"contracts", 'String'>
+    readonly details: FieldRef<"contracts", 'String'>
+    readonly value: FieldRef<"contracts", 'Float'>
+    readonly memo: FieldRef<"contracts", 'String'>
+    readonly dateSigned: FieldRef<"contracts", 'DateTime'>
+    readonly startDate: FieldRef<"contracts", 'DateTime'>
+    readonly endDate: FieldRef<"contracts", 'DateTime'>
+    readonly is_deleted: FieldRef<"contracts", 'Boolean'>
+    readonly updatedAt: FieldRef<"contracts", 'DateTime'>
+    readonly createdAt: FieldRef<"contracts", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * contracts findUnique
+   */
+  export type contractsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the contracts
+     */
+    select?: contractsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the contracts
+     */
+    omit?: contractsOmit<ExtArgs> | null
+    /**
+     * Filter, which contracts to fetch.
+     */
+    where: contractsWhereUniqueInput
+  }
+
+  /**
+   * contracts findUniqueOrThrow
+   */
+  export type contractsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the contracts
+     */
+    select?: contractsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the contracts
+     */
+    omit?: contractsOmit<ExtArgs> | null
+    /**
+     * Filter, which contracts to fetch.
+     */
+    where: contractsWhereUniqueInput
+  }
+
+  /**
+   * contracts findFirst
+   */
+  export type contractsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the contracts
+     */
+    select?: contractsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the contracts
+     */
+    omit?: contractsOmit<ExtArgs> | null
+    /**
+     * Filter, which contracts to fetch.
+     */
+    where?: contractsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of contracts to fetch.
+     */
+    orderBy?: contractsOrderByWithRelationInput | contractsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for contracts.
+     */
+    cursor?: contractsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` contracts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` contracts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of contracts.
+     */
+    distinct?: ContractsScalarFieldEnum | ContractsScalarFieldEnum[]
+  }
+
+  /**
+   * contracts findFirstOrThrow
+   */
+  export type contractsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the contracts
+     */
+    select?: contractsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the contracts
+     */
+    omit?: contractsOmit<ExtArgs> | null
+    /**
+     * Filter, which contracts to fetch.
+     */
+    where?: contractsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of contracts to fetch.
+     */
+    orderBy?: contractsOrderByWithRelationInput | contractsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for contracts.
+     */
+    cursor?: contractsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` contracts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` contracts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of contracts.
+     */
+    distinct?: ContractsScalarFieldEnum | ContractsScalarFieldEnum[]
+  }
+
+  /**
+   * contracts findMany
+   */
+  export type contractsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the contracts
+     */
+    select?: contractsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the contracts
+     */
+    omit?: contractsOmit<ExtArgs> | null
+    /**
+     * Filter, which contracts to fetch.
+     */
+    where?: contractsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of contracts to fetch.
+     */
+    orderBy?: contractsOrderByWithRelationInput | contractsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing contracts.
+     */
+    cursor?: contractsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` contracts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` contracts.
+     */
+    skip?: number
+    distinct?: ContractsScalarFieldEnum | ContractsScalarFieldEnum[]
+  }
+
+  /**
+   * contracts create
+   */
+  export type contractsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the contracts
+     */
+    select?: contractsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the contracts
+     */
+    omit?: contractsOmit<ExtArgs> | null
+    /**
+     * The data needed to create a contracts.
+     */
+    data: XOR<contractsCreateInput, contractsUncheckedCreateInput>
+  }
+
+  /**
+   * contracts createMany
+   */
+  export type contractsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many contracts.
+     */
+    data: contractsCreateManyInput | contractsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * contracts update
+   */
+  export type contractsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the contracts
+     */
+    select?: contractsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the contracts
+     */
+    omit?: contractsOmit<ExtArgs> | null
+    /**
+     * The data needed to update a contracts.
+     */
+    data: XOR<contractsUpdateInput, contractsUncheckedUpdateInput>
+    /**
+     * Choose, which contracts to update.
+     */
+    where: contractsWhereUniqueInput
+  }
+
+  /**
+   * contracts updateMany
+   */
+  export type contractsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update contracts.
+     */
+    data: XOR<contractsUpdateManyMutationInput, contractsUncheckedUpdateManyInput>
+    /**
+     * Filter which contracts to update
+     */
+    where?: contractsWhereInput
+    /**
+     * Limit how many contracts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * contracts upsert
+   */
+  export type contractsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the contracts
+     */
+    select?: contractsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the contracts
+     */
+    omit?: contractsOmit<ExtArgs> | null
+    /**
+     * The filter to search for the contracts to update in case it exists.
+     */
+    where: contractsWhereUniqueInput
+    /**
+     * In case the contracts found by the `where` argument doesn't exist, create a new contracts with this data.
+     */
+    create: XOR<contractsCreateInput, contractsUncheckedCreateInput>
+    /**
+     * In case the contracts was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<contractsUpdateInput, contractsUncheckedUpdateInput>
+  }
+
+  /**
+   * contracts delete
+   */
+  export type contractsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the contracts
+     */
+    select?: contractsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the contracts
+     */
+    omit?: contractsOmit<ExtArgs> | null
+    /**
+     * Filter which contracts to delete.
+     */
+    where: contractsWhereUniqueInput
+  }
+
+  /**
+   * contracts deleteMany
+   */
+  export type contractsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which contracts to delete
+     */
+    where?: contractsWhereInput
+    /**
+     * Limit how many contracts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * contracts without action
+   */
+  export type contractsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the contracts
+     */
+    select?: contractsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the contracts
+     */
+    omit?: contractsOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model print_agreements
+   */
+
+  export type AggregatePrint_agreements = {
+    _count: Print_agreementsCountAggregateOutputType | null
+    _avg: Print_agreementsAvgAggregateOutputType | null
+    _sum: Print_agreementsSumAggregateOutputType | null
+    _min: Print_agreementsMinAggregateOutputType | null
+    _max: Print_agreementsMaxAggregateOutputType | null
+  }
+
+  export type Print_agreementsAvgAggregateOutputType = {
+    id: number | null
+    quantity: number | null
+    cost: number | null
+  }
+
+  export type Print_agreementsSumAggregateOutputType = {
+    id: number | null
+    quantity: number | null
+    cost: number | null
+  }
+
+  export type Print_agreementsMinAggregateOutputType = {
+    id: number | null
+    bookTitle: string | null
+    printerName: string | null
+    quantity: number | null
+    status: string | null
+    commencementDate: Date | null
+    cost: number | null
+    terms: string | null
+    memo: string | null
+    is_deleted: boolean | null
+    updatedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type Print_agreementsMaxAggregateOutputType = {
+    id: number | null
+    bookTitle: string | null
+    printerName: string | null
+    quantity: number | null
+    status: string | null
+    commencementDate: Date | null
+    cost: number | null
+    terms: string | null
+    memo: string | null
+    is_deleted: boolean | null
+    updatedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type Print_agreementsCountAggregateOutputType = {
+    id: number
+    bookTitle: number
+    printerName: number
+    quantity: number
+    status: number
+    commencementDate: number
+    cost: number
+    terms: number
+    memo: number
+    is_deleted: number
+    updatedAt: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type Print_agreementsAvgAggregateInputType = {
+    id?: true
+    quantity?: true
+    cost?: true
+  }
+
+  export type Print_agreementsSumAggregateInputType = {
+    id?: true
+    quantity?: true
+    cost?: true
+  }
+
+  export type Print_agreementsMinAggregateInputType = {
+    id?: true
+    bookTitle?: true
+    printerName?: true
+    quantity?: true
+    status?: true
+    commencementDate?: true
+    cost?: true
+    terms?: true
+    memo?: true
+    is_deleted?: true
+    updatedAt?: true
+    createdAt?: true
+  }
+
+  export type Print_agreementsMaxAggregateInputType = {
+    id?: true
+    bookTitle?: true
+    printerName?: true
+    quantity?: true
+    status?: true
+    commencementDate?: true
+    cost?: true
+    terms?: true
+    memo?: true
+    is_deleted?: true
+    updatedAt?: true
+    createdAt?: true
+  }
+
+  export type Print_agreementsCountAggregateInputType = {
+    id?: true
+    bookTitle?: true
+    printerName?: true
+    quantity?: true
+    status?: true
+    commencementDate?: true
+    cost?: true
+    terms?: true
+    memo?: true
+    is_deleted?: true
+    updatedAt?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type Print_agreementsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which print_agreements to aggregate.
+     */
+    where?: print_agreementsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of print_agreements to fetch.
+     */
+    orderBy?: print_agreementsOrderByWithRelationInput | print_agreementsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: print_agreementsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` print_agreements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` print_agreements.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned print_agreements
+    **/
+    _count?: true | Print_agreementsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: Print_agreementsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: Print_agreementsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Print_agreementsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Print_agreementsMaxAggregateInputType
+  }
+
+  export type GetPrint_agreementsAggregateType<T extends Print_agreementsAggregateArgs> = {
+        [P in keyof T & keyof AggregatePrint_agreements]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePrint_agreements[P]>
+      : GetScalarType<T[P], AggregatePrint_agreements[P]>
+  }
+
+
+
+
+  export type print_agreementsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: print_agreementsWhereInput
+    orderBy?: print_agreementsOrderByWithAggregationInput | print_agreementsOrderByWithAggregationInput[]
+    by: Print_agreementsScalarFieldEnum[] | Print_agreementsScalarFieldEnum
+    having?: print_agreementsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Print_agreementsCountAggregateInputType | true
+    _avg?: Print_agreementsAvgAggregateInputType
+    _sum?: Print_agreementsSumAggregateInputType
+    _min?: Print_agreementsMinAggregateInputType
+    _max?: Print_agreementsMaxAggregateInputType
+  }
+
+  export type Print_agreementsGroupByOutputType = {
+    id: number
+    bookTitle: string
+    printerName: string
+    quantity: number
+    status: string
+    commencementDate: Date | null
+    cost: number | null
+    terms: string | null
+    memo: string | null
+    is_deleted: boolean
+    updatedAt: Date
+    createdAt: Date
+    _count: Print_agreementsCountAggregateOutputType | null
+    _avg: Print_agreementsAvgAggregateOutputType | null
+    _sum: Print_agreementsSumAggregateOutputType | null
+    _min: Print_agreementsMinAggregateOutputType | null
+    _max: Print_agreementsMaxAggregateOutputType | null
+  }
+
+  type GetPrint_agreementsGroupByPayload<T extends print_agreementsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Print_agreementsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Print_agreementsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Print_agreementsGroupByOutputType[P]>
+            : GetScalarType<T[P], Print_agreementsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type print_agreementsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    bookTitle?: boolean
+    printerName?: boolean
+    quantity?: boolean
+    status?: boolean
+    commencementDate?: boolean
+    cost?: boolean
+    terms?: boolean
+    memo?: boolean
+    is_deleted?: boolean
+    updatedAt?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["print_agreements"]>
+
+
+
+  export type print_agreementsSelectScalar = {
+    id?: boolean
+    bookTitle?: boolean
+    printerName?: boolean
+    quantity?: boolean
+    status?: boolean
+    commencementDate?: boolean
+    cost?: boolean
+    terms?: boolean
+    memo?: boolean
+    is_deleted?: boolean
+    updatedAt?: boolean
+    createdAt?: boolean
+  }
+
+  export type print_agreementsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "bookTitle" | "printerName" | "quantity" | "status" | "commencementDate" | "cost" | "terms" | "memo" | "is_deleted" | "updatedAt" | "createdAt", ExtArgs["result"]["print_agreements"]>
+
+  export type $print_agreementsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "print_agreements"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      bookTitle: string
+      printerName: string
+      quantity: number
+      status: string
+      commencementDate: Date | null
+      cost: number | null
+      terms: string | null
+      memo: string | null
+      is_deleted: boolean
+      updatedAt: Date
+      createdAt: Date
+    }, ExtArgs["result"]["print_agreements"]>
+    composites: {}
+  }
+
+  type print_agreementsGetPayload<S extends boolean | null | undefined | print_agreementsDefaultArgs> = $Result.GetResult<Prisma.$print_agreementsPayload, S>
+
+  type print_agreementsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<print_agreementsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Print_agreementsCountAggregateInputType | true
+    }
+
+  export interface print_agreementsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['print_agreements'], meta: { name: 'print_agreements' } }
+    /**
+     * Find zero or one Print_agreements that matches the filter.
+     * @param {print_agreementsFindUniqueArgs} args - Arguments to find a Print_agreements
+     * @example
+     * // Get one Print_agreements
+     * const print_agreements = await prisma.print_agreements.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends print_agreementsFindUniqueArgs>(args: SelectSubset<T, print_agreementsFindUniqueArgs<ExtArgs>>): Prisma__print_agreementsClient<$Result.GetResult<Prisma.$print_agreementsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Print_agreements that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {print_agreementsFindUniqueOrThrowArgs} args - Arguments to find a Print_agreements
+     * @example
+     * // Get one Print_agreements
+     * const print_agreements = await prisma.print_agreements.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends print_agreementsFindUniqueOrThrowArgs>(args: SelectSubset<T, print_agreementsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__print_agreementsClient<$Result.GetResult<Prisma.$print_agreementsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Print_agreements that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {print_agreementsFindFirstArgs} args - Arguments to find a Print_agreements
+     * @example
+     * // Get one Print_agreements
+     * const print_agreements = await prisma.print_agreements.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends print_agreementsFindFirstArgs>(args?: SelectSubset<T, print_agreementsFindFirstArgs<ExtArgs>>): Prisma__print_agreementsClient<$Result.GetResult<Prisma.$print_agreementsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Print_agreements that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {print_agreementsFindFirstOrThrowArgs} args - Arguments to find a Print_agreements
+     * @example
+     * // Get one Print_agreements
+     * const print_agreements = await prisma.print_agreements.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends print_agreementsFindFirstOrThrowArgs>(args?: SelectSubset<T, print_agreementsFindFirstOrThrowArgs<ExtArgs>>): Prisma__print_agreementsClient<$Result.GetResult<Prisma.$print_agreementsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Print_agreements that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {print_agreementsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Print_agreements
+     * const print_agreements = await prisma.print_agreements.findMany()
+     * 
+     * // Get first 10 Print_agreements
+     * const print_agreements = await prisma.print_agreements.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const print_agreementsWithIdOnly = await prisma.print_agreements.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends print_agreementsFindManyArgs>(args?: SelectSubset<T, print_agreementsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$print_agreementsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Print_agreements.
+     * @param {print_agreementsCreateArgs} args - Arguments to create a Print_agreements.
+     * @example
+     * // Create one Print_agreements
+     * const Print_agreements = await prisma.print_agreements.create({
+     *   data: {
+     *     // ... data to create a Print_agreements
+     *   }
+     * })
+     * 
+     */
+    create<T extends print_agreementsCreateArgs>(args: SelectSubset<T, print_agreementsCreateArgs<ExtArgs>>): Prisma__print_agreementsClient<$Result.GetResult<Prisma.$print_agreementsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Print_agreements.
+     * @param {print_agreementsCreateManyArgs} args - Arguments to create many Print_agreements.
+     * @example
+     * // Create many Print_agreements
+     * const print_agreements = await prisma.print_agreements.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends print_agreementsCreateManyArgs>(args?: SelectSubset<T, print_agreementsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Print_agreements.
+     * @param {print_agreementsDeleteArgs} args - Arguments to delete one Print_agreements.
+     * @example
+     * // Delete one Print_agreements
+     * const Print_agreements = await prisma.print_agreements.delete({
+     *   where: {
+     *     // ... filter to delete one Print_agreements
+     *   }
+     * })
+     * 
+     */
+    delete<T extends print_agreementsDeleteArgs>(args: SelectSubset<T, print_agreementsDeleteArgs<ExtArgs>>): Prisma__print_agreementsClient<$Result.GetResult<Prisma.$print_agreementsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Print_agreements.
+     * @param {print_agreementsUpdateArgs} args - Arguments to update one Print_agreements.
+     * @example
+     * // Update one Print_agreements
+     * const print_agreements = await prisma.print_agreements.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends print_agreementsUpdateArgs>(args: SelectSubset<T, print_agreementsUpdateArgs<ExtArgs>>): Prisma__print_agreementsClient<$Result.GetResult<Prisma.$print_agreementsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Print_agreements.
+     * @param {print_agreementsDeleteManyArgs} args - Arguments to filter Print_agreements to delete.
+     * @example
+     * // Delete a few Print_agreements
+     * const { count } = await prisma.print_agreements.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends print_agreementsDeleteManyArgs>(args?: SelectSubset<T, print_agreementsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Print_agreements.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {print_agreementsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Print_agreements
+     * const print_agreements = await prisma.print_agreements.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends print_agreementsUpdateManyArgs>(args: SelectSubset<T, print_agreementsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Print_agreements.
+     * @param {print_agreementsUpsertArgs} args - Arguments to update or create a Print_agreements.
+     * @example
+     * // Update or create a Print_agreements
+     * const print_agreements = await prisma.print_agreements.upsert({
+     *   create: {
+     *     // ... data to create a Print_agreements
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Print_agreements we want to update
+     *   }
+     * })
+     */
+    upsert<T extends print_agreementsUpsertArgs>(args: SelectSubset<T, print_agreementsUpsertArgs<ExtArgs>>): Prisma__print_agreementsClient<$Result.GetResult<Prisma.$print_agreementsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Print_agreements.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {print_agreementsCountArgs} args - Arguments to filter Print_agreements to count.
+     * @example
+     * // Count the number of Print_agreements
+     * const count = await prisma.print_agreements.count({
+     *   where: {
+     *     // ... the filter for the Print_agreements we want to count
+     *   }
+     * })
+    **/
+    count<T extends print_agreementsCountArgs>(
+      args?: Subset<T, print_agreementsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Print_agreementsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Print_agreements.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Print_agreementsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Print_agreementsAggregateArgs>(args: Subset<T, Print_agreementsAggregateArgs>): Prisma.PrismaPromise<GetPrint_agreementsAggregateType<T>>
+
+    /**
+     * Group by Print_agreements.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {print_agreementsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends print_agreementsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: print_agreementsGroupByArgs['orderBy'] }
+        : { orderBy?: print_agreementsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, print_agreementsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPrint_agreementsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the print_agreements model
+   */
+  readonly fields: print_agreementsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for print_agreements.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__print_agreementsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the print_agreements model
+   */
+  interface print_agreementsFieldRefs {
+    readonly id: FieldRef<"print_agreements", 'Int'>
+    readonly bookTitle: FieldRef<"print_agreements", 'String'>
+    readonly printerName: FieldRef<"print_agreements", 'String'>
+    readonly quantity: FieldRef<"print_agreements", 'Int'>
+    readonly status: FieldRef<"print_agreements", 'String'>
+    readonly commencementDate: FieldRef<"print_agreements", 'DateTime'>
+    readonly cost: FieldRef<"print_agreements", 'Float'>
+    readonly terms: FieldRef<"print_agreements", 'String'>
+    readonly memo: FieldRef<"print_agreements", 'String'>
+    readonly is_deleted: FieldRef<"print_agreements", 'Boolean'>
+    readonly updatedAt: FieldRef<"print_agreements", 'DateTime'>
+    readonly createdAt: FieldRef<"print_agreements", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * print_agreements findUnique
+   */
+  export type print_agreementsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the print_agreements
+     */
+    select?: print_agreementsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the print_agreements
+     */
+    omit?: print_agreementsOmit<ExtArgs> | null
+    /**
+     * Filter, which print_agreements to fetch.
+     */
+    where: print_agreementsWhereUniqueInput
+  }
+
+  /**
+   * print_agreements findUniqueOrThrow
+   */
+  export type print_agreementsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the print_agreements
+     */
+    select?: print_agreementsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the print_agreements
+     */
+    omit?: print_agreementsOmit<ExtArgs> | null
+    /**
+     * Filter, which print_agreements to fetch.
+     */
+    where: print_agreementsWhereUniqueInput
+  }
+
+  /**
+   * print_agreements findFirst
+   */
+  export type print_agreementsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the print_agreements
+     */
+    select?: print_agreementsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the print_agreements
+     */
+    omit?: print_agreementsOmit<ExtArgs> | null
+    /**
+     * Filter, which print_agreements to fetch.
+     */
+    where?: print_agreementsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of print_agreements to fetch.
+     */
+    orderBy?: print_agreementsOrderByWithRelationInput | print_agreementsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for print_agreements.
+     */
+    cursor?: print_agreementsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` print_agreements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` print_agreements.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of print_agreements.
+     */
+    distinct?: Print_agreementsScalarFieldEnum | Print_agreementsScalarFieldEnum[]
+  }
+
+  /**
+   * print_agreements findFirstOrThrow
+   */
+  export type print_agreementsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the print_agreements
+     */
+    select?: print_agreementsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the print_agreements
+     */
+    omit?: print_agreementsOmit<ExtArgs> | null
+    /**
+     * Filter, which print_agreements to fetch.
+     */
+    where?: print_agreementsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of print_agreements to fetch.
+     */
+    orderBy?: print_agreementsOrderByWithRelationInput | print_agreementsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for print_agreements.
+     */
+    cursor?: print_agreementsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` print_agreements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` print_agreements.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of print_agreements.
+     */
+    distinct?: Print_agreementsScalarFieldEnum | Print_agreementsScalarFieldEnum[]
+  }
+
+  /**
+   * print_agreements findMany
+   */
+  export type print_agreementsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the print_agreements
+     */
+    select?: print_agreementsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the print_agreements
+     */
+    omit?: print_agreementsOmit<ExtArgs> | null
+    /**
+     * Filter, which print_agreements to fetch.
+     */
+    where?: print_agreementsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of print_agreements to fetch.
+     */
+    orderBy?: print_agreementsOrderByWithRelationInput | print_agreementsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing print_agreements.
+     */
+    cursor?: print_agreementsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` print_agreements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` print_agreements.
+     */
+    skip?: number
+    distinct?: Print_agreementsScalarFieldEnum | Print_agreementsScalarFieldEnum[]
+  }
+
+  /**
+   * print_agreements create
+   */
+  export type print_agreementsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the print_agreements
+     */
+    select?: print_agreementsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the print_agreements
+     */
+    omit?: print_agreementsOmit<ExtArgs> | null
+    /**
+     * The data needed to create a print_agreements.
+     */
+    data: XOR<print_agreementsCreateInput, print_agreementsUncheckedCreateInput>
+  }
+
+  /**
+   * print_agreements createMany
+   */
+  export type print_agreementsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many print_agreements.
+     */
+    data: print_agreementsCreateManyInput | print_agreementsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * print_agreements update
+   */
+  export type print_agreementsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the print_agreements
+     */
+    select?: print_agreementsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the print_agreements
+     */
+    omit?: print_agreementsOmit<ExtArgs> | null
+    /**
+     * The data needed to update a print_agreements.
+     */
+    data: XOR<print_agreementsUpdateInput, print_agreementsUncheckedUpdateInput>
+    /**
+     * Choose, which print_agreements to update.
+     */
+    where: print_agreementsWhereUniqueInput
+  }
+
+  /**
+   * print_agreements updateMany
+   */
+  export type print_agreementsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update print_agreements.
+     */
+    data: XOR<print_agreementsUpdateManyMutationInput, print_agreementsUncheckedUpdateManyInput>
+    /**
+     * Filter which print_agreements to update
+     */
+    where?: print_agreementsWhereInput
+    /**
+     * Limit how many print_agreements to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * print_agreements upsert
+   */
+  export type print_agreementsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the print_agreements
+     */
+    select?: print_agreementsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the print_agreements
+     */
+    omit?: print_agreementsOmit<ExtArgs> | null
+    /**
+     * The filter to search for the print_agreements to update in case it exists.
+     */
+    where: print_agreementsWhereUniqueInput
+    /**
+     * In case the print_agreements found by the `where` argument doesn't exist, create a new print_agreements with this data.
+     */
+    create: XOR<print_agreementsCreateInput, print_agreementsUncheckedCreateInput>
+    /**
+     * In case the print_agreements was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<print_agreementsUpdateInput, print_agreementsUncheckedUpdateInput>
+  }
+
+  /**
+   * print_agreements delete
+   */
+  export type print_agreementsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the print_agreements
+     */
+    select?: print_agreementsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the print_agreements
+     */
+    omit?: print_agreementsOmit<ExtArgs> | null
+    /**
+     * Filter which print_agreements to delete.
+     */
+    where: print_agreementsWhereUniqueInput
+  }
+
+  /**
+   * print_agreements deleteMany
+   */
+  export type print_agreementsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which print_agreements to delete
+     */
+    where?: print_agreementsWhereInput
+    /**
+     * Limit how many print_agreements to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * print_agreements without action
+   */
+  export type print_agreementsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the print_agreements
+     */
+    select?: print_agreementsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the print_agreements
+     */
+    omit?: print_agreementsOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model delivery_notes
+   */
+
+  export type AggregateDelivery_notes = {
+    _count: Delivery_notesCountAggregateOutputType | null
+    _avg: Delivery_notesAvgAggregateOutputType | null
+    _sum: Delivery_notesSumAggregateOutputType | null
+    _min: Delivery_notesMinAggregateOutputType | null
+    _max: Delivery_notesMaxAggregateOutputType | null
+  }
+
+  export type Delivery_notesAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type Delivery_notesSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type Delivery_notesMinAggregateOutputType = {
+    id: number | null
+    deliveryNumber: string | null
+    receiverName: string | null
+    driverName: string | null
+    vehiclePlate: string | null
+    status: string | null
+    deliveryDate: Date | null
+    items: string | null
+    memo: string | null
+    is_deleted: boolean | null
+    updatedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type Delivery_notesMaxAggregateOutputType = {
+    id: number | null
+    deliveryNumber: string | null
+    receiverName: string | null
+    driverName: string | null
+    vehiclePlate: string | null
+    status: string | null
+    deliveryDate: Date | null
+    items: string | null
+    memo: string | null
+    is_deleted: boolean | null
+    updatedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type Delivery_notesCountAggregateOutputType = {
+    id: number
+    deliveryNumber: number
+    receiverName: number
+    driverName: number
+    vehiclePlate: number
+    status: number
+    deliveryDate: number
+    items: number
+    memo: number
+    is_deleted: number
+    updatedAt: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type Delivery_notesAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type Delivery_notesSumAggregateInputType = {
+    id?: true
+  }
+
+  export type Delivery_notesMinAggregateInputType = {
+    id?: true
+    deliveryNumber?: true
+    receiverName?: true
+    driverName?: true
+    vehiclePlate?: true
+    status?: true
+    deliveryDate?: true
+    items?: true
+    memo?: true
+    is_deleted?: true
+    updatedAt?: true
+    createdAt?: true
+  }
+
+  export type Delivery_notesMaxAggregateInputType = {
+    id?: true
+    deliveryNumber?: true
+    receiverName?: true
+    driverName?: true
+    vehiclePlate?: true
+    status?: true
+    deliveryDate?: true
+    items?: true
+    memo?: true
+    is_deleted?: true
+    updatedAt?: true
+    createdAt?: true
+  }
+
+  export type Delivery_notesCountAggregateInputType = {
+    id?: true
+    deliveryNumber?: true
+    receiverName?: true
+    driverName?: true
+    vehiclePlate?: true
+    status?: true
+    deliveryDate?: true
+    items?: true
+    memo?: true
+    is_deleted?: true
+    updatedAt?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type Delivery_notesAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which delivery_notes to aggregate.
+     */
+    where?: delivery_notesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of delivery_notes to fetch.
+     */
+    orderBy?: delivery_notesOrderByWithRelationInput | delivery_notesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: delivery_notesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` delivery_notes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` delivery_notes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned delivery_notes
+    **/
+    _count?: true | Delivery_notesCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: Delivery_notesAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: Delivery_notesSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Delivery_notesMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Delivery_notesMaxAggregateInputType
+  }
+
+  export type GetDelivery_notesAggregateType<T extends Delivery_notesAggregateArgs> = {
+        [P in keyof T & keyof AggregateDelivery_notes]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateDelivery_notes[P]>
+      : GetScalarType<T[P], AggregateDelivery_notes[P]>
+  }
+
+
+
+
+  export type delivery_notesGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: delivery_notesWhereInput
+    orderBy?: delivery_notesOrderByWithAggregationInput | delivery_notesOrderByWithAggregationInput[]
+    by: Delivery_notesScalarFieldEnum[] | Delivery_notesScalarFieldEnum
+    having?: delivery_notesScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Delivery_notesCountAggregateInputType | true
+    _avg?: Delivery_notesAvgAggregateInputType
+    _sum?: Delivery_notesSumAggregateInputType
+    _min?: Delivery_notesMinAggregateInputType
+    _max?: Delivery_notesMaxAggregateInputType
+  }
+
+  export type Delivery_notesGroupByOutputType = {
+    id: number
+    deliveryNumber: string
+    receiverName: string
+    driverName: string
+    vehiclePlate: string | null
+    status: string
+    deliveryDate: Date | null
+    items: string
+    memo: string | null
+    is_deleted: boolean
+    updatedAt: Date
+    createdAt: Date
+    _count: Delivery_notesCountAggregateOutputType | null
+    _avg: Delivery_notesAvgAggregateOutputType | null
+    _sum: Delivery_notesSumAggregateOutputType | null
+    _min: Delivery_notesMinAggregateOutputType | null
+    _max: Delivery_notesMaxAggregateOutputType | null
+  }
+
+  type GetDelivery_notesGroupByPayload<T extends delivery_notesGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Delivery_notesGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Delivery_notesGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Delivery_notesGroupByOutputType[P]>
+            : GetScalarType<T[P], Delivery_notesGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type delivery_notesSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    deliveryNumber?: boolean
+    receiverName?: boolean
+    driverName?: boolean
+    vehiclePlate?: boolean
+    status?: boolean
+    deliveryDate?: boolean
+    items?: boolean
+    memo?: boolean
+    is_deleted?: boolean
+    updatedAt?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["delivery_notes"]>
+
+
+
+  export type delivery_notesSelectScalar = {
+    id?: boolean
+    deliveryNumber?: boolean
+    receiverName?: boolean
+    driverName?: boolean
+    vehiclePlate?: boolean
+    status?: boolean
+    deliveryDate?: boolean
+    items?: boolean
+    memo?: boolean
+    is_deleted?: boolean
+    updatedAt?: boolean
+    createdAt?: boolean
+  }
+
+  export type delivery_notesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "deliveryNumber" | "receiverName" | "driverName" | "vehiclePlate" | "status" | "deliveryDate" | "items" | "memo" | "is_deleted" | "updatedAt" | "createdAt", ExtArgs["result"]["delivery_notes"]>
+
+  export type $delivery_notesPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "delivery_notes"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      deliveryNumber: string
+      receiverName: string
+      driverName: string
+      vehiclePlate: string | null
+      status: string
+      deliveryDate: Date | null
+      items: string
+      memo: string | null
+      is_deleted: boolean
+      updatedAt: Date
+      createdAt: Date
+    }, ExtArgs["result"]["delivery_notes"]>
+    composites: {}
+  }
+
+  type delivery_notesGetPayload<S extends boolean | null | undefined | delivery_notesDefaultArgs> = $Result.GetResult<Prisma.$delivery_notesPayload, S>
+
+  type delivery_notesCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<delivery_notesFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Delivery_notesCountAggregateInputType | true
+    }
+
+  export interface delivery_notesDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['delivery_notes'], meta: { name: 'delivery_notes' } }
+    /**
+     * Find zero or one Delivery_notes that matches the filter.
+     * @param {delivery_notesFindUniqueArgs} args - Arguments to find a Delivery_notes
+     * @example
+     * // Get one Delivery_notes
+     * const delivery_notes = await prisma.delivery_notes.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends delivery_notesFindUniqueArgs>(args: SelectSubset<T, delivery_notesFindUniqueArgs<ExtArgs>>): Prisma__delivery_notesClient<$Result.GetResult<Prisma.$delivery_notesPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Delivery_notes that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {delivery_notesFindUniqueOrThrowArgs} args - Arguments to find a Delivery_notes
+     * @example
+     * // Get one Delivery_notes
+     * const delivery_notes = await prisma.delivery_notes.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends delivery_notesFindUniqueOrThrowArgs>(args: SelectSubset<T, delivery_notesFindUniqueOrThrowArgs<ExtArgs>>): Prisma__delivery_notesClient<$Result.GetResult<Prisma.$delivery_notesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Delivery_notes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {delivery_notesFindFirstArgs} args - Arguments to find a Delivery_notes
+     * @example
+     * // Get one Delivery_notes
+     * const delivery_notes = await prisma.delivery_notes.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends delivery_notesFindFirstArgs>(args?: SelectSubset<T, delivery_notesFindFirstArgs<ExtArgs>>): Prisma__delivery_notesClient<$Result.GetResult<Prisma.$delivery_notesPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Delivery_notes that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {delivery_notesFindFirstOrThrowArgs} args - Arguments to find a Delivery_notes
+     * @example
+     * // Get one Delivery_notes
+     * const delivery_notes = await prisma.delivery_notes.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends delivery_notesFindFirstOrThrowArgs>(args?: SelectSubset<T, delivery_notesFindFirstOrThrowArgs<ExtArgs>>): Prisma__delivery_notesClient<$Result.GetResult<Prisma.$delivery_notesPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Delivery_notes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {delivery_notesFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Delivery_notes
+     * const delivery_notes = await prisma.delivery_notes.findMany()
+     * 
+     * // Get first 10 Delivery_notes
+     * const delivery_notes = await prisma.delivery_notes.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const delivery_notesWithIdOnly = await prisma.delivery_notes.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends delivery_notesFindManyArgs>(args?: SelectSubset<T, delivery_notesFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$delivery_notesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Delivery_notes.
+     * @param {delivery_notesCreateArgs} args - Arguments to create a Delivery_notes.
+     * @example
+     * // Create one Delivery_notes
+     * const Delivery_notes = await prisma.delivery_notes.create({
+     *   data: {
+     *     // ... data to create a Delivery_notes
+     *   }
+     * })
+     * 
+     */
+    create<T extends delivery_notesCreateArgs>(args: SelectSubset<T, delivery_notesCreateArgs<ExtArgs>>): Prisma__delivery_notesClient<$Result.GetResult<Prisma.$delivery_notesPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Delivery_notes.
+     * @param {delivery_notesCreateManyArgs} args - Arguments to create many Delivery_notes.
+     * @example
+     * // Create many Delivery_notes
+     * const delivery_notes = await prisma.delivery_notes.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends delivery_notesCreateManyArgs>(args?: SelectSubset<T, delivery_notesCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Delivery_notes.
+     * @param {delivery_notesDeleteArgs} args - Arguments to delete one Delivery_notes.
+     * @example
+     * // Delete one Delivery_notes
+     * const Delivery_notes = await prisma.delivery_notes.delete({
+     *   where: {
+     *     // ... filter to delete one Delivery_notes
+     *   }
+     * })
+     * 
+     */
+    delete<T extends delivery_notesDeleteArgs>(args: SelectSubset<T, delivery_notesDeleteArgs<ExtArgs>>): Prisma__delivery_notesClient<$Result.GetResult<Prisma.$delivery_notesPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Delivery_notes.
+     * @param {delivery_notesUpdateArgs} args - Arguments to update one Delivery_notes.
+     * @example
+     * // Update one Delivery_notes
+     * const delivery_notes = await prisma.delivery_notes.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends delivery_notesUpdateArgs>(args: SelectSubset<T, delivery_notesUpdateArgs<ExtArgs>>): Prisma__delivery_notesClient<$Result.GetResult<Prisma.$delivery_notesPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Delivery_notes.
+     * @param {delivery_notesDeleteManyArgs} args - Arguments to filter Delivery_notes to delete.
+     * @example
+     * // Delete a few Delivery_notes
+     * const { count } = await prisma.delivery_notes.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends delivery_notesDeleteManyArgs>(args?: SelectSubset<T, delivery_notesDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Delivery_notes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {delivery_notesUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Delivery_notes
+     * const delivery_notes = await prisma.delivery_notes.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends delivery_notesUpdateManyArgs>(args: SelectSubset<T, delivery_notesUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Delivery_notes.
+     * @param {delivery_notesUpsertArgs} args - Arguments to update or create a Delivery_notes.
+     * @example
+     * // Update or create a Delivery_notes
+     * const delivery_notes = await prisma.delivery_notes.upsert({
+     *   create: {
+     *     // ... data to create a Delivery_notes
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Delivery_notes we want to update
+     *   }
+     * })
+     */
+    upsert<T extends delivery_notesUpsertArgs>(args: SelectSubset<T, delivery_notesUpsertArgs<ExtArgs>>): Prisma__delivery_notesClient<$Result.GetResult<Prisma.$delivery_notesPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Delivery_notes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {delivery_notesCountArgs} args - Arguments to filter Delivery_notes to count.
+     * @example
+     * // Count the number of Delivery_notes
+     * const count = await prisma.delivery_notes.count({
+     *   where: {
+     *     // ... the filter for the Delivery_notes we want to count
+     *   }
+     * })
+    **/
+    count<T extends delivery_notesCountArgs>(
+      args?: Subset<T, delivery_notesCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Delivery_notesCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Delivery_notes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Delivery_notesAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Delivery_notesAggregateArgs>(args: Subset<T, Delivery_notesAggregateArgs>): Prisma.PrismaPromise<GetDelivery_notesAggregateType<T>>
+
+    /**
+     * Group by Delivery_notes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {delivery_notesGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends delivery_notesGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: delivery_notesGroupByArgs['orderBy'] }
+        : { orderBy?: delivery_notesGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, delivery_notesGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetDelivery_notesGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the delivery_notes model
+   */
+  readonly fields: delivery_notesFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for delivery_notes.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__delivery_notesClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the delivery_notes model
+   */
+  interface delivery_notesFieldRefs {
+    readonly id: FieldRef<"delivery_notes", 'Int'>
+    readonly deliveryNumber: FieldRef<"delivery_notes", 'String'>
+    readonly receiverName: FieldRef<"delivery_notes", 'String'>
+    readonly driverName: FieldRef<"delivery_notes", 'String'>
+    readonly vehiclePlate: FieldRef<"delivery_notes", 'String'>
+    readonly status: FieldRef<"delivery_notes", 'String'>
+    readonly deliveryDate: FieldRef<"delivery_notes", 'DateTime'>
+    readonly items: FieldRef<"delivery_notes", 'String'>
+    readonly memo: FieldRef<"delivery_notes", 'String'>
+    readonly is_deleted: FieldRef<"delivery_notes", 'Boolean'>
+    readonly updatedAt: FieldRef<"delivery_notes", 'DateTime'>
+    readonly createdAt: FieldRef<"delivery_notes", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * delivery_notes findUnique
+   */
+  export type delivery_notesFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the delivery_notes
+     */
+    select?: delivery_notesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the delivery_notes
+     */
+    omit?: delivery_notesOmit<ExtArgs> | null
+    /**
+     * Filter, which delivery_notes to fetch.
+     */
+    where: delivery_notesWhereUniqueInput
+  }
+
+  /**
+   * delivery_notes findUniqueOrThrow
+   */
+  export type delivery_notesFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the delivery_notes
+     */
+    select?: delivery_notesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the delivery_notes
+     */
+    omit?: delivery_notesOmit<ExtArgs> | null
+    /**
+     * Filter, which delivery_notes to fetch.
+     */
+    where: delivery_notesWhereUniqueInput
+  }
+
+  /**
+   * delivery_notes findFirst
+   */
+  export type delivery_notesFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the delivery_notes
+     */
+    select?: delivery_notesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the delivery_notes
+     */
+    omit?: delivery_notesOmit<ExtArgs> | null
+    /**
+     * Filter, which delivery_notes to fetch.
+     */
+    where?: delivery_notesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of delivery_notes to fetch.
+     */
+    orderBy?: delivery_notesOrderByWithRelationInput | delivery_notesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for delivery_notes.
+     */
+    cursor?: delivery_notesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` delivery_notes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` delivery_notes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of delivery_notes.
+     */
+    distinct?: Delivery_notesScalarFieldEnum | Delivery_notesScalarFieldEnum[]
+  }
+
+  /**
+   * delivery_notes findFirstOrThrow
+   */
+  export type delivery_notesFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the delivery_notes
+     */
+    select?: delivery_notesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the delivery_notes
+     */
+    omit?: delivery_notesOmit<ExtArgs> | null
+    /**
+     * Filter, which delivery_notes to fetch.
+     */
+    where?: delivery_notesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of delivery_notes to fetch.
+     */
+    orderBy?: delivery_notesOrderByWithRelationInput | delivery_notesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for delivery_notes.
+     */
+    cursor?: delivery_notesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` delivery_notes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` delivery_notes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of delivery_notes.
+     */
+    distinct?: Delivery_notesScalarFieldEnum | Delivery_notesScalarFieldEnum[]
+  }
+
+  /**
+   * delivery_notes findMany
+   */
+  export type delivery_notesFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the delivery_notes
+     */
+    select?: delivery_notesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the delivery_notes
+     */
+    omit?: delivery_notesOmit<ExtArgs> | null
+    /**
+     * Filter, which delivery_notes to fetch.
+     */
+    where?: delivery_notesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of delivery_notes to fetch.
+     */
+    orderBy?: delivery_notesOrderByWithRelationInput | delivery_notesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing delivery_notes.
+     */
+    cursor?: delivery_notesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` delivery_notes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` delivery_notes.
+     */
+    skip?: number
+    distinct?: Delivery_notesScalarFieldEnum | Delivery_notesScalarFieldEnum[]
+  }
+
+  /**
+   * delivery_notes create
+   */
+  export type delivery_notesCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the delivery_notes
+     */
+    select?: delivery_notesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the delivery_notes
+     */
+    omit?: delivery_notesOmit<ExtArgs> | null
+    /**
+     * The data needed to create a delivery_notes.
+     */
+    data: XOR<delivery_notesCreateInput, delivery_notesUncheckedCreateInput>
+  }
+
+  /**
+   * delivery_notes createMany
+   */
+  export type delivery_notesCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many delivery_notes.
+     */
+    data: delivery_notesCreateManyInput | delivery_notesCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * delivery_notes update
+   */
+  export type delivery_notesUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the delivery_notes
+     */
+    select?: delivery_notesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the delivery_notes
+     */
+    omit?: delivery_notesOmit<ExtArgs> | null
+    /**
+     * The data needed to update a delivery_notes.
+     */
+    data: XOR<delivery_notesUpdateInput, delivery_notesUncheckedUpdateInput>
+    /**
+     * Choose, which delivery_notes to update.
+     */
+    where: delivery_notesWhereUniqueInput
+  }
+
+  /**
+   * delivery_notes updateMany
+   */
+  export type delivery_notesUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update delivery_notes.
+     */
+    data: XOR<delivery_notesUpdateManyMutationInput, delivery_notesUncheckedUpdateManyInput>
+    /**
+     * Filter which delivery_notes to update
+     */
+    where?: delivery_notesWhereInput
+    /**
+     * Limit how many delivery_notes to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * delivery_notes upsert
+   */
+  export type delivery_notesUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the delivery_notes
+     */
+    select?: delivery_notesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the delivery_notes
+     */
+    omit?: delivery_notesOmit<ExtArgs> | null
+    /**
+     * The filter to search for the delivery_notes to update in case it exists.
+     */
+    where: delivery_notesWhereUniqueInput
+    /**
+     * In case the delivery_notes found by the `where` argument doesn't exist, create a new delivery_notes with this data.
+     */
+    create: XOR<delivery_notesCreateInput, delivery_notesUncheckedCreateInput>
+    /**
+     * In case the delivery_notes was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<delivery_notesUpdateInput, delivery_notesUncheckedUpdateInput>
+  }
+
+  /**
+   * delivery_notes delete
+   */
+  export type delivery_notesDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the delivery_notes
+     */
+    select?: delivery_notesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the delivery_notes
+     */
+    omit?: delivery_notesOmit<ExtArgs> | null
+    /**
+     * Filter which delivery_notes to delete.
+     */
+    where: delivery_notesWhereUniqueInput
+  }
+
+  /**
+   * delivery_notes deleteMany
+   */
+  export type delivery_notesDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which delivery_notes to delete
+     */
+    where?: delivery_notesWhereInput
+    /**
+     * Limit how many delivery_notes to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * delivery_notes without action
+   */
+  export type delivery_notesDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the delivery_notes
+     */
+    select?: delivery_notesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the delivery_notes
+     */
+    omit?: delivery_notesOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model invoices
+   */
+
+  export type AggregateInvoices = {
+    _count: InvoicesCountAggregateOutputType | null
+    _avg: InvoicesAvgAggregateOutputType | null
+    _sum: InvoicesSumAggregateOutputType | null
+    _min: InvoicesMinAggregateOutputType | null
+    _max: InvoicesMaxAggregateOutputType | null
+  }
+
+  export type InvoicesAvgAggregateOutputType = {
+    id: number | null
+    amount: number | null
+  }
+
+  export type InvoicesSumAggregateOutputType = {
+    id: number | null
+    amount: number | null
+  }
+
+  export type InvoicesMinAggregateOutputType = {
+    id: number | null
+    invoiceNumber: string | null
+    customerName: string | null
+    amount: number | null
+    status: string | null
+    dueDate: Date | null
+    issueDate: Date | null
+    imageUrl: string | null
+    memo: string | null
+    is_deleted: boolean | null
+    updatedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type InvoicesMaxAggregateOutputType = {
+    id: number | null
+    invoiceNumber: string | null
+    customerName: string | null
+    amount: number | null
+    status: string | null
+    dueDate: Date | null
+    issueDate: Date | null
+    imageUrl: string | null
+    memo: string | null
+    is_deleted: boolean | null
+    updatedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type InvoicesCountAggregateOutputType = {
+    id: number
+    invoiceNumber: number
+    customerName: number
+    amount: number
+    status: number
+    dueDate: number
+    issueDate: number
+    imageUrl: number
+    memo: number
+    is_deleted: number
+    updatedAt: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type InvoicesAvgAggregateInputType = {
+    id?: true
+    amount?: true
+  }
+
+  export type InvoicesSumAggregateInputType = {
+    id?: true
+    amount?: true
+  }
+
+  export type InvoicesMinAggregateInputType = {
+    id?: true
+    invoiceNumber?: true
+    customerName?: true
+    amount?: true
+    status?: true
+    dueDate?: true
+    issueDate?: true
+    imageUrl?: true
+    memo?: true
+    is_deleted?: true
+    updatedAt?: true
+    createdAt?: true
+  }
+
+  export type InvoicesMaxAggregateInputType = {
+    id?: true
+    invoiceNumber?: true
+    customerName?: true
+    amount?: true
+    status?: true
+    dueDate?: true
+    issueDate?: true
+    imageUrl?: true
+    memo?: true
+    is_deleted?: true
+    updatedAt?: true
+    createdAt?: true
+  }
+
+  export type InvoicesCountAggregateInputType = {
+    id?: true
+    invoiceNumber?: true
+    customerName?: true
+    amount?: true
+    status?: true
+    dueDate?: true
+    issueDate?: true
+    imageUrl?: true
+    memo?: true
+    is_deleted?: true
+    updatedAt?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type InvoicesAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which invoices to aggregate.
+     */
+    where?: invoicesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of invoices to fetch.
+     */
+    orderBy?: invoicesOrderByWithRelationInput | invoicesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: invoicesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` invoices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` invoices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned invoices
+    **/
+    _count?: true | InvoicesCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: InvoicesAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: InvoicesSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: InvoicesMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: InvoicesMaxAggregateInputType
+  }
+
+  export type GetInvoicesAggregateType<T extends InvoicesAggregateArgs> = {
+        [P in keyof T & keyof AggregateInvoices]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateInvoices[P]>
+      : GetScalarType<T[P], AggregateInvoices[P]>
+  }
+
+
+
+
+  export type invoicesGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: invoicesWhereInput
+    orderBy?: invoicesOrderByWithAggregationInput | invoicesOrderByWithAggregationInput[]
+    by: InvoicesScalarFieldEnum[] | InvoicesScalarFieldEnum
+    having?: invoicesScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: InvoicesCountAggregateInputType | true
+    _avg?: InvoicesAvgAggregateInputType
+    _sum?: InvoicesSumAggregateInputType
+    _min?: InvoicesMinAggregateInputType
+    _max?: InvoicesMaxAggregateInputType
+  }
+
+  export type InvoicesGroupByOutputType = {
+    id: number
+    invoiceNumber: string
+    customerName: string
+    amount: number
+    status: string
+    dueDate: Date | null
+    issueDate: Date | null
+    imageUrl: string | null
+    memo: string | null
+    is_deleted: boolean
+    updatedAt: Date
+    createdAt: Date
+    _count: InvoicesCountAggregateOutputType | null
+    _avg: InvoicesAvgAggregateOutputType | null
+    _sum: InvoicesSumAggregateOutputType | null
+    _min: InvoicesMinAggregateOutputType | null
+    _max: InvoicesMaxAggregateOutputType | null
+  }
+
+  type GetInvoicesGroupByPayload<T extends invoicesGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<InvoicesGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof InvoicesGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], InvoicesGroupByOutputType[P]>
+            : GetScalarType<T[P], InvoicesGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type invoicesSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    invoiceNumber?: boolean
+    customerName?: boolean
+    amount?: boolean
+    status?: boolean
+    dueDate?: boolean
+    issueDate?: boolean
+    imageUrl?: boolean
+    memo?: boolean
+    is_deleted?: boolean
+    updatedAt?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["invoices"]>
+
+
+
+  export type invoicesSelectScalar = {
+    id?: boolean
+    invoiceNumber?: boolean
+    customerName?: boolean
+    amount?: boolean
+    status?: boolean
+    dueDate?: boolean
+    issueDate?: boolean
+    imageUrl?: boolean
+    memo?: boolean
+    is_deleted?: boolean
+    updatedAt?: boolean
+    createdAt?: boolean
+  }
+
+  export type invoicesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "invoiceNumber" | "customerName" | "amount" | "status" | "dueDate" | "issueDate" | "imageUrl" | "memo" | "is_deleted" | "updatedAt" | "createdAt", ExtArgs["result"]["invoices"]>
+
+  export type $invoicesPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "invoices"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      invoiceNumber: string
+      customerName: string
+      amount: number
+      status: string
+      dueDate: Date | null
+      issueDate: Date | null
+      imageUrl: string | null
+      memo: string | null
+      is_deleted: boolean
+      updatedAt: Date
+      createdAt: Date
+    }, ExtArgs["result"]["invoices"]>
+    composites: {}
+  }
+
+  type invoicesGetPayload<S extends boolean | null | undefined | invoicesDefaultArgs> = $Result.GetResult<Prisma.$invoicesPayload, S>
+
+  type invoicesCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<invoicesFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: InvoicesCountAggregateInputType | true
+    }
+
+  export interface invoicesDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['invoices'], meta: { name: 'invoices' } }
+    /**
+     * Find zero or one Invoices that matches the filter.
+     * @param {invoicesFindUniqueArgs} args - Arguments to find a Invoices
+     * @example
+     * // Get one Invoices
+     * const invoices = await prisma.invoices.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends invoicesFindUniqueArgs>(args: SelectSubset<T, invoicesFindUniqueArgs<ExtArgs>>): Prisma__invoicesClient<$Result.GetResult<Prisma.$invoicesPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Invoices that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {invoicesFindUniqueOrThrowArgs} args - Arguments to find a Invoices
+     * @example
+     * // Get one Invoices
+     * const invoices = await prisma.invoices.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends invoicesFindUniqueOrThrowArgs>(args: SelectSubset<T, invoicesFindUniqueOrThrowArgs<ExtArgs>>): Prisma__invoicesClient<$Result.GetResult<Prisma.$invoicesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Invoices that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {invoicesFindFirstArgs} args - Arguments to find a Invoices
+     * @example
+     * // Get one Invoices
+     * const invoices = await prisma.invoices.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends invoicesFindFirstArgs>(args?: SelectSubset<T, invoicesFindFirstArgs<ExtArgs>>): Prisma__invoicesClient<$Result.GetResult<Prisma.$invoicesPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Invoices that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {invoicesFindFirstOrThrowArgs} args - Arguments to find a Invoices
+     * @example
+     * // Get one Invoices
+     * const invoices = await prisma.invoices.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends invoicesFindFirstOrThrowArgs>(args?: SelectSubset<T, invoicesFindFirstOrThrowArgs<ExtArgs>>): Prisma__invoicesClient<$Result.GetResult<Prisma.$invoicesPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Invoices that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {invoicesFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Invoices
+     * const invoices = await prisma.invoices.findMany()
+     * 
+     * // Get first 10 Invoices
+     * const invoices = await prisma.invoices.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const invoicesWithIdOnly = await prisma.invoices.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends invoicesFindManyArgs>(args?: SelectSubset<T, invoicesFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$invoicesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Invoices.
+     * @param {invoicesCreateArgs} args - Arguments to create a Invoices.
+     * @example
+     * // Create one Invoices
+     * const Invoices = await prisma.invoices.create({
+     *   data: {
+     *     // ... data to create a Invoices
+     *   }
+     * })
+     * 
+     */
+    create<T extends invoicesCreateArgs>(args: SelectSubset<T, invoicesCreateArgs<ExtArgs>>): Prisma__invoicesClient<$Result.GetResult<Prisma.$invoicesPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Invoices.
+     * @param {invoicesCreateManyArgs} args - Arguments to create many Invoices.
+     * @example
+     * // Create many Invoices
+     * const invoices = await prisma.invoices.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends invoicesCreateManyArgs>(args?: SelectSubset<T, invoicesCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Invoices.
+     * @param {invoicesDeleteArgs} args - Arguments to delete one Invoices.
+     * @example
+     * // Delete one Invoices
+     * const Invoices = await prisma.invoices.delete({
+     *   where: {
+     *     // ... filter to delete one Invoices
+     *   }
+     * })
+     * 
+     */
+    delete<T extends invoicesDeleteArgs>(args: SelectSubset<T, invoicesDeleteArgs<ExtArgs>>): Prisma__invoicesClient<$Result.GetResult<Prisma.$invoicesPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Invoices.
+     * @param {invoicesUpdateArgs} args - Arguments to update one Invoices.
+     * @example
+     * // Update one Invoices
+     * const invoices = await prisma.invoices.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends invoicesUpdateArgs>(args: SelectSubset<T, invoicesUpdateArgs<ExtArgs>>): Prisma__invoicesClient<$Result.GetResult<Prisma.$invoicesPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Invoices.
+     * @param {invoicesDeleteManyArgs} args - Arguments to filter Invoices to delete.
+     * @example
+     * // Delete a few Invoices
+     * const { count } = await prisma.invoices.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends invoicesDeleteManyArgs>(args?: SelectSubset<T, invoicesDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Invoices.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {invoicesUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Invoices
+     * const invoices = await prisma.invoices.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends invoicesUpdateManyArgs>(args: SelectSubset<T, invoicesUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Invoices.
+     * @param {invoicesUpsertArgs} args - Arguments to update or create a Invoices.
+     * @example
+     * // Update or create a Invoices
+     * const invoices = await prisma.invoices.upsert({
+     *   create: {
+     *     // ... data to create a Invoices
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Invoices we want to update
+     *   }
+     * })
+     */
+    upsert<T extends invoicesUpsertArgs>(args: SelectSubset<T, invoicesUpsertArgs<ExtArgs>>): Prisma__invoicesClient<$Result.GetResult<Prisma.$invoicesPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Invoices.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {invoicesCountArgs} args - Arguments to filter Invoices to count.
+     * @example
+     * // Count the number of Invoices
+     * const count = await prisma.invoices.count({
+     *   where: {
+     *     // ... the filter for the Invoices we want to count
+     *   }
+     * })
+    **/
+    count<T extends invoicesCountArgs>(
+      args?: Subset<T, invoicesCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], InvoicesCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Invoices.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InvoicesAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends InvoicesAggregateArgs>(args: Subset<T, InvoicesAggregateArgs>): Prisma.PrismaPromise<GetInvoicesAggregateType<T>>
+
+    /**
+     * Group by Invoices.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {invoicesGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends invoicesGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: invoicesGroupByArgs['orderBy'] }
+        : { orderBy?: invoicesGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, invoicesGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetInvoicesGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the invoices model
+   */
+  readonly fields: invoicesFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for invoices.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__invoicesClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the invoices model
+   */
+  interface invoicesFieldRefs {
+    readonly id: FieldRef<"invoices", 'Int'>
+    readonly invoiceNumber: FieldRef<"invoices", 'String'>
+    readonly customerName: FieldRef<"invoices", 'String'>
+    readonly amount: FieldRef<"invoices", 'Float'>
+    readonly status: FieldRef<"invoices", 'String'>
+    readonly dueDate: FieldRef<"invoices", 'DateTime'>
+    readonly issueDate: FieldRef<"invoices", 'DateTime'>
+    readonly imageUrl: FieldRef<"invoices", 'String'>
+    readonly memo: FieldRef<"invoices", 'String'>
+    readonly is_deleted: FieldRef<"invoices", 'Boolean'>
+    readonly updatedAt: FieldRef<"invoices", 'DateTime'>
+    readonly createdAt: FieldRef<"invoices", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * invoices findUnique
+   */
+  export type invoicesFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the invoices
+     */
+    select?: invoicesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the invoices
+     */
+    omit?: invoicesOmit<ExtArgs> | null
+    /**
+     * Filter, which invoices to fetch.
+     */
+    where: invoicesWhereUniqueInput
+  }
+
+  /**
+   * invoices findUniqueOrThrow
+   */
+  export type invoicesFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the invoices
+     */
+    select?: invoicesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the invoices
+     */
+    omit?: invoicesOmit<ExtArgs> | null
+    /**
+     * Filter, which invoices to fetch.
+     */
+    where: invoicesWhereUniqueInput
+  }
+
+  /**
+   * invoices findFirst
+   */
+  export type invoicesFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the invoices
+     */
+    select?: invoicesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the invoices
+     */
+    omit?: invoicesOmit<ExtArgs> | null
+    /**
+     * Filter, which invoices to fetch.
+     */
+    where?: invoicesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of invoices to fetch.
+     */
+    orderBy?: invoicesOrderByWithRelationInput | invoicesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for invoices.
+     */
+    cursor?: invoicesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` invoices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` invoices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of invoices.
+     */
+    distinct?: InvoicesScalarFieldEnum | InvoicesScalarFieldEnum[]
+  }
+
+  /**
+   * invoices findFirstOrThrow
+   */
+  export type invoicesFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the invoices
+     */
+    select?: invoicesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the invoices
+     */
+    omit?: invoicesOmit<ExtArgs> | null
+    /**
+     * Filter, which invoices to fetch.
+     */
+    where?: invoicesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of invoices to fetch.
+     */
+    orderBy?: invoicesOrderByWithRelationInput | invoicesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for invoices.
+     */
+    cursor?: invoicesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` invoices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` invoices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of invoices.
+     */
+    distinct?: InvoicesScalarFieldEnum | InvoicesScalarFieldEnum[]
+  }
+
+  /**
+   * invoices findMany
+   */
+  export type invoicesFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the invoices
+     */
+    select?: invoicesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the invoices
+     */
+    omit?: invoicesOmit<ExtArgs> | null
+    /**
+     * Filter, which invoices to fetch.
+     */
+    where?: invoicesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of invoices to fetch.
+     */
+    orderBy?: invoicesOrderByWithRelationInput | invoicesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing invoices.
+     */
+    cursor?: invoicesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` invoices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` invoices.
+     */
+    skip?: number
+    distinct?: InvoicesScalarFieldEnum | InvoicesScalarFieldEnum[]
+  }
+
+  /**
+   * invoices create
+   */
+  export type invoicesCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the invoices
+     */
+    select?: invoicesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the invoices
+     */
+    omit?: invoicesOmit<ExtArgs> | null
+    /**
+     * The data needed to create a invoices.
+     */
+    data: XOR<invoicesCreateInput, invoicesUncheckedCreateInput>
+  }
+
+  /**
+   * invoices createMany
+   */
+  export type invoicesCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many invoices.
+     */
+    data: invoicesCreateManyInput | invoicesCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * invoices update
+   */
+  export type invoicesUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the invoices
+     */
+    select?: invoicesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the invoices
+     */
+    omit?: invoicesOmit<ExtArgs> | null
+    /**
+     * The data needed to update a invoices.
+     */
+    data: XOR<invoicesUpdateInput, invoicesUncheckedUpdateInput>
+    /**
+     * Choose, which invoices to update.
+     */
+    where: invoicesWhereUniqueInput
+  }
+
+  /**
+   * invoices updateMany
+   */
+  export type invoicesUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update invoices.
+     */
+    data: XOR<invoicesUpdateManyMutationInput, invoicesUncheckedUpdateManyInput>
+    /**
+     * Filter which invoices to update
+     */
+    where?: invoicesWhereInput
+    /**
+     * Limit how many invoices to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * invoices upsert
+   */
+  export type invoicesUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the invoices
+     */
+    select?: invoicesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the invoices
+     */
+    omit?: invoicesOmit<ExtArgs> | null
+    /**
+     * The filter to search for the invoices to update in case it exists.
+     */
+    where: invoicesWhereUniqueInput
+    /**
+     * In case the invoices found by the `where` argument doesn't exist, create a new invoices with this data.
+     */
+    create: XOR<invoicesCreateInput, invoicesUncheckedCreateInput>
+    /**
+     * In case the invoices was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<invoicesUpdateInput, invoicesUncheckedUpdateInput>
+  }
+
+  /**
+   * invoices delete
+   */
+  export type invoicesDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the invoices
+     */
+    select?: invoicesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the invoices
+     */
+    omit?: invoicesOmit<ExtArgs> | null
+    /**
+     * Filter which invoices to delete.
+     */
+    where: invoicesWhereUniqueInput
+  }
+
+  /**
+   * invoices deleteMany
+   */
+  export type invoicesDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which invoices to delete
+     */
+    where?: invoicesWhereInput
+    /**
+     * Limit how many invoices to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * invoices without action
+   */
+  export type invoicesDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the invoices
+     */
+    select?: invoicesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the invoices
+     */
+    omit?: invoicesOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model approval_documents
+   */
+
+  export type AggregateApproval_documents = {
+    _count: Approval_documentsCountAggregateOutputType | null
+    _avg: Approval_documentsAvgAggregateOutputType | null
+    _sum: Approval_documentsSumAggregateOutputType | null
+    _min: Approval_documentsMinAggregateOutputType | null
+    _max: Approval_documentsMaxAggregateOutputType | null
+  }
+
+  export type Approval_documentsAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type Approval_documentsSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type Approval_documentsMinAggregateOutputType = {
+    id: number | null
+    documentNumber: string | null
+    title: string | null
+    requestedBy: string | null
+    approvedBy: string | null
+    status: string | null
+    approvalDate: Date | null
+    details: string | null
+    memo: string | null
+    is_deleted: boolean | null
+    updatedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type Approval_documentsMaxAggregateOutputType = {
+    id: number | null
+    documentNumber: string | null
+    title: string | null
+    requestedBy: string | null
+    approvedBy: string | null
+    status: string | null
+    approvalDate: Date | null
+    details: string | null
+    memo: string | null
+    is_deleted: boolean | null
+    updatedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type Approval_documentsCountAggregateOutputType = {
+    id: number
+    documentNumber: number
+    title: number
+    requestedBy: number
+    approvedBy: number
+    status: number
+    approvalDate: number
+    details: number
+    memo: number
+    is_deleted: number
+    updatedAt: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type Approval_documentsAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type Approval_documentsSumAggregateInputType = {
+    id?: true
+  }
+
+  export type Approval_documentsMinAggregateInputType = {
+    id?: true
+    documentNumber?: true
+    title?: true
+    requestedBy?: true
+    approvedBy?: true
+    status?: true
+    approvalDate?: true
+    details?: true
+    memo?: true
+    is_deleted?: true
+    updatedAt?: true
+    createdAt?: true
+  }
+
+  export type Approval_documentsMaxAggregateInputType = {
+    id?: true
+    documentNumber?: true
+    title?: true
+    requestedBy?: true
+    approvedBy?: true
+    status?: true
+    approvalDate?: true
+    details?: true
+    memo?: true
+    is_deleted?: true
+    updatedAt?: true
+    createdAt?: true
+  }
+
+  export type Approval_documentsCountAggregateInputType = {
+    id?: true
+    documentNumber?: true
+    title?: true
+    requestedBy?: true
+    approvedBy?: true
+    status?: true
+    approvalDate?: true
+    details?: true
+    memo?: true
+    is_deleted?: true
+    updatedAt?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type Approval_documentsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which approval_documents to aggregate.
+     */
+    where?: approval_documentsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of approval_documents to fetch.
+     */
+    orderBy?: approval_documentsOrderByWithRelationInput | approval_documentsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: approval_documentsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` approval_documents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` approval_documents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned approval_documents
+    **/
+    _count?: true | Approval_documentsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: Approval_documentsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: Approval_documentsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Approval_documentsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Approval_documentsMaxAggregateInputType
+  }
+
+  export type GetApproval_documentsAggregateType<T extends Approval_documentsAggregateArgs> = {
+        [P in keyof T & keyof AggregateApproval_documents]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateApproval_documents[P]>
+      : GetScalarType<T[P], AggregateApproval_documents[P]>
+  }
+
+
+
+
+  export type approval_documentsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: approval_documentsWhereInput
+    orderBy?: approval_documentsOrderByWithAggregationInput | approval_documentsOrderByWithAggregationInput[]
+    by: Approval_documentsScalarFieldEnum[] | Approval_documentsScalarFieldEnum
+    having?: approval_documentsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Approval_documentsCountAggregateInputType | true
+    _avg?: Approval_documentsAvgAggregateInputType
+    _sum?: Approval_documentsSumAggregateInputType
+    _min?: Approval_documentsMinAggregateInputType
+    _max?: Approval_documentsMaxAggregateInputType
+  }
+
+  export type Approval_documentsGroupByOutputType = {
+    id: number
+    documentNumber: string
+    title: string
+    requestedBy: string
+    approvedBy: string | null
+    status: string
+    approvalDate: Date | null
+    details: string
+    memo: string | null
+    is_deleted: boolean
+    updatedAt: Date
+    createdAt: Date
+    _count: Approval_documentsCountAggregateOutputType | null
+    _avg: Approval_documentsAvgAggregateOutputType | null
+    _sum: Approval_documentsSumAggregateOutputType | null
+    _min: Approval_documentsMinAggregateOutputType | null
+    _max: Approval_documentsMaxAggregateOutputType | null
+  }
+
+  type GetApproval_documentsGroupByPayload<T extends approval_documentsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Approval_documentsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Approval_documentsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Approval_documentsGroupByOutputType[P]>
+            : GetScalarType<T[P], Approval_documentsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type approval_documentsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    documentNumber?: boolean
+    title?: boolean
+    requestedBy?: boolean
+    approvedBy?: boolean
+    status?: boolean
+    approvalDate?: boolean
+    details?: boolean
+    memo?: boolean
+    is_deleted?: boolean
+    updatedAt?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["approval_documents"]>
+
+
+
+  export type approval_documentsSelectScalar = {
+    id?: boolean
+    documentNumber?: boolean
+    title?: boolean
+    requestedBy?: boolean
+    approvedBy?: boolean
+    status?: boolean
+    approvalDate?: boolean
+    details?: boolean
+    memo?: boolean
+    is_deleted?: boolean
+    updatedAt?: boolean
+    createdAt?: boolean
+  }
+
+  export type approval_documentsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "documentNumber" | "title" | "requestedBy" | "approvedBy" | "status" | "approvalDate" | "details" | "memo" | "is_deleted" | "updatedAt" | "createdAt", ExtArgs["result"]["approval_documents"]>
+
+  export type $approval_documentsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "approval_documents"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      documentNumber: string
+      title: string
+      requestedBy: string
+      approvedBy: string | null
+      status: string
+      approvalDate: Date | null
+      details: string
+      memo: string | null
+      is_deleted: boolean
+      updatedAt: Date
+      createdAt: Date
+    }, ExtArgs["result"]["approval_documents"]>
+    composites: {}
+  }
+
+  type approval_documentsGetPayload<S extends boolean | null | undefined | approval_documentsDefaultArgs> = $Result.GetResult<Prisma.$approval_documentsPayload, S>
+
+  type approval_documentsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<approval_documentsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Approval_documentsCountAggregateInputType | true
+    }
+
+  export interface approval_documentsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['approval_documents'], meta: { name: 'approval_documents' } }
+    /**
+     * Find zero or one Approval_documents that matches the filter.
+     * @param {approval_documentsFindUniqueArgs} args - Arguments to find a Approval_documents
+     * @example
+     * // Get one Approval_documents
+     * const approval_documents = await prisma.approval_documents.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends approval_documentsFindUniqueArgs>(args: SelectSubset<T, approval_documentsFindUniqueArgs<ExtArgs>>): Prisma__approval_documentsClient<$Result.GetResult<Prisma.$approval_documentsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Approval_documents that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {approval_documentsFindUniqueOrThrowArgs} args - Arguments to find a Approval_documents
+     * @example
+     * // Get one Approval_documents
+     * const approval_documents = await prisma.approval_documents.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends approval_documentsFindUniqueOrThrowArgs>(args: SelectSubset<T, approval_documentsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__approval_documentsClient<$Result.GetResult<Prisma.$approval_documentsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Approval_documents that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {approval_documentsFindFirstArgs} args - Arguments to find a Approval_documents
+     * @example
+     * // Get one Approval_documents
+     * const approval_documents = await prisma.approval_documents.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends approval_documentsFindFirstArgs>(args?: SelectSubset<T, approval_documentsFindFirstArgs<ExtArgs>>): Prisma__approval_documentsClient<$Result.GetResult<Prisma.$approval_documentsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Approval_documents that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {approval_documentsFindFirstOrThrowArgs} args - Arguments to find a Approval_documents
+     * @example
+     * // Get one Approval_documents
+     * const approval_documents = await prisma.approval_documents.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends approval_documentsFindFirstOrThrowArgs>(args?: SelectSubset<T, approval_documentsFindFirstOrThrowArgs<ExtArgs>>): Prisma__approval_documentsClient<$Result.GetResult<Prisma.$approval_documentsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Approval_documents that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {approval_documentsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Approval_documents
+     * const approval_documents = await prisma.approval_documents.findMany()
+     * 
+     * // Get first 10 Approval_documents
+     * const approval_documents = await prisma.approval_documents.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const approval_documentsWithIdOnly = await prisma.approval_documents.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends approval_documentsFindManyArgs>(args?: SelectSubset<T, approval_documentsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$approval_documentsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Approval_documents.
+     * @param {approval_documentsCreateArgs} args - Arguments to create a Approval_documents.
+     * @example
+     * // Create one Approval_documents
+     * const Approval_documents = await prisma.approval_documents.create({
+     *   data: {
+     *     // ... data to create a Approval_documents
+     *   }
+     * })
+     * 
+     */
+    create<T extends approval_documentsCreateArgs>(args: SelectSubset<T, approval_documentsCreateArgs<ExtArgs>>): Prisma__approval_documentsClient<$Result.GetResult<Prisma.$approval_documentsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Approval_documents.
+     * @param {approval_documentsCreateManyArgs} args - Arguments to create many Approval_documents.
+     * @example
+     * // Create many Approval_documents
+     * const approval_documents = await prisma.approval_documents.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends approval_documentsCreateManyArgs>(args?: SelectSubset<T, approval_documentsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Approval_documents.
+     * @param {approval_documentsDeleteArgs} args - Arguments to delete one Approval_documents.
+     * @example
+     * // Delete one Approval_documents
+     * const Approval_documents = await prisma.approval_documents.delete({
+     *   where: {
+     *     // ... filter to delete one Approval_documents
+     *   }
+     * })
+     * 
+     */
+    delete<T extends approval_documentsDeleteArgs>(args: SelectSubset<T, approval_documentsDeleteArgs<ExtArgs>>): Prisma__approval_documentsClient<$Result.GetResult<Prisma.$approval_documentsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Approval_documents.
+     * @param {approval_documentsUpdateArgs} args - Arguments to update one Approval_documents.
+     * @example
+     * // Update one Approval_documents
+     * const approval_documents = await prisma.approval_documents.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends approval_documentsUpdateArgs>(args: SelectSubset<T, approval_documentsUpdateArgs<ExtArgs>>): Prisma__approval_documentsClient<$Result.GetResult<Prisma.$approval_documentsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Approval_documents.
+     * @param {approval_documentsDeleteManyArgs} args - Arguments to filter Approval_documents to delete.
+     * @example
+     * // Delete a few Approval_documents
+     * const { count } = await prisma.approval_documents.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends approval_documentsDeleteManyArgs>(args?: SelectSubset<T, approval_documentsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Approval_documents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {approval_documentsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Approval_documents
+     * const approval_documents = await prisma.approval_documents.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends approval_documentsUpdateManyArgs>(args: SelectSubset<T, approval_documentsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Approval_documents.
+     * @param {approval_documentsUpsertArgs} args - Arguments to update or create a Approval_documents.
+     * @example
+     * // Update or create a Approval_documents
+     * const approval_documents = await prisma.approval_documents.upsert({
+     *   create: {
+     *     // ... data to create a Approval_documents
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Approval_documents we want to update
+     *   }
+     * })
+     */
+    upsert<T extends approval_documentsUpsertArgs>(args: SelectSubset<T, approval_documentsUpsertArgs<ExtArgs>>): Prisma__approval_documentsClient<$Result.GetResult<Prisma.$approval_documentsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Approval_documents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {approval_documentsCountArgs} args - Arguments to filter Approval_documents to count.
+     * @example
+     * // Count the number of Approval_documents
+     * const count = await prisma.approval_documents.count({
+     *   where: {
+     *     // ... the filter for the Approval_documents we want to count
+     *   }
+     * })
+    **/
+    count<T extends approval_documentsCountArgs>(
+      args?: Subset<T, approval_documentsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Approval_documentsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Approval_documents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Approval_documentsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Approval_documentsAggregateArgs>(args: Subset<T, Approval_documentsAggregateArgs>): Prisma.PrismaPromise<GetApproval_documentsAggregateType<T>>
+
+    /**
+     * Group by Approval_documents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {approval_documentsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends approval_documentsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: approval_documentsGroupByArgs['orderBy'] }
+        : { orderBy?: approval_documentsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, approval_documentsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetApproval_documentsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the approval_documents model
+   */
+  readonly fields: approval_documentsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for approval_documents.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__approval_documentsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the approval_documents model
+   */
+  interface approval_documentsFieldRefs {
+    readonly id: FieldRef<"approval_documents", 'Int'>
+    readonly documentNumber: FieldRef<"approval_documents", 'String'>
+    readonly title: FieldRef<"approval_documents", 'String'>
+    readonly requestedBy: FieldRef<"approval_documents", 'String'>
+    readonly approvedBy: FieldRef<"approval_documents", 'String'>
+    readonly status: FieldRef<"approval_documents", 'String'>
+    readonly approvalDate: FieldRef<"approval_documents", 'DateTime'>
+    readonly details: FieldRef<"approval_documents", 'String'>
+    readonly memo: FieldRef<"approval_documents", 'String'>
+    readonly is_deleted: FieldRef<"approval_documents", 'Boolean'>
+    readonly updatedAt: FieldRef<"approval_documents", 'DateTime'>
+    readonly createdAt: FieldRef<"approval_documents", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * approval_documents findUnique
+   */
+  export type approval_documentsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the approval_documents
+     */
+    select?: approval_documentsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the approval_documents
+     */
+    omit?: approval_documentsOmit<ExtArgs> | null
+    /**
+     * Filter, which approval_documents to fetch.
+     */
+    where: approval_documentsWhereUniqueInput
+  }
+
+  /**
+   * approval_documents findUniqueOrThrow
+   */
+  export type approval_documentsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the approval_documents
+     */
+    select?: approval_documentsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the approval_documents
+     */
+    omit?: approval_documentsOmit<ExtArgs> | null
+    /**
+     * Filter, which approval_documents to fetch.
+     */
+    where: approval_documentsWhereUniqueInput
+  }
+
+  /**
+   * approval_documents findFirst
+   */
+  export type approval_documentsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the approval_documents
+     */
+    select?: approval_documentsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the approval_documents
+     */
+    omit?: approval_documentsOmit<ExtArgs> | null
+    /**
+     * Filter, which approval_documents to fetch.
+     */
+    where?: approval_documentsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of approval_documents to fetch.
+     */
+    orderBy?: approval_documentsOrderByWithRelationInput | approval_documentsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for approval_documents.
+     */
+    cursor?: approval_documentsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` approval_documents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` approval_documents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of approval_documents.
+     */
+    distinct?: Approval_documentsScalarFieldEnum | Approval_documentsScalarFieldEnum[]
+  }
+
+  /**
+   * approval_documents findFirstOrThrow
+   */
+  export type approval_documentsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the approval_documents
+     */
+    select?: approval_documentsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the approval_documents
+     */
+    omit?: approval_documentsOmit<ExtArgs> | null
+    /**
+     * Filter, which approval_documents to fetch.
+     */
+    where?: approval_documentsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of approval_documents to fetch.
+     */
+    orderBy?: approval_documentsOrderByWithRelationInput | approval_documentsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for approval_documents.
+     */
+    cursor?: approval_documentsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` approval_documents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` approval_documents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of approval_documents.
+     */
+    distinct?: Approval_documentsScalarFieldEnum | Approval_documentsScalarFieldEnum[]
+  }
+
+  /**
+   * approval_documents findMany
+   */
+  export type approval_documentsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the approval_documents
+     */
+    select?: approval_documentsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the approval_documents
+     */
+    omit?: approval_documentsOmit<ExtArgs> | null
+    /**
+     * Filter, which approval_documents to fetch.
+     */
+    where?: approval_documentsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of approval_documents to fetch.
+     */
+    orderBy?: approval_documentsOrderByWithRelationInput | approval_documentsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing approval_documents.
+     */
+    cursor?: approval_documentsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` approval_documents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` approval_documents.
+     */
+    skip?: number
+    distinct?: Approval_documentsScalarFieldEnum | Approval_documentsScalarFieldEnum[]
+  }
+
+  /**
+   * approval_documents create
+   */
+  export type approval_documentsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the approval_documents
+     */
+    select?: approval_documentsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the approval_documents
+     */
+    omit?: approval_documentsOmit<ExtArgs> | null
+    /**
+     * The data needed to create a approval_documents.
+     */
+    data: XOR<approval_documentsCreateInput, approval_documentsUncheckedCreateInput>
+  }
+
+  /**
+   * approval_documents createMany
+   */
+  export type approval_documentsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many approval_documents.
+     */
+    data: approval_documentsCreateManyInput | approval_documentsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * approval_documents update
+   */
+  export type approval_documentsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the approval_documents
+     */
+    select?: approval_documentsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the approval_documents
+     */
+    omit?: approval_documentsOmit<ExtArgs> | null
+    /**
+     * The data needed to update a approval_documents.
+     */
+    data: XOR<approval_documentsUpdateInput, approval_documentsUncheckedUpdateInput>
+    /**
+     * Choose, which approval_documents to update.
+     */
+    where: approval_documentsWhereUniqueInput
+  }
+
+  /**
+   * approval_documents updateMany
+   */
+  export type approval_documentsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update approval_documents.
+     */
+    data: XOR<approval_documentsUpdateManyMutationInput, approval_documentsUncheckedUpdateManyInput>
+    /**
+     * Filter which approval_documents to update
+     */
+    where?: approval_documentsWhereInput
+    /**
+     * Limit how many approval_documents to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * approval_documents upsert
+   */
+  export type approval_documentsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the approval_documents
+     */
+    select?: approval_documentsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the approval_documents
+     */
+    omit?: approval_documentsOmit<ExtArgs> | null
+    /**
+     * The filter to search for the approval_documents to update in case it exists.
+     */
+    where: approval_documentsWhereUniqueInput
+    /**
+     * In case the approval_documents found by the `where` argument doesn't exist, create a new approval_documents with this data.
+     */
+    create: XOR<approval_documentsCreateInput, approval_documentsUncheckedCreateInput>
+    /**
+     * In case the approval_documents was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<approval_documentsUpdateInput, approval_documentsUncheckedUpdateInput>
+  }
+
+  /**
+   * approval_documents delete
+   */
+  export type approval_documentsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the approval_documents
+     */
+    select?: approval_documentsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the approval_documents
+     */
+    omit?: approval_documentsOmit<ExtArgs> | null
+    /**
+     * Filter which approval_documents to delete.
+     */
+    where: approval_documentsWhereUniqueInput
+  }
+
+  /**
+   * approval_documents deleteMany
+   */
+  export type approval_documentsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which approval_documents to delete
+     */
+    where?: approval_documentsWhereInput
+    /**
+     * Limit how many approval_documents to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * approval_documents without action
+   */
+  export type approval_documentsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the approval_documents
+     */
+    select?: approval_documentsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the approval_documents
+     */
+    omit?: approval_documentsOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -21004,6 +26422,98 @@ export namespace Prisma {
   export type NotesScalarFieldEnum = (typeof NotesScalarFieldEnum)[keyof typeof NotesScalarFieldEnum]
 
 
+  export const ContractsScalarFieldEnum: {
+    id: 'id',
+    title: 'title',
+    party: 'party',
+    type: 'type',
+    status: 'status',
+    details: 'details',
+    value: 'value',
+    memo: 'memo',
+    dateSigned: 'dateSigned',
+    startDate: 'startDate',
+    endDate: 'endDate',
+    is_deleted: 'is_deleted',
+    updatedAt: 'updatedAt',
+    createdAt: 'createdAt'
+  };
+
+  export type ContractsScalarFieldEnum = (typeof ContractsScalarFieldEnum)[keyof typeof ContractsScalarFieldEnum]
+
+
+  export const Print_agreementsScalarFieldEnum: {
+    id: 'id',
+    bookTitle: 'bookTitle',
+    printerName: 'printerName',
+    quantity: 'quantity',
+    status: 'status',
+    commencementDate: 'commencementDate',
+    cost: 'cost',
+    terms: 'terms',
+    memo: 'memo',
+    is_deleted: 'is_deleted',
+    updatedAt: 'updatedAt',
+    createdAt: 'createdAt'
+  };
+
+  export type Print_agreementsScalarFieldEnum = (typeof Print_agreementsScalarFieldEnum)[keyof typeof Print_agreementsScalarFieldEnum]
+
+
+  export const Delivery_notesScalarFieldEnum: {
+    id: 'id',
+    deliveryNumber: 'deliveryNumber',
+    receiverName: 'receiverName',
+    driverName: 'driverName',
+    vehiclePlate: 'vehiclePlate',
+    status: 'status',
+    deliveryDate: 'deliveryDate',
+    items: 'items',
+    memo: 'memo',
+    is_deleted: 'is_deleted',
+    updatedAt: 'updatedAt',
+    createdAt: 'createdAt'
+  };
+
+  export type Delivery_notesScalarFieldEnum = (typeof Delivery_notesScalarFieldEnum)[keyof typeof Delivery_notesScalarFieldEnum]
+
+
+  export const InvoicesScalarFieldEnum: {
+    id: 'id',
+    invoiceNumber: 'invoiceNumber',
+    customerName: 'customerName',
+    amount: 'amount',
+    status: 'status',
+    dueDate: 'dueDate',
+    issueDate: 'issueDate',
+    imageUrl: 'imageUrl',
+    memo: 'memo',
+    is_deleted: 'is_deleted',
+    updatedAt: 'updatedAt',
+    createdAt: 'createdAt'
+  };
+
+  export type InvoicesScalarFieldEnum = (typeof InvoicesScalarFieldEnum)[keyof typeof InvoicesScalarFieldEnum]
+
+
+  export const Approval_documentsScalarFieldEnum: {
+    id: 'id',
+    documentNumber: 'documentNumber',
+    title: 'title',
+    requestedBy: 'requestedBy',
+    approvedBy: 'approvedBy',
+    status: 'status',
+    approvalDate: 'approvalDate',
+    details: 'details',
+    memo: 'memo',
+    is_deleted: 'is_deleted',
+    updatedAt: 'updatedAt',
+    createdAt: 'createdAt'
+  };
+
+  export type Approval_documentsScalarFieldEnum = (typeof Approval_documentsScalarFieldEnum)[keyof typeof Approval_documentsScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -21169,6 +26679,66 @@ export namespace Prisma {
   };
 
   export type notesOrderByRelevanceFieldEnum = (typeof notesOrderByRelevanceFieldEnum)[keyof typeof notesOrderByRelevanceFieldEnum]
+
+
+  export const contractsOrderByRelevanceFieldEnum: {
+    title: 'title',
+    party: 'party',
+    type: 'type',
+    status: 'status',
+    details: 'details',
+    memo: 'memo'
+  };
+
+  export type contractsOrderByRelevanceFieldEnum = (typeof contractsOrderByRelevanceFieldEnum)[keyof typeof contractsOrderByRelevanceFieldEnum]
+
+
+  export const print_agreementsOrderByRelevanceFieldEnum: {
+    bookTitle: 'bookTitle',
+    printerName: 'printerName',
+    status: 'status',
+    terms: 'terms',
+    memo: 'memo'
+  };
+
+  export type print_agreementsOrderByRelevanceFieldEnum = (typeof print_agreementsOrderByRelevanceFieldEnum)[keyof typeof print_agreementsOrderByRelevanceFieldEnum]
+
+
+  export const delivery_notesOrderByRelevanceFieldEnum: {
+    deliveryNumber: 'deliveryNumber',
+    receiverName: 'receiverName',
+    driverName: 'driverName',
+    vehiclePlate: 'vehiclePlate',
+    status: 'status',
+    items: 'items',
+    memo: 'memo'
+  };
+
+  export type delivery_notesOrderByRelevanceFieldEnum = (typeof delivery_notesOrderByRelevanceFieldEnum)[keyof typeof delivery_notesOrderByRelevanceFieldEnum]
+
+
+  export const invoicesOrderByRelevanceFieldEnum: {
+    invoiceNumber: 'invoiceNumber',
+    customerName: 'customerName',
+    status: 'status',
+    imageUrl: 'imageUrl',
+    memo: 'memo'
+  };
+
+  export type invoicesOrderByRelevanceFieldEnum = (typeof invoicesOrderByRelevanceFieldEnum)[keyof typeof invoicesOrderByRelevanceFieldEnum]
+
+
+  export const approval_documentsOrderByRelevanceFieldEnum: {
+    documentNumber: 'documentNumber',
+    title: 'title',
+    requestedBy: 'requestedBy',
+    approvedBy: 'approvedBy',
+    status: 'status',
+    details: 'details',
+    memo: 'memo'
+  };
+
+  export type approval_documentsOrderByRelevanceFieldEnum = (typeof approval_documentsOrderByRelevanceFieldEnum)[keyof typeof approval_documentsOrderByRelevanceFieldEnum]
 
 
   /**
@@ -22817,6 +28387,466 @@ export namespace Prisma {
     is_deleted?: BoolWithAggregatesFilter<"notes"> | boolean
     updatedAt?: DateTimeWithAggregatesFilter<"notes"> | Date | string
     createdAt?: DateTimeWithAggregatesFilter<"notes"> | Date | string
+  }
+
+  export type contractsWhereInput = {
+    AND?: contractsWhereInput | contractsWhereInput[]
+    OR?: contractsWhereInput[]
+    NOT?: contractsWhereInput | contractsWhereInput[]
+    id?: IntFilter<"contracts"> | number
+    title?: StringFilter<"contracts"> | string
+    party?: StringFilter<"contracts"> | string
+    type?: StringFilter<"contracts"> | string
+    status?: StringFilter<"contracts"> | string
+    details?: StringFilter<"contracts"> | string
+    value?: FloatNullableFilter<"contracts"> | number | null
+    memo?: StringNullableFilter<"contracts"> | string | null
+    dateSigned?: DateTimeNullableFilter<"contracts"> | Date | string | null
+    startDate?: DateTimeNullableFilter<"contracts"> | Date | string | null
+    endDate?: DateTimeNullableFilter<"contracts"> | Date | string | null
+    is_deleted?: BoolFilter<"contracts"> | boolean
+    updatedAt?: DateTimeFilter<"contracts"> | Date | string
+    createdAt?: DateTimeFilter<"contracts"> | Date | string
+  }
+
+  export type contractsOrderByWithRelationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    party?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    details?: SortOrder
+    value?: SortOrderInput | SortOrder
+    memo?: SortOrderInput | SortOrder
+    dateSigned?: SortOrderInput | SortOrder
+    startDate?: SortOrderInput | SortOrder
+    endDate?: SortOrderInput | SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+    _relevance?: contractsOrderByRelevanceInput
+  }
+
+  export type contractsWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: contractsWhereInput | contractsWhereInput[]
+    OR?: contractsWhereInput[]
+    NOT?: contractsWhereInput | contractsWhereInput[]
+    title?: StringFilter<"contracts"> | string
+    party?: StringFilter<"contracts"> | string
+    type?: StringFilter<"contracts"> | string
+    status?: StringFilter<"contracts"> | string
+    details?: StringFilter<"contracts"> | string
+    value?: FloatNullableFilter<"contracts"> | number | null
+    memo?: StringNullableFilter<"contracts"> | string | null
+    dateSigned?: DateTimeNullableFilter<"contracts"> | Date | string | null
+    startDate?: DateTimeNullableFilter<"contracts"> | Date | string | null
+    endDate?: DateTimeNullableFilter<"contracts"> | Date | string | null
+    is_deleted?: BoolFilter<"contracts"> | boolean
+    updatedAt?: DateTimeFilter<"contracts"> | Date | string
+    createdAt?: DateTimeFilter<"contracts"> | Date | string
+  }, "id">
+
+  export type contractsOrderByWithAggregationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    party?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    details?: SortOrder
+    value?: SortOrderInput | SortOrder
+    memo?: SortOrderInput | SortOrder
+    dateSigned?: SortOrderInput | SortOrder
+    startDate?: SortOrderInput | SortOrder
+    endDate?: SortOrderInput | SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+    _count?: contractsCountOrderByAggregateInput
+    _avg?: contractsAvgOrderByAggregateInput
+    _max?: contractsMaxOrderByAggregateInput
+    _min?: contractsMinOrderByAggregateInput
+    _sum?: contractsSumOrderByAggregateInput
+  }
+
+  export type contractsScalarWhereWithAggregatesInput = {
+    AND?: contractsScalarWhereWithAggregatesInput | contractsScalarWhereWithAggregatesInput[]
+    OR?: contractsScalarWhereWithAggregatesInput[]
+    NOT?: contractsScalarWhereWithAggregatesInput | contractsScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"contracts"> | number
+    title?: StringWithAggregatesFilter<"contracts"> | string
+    party?: StringWithAggregatesFilter<"contracts"> | string
+    type?: StringWithAggregatesFilter<"contracts"> | string
+    status?: StringWithAggregatesFilter<"contracts"> | string
+    details?: StringWithAggregatesFilter<"contracts"> | string
+    value?: FloatNullableWithAggregatesFilter<"contracts"> | number | null
+    memo?: StringNullableWithAggregatesFilter<"contracts"> | string | null
+    dateSigned?: DateTimeNullableWithAggregatesFilter<"contracts"> | Date | string | null
+    startDate?: DateTimeNullableWithAggregatesFilter<"contracts"> | Date | string | null
+    endDate?: DateTimeNullableWithAggregatesFilter<"contracts"> | Date | string | null
+    is_deleted?: BoolWithAggregatesFilter<"contracts"> | boolean
+    updatedAt?: DateTimeWithAggregatesFilter<"contracts"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"contracts"> | Date | string
+  }
+
+  export type print_agreementsWhereInput = {
+    AND?: print_agreementsWhereInput | print_agreementsWhereInput[]
+    OR?: print_agreementsWhereInput[]
+    NOT?: print_agreementsWhereInput | print_agreementsWhereInput[]
+    id?: IntFilter<"print_agreements"> | number
+    bookTitle?: StringFilter<"print_agreements"> | string
+    printerName?: StringFilter<"print_agreements"> | string
+    quantity?: IntFilter<"print_agreements"> | number
+    status?: StringFilter<"print_agreements"> | string
+    commencementDate?: DateTimeNullableFilter<"print_agreements"> | Date | string | null
+    cost?: FloatNullableFilter<"print_agreements"> | number | null
+    terms?: StringNullableFilter<"print_agreements"> | string | null
+    memo?: StringNullableFilter<"print_agreements"> | string | null
+    is_deleted?: BoolFilter<"print_agreements"> | boolean
+    updatedAt?: DateTimeFilter<"print_agreements"> | Date | string
+    createdAt?: DateTimeFilter<"print_agreements"> | Date | string
+  }
+
+  export type print_agreementsOrderByWithRelationInput = {
+    id?: SortOrder
+    bookTitle?: SortOrder
+    printerName?: SortOrder
+    quantity?: SortOrder
+    status?: SortOrder
+    commencementDate?: SortOrderInput | SortOrder
+    cost?: SortOrderInput | SortOrder
+    terms?: SortOrderInput | SortOrder
+    memo?: SortOrderInput | SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+    _relevance?: print_agreementsOrderByRelevanceInput
+  }
+
+  export type print_agreementsWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: print_agreementsWhereInput | print_agreementsWhereInput[]
+    OR?: print_agreementsWhereInput[]
+    NOT?: print_agreementsWhereInput | print_agreementsWhereInput[]
+    bookTitle?: StringFilter<"print_agreements"> | string
+    printerName?: StringFilter<"print_agreements"> | string
+    quantity?: IntFilter<"print_agreements"> | number
+    status?: StringFilter<"print_agreements"> | string
+    commencementDate?: DateTimeNullableFilter<"print_agreements"> | Date | string | null
+    cost?: FloatNullableFilter<"print_agreements"> | number | null
+    terms?: StringNullableFilter<"print_agreements"> | string | null
+    memo?: StringNullableFilter<"print_agreements"> | string | null
+    is_deleted?: BoolFilter<"print_agreements"> | boolean
+    updatedAt?: DateTimeFilter<"print_agreements"> | Date | string
+    createdAt?: DateTimeFilter<"print_agreements"> | Date | string
+  }, "id">
+
+  export type print_agreementsOrderByWithAggregationInput = {
+    id?: SortOrder
+    bookTitle?: SortOrder
+    printerName?: SortOrder
+    quantity?: SortOrder
+    status?: SortOrder
+    commencementDate?: SortOrderInput | SortOrder
+    cost?: SortOrderInput | SortOrder
+    terms?: SortOrderInput | SortOrder
+    memo?: SortOrderInput | SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+    _count?: print_agreementsCountOrderByAggregateInput
+    _avg?: print_agreementsAvgOrderByAggregateInput
+    _max?: print_agreementsMaxOrderByAggregateInput
+    _min?: print_agreementsMinOrderByAggregateInput
+    _sum?: print_agreementsSumOrderByAggregateInput
+  }
+
+  export type print_agreementsScalarWhereWithAggregatesInput = {
+    AND?: print_agreementsScalarWhereWithAggregatesInput | print_agreementsScalarWhereWithAggregatesInput[]
+    OR?: print_agreementsScalarWhereWithAggregatesInput[]
+    NOT?: print_agreementsScalarWhereWithAggregatesInput | print_agreementsScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"print_agreements"> | number
+    bookTitle?: StringWithAggregatesFilter<"print_agreements"> | string
+    printerName?: StringWithAggregatesFilter<"print_agreements"> | string
+    quantity?: IntWithAggregatesFilter<"print_agreements"> | number
+    status?: StringWithAggregatesFilter<"print_agreements"> | string
+    commencementDate?: DateTimeNullableWithAggregatesFilter<"print_agreements"> | Date | string | null
+    cost?: FloatNullableWithAggregatesFilter<"print_agreements"> | number | null
+    terms?: StringNullableWithAggregatesFilter<"print_agreements"> | string | null
+    memo?: StringNullableWithAggregatesFilter<"print_agreements"> | string | null
+    is_deleted?: BoolWithAggregatesFilter<"print_agreements"> | boolean
+    updatedAt?: DateTimeWithAggregatesFilter<"print_agreements"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"print_agreements"> | Date | string
+  }
+
+  export type delivery_notesWhereInput = {
+    AND?: delivery_notesWhereInput | delivery_notesWhereInput[]
+    OR?: delivery_notesWhereInput[]
+    NOT?: delivery_notesWhereInput | delivery_notesWhereInput[]
+    id?: IntFilter<"delivery_notes"> | number
+    deliveryNumber?: StringFilter<"delivery_notes"> | string
+    receiverName?: StringFilter<"delivery_notes"> | string
+    driverName?: StringFilter<"delivery_notes"> | string
+    vehiclePlate?: StringNullableFilter<"delivery_notes"> | string | null
+    status?: StringFilter<"delivery_notes"> | string
+    deliveryDate?: DateTimeNullableFilter<"delivery_notes"> | Date | string | null
+    items?: StringFilter<"delivery_notes"> | string
+    memo?: StringNullableFilter<"delivery_notes"> | string | null
+    is_deleted?: BoolFilter<"delivery_notes"> | boolean
+    updatedAt?: DateTimeFilter<"delivery_notes"> | Date | string
+    createdAt?: DateTimeFilter<"delivery_notes"> | Date | string
+  }
+
+  export type delivery_notesOrderByWithRelationInput = {
+    id?: SortOrder
+    deliveryNumber?: SortOrder
+    receiverName?: SortOrder
+    driverName?: SortOrder
+    vehiclePlate?: SortOrderInput | SortOrder
+    status?: SortOrder
+    deliveryDate?: SortOrderInput | SortOrder
+    items?: SortOrder
+    memo?: SortOrderInput | SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+    _relevance?: delivery_notesOrderByRelevanceInput
+  }
+
+  export type delivery_notesWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: delivery_notesWhereInput | delivery_notesWhereInput[]
+    OR?: delivery_notesWhereInput[]
+    NOT?: delivery_notesWhereInput | delivery_notesWhereInput[]
+    deliveryNumber?: StringFilter<"delivery_notes"> | string
+    receiverName?: StringFilter<"delivery_notes"> | string
+    driverName?: StringFilter<"delivery_notes"> | string
+    vehiclePlate?: StringNullableFilter<"delivery_notes"> | string | null
+    status?: StringFilter<"delivery_notes"> | string
+    deliveryDate?: DateTimeNullableFilter<"delivery_notes"> | Date | string | null
+    items?: StringFilter<"delivery_notes"> | string
+    memo?: StringNullableFilter<"delivery_notes"> | string | null
+    is_deleted?: BoolFilter<"delivery_notes"> | boolean
+    updatedAt?: DateTimeFilter<"delivery_notes"> | Date | string
+    createdAt?: DateTimeFilter<"delivery_notes"> | Date | string
+  }, "id">
+
+  export type delivery_notesOrderByWithAggregationInput = {
+    id?: SortOrder
+    deliveryNumber?: SortOrder
+    receiverName?: SortOrder
+    driverName?: SortOrder
+    vehiclePlate?: SortOrderInput | SortOrder
+    status?: SortOrder
+    deliveryDate?: SortOrderInput | SortOrder
+    items?: SortOrder
+    memo?: SortOrderInput | SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+    _count?: delivery_notesCountOrderByAggregateInput
+    _avg?: delivery_notesAvgOrderByAggregateInput
+    _max?: delivery_notesMaxOrderByAggregateInput
+    _min?: delivery_notesMinOrderByAggregateInput
+    _sum?: delivery_notesSumOrderByAggregateInput
+  }
+
+  export type delivery_notesScalarWhereWithAggregatesInput = {
+    AND?: delivery_notesScalarWhereWithAggregatesInput | delivery_notesScalarWhereWithAggregatesInput[]
+    OR?: delivery_notesScalarWhereWithAggregatesInput[]
+    NOT?: delivery_notesScalarWhereWithAggregatesInput | delivery_notesScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"delivery_notes"> | number
+    deliveryNumber?: StringWithAggregatesFilter<"delivery_notes"> | string
+    receiverName?: StringWithAggregatesFilter<"delivery_notes"> | string
+    driverName?: StringWithAggregatesFilter<"delivery_notes"> | string
+    vehiclePlate?: StringNullableWithAggregatesFilter<"delivery_notes"> | string | null
+    status?: StringWithAggregatesFilter<"delivery_notes"> | string
+    deliveryDate?: DateTimeNullableWithAggregatesFilter<"delivery_notes"> | Date | string | null
+    items?: StringWithAggregatesFilter<"delivery_notes"> | string
+    memo?: StringNullableWithAggregatesFilter<"delivery_notes"> | string | null
+    is_deleted?: BoolWithAggregatesFilter<"delivery_notes"> | boolean
+    updatedAt?: DateTimeWithAggregatesFilter<"delivery_notes"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"delivery_notes"> | Date | string
+  }
+
+  export type invoicesWhereInput = {
+    AND?: invoicesWhereInput | invoicesWhereInput[]
+    OR?: invoicesWhereInput[]
+    NOT?: invoicesWhereInput | invoicesWhereInput[]
+    id?: IntFilter<"invoices"> | number
+    invoiceNumber?: StringFilter<"invoices"> | string
+    customerName?: StringFilter<"invoices"> | string
+    amount?: FloatFilter<"invoices"> | number
+    status?: StringFilter<"invoices"> | string
+    dueDate?: DateTimeNullableFilter<"invoices"> | Date | string | null
+    issueDate?: DateTimeNullableFilter<"invoices"> | Date | string | null
+    imageUrl?: StringNullableFilter<"invoices"> | string | null
+    memo?: StringNullableFilter<"invoices"> | string | null
+    is_deleted?: BoolFilter<"invoices"> | boolean
+    updatedAt?: DateTimeFilter<"invoices"> | Date | string
+    createdAt?: DateTimeFilter<"invoices"> | Date | string
+  }
+
+  export type invoicesOrderByWithRelationInput = {
+    id?: SortOrder
+    invoiceNumber?: SortOrder
+    customerName?: SortOrder
+    amount?: SortOrder
+    status?: SortOrder
+    dueDate?: SortOrderInput | SortOrder
+    issueDate?: SortOrderInput | SortOrder
+    imageUrl?: SortOrderInput | SortOrder
+    memo?: SortOrderInput | SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+    _relevance?: invoicesOrderByRelevanceInput
+  }
+
+  export type invoicesWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: invoicesWhereInput | invoicesWhereInput[]
+    OR?: invoicesWhereInput[]
+    NOT?: invoicesWhereInput | invoicesWhereInput[]
+    invoiceNumber?: StringFilter<"invoices"> | string
+    customerName?: StringFilter<"invoices"> | string
+    amount?: FloatFilter<"invoices"> | number
+    status?: StringFilter<"invoices"> | string
+    dueDate?: DateTimeNullableFilter<"invoices"> | Date | string | null
+    issueDate?: DateTimeNullableFilter<"invoices"> | Date | string | null
+    imageUrl?: StringNullableFilter<"invoices"> | string | null
+    memo?: StringNullableFilter<"invoices"> | string | null
+    is_deleted?: BoolFilter<"invoices"> | boolean
+    updatedAt?: DateTimeFilter<"invoices"> | Date | string
+    createdAt?: DateTimeFilter<"invoices"> | Date | string
+  }, "id">
+
+  export type invoicesOrderByWithAggregationInput = {
+    id?: SortOrder
+    invoiceNumber?: SortOrder
+    customerName?: SortOrder
+    amount?: SortOrder
+    status?: SortOrder
+    dueDate?: SortOrderInput | SortOrder
+    issueDate?: SortOrderInput | SortOrder
+    imageUrl?: SortOrderInput | SortOrder
+    memo?: SortOrderInput | SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+    _count?: invoicesCountOrderByAggregateInput
+    _avg?: invoicesAvgOrderByAggregateInput
+    _max?: invoicesMaxOrderByAggregateInput
+    _min?: invoicesMinOrderByAggregateInput
+    _sum?: invoicesSumOrderByAggregateInput
+  }
+
+  export type invoicesScalarWhereWithAggregatesInput = {
+    AND?: invoicesScalarWhereWithAggregatesInput | invoicesScalarWhereWithAggregatesInput[]
+    OR?: invoicesScalarWhereWithAggregatesInput[]
+    NOT?: invoicesScalarWhereWithAggregatesInput | invoicesScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"invoices"> | number
+    invoiceNumber?: StringWithAggregatesFilter<"invoices"> | string
+    customerName?: StringWithAggregatesFilter<"invoices"> | string
+    amount?: FloatWithAggregatesFilter<"invoices"> | number
+    status?: StringWithAggregatesFilter<"invoices"> | string
+    dueDate?: DateTimeNullableWithAggregatesFilter<"invoices"> | Date | string | null
+    issueDate?: DateTimeNullableWithAggregatesFilter<"invoices"> | Date | string | null
+    imageUrl?: StringNullableWithAggregatesFilter<"invoices"> | string | null
+    memo?: StringNullableWithAggregatesFilter<"invoices"> | string | null
+    is_deleted?: BoolWithAggregatesFilter<"invoices"> | boolean
+    updatedAt?: DateTimeWithAggregatesFilter<"invoices"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"invoices"> | Date | string
+  }
+
+  export type approval_documentsWhereInput = {
+    AND?: approval_documentsWhereInput | approval_documentsWhereInput[]
+    OR?: approval_documentsWhereInput[]
+    NOT?: approval_documentsWhereInput | approval_documentsWhereInput[]
+    id?: IntFilter<"approval_documents"> | number
+    documentNumber?: StringFilter<"approval_documents"> | string
+    title?: StringFilter<"approval_documents"> | string
+    requestedBy?: StringFilter<"approval_documents"> | string
+    approvedBy?: StringNullableFilter<"approval_documents"> | string | null
+    status?: StringFilter<"approval_documents"> | string
+    approvalDate?: DateTimeNullableFilter<"approval_documents"> | Date | string | null
+    details?: StringFilter<"approval_documents"> | string
+    memo?: StringNullableFilter<"approval_documents"> | string | null
+    is_deleted?: BoolFilter<"approval_documents"> | boolean
+    updatedAt?: DateTimeFilter<"approval_documents"> | Date | string
+    createdAt?: DateTimeFilter<"approval_documents"> | Date | string
+  }
+
+  export type approval_documentsOrderByWithRelationInput = {
+    id?: SortOrder
+    documentNumber?: SortOrder
+    title?: SortOrder
+    requestedBy?: SortOrder
+    approvedBy?: SortOrderInput | SortOrder
+    status?: SortOrder
+    approvalDate?: SortOrderInput | SortOrder
+    details?: SortOrder
+    memo?: SortOrderInput | SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+    _relevance?: approval_documentsOrderByRelevanceInput
+  }
+
+  export type approval_documentsWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: approval_documentsWhereInput | approval_documentsWhereInput[]
+    OR?: approval_documentsWhereInput[]
+    NOT?: approval_documentsWhereInput | approval_documentsWhereInput[]
+    documentNumber?: StringFilter<"approval_documents"> | string
+    title?: StringFilter<"approval_documents"> | string
+    requestedBy?: StringFilter<"approval_documents"> | string
+    approvedBy?: StringNullableFilter<"approval_documents"> | string | null
+    status?: StringFilter<"approval_documents"> | string
+    approvalDate?: DateTimeNullableFilter<"approval_documents"> | Date | string | null
+    details?: StringFilter<"approval_documents"> | string
+    memo?: StringNullableFilter<"approval_documents"> | string | null
+    is_deleted?: BoolFilter<"approval_documents"> | boolean
+    updatedAt?: DateTimeFilter<"approval_documents"> | Date | string
+    createdAt?: DateTimeFilter<"approval_documents"> | Date | string
+  }, "id">
+
+  export type approval_documentsOrderByWithAggregationInput = {
+    id?: SortOrder
+    documentNumber?: SortOrder
+    title?: SortOrder
+    requestedBy?: SortOrder
+    approvedBy?: SortOrderInput | SortOrder
+    status?: SortOrder
+    approvalDate?: SortOrderInput | SortOrder
+    details?: SortOrder
+    memo?: SortOrderInput | SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+    _count?: approval_documentsCountOrderByAggregateInput
+    _avg?: approval_documentsAvgOrderByAggregateInput
+    _max?: approval_documentsMaxOrderByAggregateInput
+    _min?: approval_documentsMinOrderByAggregateInput
+    _sum?: approval_documentsSumOrderByAggregateInput
+  }
+
+  export type approval_documentsScalarWhereWithAggregatesInput = {
+    AND?: approval_documentsScalarWhereWithAggregatesInput | approval_documentsScalarWhereWithAggregatesInput[]
+    OR?: approval_documentsScalarWhereWithAggregatesInput[]
+    NOT?: approval_documentsScalarWhereWithAggregatesInput | approval_documentsScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"approval_documents"> | number
+    documentNumber?: StringWithAggregatesFilter<"approval_documents"> | string
+    title?: StringWithAggregatesFilter<"approval_documents"> | string
+    requestedBy?: StringWithAggregatesFilter<"approval_documents"> | string
+    approvedBy?: StringNullableWithAggregatesFilter<"approval_documents"> | string | null
+    status?: StringWithAggregatesFilter<"approval_documents"> | string
+    approvalDate?: DateTimeNullableWithAggregatesFilter<"approval_documents"> | Date | string | null
+    details?: StringWithAggregatesFilter<"approval_documents"> | string
+    memo?: StringNullableWithAggregatesFilter<"approval_documents"> | string | null
+    is_deleted?: BoolWithAggregatesFilter<"approval_documents"> | boolean
+    updatedAt?: DateTimeWithAggregatesFilter<"approval_documents"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"approval_documents"> | Date | string
   }
 
   export type accountsCreateInput = {
@@ -24521,6 +30551,530 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type contractsCreateInput = {
+    title: string
+    party: string
+    type: string
+    status?: string
+    details: string
+    value?: number | null
+    memo?: string | null
+    dateSigned?: Date | string | null
+    startDate?: Date | string | null
+    endDate?: Date | string | null
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type contractsUncheckedCreateInput = {
+    id?: number
+    title: string
+    party: string
+    type: string
+    status?: string
+    details: string
+    value?: number | null
+    memo?: string | null
+    dateSigned?: Date | string | null
+    startDate?: Date | string | null
+    endDate?: Date | string | null
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type contractsUpdateInput = {
+    title?: StringFieldUpdateOperationsInput | string
+    party?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    details?: StringFieldUpdateOperationsInput | string
+    value?: NullableFloatFieldUpdateOperationsInput | number | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    dateSigned?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type contractsUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    party?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    details?: StringFieldUpdateOperationsInput | string
+    value?: NullableFloatFieldUpdateOperationsInput | number | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    dateSigned?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type contractsCreateManyInput = {
+    id?: number
+    title: string
+    party: string
+    type: string
+    status?: string
+    details: string
+    value?: number | null
+    memo?: string | null
+    dateSigned?: Date | string | null
+    startDate?: Date | string | null
+    endDate?: Date | string | null
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type contractsUpdateManyMutationInput = {
+    title?: StringFieldUpdateOperationsInput | string
+    party?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    details?: StringFieldUpdateOperationsInput | string
+    value?: NullableFloatFieldUpdateOperationsInput | number | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    dateSigned?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type contractsUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    party?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    details?: StringFieldUpdateOperationsInput | string
+    value?: NullableFloatFieldUpdateOperationsInput | number | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    dateSigned?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type print_agreementsCreateInput = {
+    bookTitle: string
+    printerName: string
+    quantity: number
+    status?: string
+    commencementDate?: Date | string | null
+    cost?: number | null
+    terms?: string | null
+    memo?: string | null
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type print_agreementsUncheckedCreateInput = {
+    id?: number
+    bookTitle: string
+    printerName: string
+    quantity: number
+    status?: string
+    commencementDate?: Date | string | null
+    cost?: number | null
+    terms?: string | null
+    memo?: string | null
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type print_agreementsUpdateInput = {
+    bookTitle?: StringFieldUpdateOperationsInput | string
+    printerName?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    commencementDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    terms?: NullableStringFieldUpdateOperationsInput | string | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type print_agreementsUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    bookTitle?: StringFieldUpdateOperationsInput | string
+    printerName?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    commencementDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    terms?: NullableStringFieldUpdateOperationsInput | string | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type print_agreementsCreateManyInput = {
+    id?: number
+    bookTitle: string
+    printerName: string
+    quantity: number
+    status?: string
+    commencementDate?: Date | string | null
+    cost?: number | null
+    terms?: string | null
+    memo?: string | null
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type print_agreementsUpdateManyMutationInput = {
+    bookTitle?: StringFieldUpdateOperationsInput | string
+    printerName?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    commencementDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    terms?: NullableStringFieldUpdateOperationsInput | string | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type print_agreementsUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    bookTitle?: StringFieldUpdateOperationsInput | string
+    printerName?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    commencementDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    terms?: NullableStringFieldUpdateOperationsInput | string | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type delivery_notesCreateInput = {
+    deliveryNumber: string
+    receiverName: string
+    driverName: string
+    vehiclePlate?: string | null
+    status?: string
+    deliveryDate?: Date | string | null
+    items: string
+    memo?: string | null
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type delivery_notesUncheckedCreateInput = {
+    id?: number
+    deliveryNumber: string
+    receiverName: string
+    driverName: string
+    vehiclePlate?: string | null
+    status?: string
+    deliveryDate?: Date | string | null
+    items: string
+    memo?: string | null
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type delivery_notesUpdateInput = {
+    deliveryNumber?: StringFieldUpdateOperationsInput | string
+    receiverName?: StringFieldUpdateOperationsInput | string
+    driverName?: StringFieldUpdateOperationsInput | string
+    vehiclePlate?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    deliveryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    items?: StringFieldUpdateOperationsInput | string
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type delivery_notesUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    deliveryNumber?: StringFieldUpdateOperationsInput | string
+    receiverName?: StringFieldUpdateOperationsInput | string
+    driverName?: StringFieldUpdateOperationsInput | string
+    vehiclePlate?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    deliveryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    items?: StringFieldUpdateOperationsInput | string
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type delivery_notesCreateManyInput = {
+    id?: number
+    deliveryNumber: string
+    receiverName: string
+    driverName: string
+    vehiclePlate?: string | null
+    status?: string
+    deliveryDate?: Date | string | null
+    items: string
+    memo?: string | null
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type delivery_notesUpdateManyMutationInput = {
+    deliveryNumber?: StringFieldUpdateOperationsInput | string
+    receiverName?: StringFieldUpdateOperationsInput | string
+    driverName?: StringFieldUpdateOperationsInput | string
+    vehiclePlate?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    deliveryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    items?: StringFieldUpdateOperationsInput | string
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type delivery_notesUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    deliveryNumber?: StringFieldUpdateOperationsInput | string
+    receiverName?: StringFieldUpdateOperationsInput | string
+    driverName?: StringFieldUpdateOperationsInput | string
+    vehiclePlate?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    deliveryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    items?: StringFieldUpdateOperationsInput | string
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type invoicesCreateInput = {
+    invoiceNumber: string
+    customerName: string
+    amount: number
+    status?: string
+    dueDate?: Date | string | null
+    issueDate?: Date | string | null
+    imageUrl?: string | null
+    memo?: string | null
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type invoicesUncheckedCreateInput = {
+    id?: number
+    invoiceNumber: string
+    customerName: string
+    amount: number
+    status?: string
+    dueDate?: Date | string | null
+    issueDate?: Date | string | null
+    imageUrl?: string | null
+    memo?: string | null
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type invoicesUpdateInput = {
+    invoiceNumber?: StringFieldUpdateOperationsInput | string
+    customerName?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    issueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type invoicesUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    invoiceNumber?: StringFieldUpdateOperationsInput | string
+    customerName?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    issueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type invoicesCreateManyInput = {
+    id?: number
+    invoiceNumber: string
+    customerName: string
+    amount: number
+    status?: string
+    dueDate?: Date | string | null
+    issueDate?: Date | string | null
+    imageUrl?: string | null
+    memo?: string | null
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type invoicesUpdateManyMutationInput = {
+    invoiceNumber?: StringFieldUpdateOperationsInput | string
+    customerName?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    issueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type invoicesUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    invoiceNumber?: StringFieldUpdateOperationsInput | string
+    customerName?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    issueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type approval_documentsCreateInput = {
+    documentNumber: string
+    title: string
+    requestedBy: string
+    approvedBy?: string | null
+    status?: string
+    approvalDate?: Date | string | null
+    details: string
+    memo?: string | null
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type approval_documentsUncheckedCreateInput = {
+    id?: number
+    documentNumber: string
+    title: string
+    requestedBy: string
+    approvedBy?: string | null
+    status?: string
+    approvalDate?: Date | string | null
+    details: string
+    memo?: string | null
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type approval_documentsUpdateInput = {
+    documentNumber?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    requestedBy?: StringFieldUpdateOperationsInput | string
+    approvedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    approvalDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    details?: StringFieldUpdateOperationsInput | string
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type approval_documentsUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    documentNumber?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    requestedBy?: StringFieldUpdateOperationsInput | string
+    approvedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    approvalDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    details?: StringFieldUpdateOperationsInput | string
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type approval_documentsCreateManyInput = {
+    id?: number
+    documentNumber: string
+    title: string
+    requestedBy: string
+    approvedBy?: string | null
+    status?: string
+    approvalDate?: Date | string | null
+    details: string
+    memo?: string | null
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type approval_documentsUpdateManyMutationInput = {
+    documentNumber?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    requestedBy?: StringFieldUpdateOperationsInput | string
+    approvedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    approvalDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    details?: StringFieldUpdateOperationsInput | string
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type approval_documentsUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    documentNumber?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    requestedBy?: StringFieldUpdateOperationsInput | string
+    approvedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    approvalDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    details?: StringFieldUpdateOperationsInput | string
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[]
@@ -26015,6 +32569,342 @@ export namespace Prisma {
     accountId?: SortOrder
   }
 
+  export type contractsOrderByRelevanceInput = {
+    fields: contractsOrderByRelevanceFieldEnum | contractsOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type contractsCountOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    party?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    details?: SortOrder
+    value?: SortOrder
+    memo?: SortOrder
+    dateSigned?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type contractsAvgOrderByAggregateInput = {
+    id?: SortOrder
+    value?: SortOrder
+  }
+
+  export type contractsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    party?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    details?: SortOrder
+    value?: SortOrder
+    memo?: SortOrder
+    dateSigned?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type contractsMinOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    party?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    details?: SortOrder
+    value?: SortOrder
+    memo?: SortOrder
+    dateSigned?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type contractsSumOrderByAggregateInput = {
+    id?: SortOrder
+    value?: SortOrder
+  }
+
+  export type print_agreementsOrderByRelevanceInput = {
+    fields: print_agreementsOrderByRelevanceFieldEnum | print_agreementsOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type print_agreementsCountOrderByAggregateInput = {
+    id?: SortOrder
+    bookTitle?: SortOrder
+    printerName?: SortOrder
+    quantity?: SortOrder
+    status?: SortOrder
+    commencementDate?: SortOrder
+    cost?: SortOrder
+    terms?: SortOrder
+    memo?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type print_agreementsAvgOrderByAggregateInput = {
+    id?: SortOrder
+    quantity?: SortOrder
+    cost?: SortOrder
+  }
+
+  export type print_agreementsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    bookTitle?: SortOrder
+    printerName?: SortOrder
+    quantity?: SortOrder
+    status?: SortOrder
+    commencementDate?: SortOrder
+    cost?: SortOrder
+    terms?: SortOrder
+    memo?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type print_agreementsMinOrderByAggregateInput = {
+    id?: SortOrder
+    bookTitle?: SortOrder
+    printerName?: SortOrder
+    quantity?: SortOrder
+    status?: SortOrder
+    commencementDate?: SortOrder
+    cost?: SortOrder
+    terms?: SortOrder
+    memo?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type print_agreementsSumOrderByAggregateInput = {
+    id?: SortOrder
+    quantity?: SortOrder
+    cost?: SortOrder
+  }
+
+  export type delivery_notesOrderByRelevanceInput = {
+    fields: delivery_notesOrderByRelevanceFieldEnum | delivery_notesOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type delivery_notesCountOrderByAggregateInput = {
+    id?: SortOrder
+    deliveryNumber?: SortOrder
+    receiverName?: SortOrder
+    driverName?: SortOrder
+    vehiclePlate?: SortOrder
+    status?: SortOrder
+    deliveryDate?: SortOrder
+    items?: SortOrder
+    memo?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type delivery_notesAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type delivery_notesMaxOrderByAggregateInput = {
+    id?: SortOrder
+    deliveryNumber?: SortOrder
+    receiverName?: SortOrder
+    driverName?: SortOrder
+    vehiclePlate?: SortOrder
+    status?: SortOrder
+    deliveryDate?: SortOrder
+    items?: SortOrder
+    memo?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type delivery_notesMinOrderByAggregateInput = {
+    id?: SortOrder
+    deliveryNumber?: SortOrder
+    receiverName?: SortOrder
+    driverName?: SortOrder
+    vehiclePlate?: SortOrder
+    status?: SortOrder
+    deliveryDate?: SortOrder
+    items?: SortOrder
+    memo?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type delivery_notesSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type FloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type invoicesOrderByRelevanceInput = {
+    fields: invoicesOrderByRelevanceFieldEnum | invoicesOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type invoicesCountOrderByAggregateInput = {
+    id?: SortOrder
+    invoiceNumber?: SortOrder
+    customerName?: SortOrder
+    amount?: SortOrder
+    status?: SortOrder
+    dueDate?: SortOrder
+    issueDate?: SortOrder
+    imageUrl?: SortOrder
+    memo?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type invoicesAvgOrderByAggregateInput = {
+    id?: SortOrder
+    amount?: SortOrder
+  }
+
+  export type invoicesMaxOrderByAggregateInput = {
+    id?: SortOrder
+    invoiceNumber?: SortOrder
+    customerName?: SortOrder
+    amount?: SortOrder
+    status?: SortOrder
+    dueDate?: SortOrder
+    issueDate?: SortOrder
+    imageUrl?: SortOrder
+    memo?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type invoicesMinOrderByAggregateInput = {
+    id?: SortOrder
+    invoiceNumber?: SortOrder
+    customerName?: SortOrder
+    amount?: SortOrder
+    status?: SortOrder
+    dueDate?: SortOrder
+    issueDate?: SortOrder
+    imageUrl?: SortOrder
+    memo?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type invoicesSumOrderByAggregateInput = {
+    id?: SortOrder
+    amount?: SortOrder
+  }
+
+  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
+  export type approval_documentsOrderByRelevanceInput = {
+    fields: approval_documentsOrderByRelevanceFieldEnum | approval_documentsOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type approval_documentsCountOrderByAggregateInput = {
+    id?: SortOrder
+    documentNumber?: SortOrder
+    title?: SortOrder
+    requestedBy?: SortOrder
+    approvedBy?: SortOrder
+    status?: SortOrder
+    approvalDate?: SortOrder
+    details?: SortOrder
+    memo?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type approval_documentsAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type approval_documentsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    documentNumber?: SortOrder
+    title?: SortOrder
+    requestedBy?: SortOrder
+    approvedBy?: SortOrder
+    status?: SortOrder
+    approvalDate?: SortOrder
+    details?: SortOrder
+    memo?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type approval_documentsMinOrderByAggregateInput = {
+    id?: SortOrder
+    documentNumber?: SortOrder
+    title?: SortOrder
+    requestedBy?: SortOrder
+    approvedBy?: SortOrder
+    status?: SortOrder
+    approvalDate?: SortOrder
+    details?: SortOrder
+    memo?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type approval_documentsSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
   export type notesCreateNestedManyWithoutAccountsInput = {
     create?: XOR<notesCreateWithoutAccountsInput, notesUncheckedCreateWithoutAccountsInput> | notesCreateWithoutAccountsInput[] | notesUncheckedCreateWithoutAccountsInput[]
     connectOrCreate?: notesCreateOrConnectWithoutAccountsInput | notesCreateOrConnectWithoutAccountsInput[]
@@ -26931,6 +33821,14 @@ export namespace Prisma {
     update?: XOR<XOR<accountsUpdateToOneWithWhereWithoutNotesInput, accountsUpdateWithoutNotesInput>, accountsUncheckedUpdateWithoutNotesInput>
   }
 
+  export type FloatFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type NestedIntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[]
@@ -27252,6 +34150,22 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumnotification_toFilter<$PrismaModel>
     _max?: NestedEnumnotification_toFilter<$PrismaModel>
+  }
+
+  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
   }
 
   export type notesCreateWithoutAccountsInput = {

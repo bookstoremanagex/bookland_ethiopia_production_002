@@ -19,7 +19,12 @@ import {
     Clock,
     ClipboardList,
     Bell,
-    History
+    History,
+    FolderOpen,
+    FileSignature,
+    Truck,
+    Receipt,
+    FileCheck
 } from "lucide-react"
 
 export interface MenuItem {
@@ -75,6 +80,19 @@ export const ALL_DASHBOARD_MENUS: MenuItem[] = [
         subItems: [
             { title: "Printers", icon: Printer, path: "printing/printers" },
             { title: "Manage Printing", icon: ClipboardList, path: "printing/manage" }
+        ]
+    },
+    { 
+        id: "document_management", 
+        title: "Document Managment", 
+        icon: FolderOpen, 
+        path: "document_management",
+        subItems: [
+            { title: "Contracts", icon: FileSignature, path: "document_management/contracts" },
+            { title: "Print agreements", icon: FileText, path: "document_management/print_agreements" },
+            { title: "Delivery notes", icon: Truck, path: "document_management/delivery_notes" },
+            { title: "Invoices", icon: Receipt, path: "document_management/invoices" },
+            { title: "Approval documents", icon: FileCheck, path: "document_management/approval_documents" }
         ]
     },
     { 

@@ -368,3 +368,80 @@ enum books_productionstatus {
   DISTRIBUTION
   SALES
 }
+
+model contracts {
+  id         Int       @id @default(autoincrement())
+  title      String
+  party      String
+  type       String
+  status     String    @default("Active")
+  details    String    @db.Text
+  value      Float?
+  memo       String?   @db.Text
+  dateSigned DateTime?
+  startDate  DateTime?
+  endDate    DateTime?
+  is_deleted Boolean   @default(false)
+  updatedAt  DateTime  @default(now())
+  createdAt  DateTime  @default(now())
+}
+
+model print_agreements {
+  id               Int       @id @default(autoincrement())
+  bookTitle        String
+  printerName      String
+  quantity         Int
+  status           String    @default("Active")
+  commencementDate DateTime?
+  cost             Float?
+  terms            String?   @db.Text
+  memo             String?   @db.Text
+  is_deleted       Boolean   @default(false)
+  updatedAt        DateTime  @default(now())
+  createdAt        DateTime  @default(now())
+}
+
+model delivery_notes {
+  id             Int       @id @default(autoincrement())
+  deliveryNumber String
+  receiverName   String
+  driverName     String
+  vehiclePlate   String?
+  status         String    @default("Pending")
+  deliveryDate   DateTime?
+  items          String    @db.Text
+  memo           String?   @db.Text
+  is_deleted     Boolean   @default(false)
+  updatedAt      DateTime  @default(now())
+  createdAt      DateTime  @default(now())
+}
+
+model invoices {
+  id            Int       @id @default(autoincrement())
+  invoiceNumber String
+  customerName  String
+  amount        Float
+  status        String    @default("Unpaid")
+  dueDate       DateTime?
+  issueDate     DateTime?
+  imageUrl      String?   @db.Text
+  memo          String?   @db.Text
+  is_deleted    Boolean   @default(false)
+  updatedAt     DateTime  @default(now())
+  createdAt     DateTime  @default(now())
+}
+
+model approval_documents {
+  id             Int       @id @default(autoincrement())
+  documentNumber String
+  title          String
+  requestedBy    String
+  approvedBy     String?
+  status         String    @default("Pending")
+  approvalDate   DateTime?
+  details        String    @db.Text
+  memo           String?   @db.Text
+  is_deleted     Boolean   @default(false)
+  updatedAt      DateTime  @default(now())
+  createdAt      DateTime  @default(now())
+}
