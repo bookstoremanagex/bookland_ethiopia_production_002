@@ -18,7 +18,8 @@ import {
     Trash2,
     Edit3,
     X,
-    Package
+    Package,
+    Plus
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -33,6 +34,7 @@ import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { updateStore, deleteStore } from '@/app/actions/store-actions';
 import { StoreInventoryTable } from './StoreInventoryTable';
+import AddBookModal from './AddBookModal';
 
 interface StoreDetailsClientProps {
     store: any;
@@ -42,6 +44,7 @@ export default function StoreDetailsClient({ store: initialStore }: StoreDetails
     const [store, setStore] = useState(initialStore);
     const [isEditing, setIsEditing] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
+    const [isAddBookModalOpen, setIsAddBookModalOpen] = useState(false);
     const [formData, setFormData] = useState({
         name: initialStore.name,
         location: initialStore.location,
@@ -245,6 +248,13 @@ export default function StoreDetailsClient({ store: initialStore }: StoreDetails
                                     <div className="px-6 py-2 rounded-full bg-primarycolor text-white text-[10px] font-black uppercase tracking-widest shadow-lg shadow-primarycolor/20">
                                         {totalStock.toLocaleString()} Global Units
                                     </div>
+                                    <Button
+                                        onClick={() => setIsAddBookModalOpen(true)}
+                                        className="h-10 px-6 bg-secondarycolor hover:bg-secondarycolor/90 text-white rounded-xl font-black uppercase tracking-widest text-[10px] shadow-lg shadow-secondarycolor/10 active:scale-95 transition-all gap-2"
+                                    >
+                                        <Plus className="size-4" />
+                                        Add Book
+                                    </Button>
                                 </div>
                             </div>
 
@@ -303,7 +313,7 @@ export default function StoreDetailsClient({ store: initialStore }: StoreDetails
                                     <p className="text-3xl font-black text-primarycolor">{(store.bookeditionstores || []).length}</p>
                                 </div>
 
-                                <div className="flex items-start gap-4 p-6 rounded-[2rem] bg-primarycolor/[0.02] border-2 border-primarycolor/5 italic">
+                                <div className="flex items-start gap-4 p-6 rounded-[2rem] bg-primarycolor/2 border-2 border-primarycolor/5 italic">
                                     <AlertCircle className="size-5 text-primarycolor/40 shrink-0 mt-0.5" />
                                     <p className="text-[10px] font-bold text-muted-foreground leading-relaxed">
                                         Branch metadata and inventory levels are synchronized in real-time across the production and sales grid.
@@ -314,6 +324,13 @@ export default function StoreDetailsClient({ store: initialStore }: StoreDetails
                     </div>
                 </div>
             </div>
+
+            <AddBookModal
+                isOpen={isAddBookModalOpen}
+                onClose={() => setIsAddBookModalOpen(false)}
+                storeId={store.id}
+                storeName={store.name}
+            />
         </div>
     );
 }

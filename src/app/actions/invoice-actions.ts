@@ -1,11 +1,9 @@
 "use server";
 
-import { PrismaClient } from "@prisma/client";
+import prisma from "../../lib/prisma";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { put, del } from "@vercel/blob";
-
-const prisma = new PrismaClient();
 
 const invoiceSchema = z.object({
     invoiceNumber: z.string().min(1, "Invoice number is required"),

@@ -155,7 +155,8 @@ exports.Prisma.BookeditionScalarFieldEnum = {
   deletedAt: 'deletedAt',
   editing_cost: 'editing_cost',
   other_expenses: 'other_expenses',
-  transportation_cost: 'transportation_cost'
+  transportation_cost: 'transportation_cost',
+  count_remening_for_transfer: 'count_remening_for_transfer'
 };
 
 exports.Prisma.BookeditionstoresScalarFieldEnum = {
@@ -175,7 +176,6 @@ exports.Prisma.BooksScalarFieldEnum = {
   isbn: 'isbn',
   title: 'title',
   author: 'author',
-  pen_name: 'pen_name',
   translator: 'translator',
   designer: 'designer',
   language: 'language',
@@ -193,7 +193,8 @@ exports.Prisma.BooksScalarFieldEnum = {
   createdAt: 'createdAt',
   deletedAt: 'deletedAt',
   productionstatus: 'productionstatus',
-  default_edition_id: 'default_edition_id'
+  default_edition_id: 'default_edition_id',
+  pen_name: 'pen_name'
 };
 
 exports.Prisma.BookshopeditionsScalarFieldEnum = {
@@ -306,11 +307,11 @@ exports.Prisma.TranslatorScalarFieldEnum = {
   name: 'name',
   phoneNumber: 'phoneNumber',
   email: 'email',
-  pen_name: 'pen_name',
   is_deleted: 'is_deleted',
   updatedAt: 'updatedAt',
   createdAt: 'createdAt',
-  deletedAt: 'deletedAt'
+  deletedAt: 'deletedAt',
+  pen_name: 'pen_name'
 };
 
 exports.Prisma.TranslatorbookScalarFieldEnum = {
@@ -477,7 +478,6 @@ exports.Prisma.booksOrderByRelevanceFieldEnum = {
   isbn: 'isbn',
   title: 'title',
   author: 'author',
-  pen_name: 'pen_name',
   translator: 'translator',
   designer: 'designer',
   language: 'language',
@@ -489,7 +489,8 @@ exports.Prisma.booksOrderByRelevanceFieldEnum = {
   info: 'info',
   book_image_url: 'book_image_url',
   status: 'status',
-  default_edition_id: 'default_edition_id'
+  default_edition_id: 'default_edition_id',
+  pen_name: 'pen_name'
 };
 
 exports.Prisma.bookshopeditionsOrderByRelevanceFieldEnum = {

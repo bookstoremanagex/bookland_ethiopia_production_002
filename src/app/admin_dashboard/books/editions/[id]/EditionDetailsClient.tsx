@@ -18,6 +18,7 @@ import {
     Trash2,
     TrendingUp,
     Edit2,
+    Store,
     Printer,
     Scissors,
     Palette,
@@ -61,6 +62,7 @@ export default function EditionDetailsClient({ initialEdition, stores }: Edition
         memo: edition.memo || "",
         book_image_url: edition.book_image_url || "",
         total_print_count: edition.total_print_count?.toString() || "",
+        count_remening_for_transfer: edition.count_remening_for_transfer?.toString() || "",
         number_of_pages: edition.number_of_pages?.toString() || "",
     });
 
@@ -79,6 +81,7 @@ export default function EditionDetailsClient({ initialEdition, stores }: Edition
             memo: edition.memo || "",
             book_image_url: edition.book_image_url || "",
             total_print_count: edition.total_print_count?.toString() || "",
+            count_remening_for_transfer: edition.count_remening_for_transfer?.toString() || "",
             number_of_pages: edition.number_of_pages?.toString() || "",
         });
     }, [edition]);
@@ -321,15 +324,25 @@ export default function EditionDetailsClient({ initialEdition, stores }: Edition
                                             />
                                         </div>
                                         <div className="space-y-3">
-                                            <label className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Page Count</label>
+                                            <label className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Remaining for Transfer</label>
                                             <Input
                                                 disabled={!isEditing}
                                                 type="number"
-                                                value={formData.number_of_pages}
-                                                onChange={(e) => setFormData({ ...formData, number_of_pages: e.target.value })}
-                                                className="h-12 md:h-14 px-4 md:px-6 bg-primarycolor/5 border-2 border-transparent focus:border-primarycolor rounded-xl md:rounded-2xl font-black text-sm md:text-base"
+                                                value={formData.count_remening_for_transfer}
+                                                onChange={(e) => setFormData({ ...formData, count_remening_for_transfer: e.target.value })}
+                                                className="h-12 md:h-14 px-4 md:px-6 bg-secondarycolor/5 border-2 border-transparent focus:border-secondarycolor rounded-xl md:rounded-2xl font-black text-sm md:text-base text-secondarycolor"
                                             />
                                         </div>
+                                    </div>
+                                    <div className="space-y-3">
+                                        <label className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Page Count</label>
+                                        <Input
+                                            disabled={!isEditing}
+                                            type="number"
+                                            value={formData.number_of_pages}
+                                            onChange={(e) => setFormData({ ...formData, number_of_pages: e.target.value })}
+                                            className="h-12 md:h-14 px-4 md:px-6 bg-primarycolor/5 border-2 border-transparent focus:border-primarycolor rounded-xl md:rounded-2xl font-black text-sm md:text-base"
+                                        />
                                     </div>
 
                                     <div className="space-y-3">
@@ -364,6 +377,25 @@ export default function EditionDetailsClient({ initialEdition, stores }: Edition
                                     </div>
                                 )}
                             </form>
+                        </div>
+
+                        {/* Central Inventory Quick Stat */}
+                        <div className="bg-secondarycolor/5 p-8 md:p-10 rounded-[2.5rem] border-2 border-secondarycolor/10 flex flex-col md:flex-row items-center justify-between gap-8">
+                            <div className="flex items-center gap-6">
+                                <div className="size-16 rounded-[2rem] bg-secondarycolor/10 flex items-center justify-center text-secondarycolor border-2 border-secondarycolor/20 shadow-lg">
+                                    <Store className="size-8" />
+                                </div>
+                                <div>
+                                    <h3 className="text-2xl font-black text-primarycolor uppercase tracking-tight italic">Central <span className="text-secondarycolor not-italic">Inventory</span></h3>
+                                    <p className="text-muted-foreground font-bold text-sm tracking-tight italic">Copies reserved at headquarters specifically for store distribution requests.</p>
+                                </div>
+                            </div>
+                            <div className="flex flex-col items-center md:items-end">
+                                <div className="text-5xl font-black text-secondarycolor italic tabular-nums leading-none mb-1">
+                                    {Number(edition.count_remening_for_transfer || 0).toLocaleString()}
+                                </div>
+                                <div className="text-[10px] font-black uppercase tracking-[0.2em] text-primarycolor/40">Units Available for Transfer</div>
+                            </div>
                         </div>
 
                         {/* Expanded Cost Ecosystem Section */}
@@ -406,7 +438,7 @@ export default function EditionDetailsClient({ initialEdition, stores }: Edition
 
                     <div className="space-y-8">
                         <div className="bg-white rounded-[1.5rem] md:rounded-[2.5rem] p-6 md:p-8 border-2 border-primarycolor/10 shadow-xl space-y-6">
-                            <div className="aspect-[3/4] md:aspect-[3/4.5] rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl border-4 border-white relative group">
+                            <div className="aspect-3/4 md:aspect-3/4.5 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl border-4 border-white relative group">
                                 {edition.book_image_url ? (
                                     <img src={edition.book_image_url} alt="" className="w-full h-full object-cover" />
                                 ) : (

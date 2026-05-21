@@ -2782,16 +2782,16 @@ export namespace Prisma {
    */
 
   export type AccountsCountOutputType = {
-    notes: number
     activitylogs: number
     damagedbooks: number
+    notes: number
     roles: number
   }
 
   export type AccountsCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    notes?: boolean | AccountsCountOutputTypeCountNotesArgs
     activitylogs?: boolean | AccountsCountOutputTypeCountActivitylogsArgs
     damagedbooks?: boolean | AccountsCountOutputTypeCountDamagedbooksArgs
+    notes?: boolean | AccountsCountOutputTypeCountNotesArgs
     roles?: boolean | AccountsCountOutputTypeCountRolesArgs
   }
 
@@ -2809,13 +2809,6 @@ export namespace Prisma {
   /**
    * AccountsCountOutputType without action
    */
-  export type AccountsCountOutputTypeCountNotesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: notesWhereInput
-  }
-
-  /**
-   * AccountsCountOutputType without action
-   */
   export type AccountsCountOutputTypeCountActivitylogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: activityLogsWhereInput
   }
@@ -2825,6 +2818,13 @@ export namespace Prisma {
    */
   export type AccountsCountOutputTypeCountDamagedbooksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: damagedbooksWhereInput
+  }
+
+  /**
+   * AccountsCountOutputType without action
+   */
+  export type AccountsCountOutputTypeCountNotesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: notesWhereInput
   }
 
   /**
@@ -3308,9 +3308,9 @@ export namespace Prisma {
     createdAt?: boolean
     deletedAt?: boolean
     name?: boolean
-    notes?: boolean | accounts$notesArgs<ExtArgs>
     activitylogs?: boolean | accounts$activitylogsArgs<ExtArgs>
     damagedbooks?: boolean | accounts$damagedbooksArgs<ExtArgs>
+    notes?: boolean | accounts$notesArgs<ExtArgs>
     roles?: boolean | accounts$rolesArgs<ExtArgs>
     _count?: boolean | AccountsCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["accounts"]>
@@ -3332,9 +3332,9 @@ export namespace Prisma {
 
   export type accountsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "account_type" | "account_email" | "password" | "account_status" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt" | "name", ExtArgs["result"]["accounts"]>
   export type accountsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    notes?: boolean | accounts$notesArgs<ExtArgs>
     activitylogs?: boolean | accounts$activitylogsArgs<ExtArgs>
     damagedbooks?: boolean | accounts$damagedbooksArgs<ExtArgs>
+    notes?: boolean | accounts$notesArgs<ExtArgs>
     roles?: boolean | accounts$rolesArgs<ExtArgs>
     _count?: boolean | AccountsCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -3342,9 +3342,9 @@ export namespace Prisma {
   export type $accountsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "accounts"
     objects: {
-      notes: Prisma.$notesPayload<ExtArgs>[]
       activitylogs: Prisma.$activityLogsPayload<ExtArgs>[]
       damagedbooks: Prisma.$damagedbooksPayload<ExtArgs>[]
+      notes: Prisma.$notesPayload<ExtArgs>[]
       roles: Prisma.$rolesPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -3698,9 +3698,9 @@ export namespace Prisma {
    */
   export interface Prisma__accountsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    notes<T extends accounts$notesArgs<ExtArgs> = {}>(args?: Subset<T, accounts$notesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$notesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     activitylogs<T extends accounts$activitylogsArgs<ExtArgs> = {}>(args?: Subset<T, accounts$activitylogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$activityLogsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     damagedbooks<T extends accounts$damagedbooksArgs<ExtArgs> = {}>(args?: Subset<T, accounts$damagedbooksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$damagedbooksPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    notes<T extends accounts$notesArgs<ExtArgs> = {}>(args?: Subset<T, accounts$notesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$notesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     roles<T extends accounts$rolesArgs<ExtArgs> = {}>(args?: Subset<T, accounts$rolesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$rolesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -4084,30 +4084,6 @@ export namespace Prisma {
   }
 
   /**
-   * accounts.notes
-   */
-  export type accounts$notesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the notes
-     */
-    select?: notesSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the notes
-     */
-    omit?: notesOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: notesInclude<ExtArgs> | null
-    where?: notesWhereInput
-    orderBy?: notesOrderByWithRelationInput | notesOrderByWithRelationInput[]
-    cursor?: notesWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: NotesScalarFieldEnum | NotesScalarFieldEnum[]
-  }
-
-  /**
    * accounts.activitylogs
    */
   export type accounts$activitylogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4153,6 +4129,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: DamagedbooksScalarFieldEnum | DamagedbooksScalarFieldEnum[]
+  }
+
+  /**
+   * accounts.notes
+   */
+  export type accounts$notesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the notes
+     */
+    select?: notesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the notes
+     */
+    omit?: notesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: notesInclude<ExtArgs> | null
+    where?: notesWhereInput
+    orderBy?: notesOrderByWithRelationInput | notesOrderByWithRelationInput[]
+    cursor?: notesWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: NotesScalarFieldEnum | NotesScalarFieldEnum[]
   }
 
   /**
@@ -4225,6 +4225,7 @@ export namespace Prisma {
     editing_cost: number | null
     other_expenses: number | null
     transportation_cost: number | null
+    count_remening_for_transfer: number | null
   }
 
   export type BookeditionSumAggregateOutputType = {
@@ -4242,6 +4243,7 @@ export namespace Prisma {
     editing_cost: number | null
     other_expenses: number | null
     transportation_cost: number | null
+    count_remening_for_transfer: number | null
   }
 
   export type BookeditionMinAggregateOutputType = {
@@ -4266,6 +4268,7 @@ export namespace Prisma {
     editing_cost: number | null
     other_expenses: number | null
     transportation_cost: number | null
+    count_remening_for_transfer: number | null
   }
 
   export type BookeditionMaxAggregateOutputType = {
@@ -4290,6 +4293,7 @@ export namespace Prisma {
     editing_cost: number | null
     other_expenses: number | null
     transportation_cost: number | null
+    count_remening_for_transfer: number | null
   }
 
   export type BookeditionCountAggregateOutputType = {
@@ -4314,6 +4318,7 @@ export namespace Prisma {
     editing_cost: number
     other_expenses: number
     transportation_cost: number
+    count_remening_for_transfer: number
     _all: number
   }
 
@@ -4333,6 +4338,7 @@ export namespace Prisma {
     editing_cost?: true
     other_expenses?: true
     transportation_cost?: true
+    count_remening_for_transfer?: true
   }
 
   export type BookeditionSumAggregateInputType = {
@@ -4350,6 +4356,7 @@ export namespace Prisma {
     editing_cost?: true
     other_expenses?: true
     transportation_cost?: true
+    count_remening_for_transfer?: true
   }
 
   export type BookeditionMinAggregateInputType = {
@@ -4374,6 +4381,7 @@ export namespace Prisma {
     editing_cost?: true
     other_expenses?: true
     transportation_cost?: true
+    count_remening_for_transfer?: true
   }
 
   export type BookeditionMaxAggregateInputType = {
@@ -4398,6 +4406,7 @@ export namespace Prisma {
     editing_cost?: true
     other_expenses?: true
     transportation_cost?: true
+    count_remening_for_transfer?: true
   }
 
   export type BookeditionCountAggregateInputType = {
@@ -4422,6 +4431,7 @@ export namespace Prisma {
     editing_cost?: true
     other_expenses?: true
     transportation_cost?: true
+    count_remening_for_transfer?: true
     _all?: true
   }
 
@@ -4533,6 +4543,7 @@ export namespace Prisma {
     editing_cost: number | null
     other_expenses: number | null
     transportation_cost: number | null
+    count_remening_for_transfer: number | null
     _count: BookeditionCountAggregateOutputType | null
     _avg: BookeditionAvgAggregateOutputType | null
     _sum: BookeditionSumAggregateOutputType | null
@@ -4576,6 +4587,7 @@ export namespace Prisma {
     editing_cost?: boolean
     other_expenses?: boolean
     transportation_cost?: boolean
+    count_remening_for_transfer?: boolean
     books?: boolean | booksDefaultArgs<ExtArgs>
     bookeditionstores?: boolean | bookedition$bookeditionstoresArgs<ExtArgs>
     bookshopeditions?: boolean | bookedition$bookshopeditionsArgs<ExtArgs>
@@ -4607,9 +4619,10 @@ export namespace Prisma {
     editing_cost?: boolean
     other_expenses?: boolean
     transportation_cost?: boolean
+    count_remening_for_transfer?: boolean
   }
 
-  export type bookeditionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "edition_name" | "selling_price" | "production_price" | "printing_cost" | "binding_cost" | "design_cost" | "translation_cost" | "memo" | "book_image_url" | "total_print_count" | "book_id" | "number_of_pages" | "bookId" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt" | "editing_cost" | "other_expenses" | "transportation_cost", ExtArgs["result"]["bookedition"]>
+  export type bookeditionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "edition_name" | "selling_price" | "production_price" | "printing_cost" | "binding_cost" | "design_cost" | "translation_cost" | "memo" | "book_image_url" | "total_print_count" | "book_id" | "number_of_pages" | "bookId" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt" | "editing_cost" | "other_expenses" | "transportation_cost" | "count_remening_for_transfer", ExtArgs["result"]["bookedition"]>
   export type bookeditionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     books?: boolean | booksDefaultArgs<ExtArgs>
     bookeditionstores?: boolean | bookedition$bookeditionstoresArgs<ExtArgs>
@@ -4648,6 +4661,7 @@ export namespace Prisma {
       editing_cost: number | null
       other_expenses: number | null
       transportation_cost: number | null
+      count_remening_for_transfer: number | null
     }, ExtArgs["result"]["bookedition"]>
     composites: {}
   }
@@ -5042,6 +5056,7 @@ export namespace Prisma {
     readonly editing_cost: FieldRef<"bookedition", 'Float'>
     readonly other_expenses: FieldRef<"bookedition", 'Float'>
     readonly transportation_cost: FieldRef<"bookedition", 'Float'>
+    readonly count_remening_for_transfer: FieldRef<"bookedition", 'Int'>
   }
     
 
@@ -6515,7 +6530,6 @@ export namespace Prisma {
     isbn: string | null
     title: string | null
     author: string | null
-    pen_name: string | null
     translator: string | null
     designer: string | null
     language: string | null
@@ -6534,6 +6548,7 @@ export namespace Prisma {
     deletedAt: Date | null
     productionstatus: $Enums.books_productionstatus | null
     default_edition_id: string | null
+    pen_name: string | null
   }
 
   export type BooksMaxAggregateOutputType = {
@@ -6542,7 +6557,6 @@ export namespace Prisma {
     isbn: string | null
     title: string | null
     author: string | null
-    pen_name: string | null
     translator: string | null
     designer: string | null
     language: string | null
@@ -6561,6 +6575,7 @@ export namespace Prisma {
     deletedAt: Date | null
     productionstatus: $Enums.books_productionstatus | null
     default_edition_id: string | null
+    pen_name: string | null
   }
 
   export type BooksCountAggregateOutputType = {
@@ -6569,7 +6584,6 @@ export namespace Prisma {
     isbn: number
     title: number
     author: number
-    pen_name: number
     translator: number
     designer: number
     language: number
@@ -6588,6 +6602,7 @@ export namespace Prisma {
     deletedAt: number
     productionstatus: number
     default_edition_id: number
+    pen_name: number
     _all: number
   }
 
@@ -6608,7 +6623,6 @@ export namespace Prisma {
     isbn?: true
     title?: true
     author?: true
-    pen_name?: true
     translator?: true
     designer?: true
     language?: true
@@ -6627,6 +6641,7 @@ export namespace Prisma {
     deletedAt?: true
     productionstatus?: true
     default_edition_id?: true
+    pen_name?: true
   }
 
   export type BooksMaxAggregateInputType = {
@@ -6635,7 +6650,6 @@ export namespace Prisma {
     isbn?: true
     title?: true
     author?: true
-    pen_name?: true
     translator?: true
     designer?: true
     language?: true
@@ -6654,6 +6668,7 @@ export namespace Prisma {
     deletedAt?: true
     productionstatus?: true
     default_edition_id?: true
+    pen_name?: true
   }
 
   export type BooksCountAggregateInputType = {
@@ -6662,7 +6677,6 @@ export namespace Prisma {
     isbn?: true
     title?: true
     author?: true
-    pen_name?: true
     translator?: true
     designer?: true
     language?: true
@@ -6681,6 +6695,7 @@ export namespace Prisma {
     deletedAt?: true
     productionstatus?: true
     default_edition_id?: true
+    pen_name?: true
     _all?: true
   }
 
@@ -6776,7 +6791,6 @@ export namespace Prisma {
     isbn: string | null
     title: string
     author: string | null
-    pen_name: string | null
     translator: string | null
     designer: string | null
     language: string
@@ -6795,6 +6809,7 @@ export namespace Prisma {
     deletedAt: Date
     productionstatus: $Enums.books_productionstatus | null
     default_edition_id: string | null
+    pen_name: string | null
     _count: BooksCountAggregateOutputType | null
     _avg: BooksAvgAggregateOutputType | null
     _sum: BooksSumAggregateOutputType | null
@@ -6822,7 +6837,6 @@ export namespace Prisma {
     isbn?: boolean
     title?: boolean
     author?: boolean
-    pen_name?: boolean
     translator?: boolean
     designer?: boolean
     language?: boolean
@@ -6841,6 +6855,7 @@ export namespace Prisma {
     deletedAt?: boolean
     productionstatus?: boolean
     default_edition_id?: boolean
+    pen_name?: boolean
     bookedition?: boolean | books$bookeditionArgs<ExtArgs>
     damagedbooks?: boolean | books$damagedbooksArgs<ExtArgs>
     translatorbook?: boolean | books$translatorbookArgs<ExtArgs>
@@ -6855,7 +6870,6 @@ export namespace Prisma {
     isbn?: boolean
     title?: boolean
     author?: boolean
-    pen_name?: boolean
     translator?: boolean
     designer?: boolean
     language?: boolean
@@ -6874,9 +6888,10 @@ export namespace Prisma {
     deletedAt?: boolean
     productionstatus?: boolean
     default_edition_id?: boolean
+    pen_name?: boolean
   }
 
-  export type booksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "unique_identification_code" | "isbn" | "title" | "author" | "pen_name" | "translator" | "designer" | "language" | "edition" | "category" | "publication_year" | "print_batch_id" | "book_sku" | "number_of_pages" | "info" | "book_image_url" | "status" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt" | "productionstatus" | "default_edition_id", ExtArgs["result"]["books"]>
+  export type booksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "unique_identification_code" | "isbn" | "title" | "author" | "translator" | "designer" | "language" | "edition" | "category" | "publication_year" | "print_batch_id" | "book_sku" | "number_of_pages" | "info" | "book_image_url" | "status" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt" | "productionstatus" | "default_edition_id" | "pen_name", ExtArgs["result"]["books"]>
   export type booksInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     bookedition?: boolean | books$bookeditionArgs<ExtArgs>
     damagedbooks?: boolean | books$damagedbooksArgs<ExtArgs>
@@ -6897,7 +6912,6 @@ export namespace Prisma {
       isbn: string | null
       title: string
       author: string | null
-      pen_name: string | null
       translator: string | null
       designer: string | null
       language: string
@@ -6916,6 +6930,7 @@ export namespace Prisma {
       deletedAt: Date
       productionstatus: $Enums.books_productionstatus | null
       default_edition_id: string | null
+      pen_name: string | null
     }, ExtArgs["result"]["books"]>
     composites: {}
   }
@@ -7293,7 +7308,6 @@ export namespace Prisma {
     readonly isbn: FieldRef<"books", 'String'>
     readonly title: FieldRef<"books", 'String'>
     readonly author: FieldRef<"books", 'String'>
-    readonly pen_name: FieldRef<"books", 'String'>
     readonly translator: FieldRef<"books", 'String'>
     readonly designer: FieldRef<"books", 'String'>
     readonly language: FieldRef<"books", 'String'>
@@ -7312,6 +7326,7 @@ export namespace Prisma {
     readonly deletedAt: FieldRef<"books", 'DateTime'>
     readonly productionstatus: FieldRef<"books", 'books_productionstatus'>
     readonly default_edition_id: FieldRef<"books", 'String'>
+    readonly pen_name: FieldRef<"books", 'String'>
   }
     
 
@@ -16136,11 +16151,11 @@ export namespace Prisma {
     name: string | null
     phoneNumber: string | null
     email: string | null
-    pen_name: string | null
     is_deleted: boolean | null
     updatedAt: Date | null
     createdAt: Date | null
     deletedAt: Date | null
+    pen_name: string | null
   }
 
   export type TranslatorMaxAggregateOutputType = {
@@ -16148,11 +16163,11 @@ export namespace Prisma {
     name: string | null
     phoneNumber: string | null
     email: string | null
-    pen_name: string | null
     is_deleted: boolean | null
     updatedAt: Date | null
     createdAt: Date | null
     deletedAt: Date | null
+    pen_name: string | null
   }
 
   export type TranslatorCountAggregateOutputType = {
@@ -16160,11 +16175,11 @@ export namespace Prisma {
     name: number
     phoneNumber: number
     email: number
-    pen_name: number
     is_deleted: number
     updatedAt: number
     createdAt: number
     deletedAt: number
+    pen_name: number
     _all: number
   }
 
@@ -16182,11 +16197,11 @@ export namespace Prisma {
     name?: true
     phoneNumber?: true
     email?: true
-    pen_name?: true
     is_deleted?: true
     updatedAt?: true
     createdAt?: true
     deletedAt?: true
+    pen_name?: true
   }
 
   export type TranslatorMaxAggregateInputType = {
@@ -16194,11 +16209,11 @@ export namespace Prisma {
     name?: true
     phoneNumber?: true
     email?: true
-    pen_name?: true
     is_deleted?: true
     updatedAt?: true
     createdAt?: true
     deletedAt?: true
+    pen_name?: true
   }
 
   export type TranslatorCountAggregateInputType = {
@@ -16206,11 +16221,11 @@ export namespace Prisma {
     name?: true
     phoneNumber?: true
     email?: true
-    pen_name?: true
     is_deleted?: true
     updatedAt?: true
     createdAt?: true
     deletedAt?: true
+    pen_name?: true
     _all?: true
   }
 
@@ -16305,11 +16320,11 @@ export namespace Prisma {
     name: string | null
     phoneNumber: string | null
     email: string | null
-    pen_name: string | null
     is_deleted: boolean
     updatedAt: Date
     createdAt: Date
     deletedAt: Date
+    pen_name: string | null
     _count: TranslatorCountAggregateOutputType | null
     _avg: TranslatorAvgAggregateOutputType | null
     _sum: TranslatorSumAggregateOutputType | null
@@ -16336,11 +16351,11 @@ export namespace Prisma {
     name?: boolean
     phoneNumber?: boolean
     email?: boolean
-    pen_name?: boolean
     is_deleted?: boolean
     updatedAt?: boolean
     createdAt?: boolean
     deletedAt?: boolean
+    pen_name?: boolean
     translatorbook?: boolean | translator$translatorbookArgs<ExtArgs>
     _count?: boolean | TranslatorCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["translator"]>
@@ -16352,14 +16367,14 @@ export namespace Prisma {
     name?: boolean
     phoneNumber?: boolean
     email?: boolean
-    pen_name?: boolean
     is_deleted?: boolean
     updatedAt?: boolean
     createdAt?: boolean
     deletedAt?: boolean
+    pen_name?: boolean
   }
 
-  export type translatorOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "phoneNumber" | "email" | "pen_name" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt", ExtArgs["result"]["translator"]>
+  export type translatorOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "phoneNumber" | "email" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt" | "pen_name", ExtArgs["result"]["translator"]>
   export type translatorInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     translatorbook?: boolean | translator$translatorbookArgs<ExtArgs>
     _count?: boolean | TranslatorCountOutputTypeDefaultArgs<ExtArgs>
@@ -16375,11 +16390,11 @@ export namespace Prisma {
       name: string | null
       phoneNumber: string | null
       email: string | null
-      pen_name: string | null
       is_deleted: boolean
       updatedAt: Date
       createdAt: Date
       deletedAt: Date
+      pen_name: string | null
     }, ExtArgs["result"]["translator"]>
     composites: {}
   }
@@ -16754,11 +16769,11 @@ export namespace Prisma {
     readonly name: FieldRef<"translator", 'String'>
     readonly phoneNumber: FieldRef<"translator", 'String'>
     readonly email: FieldRef<"translator", 'String'>
-    readonly pen_name: FieldRef<"translator", 'String'>
     readonly is_deleted: FieldRef<"translator", 'Boolean'>
     readonly updatedAt: FieldRef<"translator", 'DateTime'>
     readonly createdAt: FieldRef<"translator", 'DateTime'>
     readonly deletedAt: FieldRef<"translator", 'DateTime'>
+    readonly pen_name: FieldRef<"translator", 'String'>
   }
     
 
@@ -27152,7 +27167,8 @@ export namespace Prisma {
     deletedAt: 'deletedAt',
     editing_cost: 'editing_cost',
     other_expenses: 'other_expenses',
-    transportation_cost: 'transportation_cost'
+    transportation_cost: 'transportation_cost',
+    count_remening_for_transfer: 'count_remening_for_transfer'
   };
 
   export type BookeditionScalarFieldEnum = (typeof BookeditionScalarFieldEnum)[keyof typeof BookeditionScalarFieldEnum]
@@ -27178,7 +27194,6 @@ export namespace Prisma {
     isbn: 'isbn',
     title: 'title',
     author: 'author',
-    pen_name: 'pen_name',
     translator: 'translator',
     designer: 'designer',
     language: 'language',
@@ -27196,7 +27211,8 @@ export namespace Prisma {
     createdAt: 'createdAt',
     deletedAt: 'deletedAt',
     productionstatus: 'productionstatus',
-    default_edition_id: 'default_edition_id'
+    default_edition_id: 'default_edition_id',
+    pen_name: 'pen_name'
   };
 
   export type BooksScalarFieldEnum = (typeof BooksScalarFieldEnum)[keyof typeof BooksScalarFieldEnum]
@@ -27336,11 +27352,11 @@ export namespace Prisma {
     name: 'name',
     phoneNumber: 'phoneNumber',
     email: 'email',
-    pen_name: 'pen_name',
     is_deleted: 'is_deleted',
     updatedAt: 'updatedAt',
     createdAt: 'createdAt',
-    deletedAt: 'deletedAt'
+    deletedAt: 'deletedAt',
+    pen_name: 'pen_name'
   };
 
   export type TranslatorScalarFieldEnum = (typeof TranslatorScalarFieldEnum)[keyof typeof TranslatorScalarFieldEnum]
@@ -27552,7 +27568,6 @@ export namespace Prisma {
     isbn: 'isbn',
     title: 'title',
     author: 'author',
-    pen_name: 'pen_name',
     translator: 'translator',
     designer: 'designer',
     language: 'language',
@@ -27564,7 +27579,8 @@ export namespace Prisma {
     info: 'info',
     book_image_url: 'book_image_url',
     status: 'status',
-    default_edition_id: 'default_edition_id'
+    default_edition_id: 'default_edition_id',
+    pen_name: 'pen_name'
   };
 
   export type booksOrderByRelevanceFieldEnum = (typeof booksOrderByRelevanceFieldEnum)[keyof typeof booksOrderByRelevanceFieldEnum]
@@ -27845,9 +27861,9 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"accounts"> | Date | string
     deletedAt?: DateTimeFilter<"accounts"> | Date | string
     name?: StringFilter<"accounts"> | string
-    notes?: NotesListRelationFilter
     activitylogs?: ActivityLogsListRelationFilter
     damagedbooks?: DamagedbooksListRelationFilter
+    notes?: NotesListRelationFilter
     roles?: RolesListRelationFilter
   }
 
@@ -27862,9 +27878,9 @@ export namespace Prisma {
     createdAt?: SortOrder
     deletedAt?: SortOrder
     name?: SortOrder
-    notes?: notesOrderByRelationAggregateInput
     activitylogs?: activityLogsOrderByRelationAggregateInput
     damagedbooks?: damagedbooksOrderByRelationAggregateInput
+    notes?: notesOrderByRelationAggregateInput
     roles?: rolesOrderByRelationAggregateInput
     _relevance?: accountsOrderByRelevanceInput
   }
@@ -27883,9 +27899,9 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"accounts"> | Date | string
     deletedAt?: DateTimeFilter<"accounts"> | Date | string
     name?: StringFilter<"accounts"> | string
-    notes?: NotesListRelationFilter
     activitylogs?: ActivityLogsListRelationFilter
     damagedbooks?: DamagedbooksListRelationFilter
+    notes?: NotesListRelationFilter
     roles?: RolesListRelationFilter
   }, "id">
 
@@ -27948,6 +27964,7 @@ export namespace Prisma {
     editing_cost?: FloatNullableFilter<"bookedition"> | number | null
     other_expenses?: FloatNullableFilter<"bookedition"> | number | null
     transportation_cost?: FloatNullableFilter<"bookedition"> | number | null
+    count_remening_for_transfer?: IntNullableFilter<"bookedition"> | number | null
     books?: XOR<BooksScalarRelationFilter, booksWhereInput>
     bookeditionstores?: BookeditionstoresListRelationFilter
     bookshopeditions?: BookshopeditionsListRelationFilter
@@ -27976,6 +27993,7 @@ export namespace Prisma {
     editing_cost?: SortOrderInput | SortOrder
     other_expenses?: SortOrderInput | SortOrder
     transportation_cost?: SortOrderInput | SortOrder
+    count_remening_for_transfer?: SortOrderInput | SortOrder
     books?: booksOrderByWithRelationInput
     bookeditionstores?: bookeditionstoresOrderByRelationAggregateInput
     bookshopeditions?: bookshopeditionsOrderByRelationAggregateInput
@@ -28008,6 +28026,7 @@ export namespace Prisma {
     editing_cost?: FloatNullableFilter<"bookedition"> | number | null
     other_expenses?: FloatNullableFilter<"bookedition"> | number | null
     transportation_cost?: FloatNullableFilter<"bookedition"> | number | null
+    count_remening_for_transfer?: IntNullableFilter<"bookedition"> | number | null
     books?: XOR<BooksScalarRelationFilter, booksWhereInput>
     bookeditionstores?: BookeditionstoresListRelationFilter
     bookshopeditions?: BookshopeditionsListRelationFilter
@@ -28036,6 +28055,7 @@ export namespace Prisma {
     editing_cost?: SortOrderInput | SortOrder
     other_expenses?: SortOrderInput | SortOrder
     transportation_cost?: SortOrderInput | SortOrder
+    count_remening_for_transfer?: SortOrderInput | SortOrder
     _count?: bookeditionCountOrderByAggregateInput
     _avg?: bookeditionAvgOrderByAggregateInput
     _max?: bookeditionMaxOrderByAggregateInput
@@ -28068,6 +28088,7 @@ export namespace Prisma {
     editing_cost?: FloatNullableWithAggregatesFilter<"bookedition"> | number | null
     other_expenses?: FloatNullableWithAggregatesFilter<"bookedition"> | number | null
     transportation_cost?: FloatNullableWithAggregatesFilter<"bookedition"> | number | null
+    count_remening_for_transfer?: IntNullableWithAggregatesFilter<"bookedition"> | number | null
   }
 
   export type bookeditionstoresWhereInput = {
@@ -28154,7 +28175,6 @@ export namespace Prisma {
     isbn?: StringNullableFilter<"books"> | string | null
     title?: StringFilter<"books"> | string
     author?: StringNullableFilter<"books"> | string | null
-    pen_name?: StringNullableFilter<"books"> | string | null
     translator?: StringNullableFilter<"books"> | string | null
     designer?: StringNullableFilter<"books"> | string | null
     language?: StringFilter<"books"> | string
@@ -28173,6 +28193,7 @@ export namespace Prisma {
     deletedAt?: DateTimeFilter<"books"> | Date | string
     productionstatus?: Enumbooks_productionstatusNullableFilter<"books"> | $Enums.books_productionstatus | null
     default_edition_id?: StringNullableFilter<"books"> | string | null
+    pen_name?: StringNullableFilter<"books"> | string | null
     bookedition?: BookeditionListRelationFilter
     damagedbooks?: DamagedbooksListRelationFilter
     translatorbook?: TranslatorbookListRelationFilter
@@ -28184,7 +28205,6 @@ export namespace Prisma {
     isbn?: SortOrderInput | SortOrder
     title?: SortOrder
     author?: SortOrderInput | SortOrder
-    pen_name?: SortOrderInput | SortOrder
     translator?: SortOrderInput | SortOrder
     designer?: SortOrderInput | SortOrder
     language?: SortOrder
@@ -28203,6 +28223,7 @@ export namespace Prisma {
     deletedAt?: SortOrder
     productionstatus?: SortOrderInput | SortOrder
     default_edition_id?: SortOrderInput | SortOrder
+    pen_name?: SortOrderInput | SortOrder
     bookedition?: bookeditionOrderByRelationAggregateInput
     damagedbooks?: damagedbooksOrderByRelationAggregateInput
     translatorbook?: translatorbookOrderByRelationAggregateInput
@@ -28219,7 +28240,6 @@ export namespace Prisma {
     isbn?: StringNullableFilter<"books"> | string | null
     title?: StringFilter<"books"> | string
     author?: StringNullableFilter<"books"> | string | null
-    pen_name?: StringNullableFilter<"books"> | string | null
     translator?: StringNullableFilter<"books"> | string | null
     designer?: StringNullableFilter<"books"> | string | null
     language?: StringFilter<"books"> | string
@@ -28237,6 +28257,7 @@ export namespace Prisma {
     deletedAt?: DateTimeFilter<"books"> | Date | string
     productionstatus?: Enumbooks_productionstatusNullableFilter<"books"> | $Enums.books_productionstatus | null
     default_edition_id?: StringNullableFilter<"books"> | string | null
+    pen_name?: StringNullableFilter<"books"> | string | null
     bookedition?: BookeditionListRelationFilter
     damagedbooks?: DamagedbooksListRelationFilter
     translatorbook?: TranslatorbookListRelationFilter
@@ -28248,7 +28269,6 @@ export namespace Prisma {
     isbn?: SortOrderInput | SortOrder
     title?: SortOrder
     author?: SortOrderInput | SortOrder
-    pen_name?: SortOrderInput | SortOrder
     translator?: SortOrderInput | SortOrder
     designer?: SortOrderInput | SortOrder
     language?: SortOrder
@@ -28267,6 +28287,7 @@ export namespace Prisma {
     deletedAt?: SortOrder
     productionstatus?: SortOrderInput | SortOrder
     default_edition_id?: SortOrderInput | SortOrder
+    pen_name?: SortOrderInput | SortOrder
     _count?: booksCountOrderByAggregateInput
     _avg?: booksAvgOrderByAggregateInput
     _max?: booksMaxOrderByAggregateInput
@@ -28283,7 +28304,6 @@ export namespace Prisma {
     isbn?: StringNullableWithAggregatesFilter<"books"> | string | null
     title?: StringWithAggregatesFilter<"books"> | string
     author?: StringNullableWithAggregatesFilter<"books"> | string | null
-    pen_name?: StringNullableWithAggregatesFilter<"books"> | string | null
     translator?: StringNullableWithAggregatesFilter<"books"> | string | null
     designer?: StringNullableWithAggregatesFilter<"books"> | string | null
     language?: StringWithAggregatesFilter<"books"> | string
@@ -28302,6 +28322,7 @@ export namespace Prisma {
     deletedAt?: DateTimeWithAggregatesFilter<"books"> | Date | string
     productionstatus?: Enumbooks_productionstatusNullableWithAggregatesFilter<"books"> | $Enums.books_productionstatus | null
     default_edition_id?: StringNullableWithAggregatesFilter<"books"> | string | null
+    pen_name?: StringNullableWithAggregatesFilter<"books"> | string | null
   }
 
   export type bookshopeditionsWhereInput = {
@@ -28993,11 +29014,11 @@ export namespace Prisma {
     name?: StringNullableFilter<"translator"> | string | null
     phoneNumber?: StringNullableFilter<"translator"> | string | null
     email?: StringNullableFilter<"translator"> | string | null
-    pen_name?: StringNullableFilter<"translator"> | string | null
     is_deleted?: BoolFilter<"translator"> | boolean
     updatedAt?: DateTimeFilter<"translator"> | Date | string
     createdAt?: DateTimeFilter<"translator"> | Date | string
     deletedAt?: DateTimeFilter<"translator"> | Date | string
+    pen_name?: StringNullableFilter<"translator"> | string | null
     translatorbook?: TranslatorbookListRelationFilter
   }
 
@@ -29006,11 +29027,11 @@ export namespace Prisma {
     name?: SortOrderInput | SortOrder
     phoneNumber?: SortOrderInput | SortOrder
     email?: SortOrderInput | SortOrder
-    pen_name?: SortOrderInput | SortOrder
     is_deleted?: SortOrder
     updatedAt?: SortOrder
     createdAt?: SortOrder
     deletedAt?: SortOrder
+    pen_name?: SortOrderInput | SortOrder
     translatorbook?: translatorbookOrderByRelationAggregateInput
     _relevance?: translatorOrderByRelevanceInput
   }
@@ -29023,11 +29044,11 @@ export namespace Prisma {
     name?: StringNullableFilter<"translator"> | string | null
     phoneNumber?: StringNullableFilter<"translator"> | string | null
     email?: StringNullableFilter<"translator"> | string | null
-    pen_name?: StringNullableFilter<"translator"> | string | null
     is_deleted?: BoolFilter<"translator"> | boolean
     updatedAt?: DateTimeFilter<"translator"> | Date | string
     createdAt?: DateTimeFilter<"translator"> | Date | string
     deletedAt?: DateTimeFilter<"translator"> | Date | string
+    pen_name?: StringNullableFilter<"translator"> | string | null
     translatorbook?: TranslatorbookListRelationFilter
   }, "id">
 
@@ -29036,11 +29057,11 @@ export namespace Prisma {
     name?: SortOrderInput | SortOrder
     phoneNumber?: SortOrderInput | SortOrder
     email?: SortOrderInput | SortOrder
-    pen_name?: SortOrderInput | SortOrder
     is_deleted?: SortOrder
     updatedAt?: SortOrder
     createdAt?: SortOrder
     deletedAt?: SortOrder
+    pen_name?: SortOrderInput | SortOrder
     _count?: translatorCountOrderByAggregateInput
     _avg?: translatorAvgOrderByAggregateInput
     _max?: translatorMaxOrderByAggregateInput
@@ -29056,11 +29077,11 @@ export namespace Prisma {
     name?: StringNullableWithAggregatesFilter<"translator"> | string | null
     phoneNumber?: StringNullableWithAggregatesFilter<"translator"> | string | null
     email?: StringNullableWithAggregatesFilter<"translator"> | string | null
-    pen_name?: StringNullableWithAggregatesFilter<"translator"> | string | null
     is_deleted?: BoolWithAggregatesFilter<"translator"> | boolean
     updatedAt?: DateTimeWithAggregatesFilter<"translator"> | Date | string
     createdAt?: DateTimeWithAggregatesFilter<"translator"> | Date | string
     deletedAt?: DateTimeWithAggregatesFilter<"translator"> | Date | string
+    pen_name?: StringNullableWithAggregatesFilter<"translator"> | string | null
   }
 
   export type translatorbookWhereInput = {
@@ -29914,9 +29935,9 @@ export namespace Prisma {
     createdAt?: Date | string
     deletedAt?: Date | string
     name?: string
-    notes?: notesCreateNestedManyWithoutAccountsInput
     activitylogs?: activityLogsCreateNestedManyWithoutAccountInput
     damagedbooks?: damagedbooksCreateNestedManyWithoutAccountsInput
+    notes?: notesCreateNestedManyWithoutAccountsInput
     roles?: rolesCreateNestedManyWithoutAccountsInput
   }
 
@@ -29931,9 +29952,9 @@ export namespace Prisma {
     createdAt?: Date | string
     deletedAt?: Date | string
     name?: string
-    notes?: notesUncheckedCreateNestedManyWithoutAccountsInput
     activitylogs?: activityLogsUncheckedCreateNestedManyWithoutAccountInput
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutAccountsInput
+    notes?: notesUncheckedCreateNestedManyWithoutAccountsInput
     roles?: rolesUncheckedCreateNestedManyWithoutAccountsInput
   }
 
@@ -29947,9 +29968,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     name?: StringFieldUpdateOperationsInput | string
-    notes?: notesUpdateManyWithoutAccountsNestedInput
     activitylogs?: activityLogsUpdateManyWithoutAccountNestedInput
     damagedbooks?: damagedbooksUpdateManyWithoutAccountsNestedInput
+    notes?: notesUpdateManyWithoutAccountsNestedInput
     roles?: rolesUpdateManyWithoutAccountsNestedInput
   }
 
@@ -29964,9 +29985,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     name?: StringFieldUpdateOperationsInput | string
-    notes?: notesUncheckedUpdateManyWithoutAccountsNestedInput
     activitylogs?: activityLogsUncheckedUpdateManyWithoutAccountNestedInput
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutAccountsNestedInput
+    notes?: notesUncheckedUpdateManyWithoutAccountsNestedInput
     roles?: rolesUncheckedUpdateManyWithoutAccountsNestedInput
   }
 
@@ -30028,6 +30049,7 @@ export namespace Prisma {
     editing_cost?: number | null
     other_expenses?: number | null
     transportation_cost?: number | null
+    count_remening_for_transfer?: number | null
     books: booksCreateNestedOneWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsCreateNestedManyWithoutBookeditionInput
@@ -30056,6 +30078,7 @@ export namespace Prisma {
     editing_cost?: number | null
     other_expenses?: number | null
     transportation_cost?: number | null
+    count_remening_for_transfer?: number | null
     bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookeditionInput
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutBookeditionInput
@@ -30081,6 +30104,7 @@ export namespace Prisma {
     editing_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
     books?: booksUpdateOneRequiredWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUpdateManyWithoutBookeditionNestedInput
@@ -30109,6 +30133,7 @@ export namespace Prisma {
     editing_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
     bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookeditionNestedInput
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutBookeditionNestedInput
@@ -30136,6 +30161,7 @@ export namespace Prisma {
     editing_cost?: number | null
     other_expenses?: number | null
     transportation_cost?: number | null
+    count_remening_for_transfer?: number | null
   }
 
   export type bookeditionUpdateManyMutationInput = {
@@ -30158,6 +30184,7 @@ export namespace Prisma {
     editing_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type bookeditionUncheckedUpdateManyInput = {
@@ -30182,6 +30209,7 @@ export namespace Prisma {
     editing_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type bookeditionstoresCreateInput = {
@@ -30261,7 +30289,6 @@ export namespace Prisma {
     isbn?: string | null
     title: string
     author?: string | null
-    pen_name?: string | null
     translator?: string | null
     designer?: string | null
     language: string
@@ -30280,6 +30307,7 @@ export namespace Prisma {
     deletedAt?: Date | string
     productionstatus?: $Enums.books_productionstatus | null
     default_edition_id?: string | null
+    pen_name?: string | null
     bookedition?: bookeditionCreateNestedManyWithoutBooksInput
     damagedbooks?: damagedbooksCreateNestedManyWithoutBooksInput
     translatorbook?: translatorbookCreateNestedManyWithoutBooksInput
@@ -30291,7 +30319,6 @@ export namespace Prisma {
     isbn?: string | null
     title: string
     author?: string | null
-    pen_name?: string | null
     translator?: string | null
     designer?: string | null
     language: string
@@ -30310,6 +30337,7 @@ export namespace Prisma {
     deletedAt?: Date | string
     productionstatus?: $Enums.books_productionstatus | null
     default_edition_id?: string | null
+    pen_name?: string | null
     bookedition?: bookeditionUncheckedCreateNestedManyWithoutBooksInput
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutBooksInput
     translatorbook?: translatorbookUncheckedCreateNestedManyWithoutBooksInput
@@ -30320,7 +30348,6 @@ export namespace Prisma {
     isbn?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
     author?: NullableStringFieldUpdateOperationsInput | string | null
-    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     translator?: NullableStringFieldUpdateOperationsInput | string | null
     designer?: NullableStringFieldUpdateOperationsInput | string | null
     language?: StringFieldUpdateOperationsInput | string
@@ -30339,6 +30366,7 @@ export namespace Prisma {
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     default_edition_id?: NullableStringFieldUpdateOperationsInput | string | null
+    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     bookedition?: bookeditionUpdateManyWithoutBooksNestedInput
     damagedbooks?: damagedbooksUpdateManyWithoutBooksNestedInput
     translatorbook?: translatorbookUpdateManyWithoutBooksNestedInput
@@ -30350,7 +30378,6 @@ export namespace Prisma {
     isbn?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
     author?: NullableStringFieldUpdateOperationsInput | string | null
-    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     translator?: NullableStringFieldUpdateOperationsInput | string | null
     designer?: NullableStringFieldUpdateOperationsInput | string | null
     language?: StringFieldUpdateOperationsInput | string
@@ -30369,6 +30396,7 @@ export namespace Prisma {
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     default_edition_id?: NullableStringFieldUpdateOperationsInput | string | null
+    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     bookedition?: bookeditionUncheckedUpdateManyWithoutBooksNestedInput
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutBooksNestedInput
     translatorbook?: translatorbookUncheckedUpdateManyWithoutBooksNestedInput
@@ -30380,7 +30408,6 @@ export namespace Prisma {
     isbn?: string | null
     title: string
     author?: string | null
-    pen_name?: string | null
     translator?: string | null
     designer?: string | null
     language: string
@@ -30399,6 +30426,7 @@ export namespace Prisma {
     deletedAt?: Date | string
     productionstatus?: $Enums.books_productionstatus | null
     default_edition_id?: string | null
+    pen_name?: string | null
   }
 
   export type booksUpdateManyMutationInput = {
@@ -30406,7 +30434,6 @@ export namespace Prisma {
     isbn?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
     author?: NullableStringFieldUpdateOperationsInput | string | null
-    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     translator?: NullableStringFieldUpdateOperationsInput | string | null
     designer?: NullableStringFieldUpdateOperationsInput | string | null
     language?: StringFieldUpdateOperationsInput | string
@@ -30425,6 +30452,7 @@ export namespace Prisma {
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     default_edition_id?: NullableStringFieldUpdateOperationsInput | string | null
+    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type booksUncheckedUpdateManyInput = {
@@ -30433,7 +30461,6 @@ export namespace Prisma {
     isbn?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
     author?: NullableStringFieldUpdateOperationsInput | string | null
-    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     translator?: NullableStringFieldUpdateOperationsInput | string | null
     designer?: NullableStringFieldUpdateOperationsInput | string | null
     language?: StringFieldUpdateOperationsInput | string
@@ -30452,6 +30479,7 @@ export namespace Prisma {
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     default_edition_id?: NullableStringFieldUpdateOperationsInput | string | null
+    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type bookshopeditionsCreateInput = {
@@ -31177,11 +31205,11 @@ export namespace Prisma {
     name?: string | null
     phoneNumber?: string | null
     email?: string | null
-    pen_name?: string | null
     is_deleted?: boolean
     updatedAt: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+    pen_name?: string | null
     translatorbook?: translatorbookCreateNestedManyWithoutTranslatorInput
   }
 
@@ -31190,11 +31218,11 @@ export namespace Prisma {
     name?: string | null
     phoneNumber?: string | null
     email?: string | null
-    pen_name?: string | null
     is_deleted?: boolean
     updatedAt: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+    pen_name?: string | null
     translatorbook?: translatorbookUncheckedCreateNestedManyWithoutTranslatorInput
   }
 
@@ -31202,11 +31230,11 @@ export namespace Prisma {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
-    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     translatorbook?: translatorbookUpdateManyWithoutTranslatorNestedInput
   }
 
@@ -31215,11 +31243,11 @@ export namespace Prisma {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
-    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     translatorbook?: translatorbookUncheckedUpdateManyWithoutTranslatorNestedInput
   }
 
@@ -31228,22 +31256,22 @@ export namespace Prisma {
     name?: string | null
     phoneNumber?: string | null
     email?: string | null
-    pen_name?: string | null
     is_deleted?: boolean
     updatedAt: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+    pen_name?: string | null
   }
 
   export type translatorUpdateManyMutationInput = {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
-    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type translatorUncheckedUpdateManyInput = {
@@ -31251,11 +31279,11 @@ export namespace Prisma {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
-    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type translatorbookCreateInput = {
@@ -32218,12 +32246,6 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
-  export type NotesListRelationFilter = {
-    every?: notesWhereInput
-    some?: notesWhereInput
-    none?: notesWhereInput
-  }
-
   export type ActivityLogsListRelationFilter = {
     every?: activityLogsWhereInput
     some?: activityLogsWhereInput
@@ -32236,14 +32258,16 @@ export namespace Prisma {
     none?: damagedbooksWhereInput
   }
 
+  export type NotesListRelationFilter = {
+    every?: notesWhereInput
+    some?: notesWhereInput
+    none?: notesWhereInput
+  }
+
   export type RolesListRelationFilter = {
     every?: rolesWhereInput
     some?: rolesWhereInput
     none?: rolesWhereInput
-  }
-
-  export type notesOrderByRelationAggregateInput = {
-    _count?: SortOrder
   }
 
   export type activityLogsOrderByRelationAggregateInput = {
@@ -32251,6 +32275,10 @@ export namespace Prisma {
   }
 
   export type damagedbooksOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type notesOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -32462,6 +32490,7 @@ export namespace Prisma {
     editing_cost?: SortOrder
     other_expenses?: SortOrder
     transportation_cost?: SortOrder
+    count_remening_for_transfer?: SortOrder
   }
 
   export type bookeditionAvgOrderByAggregateInput = {
@@ -32479,6 +32508,7 @@ export namespace Prisma {
     editing_cost?: SortOrder
     other_expenses?: SortOrder
     transportation_cost?: SortOrder
+    count_remening_for_transfer?: SortOrder
   }
 
   export type bookeditionMaxOrderByAggregateInput = {
@@ -32503,6 +32533,7 @@ export namespace Prisma {
     editing_cost?: SortOrder
     other_expenses?: SortOrder
     transportation_cost?: SortOrder
+    count_remening_for_transfer?: SortOrder
   }
 
   export type bookeditionMinOrderByAggregateInput = {
@@ -32527,6 +32558,7 @@ export namespace Prisma {
     editing_cost?: SortOrder
     other_expenses?: SortOrder
     transportation_cost?: SortOrder
+    count_remening_for_transfer?: SortOrder
   }
 
   export type bookeditionSumOrderByAggregateInput = {
@@ -32544,6 +32576,7 @@ export namespace Prisma {
     editing_cost?: SortOrder
     other_expenses?: SortOrder
     transportation_cost?: SortOrder
+    count_remening_for_transfer?: SortOrder
   }
 
   export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -32692,7 +32725,6 @@ export namespace Prisma {
     isbn?: SortOrder
     title?: SortOrder
     author?: SortOrder
-    pen_name?: SortOrder
     translator?: SortOrder
     designer?: SortOrder
     language?: SortOrder
@@ -32711,6 +32743,7 @@ export namespace Prisma {
     deletedAt?: SortOrder
     productionstatus?: SortOrder
     default_edition_id?: SortOrder
+    pen_name?: SortOrder
   }
 
   export type booksAvgOrderByAggregateInput = {
@@ -32724,7 +32757,6 @@ export namespace Prisma {
     isbn?: SortOrder
     title?: SortOrder
     author?: SortOrder
-    pen_name?: SortOrder
     translator?: SortOrder
     designer?: SortOrder
     language?: SortOrder
@@ -32743,6 +32775,7 @@ export namespace Prisma {
     deletedAt?: SortOrder
     productionstatus?: SortOrder
     default_edition_id?: SortOrder
+    pen_name?: SortOrder
   }
 
   export type booksMinOrderByAggregateInput = {
@@ -32751,7 +32784,6 @@ export namespace Prisma {
     isbn?: SortOrder
     title?: SortOrder
     author?: SortOrder
-    pen_name?: SortOrder
     translator?: SortOrder
     designer?: SortOrder
     language?: SortOrder
@@ -32770,6 +32802,7 @@ export namespace Prisma {
     deletedAt?: SortOrder
     productionstatus?: SortOrder
     default_edition_id?: SortOrder
+    pen_name?: SortOrder
   }
 
   export type booksSumOrderByAggregateInput = {
@@ -33376,11 +33409,11 @@ export namespace Prisma {
     name?: SortOrder
     phoneNumber?: SortOrder
     email?: SortOrder
-    pen_name?: SortOrder
     is_deleted?: SortOrder
     updatedAt?: SortOrder
     createdAt?: SortOrder
     deletedAt?: SortOrder
+    pen_name?: SortOrder
   }
 
   export type translatorAvgOrderByAggregateInput = {
@@ -33392,11 +33425,11 @@ export namespace Prisma {
     name?: SortOrder
     phoneNumber?: SortOrder
     email?: SortOrder
-    pen_name?: SortOrder
     is_deleted?: SortOrder
     updatedAt?: SortOrder
     createdAt?: SortOrder
     deletedAt?: SortOrder
+    pen_name?: SortOrder
   }
 
   export type translatorMinOrderByAggregateInput = {
@@ -33404,11 +33437,11 @@ export namespace Prisma {
     name?: SortOrder
     phoneNumber?: SortOrder
     email?: SortOrder
-    pen_name?: SortOrder
     is_deleted?: SortOrder
     updatedAt?: SortOrder
     createdAt?: SortOrder
     deletedAt?: SortOrder
+    pen_name?: SortOrder
   }
 
   export type translatorSumOrderByAggregateInput = {
@@ -34041,13 +34074,6 @@ export namespace Prisma {
     id?: SortOrder
   }
 
-  export type notesCreateNestedManyWithoutAccountsInput = {
-    create?: XOR<notesCreateWithoutAccountsInput, notesUncheckedCreateWithoutAccountsInput> | notesCreateWithoutAccountsInput[] | notesUncheckedCreateWithoutAccountsInput[]
-    connectOrCreate?: notesCreateOrConnectWithoutAccountsInput | notesCreateOrConnectWithoutAccountsInput[]
-    createMany?: notesCreateManyAccountsInputEnvelope
-    connect?: notesWhereUniqueInput | notesWhereUniqueInput[]
-  }
-
   export type activityLogsCreateNestedManyWithoutAccountInput = {
     create?: XOR<activityLogsCreateWithoutAccountInput, activityLogsUncheckedCreateWithoutAccountInput> | activityLogsCreateWithoutAccountInput[] | activityLogsUncheckedCreateWithoutAccountInput[]
     connectOrCreate?: activityLogsCreateOrConnectWithoutAccountInput | activityLogsCreateOrConnectWithoutAccountInput[]
@@ -34062,18 +34088,18 @@ export namespace Prisma {
     connect?: damagedbooksWhereUniqueInput | damagedbooksWhereUniqueInput[]
   }
 
+  export type notesCreateNestedManyWithoutAccountsInput = {
+    create?: XOR<notesCreateWithoutAccountsInput, notesUncheckedCreateWithoutAccountsInput> | notesCreateWithoutAccountsInput[] | notesUncheckedCreateWithoutAccountsInput[]
+    connectOrCreate?: notesCreateOrConnectWithoutAccountsInput | notesCreateOrConnectWithoutAccountsInput[]
+    createMany?: notesCreateManyAccountsInputEnvelope
+    connect?: notesWhereUniqueInput | notesWhereUniqueInput[]
+  }
+
   export type rolesCreateNestedManyWithoutAccountsInput = {
     create?: XOR<rolesCreateWithoutAccountsInput, rolesUncheckedCreateWithoutAccountsInput> | rolesCreateWithoutAccountsInput[] | rolesUncheckedCreateWithoutAccountsInput[]
     connectOrCreate?: rolesCreateOrConnectWithoutAccountsInput | rolesCreateOrConnectWithoutAccountsInput[]
     createMany?: rolesCreateManyAccountsInputEnvelope
     connect?: rolesWhereUniqueInput | rolesWhereUniqueInput[]
-  }
-
-  export type notesUncheckedCreateNestedManyWithoutAccountsInput = {
-    create?: XOR<notesCreateWithoutAccountsInput, notesUncheckedCreateWithoutAccountsInput> | notesCreateWithoutAccountsInput[] | notesUncheckedCreateWithoutAccountsInput[]
-    connectOrCreate?: notesCreateOrConnectWithoutAccountsInput | notesCreateOrConnectWithoutAccountsInput[]
-    createMany?: notesCreateManyAccountsInputEnvelope
-    connect?: notesWhereUniqueInput | notesWhereUniqueInput[]
   }
 
   export type activityLogsUncheckedCreateNestedManyWithoutAccountInput = {
@@ -34088,6 +34114,13 @@ export namespace Prisma {
     connectOrCreate?: damagedbooksCreateOrConnectWithoutAccountsInput | damagedbooksCreateOrConnectWithoutAccountsInput[]
     createMany?: damagedbooksCreateManyAccountsInputEnvelope
     connect?: damagedbooksWhereUniqueInput | damagedbooksWhereUniqueInput[]
+  }
+
+  export type notesUncheckedCreateNestedManyWithoutAccountsInput = {
+    create?: XOR<notesCreateWithoutAccountsInput, notesUncheckedCreateWithoutAccountsInput> | notesCreateWithoutAccountsInput[] | notesUncheckedCreateWithoutAccountsInput[]
+    connectOrCreate?: notesCreateOrConnectWithoutAccountsInput | notesCreateOrConnectWithoutAccountsInput[]
+    createMany?: notesCreateManyAccountsInputEnvelope
+    connect?: notesWhereUniqueInput | notesWhereUniqueInput[]
   }
 
   export type rolesUncheckedCreateNestedManyWithoutAccountsInput = {
@@ -34107,20 +34140,6 @@ export namespace Prisma {
 
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
-  }
-
-  export type notesUpdateManyWithoutAccountsNestedInput = {
-    create?: XOR<notesCreateWithoutAccountsInput, notesUncheckedCreateWithoutAccountsInput> | notesCreateWithoutAccountsInput[] | notesUncheckedCreateWithoutAccountsInput[]
-    connectOrCreate?: notesCreateOrConnectWithoutAccountsInput | notesCreateOrConnectWithoutAccountsInput[]
-    upsert?: notesUpsertWithWhereUniqueWithoutAccountsInput | notesUpsertWithWhereUniqueWithoutAccountsInput[]
-    createMany?: notesCreateManyAccountsInputEnvelope
-    set?: notesWhereUniqueInput | notesWhereUniqueInput[]
-    disconnect?: notesWhereUniqueInput | notesWhereUniqueInput[]
-    delete?: notesWhereUniqueInput | notesWhereUniqueInput[]
-    connect?: notesWhereUniqueInput | notesWhereUniqueInput[]
-    update?: notesUpdateWithWhereUniqueWithoutAccountsInput | notesUpdateWithWhereUniqueWithoutAccountsInput[]
-    updateMany?: notesUpdateManyWithWhereWithoutAccountsInput | notesUpdateManyWithWhereWithoutAccountsInput[]
-    deleteMany?: notesScalarWhereInput | notesScalarWhereInput[]
   }
 
   export type activityLogsUpdateManyWithoutAccountNestedInput = {
@@ -34151,6 +34170,20 @@ export namespace Prisma {
     deleteMany?: damagedbooksScalarWhereInput | damagedbooksScalarWhereInput[]
   }
 
+  export type notesUpdateManyWithoutAccountsNestedInput = {
+    create?: XOR<notesCreateWithoutAccountsInput, notesUncheckedCreateWithoutAccountsInput> | notesCreateWithoutAccountsInput[] | notesUncheckedCreateWithoutAccountsInput[]
+    connectOrCreate?: notesCreateOrConnectWithoutAccountsInput | notesCreateOrConnectWithoutAccountsInput[]
+    upsert?: notesUpsertWithWhereUniqueWithoutAccountsInput | notesUpsertWithWhereUniqueWithoutAccountsInput[]
+    createMany?: notesCreateManyAccountsInputEnvelope
+    set?: notesWhereUniqueInput | notesWhereUniqueInput[]
+    disconnect?: notesWhereUniqueInput | notesWhereUniqueInput[]
+    delete?: notesWhereUniqueInput | notesWhereUniqueInput[]
+    connect?: notesWhereUniqueInput | notesWhereUniqueInput[]
+    update?: notesUpdateWithWhereUniqueWithoutAccountsInput | notesUpdateWithWhereUniqueWithoutAccountsInput[]
+    updateMany?: notesUpdateManyWithWhereWithoutAccountsInput | notesUpdateManyWithWhereWithoutAccountsInput[]
+    deleteMany?: notesScalarWhereInput | notesScalarWhereInput[]
+  }
+
   export type rolesUpdateManyWithoutAccountsNestedInput = {
     create?: XOR<rolesCreateWithoutAccountsInput, rolesUncheckedCreateWithoutAccountsInput> | rolesCreateWithoutAccountsInput[] | rolesUncheckedCreateWithoutAccountsInput[]
     connectOrCreate?: rolesCreateOrConnectWithoutAccountsInput | rolesCreateOrConnectWithoutAccountsInput[]
@@ -34171,20 +34204,6 @@ export namespace Prisma {
     decrement?: number
     multiply?: number
     divide?: number
-  }
-
-  export type notesUncheckedUpdateManyWithoutAccountsNestedInput = {
-    create?: XOR<notesCreateWithoutAccountsInput, notesUncheckedCreateWithoutAccountsInput> | notesCreateWithoutAccountsInput[] | notesUncheckedCreateWithoutAccountsInput[]
-    connectOrCreate?: notesCreateOrConnectWithoutAccountsInput | notesCreateOrConnectWithoutAccountsInput[]
-    upsert?: notesUpsertWithWhereUniqueWithoutAccountsInput | notesUpsertWithWhereUniqueWithoutAccountsInput[]
-    createMany?: notesCreateManyAccountsInputEnvelope
-    set?: notesWhereUniqueInput | notesWhereUniqueInput[]
-    disconnect?: notesWhereUniqueInput | notesWhereUniqueInput[]
-    delete?: notesWhereUniqueInput | notesWhereUniqueInput[]
-    connect?: notesWhereUniqueInput | notesWhereUniqueInput[]
-    update?: notesUpdateWithWhereUniqueWithoutAccountsInput | notesUpdateWithWhereUniqueWithoutAccountsInput[]
-    updateMany?: notesUpdateManyWithWhereWithoutAccountsInput | notesUpdateManyWithWhereWithoutAccountsInput[]
-    deleteMany?: notesScalarWhereInput | notesScalarWhereInput[]
   }
 
   export type activityLogsUncheckedUpdateManyWithoutAccountNestedInput = {
@@ -34213,6 +34232,20 @@ export namespace Prisma {
     update?: damagedbooksUpdateWithWhereUniqueWithoutAccountsInput | damagedbooksUpdateWithWhereUniqueWithoutAccountsInput[]
     updateMany?: damagedbooksUpdateManyWithWhereWithoutAccountsInput | damagedbooksUpdateManyWithWhereWithoutAccountsInput[]
     deleteMany?: damagedbooksScalarWhereInput | damagedbooksScalarWhereInput[]
+  }
+
+  export type notesUncheckedUpdateManyWithoutAccountsNestedInput = {
+    create?: XOR<notesCreateWithoutAccountsInput, notesUncheckedCreateWithoutAccountsInput> | notesCreateWithoutAccountsInput[] | notesUncheckedCreateWithoutAccountsInput[]
+    connectOrCreate?: notesCreateOrConnectWithoutAccountsInput | notesCreateOrConnectWithoutAccountsInput[]
+    upsert?: notesUpsertWithWhereUniqueWithoutAccountsInput | notesUpsertWithWhereUniqueWithoutAccountsInput[]
+    createMany?: notesCreateManyAccountsInputEnvelope
+    set?: notesWhereUniqueInput | notesWhereUniqueInput[]
+    disconnect?: notesWhereUniqueInput | notesWhereUniqueInput[]
+    delete?: notesWhereUniqueInput | notesWhereUniqueInput[]
+    connect?: notesWhereUniqueInput | notesWhereUniqueInput[]
+    update?: notesUpdateWithWhereUniqueWithoutAccountsInput | notesUpdateWithWhereUniqueWithoutAccountsInput[]
+    updateMany?: notesUpdateManyWithWhereWithoutAccountsInput | notesUpdateManyWithWhereWithoutAccountsInput[]
+    deleteMany?: notesScalarWhereInput | notesScalarWhereInput[]
   }
 
   export type rolesUncheckedUpdateManyWithoutAccountsNestedInput = {
@@ -35304,33 +35337,6 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
-  export type notesCreateWithoutAccountsInput = {
-    title?: string | null
-    note_content: string
-    is_deleted?: boolean
-    updatedAt: Date | string
-    createdAt?: Date | string
-  }
-
-  export type notesUncheckedCreateWithoutAccountsInput = {
-    id?: number
-    title?: string | null
-    note_content: string
-    is_deleted?: boolean
-    updatedAt: Date | string
-    createdAt?: Date | string
-  }
-
-  export type notesCreateOrConnectWithoutAccountsInput = {
-    where: notesWhereUniqueInput
-    create: XOR<notesCreateWithoutAccountsInput, notesUncheckedCreateWithoutAccountsInput>
-  }
-
-  export type notesCreateManyAccountsInputEnvelope = {
-    data: notesCreateManyAccountsInput | notesCreateManyAccountsInput[]
-    skipDuplicates?: boolean
-  }
-
   export type activityLogsCreateWithoutAccountInput = {
     action: string
     details?: string | null
@@ -35401,6 +35407,33 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type notesCreateWithoutAccountsInput = {
+    title?: string | null
+    note_content: string
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+  }
+
+  export type notesUncheckedCreateWithoutAccountsInput = {
+    id?: number
+    title?: string | null
+    note_content: string
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+  }
+
+  export type notesCreateOrConnectWithoutAccountsInput = {
+    where: notesWhereUniqueInput
+    create: XOR<notesCreateWithoutAccountsInput, notesUncheckedCreateWithoutAccountsInput>
+  }
+
+  export type notesCreateManyAccountsInputEnvelope = {
+    data: notesCreateManyAccountsInput | notesCreateManyAccountsInput[]
+    skipDuplicates?: boolean
+  }
+
   export type rolesCreateWithoutAccountsInput = {
     role_status?: boolean
     role_name: string
@@ -35428,35 +35461,6 @@ export namespace Prisma {
   export type rolesCreateManyAccountsInputEnvelope = {
     data: rolesCreateManyAccountsInput | rolesCreateManyAccountsInput[]
     skipDuplicates?: boolean
-  }
-
-  export type notesUpsertWithWhereUniqueWithoutAccountsInput = {
-    where: notesWhereUniqueInput
-    update: XOR<notesUpdateWithoutAccountsInput, notesUncheckedUpdateWithoutAccountsInput>
-    create: XOR<notesCreateWithoutAccountsInput, notesUncheckedCreateWithoutAccountsInput>
-  }
-
-  export type notesUpdateWithWhereUniqueWithoutAccountsInput = {
-    where: notesWhereUniqueInput
-    data: XOR<notesUpdateWithoutAccountsInput, notesUncheckedUpdateWithoutAccountsInput>
-  }
-
-  export type notesUpdateManyWithWhereWithoutAccountsInput = {
-    where: notesScalarWhereInput
-    data: XOR<notesUpdateManyMutationInput, notesUncheckedUpdateManyWithoutAccountsInput>
-  }
-
-  export type notesScalarWhereInput = {
-    AND?: notesScalarWhereInput | notesScalarWhereInput[]
-    OR?: notesScalarWhereInput[]
-    NOT?: notesScalarWhereInput | notesScalarWhereInput[]
-    id?: IntFilter<"notes"> | number
-    title?: StringNullableFilter<"notes"> | string | null
-    note_content?: StringFilter<"notes"> | string
-    accountId?: IntFilter<"notes"> | number
-    is_deleted?: BoolFilter<"notes"> | boolean
-    updatedAt?: DateTimeFilter<"notes"> | Date | string
-    createdAt?: DateTimeFilter<"notes"> | Date | string
   }
 
   export type activityLogsUpsertWithWhereUniqueWithoutAccountInput = {
@@ -35525,6 +35529,35 @@ export namespace Prisma {
     deletedAt?: DateTimeFilter<"damagedbooks"> | Date | string
   }
 
+  export type notesUpsertWithWhereUniqueWithoutAccountsInput = {
+    where: notesWhereUniqueInput
+    update: XOR<notesUpdateWithoutAccountsInput, notesUncheckedUpdateWithoutAccountsInput>
+    create: XOR<notesCreateWithoutAccountsInput, notesUncheckedCreateWithoutAccountsInput>
+  }
+
+  export type notesUpdateWithWhereUniqueWithoutAccountsInput = {
+    where: notesWhereUniqueInput
+    data: XOR<notesUpdateWithoutAccountsInput, notesUncheckedUpdateWithoutAccountsInput>
+  }
+
+  export type notesUpdateManyWithWhereWithoutAccountsInput = {
+    where: notesScalarWhereInput
+    data: XOR<notesUpdateManyMutationInput, notesUncheckedUpdateManyWithoutAccountsInput>
+  }
+
+  export type notesScalarWhereInput = {
+    AND?: notesScalarWhereInput | notesScalarWhereInput[]
+    OR?: notesScalarWhereInput[]
+    NOT?: notesScalarWhereInput | notesScalarWhereInput[]
+    id?: IntFilter<"notes"> | number
+    title?: StringNullableFilter<"notes"> | string | null
+    note_content?: StringFilter<"notes"> | string
+    accountId?: IntFilter<"notes"> | number
+    is_deleted?: BoolFilter<"notes"> | boolean
+    updatedAt?: DateTimeFilter<"notes"> | Date | string
+    createdAt?: DateTimeFilter<"notes"> | Date | string
+  }
+
   export type rolesUpsertWithWhereUniqueWithoutAccountsInput = {
     where: rolesWhereUniqueInput
     update: XOR<rolesUpdateWithoutAccountsInput, rolesUncheckedUpdateWithoutAccountsInput>
@@ -35560,7 +35593,6 @@ export namespace Prisma {
     isbn?: string | null
     title: string
     author?: string | null
-    pen_name?: string | null
     translator?: string | null
     designer?: string | null
     language: string
@@ -35579,6 +35611,7 @@ export namespace Prisma {
     deletedAt?: Date | string
     productionstatus?: $Enums.books_productionstatus | null
     default_edition_id?: string | null
+    pen_name?: string | null
     damagedbooks?: damagedbooksCreateNestedManyWithoutBooksInput
     translatorbook?: translatorbookCreateNestedManyWithoutBooksInput
   }
@@ -35589,7 +35622,6 @@ export namespace Prisma {
     isbn?: string | null
     title: string
     author?: string | null
-    pen_name?: string | null
     translator?: string | null
     designer?: string | null
     language: string
@@ -35608,6 +35640,7 @@ export namespace Prisma {
     deletedAt?: Date | string
     productionstatus?: $Enums.books_productionstatus | null
     default_edition_id?: string | null
+    pen_name?: string | null
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutBooksInput
     translatorbook?: translatorbookUncheckedCreateNestedManyWithoutBooksInput
   }
@@ -35738,7 +35771,6 @@ export namespace Prisma {
     isbn?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
     author?: NullableStringFieldUpdateOperationsInput | string | null
-    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     translator?: NullableStringFieldUpdateOperationsInput | string | null
     designer?: NullableStringFieldUpdateOperationsInput | string | null
     language?: StringFieldUpdateOperationsInput | string
@@ -35757,6 +35789,7 @@ export namespace Prisma {
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     default_edition_id?: NullableStringFieldUpdateOperationsInput | string | null
+    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     damagedbooks?: damagedbooksUpdateManyWithoutBooksNestedInput
     translatorbook?: translatorbookUpdateManyWithoutBooksNestedInput
   }
@@ -35767,7 +35800,6 @@ export namespace Prisma {
     isbn?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
     author?: NullableStringFieldUpdateOperationsInput | string | null
-    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     translator?: NullableStringFieldUpdateOperationsInput | string | null
     designer?: NullableStringFieldUpdateOperationsInput | string | null
     language?: StringFieldUpdateOperationsInput | string
@@ -35786,6 +35818,7 @@ export namespace Prisma {
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     default_edition_id?: NullableStringFieldUpdateOperationsInput | string | null
+    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutBooksNestedInput
     translatorbook?: translatorbookUncheckedUpdateManyWithoutBooksNestedInput
   }
@@ -35891,6 +35924,7 @@ export namespace Prisma {
     editing_cost?: number | null
     other_expenses?: number | null
     transportation_cost?: number | null
+    count_remening_for_transfer?: number | null
     books: booksCreateNestedOneWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsCreateNestedManyWithoutBookeditionInput
     damagedbooks?: damagedbooksCreateNestedManyWithoutBookeditionInput
@@ -35918,6 +35952,7 @@ export namespace Prisma {
     editing_cost?: number | null
     other_expenses?: number | null
     transportation_cost?: number | null
+    count_remening_for_transfer?: number | null
     bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookeditionInput
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutBookeditionInput
   }
@@ -35990,6 +36025,7 @@ export namespace Prisma {
     editing_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
     books?: booksUpdateOneRequiredWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUpdateManyWithoutBookeditionNestedInput
     damagedbooks?: damagedbooksUpdateManyWithoutBookeditionNestedInput
@@ -36017,6 +36053,7 @@ export namespace Prisma {
     editing_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
     bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookeditionNestedInput
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutBookeditionNestedInput
   }
@@ -36079,6 +36116,7 @@ export namespace Prisma {
     editing_cost?: number | null
     other_expenses?: number | null
     transportation_cost?: number | null
+    count_remening_for_transfer?: number | null
     bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsCreateNestedManyWithoutBookeditionInput
     damagedbooks?: damagedbooksCreateNestedManyWithoutBookeditionInput
@@ -36105,6 +36143,7 @@ export namespace Prisma {
     editing_cost?: number | null
     other_expenses?: number | null
     transportation_cost?: number | null
+    count_remening_for_transfer?: number | null
     bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookeditionInput
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutBookeditionInput
@@ -36233,6 +36272,7 @@ export namespace Prisma {
     editing_cost?: FloatNullableFilter<"bookedition"> | number | null
     other_expenses?: FloatNullableFilter<"bookedition"> | number | null
     transportation_cost?: FloatNullableFilter<"bookedition"> | number | null
+    count_remening_for_transfer?: IntNullableFilter<"bookedition"> | number | null
   }
 
   export type damagedbooksUpsertWithWhereUniqueWithoutBooksInput = {
@@ -36304,6 +36344,7 @@ export namespace Prisma {
     editing_cost?: number | null
     other_expenses?: number | null
     transportation_cost?: number | null
+    count_remening_for_transfer?: number | null
     books: booksCreateNestedOneWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
     damagedbooks?: damagedbooksCreateNestedManyWithoutBookeditionInput
@@ -36331,6 +36372,7 @@ export namespace Prisma {
     editing_cost?: number | null
     other_expenses?: number | null
     transportation_cost?: number | null
+    count_remening_for_transfer?: number | null
     bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutBookeditionInput
   }
@@ -36401,6 +36443,7 @@ export namespace Prisma {
     editing_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
     books?: booksUpdateOneRequiredWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
     damagedbooks?: damagedbooksUpdateManyWithoutBookeditionNestedInput
@@ -36428,6 +36471,7 @@ export namespace Prisma {
     editing_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
     bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutBookeditionNestedInput
   }
@@ -36533,8 +36577,8 @@ export namespace Prisma {
     createdAt?: Date | string
     deletedAt?: Date | string
     name?: string
-    notes?: notesCreateNestedManyWithoutAccountsInput
     activitylogs?: activityLogsCreateNestedManyWithoutAccountInput
+    notes?: notesCreateNestedManyWithoutAccountsInput
     roles?: rolesCreateNestedManyWithoutAccountsInput
   }
 
@@ -36549,8 +36593,8 @@ export namespace Prisma {
     createdAt?: Date | string
     deletedAt?: Date | string
     name?: string
-    notes?: notesUncheckedCreateNestedManyWithoutAccountsInput
     activitylogs?: activityLogsUncheckedCreateNestedManyWithoutAccountInput
+    notes?: notesUncheckedCreateNestedManyWithoutAccountsInput
     roles?: rolesUncheckedCreateNestedManyWithoutAccountsInput
   }
 
@@ -36564,7 +36608,6 @@ export namespace Prisma {
     isbn?: string | null
     title: string
     author?: string | null
-    pen_name?: string | null
     translator?: string | null
     designer?: string | null
     language: string
@@ -36583,6 +36626,7 @@ export namespace Prisma {
     deletedAt?: Date | string
     productionstatus?: $Enums.books_productionstatus | null
     default_edition_id?: string | null
+    pen_name?: string | null
     bookedition?: bookeditionCreateNestedManyWithoutBooksInput
     translatorbook?: translatorbookCreateNestedManyWithoutBooksInput
   }
@@ -36593,7 +36637,6 @@ export namespace Prisma {
     isbn?: string | null
     title: string
     author?: string | null
-    pen_name?: string | null
     translator?: string | null
     designer?: string | null
     language: string
@@ -36612,6 +36655,7 @@ export namespace Prisma {
     deletedAt?: Date | string
     productionstatus?: $Enums.books_productionstatus | null
     default_edition_id?: string | null
+    pen_name?: string | null
     bookedition?: bookeditionUncheckedCreateNestedManyWithoutBooksInput
     translatorbook?: translatorbookUncheckedCreateNestedManyWithoutBooksInput
   }
@@ -36641,6 +36685,7 @@ export namespace Prisma {
     editing_cost?: number | null
     other_expenses?: number | null
     transportation_cost?: number | null
+    count_remening_for_transfer?: number | null
     books: booksCreateNestedOneWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsCreateNestedManyWithoutBookeditionInput
@@ -36668,6 +36713,7 @@ export namespace Prisma {
     editing_cost?: number | null
     other_expenses?: number | null
     transportation_cost?: number | null
+    count_remening_for_transfer?: number | null
     bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookeditionInput
   }
@@ -36730,8 +36776,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     name?: StringFieldUpdateOperationsInput | string
-    notes?: notesUpdateManyWithoutAccountsNestedInput
     activitylogs?: activityLogsUpdateManyWithoutAccountNestedInput
+    notes?: notesUpdateManyWithoutAccountsNestedInput
     roles?: rolesUpdateManyWithoutAccountsNestedInput
   }
 
@@ -36746,8 +36792,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     name?: StringFieldUpdateOperationsInput | string
-    notes?: notesUncheckedUpdateManyWithoutAccountsNestedInput
     activitylogs?: activityLogsUncheckedUpdateManyWithoutAccountNestedInput
+    notes?: notesUncheckedUpdateManyWithoutAccountsNestedInput
     roles?: rolesUncheckedUpdateManyWithoutAccountsNestedInput
   }
 
@@ -36767,7 +36813,6 @@ export namespace Prisma {
     isbn?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
     author?: NullableStringFieldUpdateOperationsInput | string | null
-    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     translator?: NullableStringFieldUpdateOperationsInput | string | null
     designer?: NullableStringFieldUpdateOperationsInput | string | null
     language?: StringFieldUpdateOperationsInput | string
@@ -36786,6 +36831,7 @@ export namespace Prisma {
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     default_edition_id?: NullableStringFieldUpdateOperationsInput | string | null
+    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     bookedition?: bookeditionUpdateManyWithoutBooksNestedInput
     translatorbook?: translatorbookUpdateManyWithoutBooksNestedInput
   }
@@ -36796,7 +36842,6 @@ export namespace Prisma {
     isbn?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
     author?: NullableStringFieldUpdateOperationsInput | string | null
-    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     translator?: NullableStringFieldUpdateOperationsInput | string | null
     designer?: NullableStringFieldUpdateOperationsInput | string | null
     language?: StringFieldUpdateOperationsInput | string
@@ -36815,6 +36860,7 @@ export namespace Prisma {
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     default_edition_id?: NullableStringFieldUpdateOperationsInput | string | null
+    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     bookedition?: bookeditionUncheckedUpdateManyWithoutBooksNestedInput
     translatorbook?: translatorbookUncheckedUpdateManyWithoutBooksNestedInput
   }
@@ -36850,6 +36896,7 @@ export namespace Prisma {
     editing_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
     books?: booksUpdateOneRequiredWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUpdateManyWithoutBookeditionNestedInput
@@ -36877,6 +36924,7 @@ export namespace Prisma {
     editing_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
     bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookeditionNestedInput
   }
@@ -37068,9 +37116,9 @@ export namespace Prisma {
     createdAt?: Date | string
     deletedAt?: Date | string
     name?: string
-    notes?: notesCreateNestedManyWithoutAccountsInput
     activitylogs?: activityLogsCreateNestedManyWithoutAccountInput
     damagedbooks?: damagedbooksCreateNestedManyWithoutAccountsInput
+    notes?: notesCreateNestedManyWithoutAccountsInput
   }
 
   export type accountsUncheckedCreateWithoutRolesInput = {
@@ -37084,9 +37132,9 @@ export namespace Prisma {
     createdAt?: Date | string
     deletedAt?: Date | string
     name?: string
-    notes?: notesUncheckedCreateNestedManyWithoutAccountsInput
     activitylogs?: activityLogsUncheckedCreateNestedManyWithoutAccountInput
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutAccountsInput
+    notes?: notesUncheckedCreateNestedManyWithoutAccountsInput
   }
 
   export type accountsCreateOrConnectWithoutRolesInput = {
@@ -37115,9 +37163,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     name?: StringFieldUpdateOperationsInput | string
-    notes?: notesUpdateManyWithoutAccountsNestedInput
     activitylogs?: activityLogsUpdateManyWithoutAccountNestedInput
     damagedbooks?: damagedbooksUpdateManyWithoutAccountsNestedInput
+    notes?: notesUpdateManyWithoutAccountsNestedInput
   }
 
   export type accountsUncheckedUpdateWithoutRolesInput = {
@@ -37131,9 +37179,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     name?: StringFieldUpdateOperationsInput | string
-    notes?: notesUncheckedUpdateManyWithoutAccountsNestedInput
     activitylogs?: activityLogsUncheckedUpdateManyWithoutAccountNestedInput
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutAccountsNestedInput
+    notes?: notesUncheckedUpdateManyWithoutAccountsNestedInput
   }
 
   export type bookeditionstoresCreateWithoutStoresInput = {
@@ -37290,7 +37338,6 @@ export namespace Prisma {
     isbn?: string | null
     title: string
     author?: string | null
-    pen_name?: string | null
     translator?: string | null
     designer?: string | null
     language: string
@@ -37309,6 +37356,7 @@ export namespace Prisma {
     deletedAt?: Date | string
     productionstatus?: $Enums.books_productionstatus | null
     default_edition_id?: string | null
+    pen_name?: string | null
     bookedition?: bookeditionCreateNestedManyWithoutBooksInput
     damagedbooks?: damagedbooksCreateNestedManyWithoutBooksInput
   }
@@ -37319,7 +37367,6 @@ export namespace Prisma {
     isbn?: string | null
     title: string
     author?: string | null
-    pen_name?: string | null
     translator?: string | null
     designer?: string | null
     language: string
@@ -37338,6 +37385,7 @@ export namespace Prisma {
     deletedAt?: Date | string
     productionstatus?: $Enums.books_productionstatus | null
     default_edition_id?: string | null
+    pen_name?: string | null
     bookedition?: bookeditionUncheckedCreateNestedManyWithoutBooksInput
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutBooksInput
   }
@@ -37351,11 +37399,11 @@ export namespace Prisma {
     name?: string | null
     phoneNumber?: string | null
     email?: string | null
-    pen_name?: string | null
     is_deleted?: boolean
     updatedAt: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+    pen_name?: string | null
   }
 
   export type translatorUncheckedCreateWithoutTranslatorbookInput = {
@@ -37363,11 +37411,11 @@ export namespace Prisma {
     name?: string | null
     phoneNumber?: string | null
     email?: string | null
-    pen_name?: string | null
     is_deleted?: boolean
     updatedAt: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+    pen_name?: string | null
   }
 
   export type translatorCreateOrConnectWithoutTranslatorbookInput = {
@@ -37391,7 +37439,6 @@ export namespace Prisma {
     isbn?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
     author?: NullableStringFieldUpdateOperationsInput | string | null
-    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     translator?: NullableStringFieldUpdateOperationsInput | string | null
     designer?: NullableStringFieldUpdateOperationsInput | string | null
     language?: StringFieldUpdateOperationsInput | string
@@ -37410,6 +37457,7 @@ export namespace Prisma {
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     default_edition_id?: NullableStringFieldUpdateOperationsInput | string | null
+    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     bookedition?: bookeditionUpdateManyWithoutBooksNestedInput
     damagedbooks?: damagedbooksUpdateManyWithoutBooksNestedInput
   }
@@ -37420,7 +37468,6 @@ export namespace Prisma {
     isbn?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
     author?: NullableStringFieldUpdateOperationsInput | string | null
-    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     translator?: NullableStringFieldUpdateOperationsInput | string | null
     designer?: NullableStringFieldUpdateOperationsInput | string | null
     language?: StringFieldUpdateOperationsInput | string
@@ -37439,6 +37486,7 @@ export namespace Prisma {
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     default_edition_id?: NullableStringFieldUpdateOperationsInput | string | null
+    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     bookedition?: bookeditionUncheckedUpdateManyWithoutBooksNestedInput
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutBooksNestedInput
   }
@@ -37458,11 +37506,11 @@ export namespace Prisma {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
-    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type translatorUncheckedUpdateWithoutTranslatorbookInput = {
@@ -37470,11 +37518,11 @@ export namespace Prisma {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
-    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type accountsCreateWithoutActivitylogsInput = {
@@ -37487,8 +37535,8 @@ export namespace Prisma {
     createdAt?: Date | string
     deletedAt?: Date | string
     name?: string
-    notes?: notesCreateNestedManyWithoutAccountsInput
     damagedbooks?: damagedbooksCreateNestedManyWithoutAccountsInput
+    notes?: notesCreateNestedManyWithoutAccountsInput
     roles?: rolesCreateNestedManyWithoutAccountsInput
   }
 
@@ -37503,8 +37551,8 @@ export namespace Prisma {
     createdAt?: Date | string
     deletedAt?: Date | string
     name?: string
-    notes?: notesUncheckedCreateNestedManyWithoutAccountsInput
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutAccountsInput
+    notes?: notesUncheckedCreateNestedManyWithoutAccountsInput
     roles?: rolesUncheckedCreateNestedManyWithoutAccountsInput
   }
 
@@ -37534,8 +37582,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     name?: StringFieldUpdateOperationsInput | string
-    notes?: notesUpdateManyWithoutAccountsNestedInput
     damagedbooks?: damagedbooksUpdateManyWithoutAccountsNestedInput
+    notes?: notesUpdateManyWithoutAccountsNestedInput
     roles?: rolesUpdateManyWithoutAccountsNestedInput
   }
 
@@ -37550,8 +37598,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     name?: StringFieldUpdateOperationsInput | string
-    notes?: notesUncheckedUpdateManyWithoutAccountsNestedInput
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutAccountsNestedInput
+    notes?: notesUncheckedUpdateManyWithoutAccountsNestedInput
     roles?: rolesUncheckedUpdateManyWithoutAccountsNestedInput
   }
 
@@ -37633,15 +37681,6 @@ export namespace Prisma {
     roles?: rolesUncheckedUpdateManyWithoutAccountsNestedInput
   }
 
-  export type notesCreateManyAccountsInput = {
-    id?: number
-    title?: string | null
-    note_content: string
-    is_deleted?: boolean
-    updatedAt: Date | string
-    createdAt?: Date | string
-  }
-
   export type activityLogsCreateManyAccountInput = {
     id?: number
     action: string
@@ -37668,6 +37707,15 @@ export namespace Prisma {
     deletedAt?: Date | string
   }
 
+  export type notesCreateManyAccountsInput = {
+    id?: number
+    title?: string | null
+    note_content: string
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+  }
+
   export type rolesCreateManyAccountsInput = {
     id?: number
     role_status?: boolean
@@ -37676,32 +37724,6 @@ export namespace Prisma {
     updatedAt: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
-  }
-
-  export type notesUpdateWithoutAccountsInput = {
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    note_content?: StringFieldUpdateOperationsInput | string
-    is_deleted?: BoolFieldUpdateOperationsInput | boolean
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type notesUncheckedUpdateWithoutAccountsInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    note_content?: StringFieldUpdateOperationsInput | string
-    is_deleted?: BoolFieldUpdateOperationsInput | boolean
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type notesUncheckedUpdateManyWithoutAccountsInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    note_content?: StringFieldUpdateOperationsInput | string
-    is_deleted?: BoolFieldUpdateOperationsInput | boolean
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type activityLogsUpdateWithoutAccountInput = {
@@ -37778,6 +37800,32 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type notesUpdateWithoutAccountsInput = {
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    note_content?: StringFieldUpdateOperationsInput | string
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type notesUncheckedUpdateWithoutAccountsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    note_content?: StringFieldUpdateOperationsInput | string
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type notesUncheckedUpdateManyWithoutAccountsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    note_content?: StringFieldUpdateOperationsInput | string
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type rolesUpdateWithoutAccountsInput = {
@@ -37983,6 +38031,7 @@ export namespace Prisma {
     editing_cost?: number | null
     other_expenses?: number | null
     transportation_cost?: number | null
+    count_remening_for_transfer?: number | null
   }
 
   export type damagedbooksCreateManyBooksInput = {
@@ -38032,6 +38081,7 @@ export namespace Prisma {
     editing_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
     bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUpdateManyWithoutBookeditionNestedInput
     damagedbooks?: damagedbooksUpdateManyWithoutBookeditionNestedInput
@@ -38058,6 +38108,7 @@ export namespace Prisma {
     editing_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
     bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookeditionNestedInput
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutBookeditionNestedInput
@@ -38084,6 +38135,7 @@ export namespace Prisma {
     editing_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type damagedbooksUpdateWithoutBooksInput = {

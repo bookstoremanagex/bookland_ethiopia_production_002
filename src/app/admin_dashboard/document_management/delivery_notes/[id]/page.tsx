@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, use } from "react";
+import React, { useState, useEffect } from "react";
 import {
     ArrowLeft,
     Calendar,
@@ -13,7 +13,7 @@ import {
     Save,
     Loader2
 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { getDeliveryNoteById, updateDeliveryNote } from "@/app/actions/delivery-note-actions";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -34,47 +34,63 @@ interface DbDeliveryNote {
     createdAt: Date;
 }
 
-export default function DeliveryNoteDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default function DeliveryNoteDetailPage() {
     const router = useRouter();
-    const resolvedParams = use(params);
-    const noteId = parseInt(resolvedParams.id);
+    const params = useParams();
+
+    // Safely unwrap and resolve params.id
+    const rawId = params?.id;
+    const noteId = typeof rawId === "string" ? parseInt(rawId, 10) : NaN;
 
     const [note, setNote] = useState<DbDeliveryNote | null>(null);
     const [loading, setLoading] = useState(true);
     const [memo, setMemo] = useState("");
     const [saving, setSaving] = useState(false);
 
-    const fetchNoteDetails = async () => {
-        setLoading(true);
-        const res = await getDeliveryNoteById(noteId);
-        if (res.success && res.data) {
-            const n = res.data;
-            const mapped: DbDeliveryNote = {
-                ...n,
-                deliveryDate: n.deliveryDate ? new Date(n.deliveryDate) : null,
-                createdAt: new Date(n.createdAt)
-            };
-            setNote(mapped);
-            setMemo(mapped.memo || "");
-        } else {
-            toast.error(res.error || "Delivery note not found.");
-            router.push("/admin_dashboard/document_management/delivery_notes");
-        }
-        setLoading(false);
-    };
-
     useEffect(() => {
-        if (noteId) {
-            fetchNoteDetails();
+        if (!noteId || isNaN(noteId)) {
+            toast.error("Invalid delivery note reference ID.");
+            router.push("/admin_dashboard/document_management/delivery_notes");
+            return;
         }
-    }, [noteId]);
+
+        const fetchNoteDetails = async () => {
+            setLoading(true);
+            try {
+                const res = await getDeliveryNoteById(noteId);
+                if (res.success && res.data) {
+                    const n = res.data;
+                    const mapped: DbDeliveryNote = {
+                        ...n,
+                        deliveryDate: n.deliveryDate ? new Date(n.deliveryDate) : null,
+                        createdAt: new Date(n.createdAt)
+                    };
+                    setNote(mapped);
+                    setMemo(mapped.memo || "");
+                } else {
+                    toast.error(res.error || "Delivery note not found.");
+                    router.push("/admin_dashboard/document_management/delivery_notes");
+                }
+            } catch (error) {
+                toast.error("An unexpected error occurred while fetching details.");
+                console.error(error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchNoteDetails();
+    }, [noteId, router]);
 
     const handleSaveMemo = async () => {
+        if (isNaN(noteId)) return;
+
         setSaving(true);
         const res = await updateDeliveryNote(noteId, { memo: memo || null });
         if (res.success) {
             toast.success("Delivery note memo updated successfully!");
-            fetchNoteDetails();
+            // Refresh data state locally instead of hitting loading loops
+            setNote((prev) => prev ? { ...prev, memo: memo || null } : null);
         } else {
             toast.error(res.error || "Failed to update memo.");
         }

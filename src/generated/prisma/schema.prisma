@@ -1,8 +1,6 @@
 generator client {
-  //provider      = "prisma-client"
   provider      = "prisma-client-js"
   output        = "../src/generated/prisma"
-  // Vercel runs Linux (RHEL/OpenSSL 3); local dev is often Windows — include both engines.
   binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
@@ -26,39 +24,40 @@ model accounts {
   updatedAt      DateTime
   createdAt      DateTime       @default(now())
   deletedAt      DateTime       @default(now())
-  notes          notes[]
-  activitylogs   activityLogs[]
   name           String         @default("namesample")
+  activitylogs   activityLogs[]
   damagedbooks   damagedbooks[]
+  notes          notes[]
   roles          roles[]
 }
 
 model bookedition {
-  id                  Int                 @id @default(autoincrement())
-  edition_name        String
-  selling_price       Float?
-  production_price    Float?
-  printing_cost       Float?
-  binding_cost        Float?
-  design_cost         Float?
-  translation_cost    Float?
-  memo                String?
-  book_image_url      String?
-  total_print_count   Int?
-  book_id             Int?
-  number_of_pages     Int?
-  bookId              Int
-  is_deleted          Boolean             @default(false)
-  updatedAt           DateTime
-  createdAt           DateTime            @default(now())
-  deletedAt           DateTime            @default(now())
-  editing_cost        Float?
-  other_expenses      Float?
-  transportation_cost Float?
-  books               books               @relation(fields: [bookId], references: [id], map: "BookEdition_bookId_fkey")
-  bookeditionstores   bookeditionstores[]
-  bookshopeditions    bookshopeditions[]
-  damagedbooks        damagedbooks[]
+  id                          Int                 @id @default(autoincrement())
+  edition_name                String
+  selling_price               Float?
+  production_price            Float?
+  printing_cost               Float?
+  binding_cost                Float?
+  design_cost                 Float?
+  translation_cost            Float?
+  memo                        String?
+  book_image_url              String?
+  total_print_count           Int?
+  book_id                     Int?
+  number_of_pages             Int?
+  bookId                      Int
+  is_deleted                  Boolean             @default(false)
+  updatedAt                   DateTime
+  createdAt                   DateTime            @default(now())
+  deletedAt                   DateTime            @default(now())
+  editing_cost                Float?
+  other_expenses              Float?
+  transportation_cost         Float?
+  count_remening_for_transfer Int?                @default(0)
+  books                       books               @relation(fields: [bookId], references: [id], map: "BookEdition_bookId_fkey")
+  bookeditionstores           bookeditionstores[]
+  bookshopeditions            bookshopeditions[]
+  damagedbooks                damagedbooks[]
 
   @@index([bookId], map: "BookEdition_bookId_fkey")
 }
@@ -85,7 +84,6 @@ model books {
   isbn                       String?
   title                      String
   author                     String?
-  pen_name                   String?
   translator                 String?
   designer                   String?
   language                   String
@@ -104,6 +102,7 @@ model books {
   deletedAt                  DateTime                @default(now())
   productionstatus           books_productionstatus? @default(ON_PRODUCTION)
   default_edition_id         String?
+  pen_name                   String?
   bookedition                bookedition[]
   damagedbooks               damagedbooks[]
   translatorbook             translatorbook[]
@@ -246,11 +245,11 @@ model translator {
   name           String?
   phoneNumber    String?
   email          String?
-  pen_name       String?
   is_deleted     Boolean          @default(false)
   updatedAt      DateTime
   createdAt      DateTime         @default(now())
   deletedAt      DateTime         @default(now())
+  pen_name       String?
   translatorbook translatorbook[]
 }
 
@@ -290,7 +289,6 @@ model notification {
 
 model activityLogs {
   id         Int      @id @default(autoincrement())
-  account    accounts @relation(fields: [accountId], references: [id], onDelete: Cascade, map: "ActivityLogs_accountId_fkey")
   accountId  Int
   action     String   @db.Text
   details    String?  @db.LongText
@@ -300,73 +298,22 @@ model activityLogs {
   updatedAt  DateTime
   createdAt  DateTime @default(now())
   deletedAt  DateTime @default(now())
+  account    accounts @relation(fields: [accountId], references: [id], onDelete: Cascade, map: "ActivityLogs_accountId_fkey")
+
+  @@index([accountId], map: "ActivityLogs_accountId_fkey")
 }
 
 model notes {
   id           Int      @id @default(autoincrement())
   title        String?
   note_content String   @db.Text
-  accounts     accounts @relation(fields: [accountId], references: [id], onDelete: Cascade, map: "Notes_accountId_fkey")
   accountId    Int
   is_deleted   Boolean  @default(false)
   updatedAt    DateTime
   createdAt    DateTime @default(now())
-}
+  accounts     accounts @relation(fields: [accountId], references: [id], onDelete: Cascade, map: "Notes_accountId_fkey")
 
-enum notification_to {
-  ADMIN
-  FINANCE
-  OPERATION_MANAGER
-  DATA_VIEWER
-  DELIVERY_AND_SALES
-  INVENTORY_MANAGER
-  RETAIL_MANAGER
-  PRINTER
-}
-
-enum damagedbooks_type {
-  STORE
-  PRINTING
-  DESIGN
-  PREPRINTING
-  DISTRIBUTION
-  SALES
-  LOST
-}
-
-enum printorder_status {
-  NOT_STARTED
-  STARTED
-  ONPROGRESS
-  FAILED
-  COMPLETED
-  REPRINT
-}
-
-enum translatorbook_Status {
-  NOT_STARTED
-  STARTED
-  ONPROGRESS
-  COMPLETED
-}
-
-enum printorder_tracking {
-  NOT_SET
-  SHORTAGE_DETECTED
-  NOT_READY
-  PRINTING
-  DISTRIBUTION
-  SALES
-}
-
-enum books_productionstatus {
-  ON_PRODUCTION
-  TRANSLATION
-  DESIGN
-  PRINTING
-  PREPRINTING
-  DISTRIBUTION
-  SALES
+  @@index([accountId], map: "Notes_accountId_fkey")
 }
 
 model contracts {
@@ -451,4 +398,60 @@ model settings {
   primaryColor String   @default("#408A71")
   updatedAt    DateTime @default(now())
   createdAt    DateTime @default(now())
+}
+
+enum notification_to {
+  ADMIN
+  FINANCE
+  OPERATION_MANAGER
+  DATA_VIEWER
+  DELIVERY_AND_SALES
+  INVENTORY_MANAGER
+  RETAIL_MANAGER
+  PRINTER
+}
+
+enum damagedbooks_type {
+  STORE
+  PRINTING
+  DESIGN
+  PREPRINTING
+  DISTRIBUTION
+  SALES
+  LOST
+}
+
+enum printorder_status {
+  NOT_STARTED
+  STARTED
+  ONPROGRESS
+  FAILED
+  COMPLETED
+  REPRINT
+}
+
+enum translatorbook_Status {
+  NOT_STARTED
+  STARTED
+  ONPROGRESS
+  COMPLETED
+}
+
+enum printorder_tracking {
+  NOT_SET
+  SHORTAGE_DETECTED
+  NOT_READY
+  PRINTING
+  DISTRIBUTION
+  SALES
+}
+
+enum books_productionstatus {
+  ON_PRODUCTION
+  TRANSLATION
+  DESIGN
+  PRINTING
+  PREPRINTING
+  DISTRIBUTION
+  SALES
 }

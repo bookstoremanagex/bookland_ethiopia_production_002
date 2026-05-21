@@ -36,6 +36,7 @@ export async function createEdition(data: any) {
                 memo: data.memo,
                 book_image_url: data.book_image_url,
                 total_print_count: parseInt(data.total_print_count) || 0,
+                count_remening_for_transfer: parseInt(data.total_print_count) || 0,
                 number_of_pages: parseInt(data.number_of_pages) || 0,
                 bookId: data.bookId,
                 updatedAt: new Date()
@@ -43,9 +44,9 @@ export async function createEdition(data: any) {
         });
         revalidatePath(`/admin_dashboard/books/${data.book_unique_code}`);
         return { success: true, data: edition };
-    } catch (error) {
-        console.error("Failed to create edition:", error);
-        return { success: false, error: "Failed to create edition" };
+    } catch (error: any) {
+        console.error("Failed to create edition. Full error:", error);
+        return { success: false, error: `Failed to create edition: ${error.message || "Unknown error"}` };
     }
 }
 
@@ -86,6 +87,7 @@ export async function updateEdition(id: number, data: any) {
                 memo: data.memo,
                 book_image_url: data.book_image_url,
                 total_print_count: parseInt(data.total_print_count) || 0,
+                count_remening_for_transfer: parseInt(data.count_remening_for_transfer) || 0,
                 number_of_pages: parseInt(data.number_of_pages) || 0,
                 updatedAt: new Date()
             },
@@ -93,8 +95,9 @@ export async function updateEdition(id: number, data: any) {
         });
         revalidatePath(`/admin_dashboard/books/${updated.books.unique_identification_code}`);
         return { success: true, data: updated };
-    } catch (error) {
-        return { success: false, error: "Failed to update edition" };
+    } catch (error: any) {
+        console.error("Failed to update edition. Full error:", error);
+        return { success: false, error: `Failed to update edition: ${error.message || "Unknown error"}` };
     }
 }
 

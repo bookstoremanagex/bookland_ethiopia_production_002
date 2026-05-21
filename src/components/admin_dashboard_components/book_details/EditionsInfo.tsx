@@ -14,7 +14,8 @@ import {
   Activity,
   ChevronRight,
   ExternalLink,
-  Edit3
+  Edit3,
+  Store
 } from 'lucide-react';
 import { Button } from '../../ui/button';
 import { Input } from '../../ui/input';
@@ -79,8 +80,9 @@ export default function EditionsInfo({ book }: EditionsInfoProps) {
       } else {
         toast.error(response.error || "Failed to add edition");
       }
-    } catch (error) {
-      toast.error("An error occurred");
+    } catch (err: any) {
+      console.error("Edition Creation Error:", err);
+      toast.error(err.message || "Failed to create edition");
     } finally {
       setIsSubmitting(false);
     }
@@ -127,6 +129,7 @@ export default function EditionsInfo({ book }: EditionsInfoProps) {
                         <tr>
                             <th className="p-6 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Edition Profile</th>
                             <th className="p-6 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground text-center">Print Metrics</th>
+                            <th className="p-6 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground text-center">Central Inventory</th>
                             <th className="p-6 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground text-center">Market Pricing</th>
                             <th className="p-6 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground text-right">Actions</th>
                         </tr>
@@ -134,7 +137,7 @@ export default function EditionsInfo({ book }: EditionsInfoProps) {
                     <tbody className="divide-y divide-primarycolor/5">
                         {book.bookedition && book.bookedition.length > 0 ? (
                             book.bookedition.map((edition: any) => (
-                                <tr key={edition.id} className="group hover:bg-primarycolor/[0.02] transition-colors">
+                                <tr key={edition.id} className="group hover:bg-primarycolor/2 transition-colors">
                                     <td className="p-6">
                                         <div className="flex items-center gap-4">
                                             <div className="size-14 rounded-2xl bg-white border-2 border-primarycolor/10 flex items-center justify-center text-primarycolor shadow-md overflow-hidden">
@@ -157,6 +160,15 @@ export default function EditionsInfo({ book }: EditionsInfoProps) {
                                                 <span className="text-[10px] font-black">{edition.total_print_count?.toLocaleString() || 0} Units</span>
                                             </div>
                                             <div className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">{edition.number_of_pages || 0} Pages</div>
+                                        </div>
+                                    </td>
+                                    <td className="p-6">
+                                        <div className="flex flex-col items-center gap-1.5">
+                                            <div className="flex items-center gap-2 px-4 py-1.5 rounded-xl bg-secondarycolor/10 text-secondarycolor border border-secondarycolor/20">
+                                                <Store className="size-3" />
+                                                <span className="text-[10px] font-black">{edition.count_remening_for_transfer?.toLocaleString() || 0} Left</span>
+                                            </div>
+                                            <div className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">To Transfer</div>
                                         </div>
                                     </td>
                                     <td className="p-6">
@@ -197,178 +209,188 @@ export default function EditionsInfo({ book }: EditionsInfoProps) {
         {/* Modal Overlay for Adding Edition */}
         {isAdding && (
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
-                <div className="w-full max-w-3xl bg-white rounded-[2.5rem] p-10 shadow-2xl space-y-8 animate-in zoom-in-95 duration-300 max-h-[90vh] overflow-y-auto custom-scrollbar">
-                    <div className="flex items-center justify-between">
+                <div className="w-full max-w-4xl bg-white rounded-[2.5rem] shadow-2xl animate-in zoom-in-95 duration-300 max-h-[90vh] flex flex-col overflow-hidden">
+                    {/* Fixed Header */}
+                    <div className="flex items-center justify-between p-8 pb-4 border-b border-slate-100">
                         <div className="flex items-center gap-6">
-                            <div className="size-16 rounded-2xl bg-primarycolor/10 flex items-center justify-center text-primarycolor border-2 border-primarycolor/20 shadow-lg">
-                                <Plus className="size-8" />
+                            <div className="size-14 rounded-2xl bg-primarycolor/10 flex items-center justify-center text-primarycolor border-2 border-primarycolor/20 shadow-lg shrink-0">
+                                <Plus className="size-6" />
                             </div>
                             <div>
-                                <h3 className="text-2xl font-black text-primarycolor uppercase tracking-tight italic">New <span className="text-secondarycolor not-italic">Edition</span></h3>
-                                <p className="text-muted-foreground font-bold">Configure production costs and market pricing.</p>
+                                <h3 className="text-xl font-black text-primarycolor uppercase tracking-tight italic leading-tight">New <span className="text-secondarycolor not-italic">Edition</span></h3>
+                                <p className="text-xs text-muted-foreground font-bold">Configure production costs and market pricing.</p>
                             </div>
                         </div>
-                        <Button variant="ghost" size="icon" className="rounded-xl" onClick={() => setIsAdding(false)}>
+                        <Button variant="ghost" size="icon" className="rounded-xl shrink-0" onClick={() => setIsAdding(false)}>
                             <X className="size-6" />
                         </Button>
                     </div>
 
-                    <form onSubmit={handleAdd} className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div className="space-y-4">
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">Edition Name</label>
-                                <Input 
-                                    required
-                                    value={formData.edition_name}
-                                    onChange={(e) => setFormData({...formData, edition_name: e.target.value})}
-                                    placeholder="e.g. Collector's Hardcover"
-                                    className="h-14 px-6 rounded-2xl border-2 font-bold"
-                                />
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
+                    {/* Scrollable Form Content */}
+                    <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
+                        <form id="add-edition-form" onSubmit={handleAdd} className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
+                            <div className="space-y-6">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">Selling Price</label>
-                                    <div className="relative">
-                                        <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-                                        <Input 
-                                            type="number" step="0.01"
-                                            value={formData.selling_price}
-                                            onChange={(e) => setFormData({...formData, selling_price: e.target.value})}
-                                            className="h-14 pl-10 rounded-2xl border-2 font-bold"
-                                        />
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">Edition Name</label>
+                                    <Input 
+                                        required
+                                        value={formData.edition_name}
+                                        onChange={(e) => setFormData({...formData, edition_name: e.target.value})}
+                                        placeholder="e.g. Collector's Hardcover"
+                                        className="h-14 px-6 rounded-2xl border-2 font-bold"
+                                    />
+                                </div>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">Selling Price</label>
+                                        <div className="relative">
+                                            <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                                            <Input 
+                                                type="number" step="0.01"
+                                                value={formData.selling_price}
+                                                onChange={(e) => setFormData({...formData, selling_price: e.target.value})}
+                                                className="h-14 pl-10 rounded-2xl border-2 font-bold"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">Base Cost</label>
+                                        <div className="relative">
+                                            <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                                            <Input 
+                                                type="number" step="0.01"
+                                                value={formData.production_price}
+                                                onChange={(e) => setFormData({...formData, production_price: e.target.value})}
+                                                className="h-14 pl-10 rounded-2xl border-2 font-bold bg-slate-50"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">Base Production Cost</label>
-                                    <div className="relative">
-                                        <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-                                        <Input 
-                                            type="number" step="0.01"
-                                            value={formData.production_price}
-                                            onChange={(e) => setFormData({...formData, production_price: e.target.value})}
-                                            className="h-14 pl-10 rounded-2xl border-2 font-bold bg-slate-50"
-                                        />
+
+                                <div className="bg-slate-50/80 p-6 rounded-[2rem] border-2 border-primarycolor/5 space-y-4">
+                                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-2">Cost Breakdown Details</p>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="space-y-1.5">
+                                            <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Printing</label>
+                                            <Input 
+                                                type="number" step="0.01"
+                                                value={formData.printing_cost}
+                                                onChange={(e) => setFormData({...formData, printing_cost: e.target.value})}
+                                                className="h-11 px-4 rounded-xl border-2 font-bold text-sm"
+                                            />
+                                        </div>
+                                        <div className="space-y-1.5">
+                                            <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Binding</label>
+                                            <Input 
+                                                type="number" step="0.01"
+                                                value={formData.binding_cost}
+                                                onChange={(e) => setFormData({...formData, binding_cost: e.target.value})}
+                                                className="h-11 px-4 rounded-xl border-2 font-bold text-sm"
+                                            />
+                                        </div>
+                                        <div className="space-y-1.5">
+                                            <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Design</label>
+                                            <Input 
+                                                type="number" step="0.01"
+                                                value={formData.design_cost}
+                                                onChange={(e) => setFormData({...formData, design_cost: e.target.value})}
+                                                className="h-11 px-4 rounded-xl border-2 font-bold text-sm"
+                                            />
+                                        </div>
+                                        <div className="space-y-1.5">
+                                            <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Editing</label>
+                                            <Input 
+                                                type="number" step="0.01"
+                                                value={formData.editing_cost}
+                                                onChange={(e) => setFormData({...formData, editing_cost: e.target.value})}
+                                                className="h-11 px-4 rounded-xl border-2 font-bold text-sm"
+                                            />
+                                        </div>
+                                        <div className="space-y-1.5">
+                                            <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Transport</label>
+                                            <Input 
+                                                type="number" step="0.01"
+                                                value={formData.transportation_cost}
+                                                onChange={(e) => setFormData({...formData, transportation_cost: e.target.value})}
+                                                className="h-11 px-4 rounded-xl border-2 font-bold text-sm"
+                                            />
+                                        </div>
+                                        <div className="space-y-1.5">
+                                            <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Translation</label>
+                                            <Input 
+                                                type="number" step="0.01"
+                                                value={formData.translation_cost}
+                                                onChange={(e) => setFormData({...formData, translation_cost: e.target.value})}
+                                                className="h-11 px-4 rounded-xl border-2 font-bold text-sm"
+                                            />
+                                        </div>
+                                        <div className="space-y-1.5 col-span-2">
+                                            <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Other Expenses</label>
+                                            <Input 
+                                                type="number" step="0.01"
+                                                value={formData.other_expenses}
+                                                onChange={(e) => setFormData({...formData, other_expenses: e.target.value})}
+                                                className="h-11 px-4 rounded-xl border-2 font-bold text-sm"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="bg-slate-50/50 p-6 rounded-[2rem] border-2 border-primarycolor/5 space-y-4">
-                                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-2">Cost Breakdown</p>
+                            <div className="space-y-6">
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">Image URL</label>
+                                    <Input 
+                                        value={formData.book_image_url}
+                                        onChange={(e) => setFormData({...formData, book_image_url: e.target.value})}
+                                        placeholder="Link to specific cover"
+                                        className="h-14 px-6 rounded-2xl border-2 font-bold text-sm"
+                                    />
+                                </div>
+
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
-                                        <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Printing</label>
+                                        <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">Print Count</label>
                                         <Input 
-                                            type="number" step="0.01"
-                                            value={formData.printing_cost}
-                                            onChange={(e) => setFormData({...formData, printing_cost: e.target.value})}
-                                            className="h-11 px-4 rounded-xl border-2 font-bold text-sm"
+                                            type="number"
+                                            value={formData.total_print_count}
+                                            onChange={(e) => setFormData({...formData, total_print_count: e.target.value})}
+                                            className="h-14 px-6 rounded-2xl border-2 font-bold"
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Binding</label>
+                                        <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">Page Count</label>
                                         <Input 
-                                            type="number" step="0.01"
-                                            value={formData.binding_cost}
-                                            onChange={(e) => setFormData({...formData, binding_cost: e.target.value})}
-                                            className="h-11 px-4 rounded-xl border-2 font-bold text-sm"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Design</label>
-                                        <Input 
-                                            type="number" step="0.01"
-                                            value={formData.design_cost}
-                                            onChange={(e) => setFormData({...formData, design_cost: e.target.value})}
-                                            className="h-11 px-4 rounded-xl border-2 font-bold text-sm"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Editing</label>
-                                        <Input 
-                                            type="number" step="0.01"
-                                            value={formData.editing_cost}
-                                            onChange={(e) => setFormData({...formData, editing_cost: e.target.value})}
-                                            className="h-11 px-4 rounded-xl border-2 font-bold text-sm"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Transport</label>
-                                        <Input 
-                                            type="number" step="0.01"
-                                            value={formData.transportation_cost}
-                                            onChange={(e) => setFormData({...formData, transportation_cost: e.target.value})}
-                                            className="h-11 px-4 rounded-xl border-2 font-bold text-sm"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Translation</label>
-                                        <Input 
-                                            type="number" step="0.01"
-                                            value={formData.translation_cost}
-                                            onChange={(e) => setFormData({...formData, translation_cost: e.target.value})}
-                                            className="h-11 px-4 rounded-xl border-2 font-bold text-sm"
-                                        />
-                                    </div>
-                                    <div className="space-y-2 col-span-2">
-                                        <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Other Expenses</label>
-                                        <Input 
-                                            type="number" step="0.01"
-                                            value={formData.other_expenses}
-                                            onChange={(e) => setFormData({...formData, other_expenses: e.target.value})}
-                                            className="h-11 px-4 rounded-xl border-2 font-bold text-sm"
+                                            type="number"
+                                            value={formData.number_of_pages}
+                                            onChange={(e) => setFormData({...formData, number_of_pages: e.target.value})}
+                                            className="h-14 px-6 rounded-2xl border-2 font-bold"
                                         />
                                     </div>
                                 </div>
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">Edition Image URL</label>
-                                <Input 
-                                    value={formData.book_image_url}
-                                    onChange={(e) => setFormData({...formData, book_image_url: e.target.value})}
-                                    placeholder="Link to specific cover"
-                                    className="h-14 px-6 rounded-2xl border-2 font-bold"
-                                />
-                            </div>
-                        </div>
 
-                        <div className="space-y-4">
-                            <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">Print Count</label>
-                                    <Input 
-                                        type="number"
-                                        value={formData.total_print_count}
-                                        onChange={(e) => setFormData({...formData, total_print_count: e.target.value})}
-                                        className="h-14 px-6 rounded-2xl border-2 font-bold"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">Page Count</label>
-                                    <Input 
-                                        type="number"
-                                        value={formData.number_of_pages}
-                                        onChange={(e) => setFormData({...formData, number_of_pages: e.target.value})}
-                                        className="h-14 px-6 rounded-2xl border-2 font-bold"
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">Production Memo</label>
+                                    <textarea 
+                                        value={formData.memo}
+                                        onChange={(e) => setFormData({...formData, memo: e.target.value})}
+                                        rows={6}
+                                        className="w-full p-6 rounded-2xl border-2 border-primarycolor/10 focus:border-primarycolor outline-none font-bold text-sm bg-slate-50/50 transition-all resize-none"
+                                        placeholder="Add notes about paper quality, binding type, etc."
                                     />
                                 </div>
                             </div>
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">Production Memo</label>
-                                <textarea 
-                                    value={formData.memo}
-                                    onChange={(e) => setFormData({...formData, memo: e.target.value})}
-                                    rows={4}
-                                    className="w-full p-6 rounded-2xl border-2 border-primarycolor/10 focus:border-primarycolor outline-none font-bold text-sm bg-transparent transition-all resize-none"
-                                    placeholder="Add notes about paper quality, binding type, etc."
-                                />
-                            </div>
-                        </div>
+                        </form>
+                    </div>
 
-                        <div className="md:col-span-2 pt-4 flex gap-4">
+                    {/* Fixed Footer */}
+                    <div className="p-8 pt-4 border-t border-slate-100 bg-slate-50/30">
+                        <div className="flex flex-col sm:flex-row gap-4">
                             <Button 
                                 type="submit"
+                                form="add-edition-form"
                                 disabled={isSubmitting}
-                                className="flex-[2] h-16 rounded-2xl bg-primarycolor hover:bg-secondarycolor font-black uppercase tracking-widest shadow-2xl shadow-primarycolor/20 transition-all"
+                                className="flex-2 h-16 rounded-2xl bg-primarycolor hover:bg-secondarycolor font-black uppercase tracking-widest shadow-2xl shadow-primarycolor/20 transition-all text-white"
                             >
                                 {isSubmitting ? "Generating..." : "Create Edition"}
                             </Button>
@@ -381,7 +403,7 @@ export default function EditionsInfo({ book }: EditionsInfoProps) {
                                 Cancel
                             </Button>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         )}

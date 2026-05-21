@@ -1,10 +1,8 @@
 "use server";
 
-import { PrismaClient } from "@prisma/client";
+import prisma from "../../lib/prisma";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-
-const prisma = new PrismaClient();
 
 const approvalDocumentSchema = z.object({
     documentNumber: z.string().min(1, "Document number is required"),
