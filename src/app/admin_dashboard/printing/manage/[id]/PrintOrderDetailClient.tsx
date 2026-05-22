@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { 
     ChevronLeft, 
@@ -21,7 +21,14 @@ import {
     CheckCircle2,
     RotateCcw,
     XCircle,
-    Info
+    Info,
+    BookOpen,
+    Calculator,
+    DollarSign,
+    Wallet,
+    Receipt,
+    Plus,
+    Printer as PrinterIcon
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -29,7 +36,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { toast } from 'sonner'
 import Link from 'next/link'
 import { format } from 'date-fns'
-import { updatePrintOrder, deletePrintOrder } from '@/app/actions/print-order-actions'
+import { updatePrintOrder, deletePrintOrder, addPrintOrderPayment, deletePrintOrderPayment } from '@/app/actions/print-order-actions'
 import {
     Command,
     CommandEmpty,
@@ -45,10 +52,20 @@ import {
 } from "@/components/ui/popover"
 import { cn } from '@/lib/utils'
 
+interface PrintOrderItem {
+    id: number;
+    bookId: number;
+    bookEditionId: number;
+    quantity: string;
+    price_per_book: string;
+    status: string;
+}
+
 interface PrintOrderDetailClientProps {
     order: any
     printers: any[]
     editions: any[]
+    books: any[]
 }
 
 const statusOptions = [
@@ -60,47 +77,136 @@ const statusOptions = [
     { value: "REPRINT", label: "Reprinting", icon: RotateCcw }
 ]
 
-const trackingOptions = [
-    { value: "NOT_SET", label: "Not Set" },
-    { value: "SHORTAGE_DETECTED", label: "Shortage Detected" },
-    { value: "NOT_READY", label: "Not Ready" },
-    { value: "PRINTING", label: "Printing" },
-    { value: "DISTRIBUTION", label: "Distribution" },
-    { value: "SALES", label: "Sales" }
-]
-
-export default function PrintOrderDetailClient({ order, printers, editions }: PrintOrderDetailClientProps) {
+export default function PrintOrderDetailClient({ order, printers, editions, books }: PrintOrderDetailClientProps) {
     const router = useRouter()
     const [isEditing, setIsEditing] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false)
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
     const [deleteConfirmText, setDeleteConfirmText] = useState("")
+
+    const [bookOpen, setBookOpen] = useState(false)
     const [editionOpen, setEditionOpen] = useState(false)
+    const [selectedBookId, setSelectedBookId] = useState<number | null>(null)
+    const [selectedEditionId, setSelectedEditionId] = useState<number | null>(null)
+
+    // Payments state
+    const [isAddingPayment, setIsAddingPayment] = useState(false)
+    const [paymentForm, setPaymentForm] = useState({
+        amount: "",
+        payment_date: format(new Date(), "yyyy-MM-dd"),
+        reference: ""
+    })
+    const [isSubmittingPayment, setIsSubmittingPayment] = useState(false)
+
+    // Parse initial items
+    const initialItems: PrintOrderItem[] = (order.printorder_items || []).map((item: any) => ({
+        id: item.id,
+        bookId: item.bookedition?.bookId || books.find((b: any) => editions.find((e: any) => e.id === item.bookEditionId)?.bookId === b.id)?.id,
+        bookEditionId: item.bookEditionId,
+        quantity: item.quantity.toString(),
+        price_per_book: item.price_per_book.toString(),
+        status: item.status
+    }));
 
     const [formData, setFormData] = useState({
-        quality: order.quality,
-        count: order.count.toString(),
-        printerId: order.printerId.toString(),
-        edition: order.edition || "",
+        project_name: order.project_name || "",
+        printerId: order.printerId?.toString() || "",
         memo: order.memo || "",
         status: order.status,
-        tracking: order.tracking,
         startDate: order.startDate ? format(new Date(order.startDate), "yyyy-MM-dd") : "",
-        endDate: order.endDate ? format(new Date(order.endDate), "yyyy-MM-dd") : ""
+        endDate: order.endDate ? format(new Date(order.endDate), "yyyy-MM-dd") : "",
+        total_price: order.total_price?.toString() || "",
+        auto_calculate: false,
+        items: initialItems
     })
+
+    const selectedBook = books.find(b => b.id === selectedBookId)
+    const filteredEditions = selectedBookId 
+        ? editions.filter(ed => ed.bookId === selectedBookId)
+        : editions
+
+    // Auto calculate total price
+    useEffect(() => {
+        if (formData.auto_calculate && isEditing) {
+            const total = formData.items.reduce((sum, item) => {
+                const qty = parseFloat(item.quantity) || 0;
+                const price = parseFloat(item.price_per_book) || 0;
+                return sum + (qty * price);
+            }, 0);
+            setFormData(prev => ({ ...prev, total_price: total > 0 ? total.toString() : "" }));
+        }
+    }, [formData.items, formData.auto_calculate, isEditing]);
+
+    const handleAddBook = () => {
+        if (!selectedEditionId) {
+            toast.error("Please select an edition first")
+            return
+        }
+        
+        if (formData.items.some(item => item.bookEditionId === selectedEditionId)) {
+            toast.error("This edition is already added to the project")
+            return
+        }
+
+        const newItem: PrintOrderItem = {
+            id: Date.now(),
+            bookId: selectedBookId!,
+            bookEditionId: selectedEditionId,
+            quantity: "",
+            price_per_book: "",
+            status: "NOT_STARTED"
+        }
+
+        setFormData(prev => ({
+            ...prev,
+            items: [...prev.items, newItem]
+        }))
+
+        setSelectedBookId(null)
+        setSelectedEditionId(null)
+    }
+
+    const handleRemoveItem = (id: number) => {
+        setFormData(prev => ({
+            ...prev,
+            items: prev.items.filter(item => item.id !== id)
+        }))
+    }
+
+    const updateItem = (id: number, field: keyof PrintOrderItem, value: string) => {
+        setFormData(prev => ({
+            ...prev,
+            items: prev.items.map(item => item.id === id ? { ...item, [field]: value } : item)
+        }))
+    }
 
     const handleUpdate = async (e: React.FormEvent) => {
         e.preventDefault()
+        if (!formData.printerId) {
+            toast.error("Please assign a printer")
+            return
+        }
+        if (formData.items.length === 0) {
+            toast.error("Please add at least one book to the project")
+            return
+        }
+
+        const invalidItem = formData.items.find(i => !i.quantity || parseFloat(i.quantity) <= 0);
+        if (invalidItem) {
+            toast.error("Please provide valid quantities for all books")
+            return
+        }
+
         setIsSubmitting(true)
         try {
             const response = await updatePrintOrder(order.id, formData)
             if (response.success) {
-                toast.success("Print order updated successfully")
+                toast.success("Printing project updated successfully")
                 setIsEditing(false)
                 router.refresh()
             } else {
-                toast.error(response.error || "Failed to update order")
+                toast.error(response.error || "Failed to update project")
             }
         } catch (error) {
             toast.error("An error occurred")
@@ -115,10 +221,10 @@ export default function PrintOrderDetailClient({ order, printers, editions }: Pr
         try {
             const response = await deletePrintOrder(order.id)
             if (response.success) {
-                toast.success("Order removed successfully")
+                toast.success("Project removed successfully")
                 router.push("/admin_dashboard/printing/manage")
             } else {
-                toast.error(response.error || "Failed to remove order")
+                toast.error(response.error || "Failed to remove project")
             }
         } catch (error) {
             toast.error("An error occurred")
@@ -127,9 +233,143 @@ export default function PrintOrderDetailClient({ order, printers, editions }: Pr
         }
     }
 
+    const handleAddPayment = async (e: React.FormEvent) => {
+        e.preventDefault()
+        if (!paymentForm.amount || parseFloat(paymentForm.amount) <= 0) {
+            toast.error("Please enter a valid amount")
+            return
+        }
+        setIsSubmittingPayment(true)
+        try {
+            const response = await addPrintOrderPayment(order.id, {
+                amount: parseFloat(paymentForm.amount),
+                payment_date: paymentForm.payment_date,
+                reference: paymentForm.reference
+            })
+            if (response.success) {
+                toast.success("Payment recorded successfully")
+                setPaymentForm({
+                    amount: "",
+                    payment_date: format(new Date(), "yyyy-MM-dd"),
+                    reference: ""
+                })
+                setIsAddingPayment(false)
+                router.refresh()
+            } else {
+                toast.error(response.error || "Failed to record payment")
+            }
+        } catch (error) {
+            toast.error("An error occurred")
+        } finally {
+            setIsSubmittingPayment(false)
+        }
+    }
+
+    const handleDeletePayment = async (paymentId: number) => {
+        if (!confirm("Are you sure you want to remove this payment record?")) return
+        try {
+            const response = await deletePrintOrderPayment(paymentId, order.id)
+            if (response.success) {
+                toast.success("Payment removed")
+                router.refresh()
+            } else {
+                toast.error(response.error || "Failed to remove payment")
+            }
+        } catch (error) {
+            toast.error("An error occurred")
+        }
+    }
+
+    const handlePrintPDF = () => {
+        window.print()
+    }
+
+    const totalBooks = formData.items.length;
+    const totalUnits = formData.items.reduce((sum, item) => sum + (parseInt(item.quantity) || 0), 0);
+    
+    // Financial Calculations
+    const totalPrice = parseFloat(formData.total_price) || 0;
+    const totalPaid = (order.printorder_payments || []).reduce((sum: number, p: any) => sum + p.amount, 0);
+    const remainingBalance = Math.max(0, totalPrice - totalPaid);
+    const isFullyPaid = totalPrice > 0 && totalPaid >= totalPrice;
+    const lastPaymentDate = isFullyPaid && order.printorder_payments?.length > 0 
+        ? new Date(order.printorder_payments[order.printorder_payments.length - 1].payment_date)
+        : null;
+
     return (
-        <div className="min-h-screen bg-[#F8FAFC] p-4 md:p-8">
-            <div className="max-w-6xl mx-auto space-y-10">
+        <div className="min-h-screen bg-[#F8FAFC] p-4 md:p-8 print:bg-white print:p-0">
+            {/* --- PRINT ONLY INVOICE VIEW --- */}
+            <div className="hidden print:block max-w-4xl mx-auto space-y-8 bg-white text-black p-8">
+                <div className="flex items-start justify-between border-b-2 border-black pb-8">
+                    <div>
+                        <h1 className="text-4xl font-black uppercase tracking-tighter">Payment Receipt</h1>
+                        <p className="text-sm font-bold uppercase tracking-widest mt-2">Bookland Ethiopia</p>
+                    </div>
+                    <div className="text-right">
+                        <p className="text-sm font-bold uppercase tracking-widest">Project #{order.id.toString().padStart(4, '0')}</p>
+                        <p className="text-sm">{format(new Date(), "MMM dd, yyyy")}</p>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-8 text-sm">
+                    <div>
+                        <p className="font-bold uppercase tracking-widest text-xs text-gray-500 mb-1">Project Details</p>
+                        <p className="font-black text-lg uppercase">{order.project_name || "Unnamed Project"}</p>
+                        <p>{totalBooks} Books, {totalUnits.toLocaleString()} Units</p>
+                        <p>Printer: {order.printer?.name}</p>
+                    </div>
+                    <div className="text-right">
+                        <p className="font-bold uppercase tracking-widest text-xs text-gray-500 mb-1">Status</p>
+                        <p className="font-black">{order.status.replace("_", " ")}</p>
+                        {isFullyPaid && <p className="font-black text-green-600 uppercase mt-1">FULLY PAID</p>}
+                    </div>
+                </div>
+
+                <div className="py-6">
+                    <p className="font-bold uppercase tracking-widest text-xs text-gray-500 mb-4 border-b border-gray-200 pb-2">Payment History</p>
+                    <table className="w-full text-sm">
+                        <thead>
+                            <tr className="text-left font-bold uppercase text-xs border-b border-gray-200">
+                                <th className="pb-2">Date</th>
+                                <th className="pb-2">Reference</th>
+                                <th className="pb-2 text-right">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {order.printorder_payments?.map((payment: any) => (
+                                <tr key={payment.id} className="border-b border-gray-100">
+                                    <td className="py-3">{format(new Date(payment.payment_date), "MMM dd, yyyy")}</td>
+                                    <td className="py-3 text-gray-600">{payment.reference || "-"}</td>
+                                    <td className="py-3 text-right font-bold">{payment.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ETB</td>
+                                </tr>
+                            ))}
+                            {(!order.printorder_payments || order.printorder_payments.length === 0) && (
+                                <tr>
+                                    <td colSpan={3} className="py-4 text-center text-gray-400 italic">No payments recorded</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div className="w-1/2 ml-auto space-y-3 pt-6 border-t-2 border-black">
+                    <div className="flex justify-between text-sm">
+                        <span className="font-bold uppercase tracking-widest">Total Price:</span>
+                        <span>{totalPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ETB</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                        <span className="font-bold uppercase tracking-widest">Total Paid:</span>
+                        <span>{totalPaid.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ETB</span>
+                    </div>
+                    <div className="flex justify-between text-lg font-black pt-3 border-t border-gray-200">
+                        <span className="uppercase tracking-widest">Balance Due:</span>
+                        <span>{remainingBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ETB</span>
+                    </div>
+                </div>
+            </div>
+
+            {/* --- WEB UI --- */}
+            <div className="max-w-6xl mx-auto space-y-10 print:hidden">
                 
                 {/* Header Card */}
                 <div className="bg-white p-8 md:p-12 rounded-[3rem] border-2 border-primarycolor/10 shadow-2xl shadow-primarycolor/5 relative overflow-hidden group">
@@ -150,10 +390,10 @@ export default function PrintOrderDetailClient({ order, printers, editions }: Pr
                                         </Link>
                                     </Button>
                                     <div className="size-1 rounded-full bg-primarycolor/20" />
-                                    <span className="text-[10px] font-black uppercase tracking-widest text-secondarycolor">Order #PR-{order.id.toString().padStart(4, '0')}</span>
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-secondarycolor">Project #PR-{order.id.toString().padStart(4, '0')}</span>
                                 </div>
-                                <h1 className="text-5xl font-black text-primarycolor uppercase tracking-tighter italic leading-none">
-                                    {order.edition}
+                                <h1 className="text-4xl md:text-5xl font-black text-primarycolor uppercase tracking-tighter italic leading-none">
+                                    {order.project_name || "Unnamed Project"}
                                 </h1>
                                 <div className="flex items-center gap-3">
                                     <Printer className="size-4 text-primarycolor/40" />
@@ -168,7 +408,7 @@ export default function PrintOrderDetailClient({ order, printers, editions }: Pr
                                     onClick={() => setIsEditing(true)}
                                     className="h-16 px-10 rounded-[1.5rem] bg-primarycolor hover:bg-secondarycolor font-black uppercase tracking-widest text-xs gap-3 shadow-xl shadow-primarycolor/20 transition-all active:scale-95"
                                 >
-                                    <Edit2 className="size-5" /> Edit Order
+                                    <Edit2 className="size-5" /> Edit Project
                                 </Button>
                             )}
                             <Button 
@@ -176,7 +416,7 @@ export default function PrintOrderDetailClient({ order, printers, editions }: Pr
                                 onClick={() => setShowDeleteConfirm(true)}
                                 className="h-16 px-8 rounded-[1.5rem] font-black uppercase tracking-widest text-xs gap-3 shadow-xl shadow-rose-500/20 transition-all active:scale-95"
                             >
-                                <Trash2 className="size-5" /> Cancel Batch
+                                <Trash2 className="size-5" /> Cancel Project
                             </Button>
                         </div>
                     </div>
@@ -185,57 +425,173 @@ export default function PrintOrderDetailClient({ order, printers, editions }: Pr
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Main Configuration Section */}
                     <div className="lg:col-span-2 space-y-8">
+                        {/* Financial Tracking Section */}
+                        <div className="bg-white rounded-[3rem] p-10 md:p-12 border-2 border-emerald-500/10 shadow-2xl relative overflow-hidden">
+                            <div className="absolute top-0 right-0 p-8 opacity-5">
+                                <DollarSign className="size-40 text-emerald-500" />
+                            </div>
+                            
+                            <div className="relative z-10 space-y-10">
+                                <div className="flex items-center justify-between border-b border-slate-100 pb-6">
+                                    <div className="flex items-center gap-3">
+                                        <Wallet className="size-6 text-emerald-500" />
+                                        <h3 className="text-sm font-black uppercase tracking-widest text-emerald-600">Financial Tracking</h3>
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                        {isFullyPaid && (
+                                            <div className="flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-600 rounded-full border border-emerald-200">
+                                                <CheckCircle2 className="size-4" />
+                                                <span className="text-[10px] font-black uppercase tracking-widest">Fully Paid</span>
+                                                {lastPaymentDate && <span className="text-[10px] font-bold opacity-70 ml-1">on {format(lastPaymentDate, "MMM dd")}</span>}
+                                            </div>
+                                        )}
+                                        <Button 
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={handlePrintPDF}
+                                            className="h-10 rounded-xl border-2 font-black uppercase tracking-widest text-[10px] gap-2 text-slate-500 hover:text-primarycolor hover:border-primarycolor"
+                                        >
+                                            <PrinterIcon className="size-3" /> Print PDF
+                                        </Button>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    <div className="bg-slate-50 p-6 rounded-3xl border border-slate-100 space-y-2">
+                                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Price</p>
+                                        <p className="text-2xl font-black text-slate-800">{totalPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                                    </div>
+                                    <div className="bg-emerald-50/50 p-6 rounded-3xl border border-emerald-100 space-y-2">
+                                        <p className="text-[10px] font-black uppercase tracking-widest text-emerald-600/60">Total Paid</p>
+                                        <p className="text-2xl font-black text-emerald-600">{totalPaid.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                                    </div>
+                                    <div className={cn("p-6 rounded-3xl border space-y-2", remainingBalance > 0 ? "bg-rose-50/50 border-rose-100" : "bg-slate-50 border-slate-100")}>
+                                        <p className={cn("text-[10px] font-black uppercase tracking-widest", remainingBalance > 0 ? "text-rose-600/60" : "text-slate-400")}>Remaining Balance</p>
+                                        <p className={cn("text-2xl font-black", remainingBalance > 0 ? "text-rose-600" : "text-slate-400")}>{remainingBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-4 pt-6 border-t border-slate-100">
+                                    <div className="flex items-center justify-between">
+                                        <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-500">Payment History</h4>
+                                        {!isAddingPayment && !isFullyPaid && (
+                                            <Button 
+                                                variant="ghost"
+                                                onClick={() => setIsAddingPayment(true)}
+                                                className="h-8 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest text-emerald-600 bg-emerald-50 hover:bg-emerald-100 hover:text-emerald-700 gap-2"
+                                            >
+                                                <Plus className="size-3" /> Add Payment
+                                            </Button>
+                                        )}
+                                    </div>
+
+                                    {isAddingPayment && (
+                                        <form onSubmit={handleAddPayment} className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end bg-emerald-50/30 p-4 rounded-2xl border border-emerald-100">
+                                            <div className="md:col-span-4 space-y-2">
+                                                <label className="text-[9px] font-black uppercase tracking-widest text-emerald-600/60 ml-1">Amount</label>
+                                                <Input 
+                                                    type="number"
+                                                    step="0.01"
+                                                    required
+                                                    value={paymentForm.amount}
+                                                    onChange={(e) => setPaymentForm({...paymentForm, amount: e.target.value})}
+                                                    className="h-12 rounded-xl border-emerald-200 focus-visible:ring-emerald-500 font-bold bg-white"
+                                                    placeholder="0.00"
+                                                />
+                                            </div>
+                                            <div className="md:col-span-3 space-y-2">
+                                                <label className="text-[9px] font-black uppercase tracking-widest text-emerald-600/60 ml-1">Date</label>
+                                                <Input 
+                                                    type="date"
+                                                    required
+                                                    value={paymentForm.payment_date}
+                                                    onChange={(e) => setPaymentForm({...paymentForm, payment_date: e.target.value})}
+                                                    className="h-12 rounded-xl border-emerald-200 focus-visible:ring-emerald-500 font-bold bg-white"
+                                                />
+                                            </div>
+                                            <div className="md:col-span-3 space-y-2">
+                                                <label className="text-[9px] font-black uppercase tracking-widest text-emerald-600/60 ml-1">Reference (Optional)</label>
+                                                <Input 
+                                                    value={paymentForm.reference}
+                                                    onChange={(e) => setPaymentForm({...paymentForm, reference: e.target.value})}
+                                                    className="h-12 rounded-xl border-emerald-200 focus-visible:ring-emerald-500 font-bold bg-white"
+                                                    placeholder="Receipt # / Memo"
+                                                />
+                                            </div>
+                                            <div className="md:col-span-2 flex gap-2">
+                                                <Button 
+                                                    type="submit"
+                                                    disabled={isSubmittingPayment}
+                                                    className="flex-1 h-12 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-black uppercase tracking-widest text-[9px] shadow-lg shadow-emerald-500/20"
+                                                >
+                                                    {isSubmittingPayment ? "..." : "Save"}
+                                                </Button>
+                                                <Button 
+                                                    type="button"
+                                                    variant="ghost"
+                                                    onClick={() => setIsAddingPayment(false)}
+                                                    className="h-12 px-3 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100"
+                                                >
+                                                    Cancel
+                                                </Button>
+                                            </div>
+                                        </form>
+                                    )}
+
+                                    {order.printorder_payments && order.printorder_payments.length > 0 ? (
+                                        <div className="space-y-3">
+                                            {order.printorder_payments.map((payment: any) => (
+                                                <div key={payment.id} className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl group">
+                                                    <div className="flex items-center gap-4">
+                                                        <div className="size-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400">
+                                                            <Receipt className="size-4" />
+                                                        </div>
+                                                        <div>
+                                                            <p className="font-bold text-sm text-slate-800">{format(new Date(payment.payment_date), "MMMM dd, yyyy")}</p>
+                                                            {payment.reference && <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-0.5">Ref: {payment.reference}</p>}
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center gap-6">
+                                                        <span className="font-black text-emerald-600">+{payment.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                                                        <Button 
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            onClick={() => handleDeletePayment(payment.id)}
+                                                            className="opacity-0 group-hover:opacity-100 text-rose-400 hover:text-rose-500 hover:bg-rose-50 transition-all size-8"
+                                                        >
+                                                            <Trash2 className="size-4" />
+                                                        </Button>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className="py-8 text-center text-slate-400 text-xs font-bold uppercase tracking-widest border border-dashed border-slate-200 rounded-2xl">
+                                            No payments recorded yet.
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Project Configuration Card */}
                         <div className="bg-white rounded-[3rem] p-10 md:p-12 border-2 border-primarycolor/10 shadow-2xl relative">
                             <div className="flex items-center gap-3 mb-10 pb-6 border-b border-slate-100">
                                 <Settings className="size-5 text-secondarycolor" />
-                                <h3 className="text-[10px] font-black uppercase tracking-widest text-primarycolor">Production Parameters</h3>
+                                <h3 className="text-[10px] font-black uppercase tracking-widest text-primarycolor">Project Configuration</h3>
                             </div>
 
                             <form onSubmit={handleUpdate} className="space-y-10">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
-                                    {/* Edition Selection (Combobox) */}
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor/40 ml-1">Project Edition</label>
-                                        <Popover open={editionOpen && isEditing} onOpenChange={setEditionOpen}>
-                                            <PopoverTrigger asChild>
-                                                <Button
-                                                    disabled={!isEditing}
-                                                    variant="outline"
-                                                    role="combobox"
-                                                    className="w-full h-14 px-6 rounded-2xl border-2 border-slate-100 bg-slate-50 font-bold justify-between hover:bg-slate-100 transition-all text-primarycolor disabled:opacity-100 disabled:bg-white"
-                                                >
-                                                    {formData.edition || "Choose Edition..."}
-                                                    {isEditing && <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />}
-                                                </Button>
-                                            </PopoverTrigger>
-                                            <PopoverContent className="w-[400px] p-0 rounded-2xl border-2 shadow-2xl overflow-hidden" align="start">
-                                                <Command>
-                                                    <CommandInput placeholder="Search editions..." className="h-12 font-bold" />
-                                                    <CommandList className="max-h-[200px] overflow-y-auto custom-scrollbar">
-                                                        <CommandEmpty className="p-4 text-xs font-bold text-muted-foreground uppercase tracking-widest text-center">No edition found.</CommandEmpty>
-                                                        <CommandGroup>
-                                                            {editions.map((ed) => (
-                                                                <CommandItem
-                                                                    key={ed.id}
-                                                                    value={`${ed.books?.title} - ${ed.edition_name}`}
-                                                                    onSelect={() => {
-                                                                        setFormData({ ...formData, edition: `${ed.books?.title} - ${ed.edition_name}` })
-                                                                        setEditionOpen(false)
-                                                                    }}
-                                                                    className="h-12 px-4 font-bold text-sm text-primarycolor cursor-pointer"
-                                                                >
-                                                                    <Check className={cn("mr-2 h-4 w-4", formData.edition === `${ed.books?.title} - ${ed.edition_name}` ? "opacity-100" : "opacity-0")} />
-                                                                    <div className="flex flex-col">
-                                                                        <span className="text-[10px] font-black opacity-60 uppercase">{ed.books?.title}</span>
-                                                                        <span>{ed.edition_name}</span>
-                                                                    </div>
-                                                                </CommandItem>
-                                                            ))}
-                                                        </CommandGroup>
-                                                    </CommandList>
-                                                </Command>
-                                            </PopoverContent>
-                                        </Popover>
+                                    <div className="space-y-2 md:col-span-2">
+                                        <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor/40 ml-1">Project Name (Optional)</label>
+                                        <Input 
+                                            disabled={!isEditing}
+                                            value={formData.project_name}
+                                            onChange={(e) => setFormData({...formData, project_name: e.target.value})}
+                                            className="h-14 px-6 rounded-2xl border-2 font-bold disabled:opacity-100 disabled:bg-white"
+                                            placeholder="e.g. Summer Batch 2026"
+                                        />
                                     </div>
 
                                     <div className="space-y-2">
@@ -253,31 +609,17 @@ export default function PrintOrderDetailClient({ order, printers, editions }: Pr
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor/40 ml-1">Batch Quantity</label>
-                                        <div className="relative">
-                                            <Hash className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-                                            <Input 
-                                                disabled={!isEditing}
-                                                type="number"
-                                                value={formData.count}
-                                                onChange={(e) => setFormData({...formData, count: e.target.value})}
-                                                className="h-14 pl-10 rounded-2xl border-2 font-black text-primarycolor disabled:opacity-100 disabled:bg-white"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor/40 ml-1">Quality Tier</label>
+                                        <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor/40 ml-1">Overall Status</label>
                                         <select 
                                             disabled={!isEditing}
-                                            value={formData.quality}
-                                            onChange={(e) => setFormData({...formData, quality: e.target.value})}
+                                            value={formData.status}
+                                            onChange={(e) => setFormData({...formData, status: e.target.value})}
                                             className="w-full h-14 px-6 rounded-2xl border-2 border-slate-100 bg-slate-50 font-bold focus:border-primarycolor outline-none transition-all appearance-none disabled:opacity-100 disabled:bg-white"
                                         >
-                                            <option value="PREMIUM">Premium Hardcover</option>
-                                            <option value="STANDARD">Standard Paperback</option>
-                                            <option value="ECONOMY">Economy / Mass Market</option>
-                                            <option value="SPECIAL">Special Edition / Collector</option>
+                                            <option value="NOT_STARTED">Not Started / Waiting</option>
+                                            <option value="STARTED">Started</option>
+                                            <option value="ONPROGRESS">On Progress</option>
+                                            <option value="COMPLETED">Completed</option>
                                         </select>
                                     </div>
 
@@ -304,16 +646,242 @@ export default function PrintOrderDetailClient({ order, printers, editions }: Pr
                                     </div>
                                 </div>
 
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor/40 ml-1">Production Memo</label>
-                                    <Textarea 
-                                        disabled={!isEditing}
-                                        rows={4}
-                                        value={formData.memo}
-                                        onChange={(e) => setFormData({...formData, memo: e.target.value})}
-                                        className="p-6 rounded-[2rem] border-2 border-slate-100 font-bold text-sm bg-slate-50/50 disabled:opacity-100 disabled:bg-white transition-all resize-none"
-                                        placeholder="No instructions provided..."
-                                    />
+                                {/* Books Section */}
+                                <div className="space-y-4 pt-6 border-t border-slate-100">
+                                    <div className="flex items-center justify-between">
+                                        <h4 className="font-black text-lg text-primarycolor uppercase tracking-widest">Books to Print</h4>
+                                    </div>
+
+                                    {/* Add Book Controls */}
+                                    {isEditing && (
+                                        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end bg-slate-50 p-4 rounded-3xl border-2 border-slate-100">
+                                            <div className="md:col-span-5 space-y-2">
+                                                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Select Book</label>
+                                                <Popover open={bookOpen} onOpenChange={setBookOpen}>
+                                                    <PopoverTrigger asChild>
+                                                        <Button
+                                                            type="button"
+                                                            variant="outline"
+                                                            role="combobox"
+                                                            className="w-full h-12 px-4 rounded-xl border-2 border-slate-200 bg-white font-bold justify-between hover:bg-slate-100 transition-all text-slate-700"
+                                                        >
+                                                            <span className="truncate">{selectedBook?.title || "Choose Book..."}</span>
+                                                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                                        </Button>
+                                                    </PopoverTrigger>
+                                                    <PopoverContent className="w-[300px] p-0 rounded-2xl border-2 shadow-2xl overflow-hidden" align="start">
+                                                        <Command>
+                                                            <CommandInput placeholder="Search books..." className="h-12 font-bold" />
+                                                            <CommandList className="max-h-[200px] overflow-y-auto custom-scrollbar">
+                                                                <CommandEmpty className="p-4 text-xs font-bold text-muted-foreground uppercase tracking-widest text-center">No book found.</CommandEmpty>
+                                                                <CommandGroup>
+                                                                    {books.map((book) => (
+                                                                        <CommandItem
+                                                                            key={book.id}
+                                                                            value={book.title}
+                                                                            onSelect={() => {
+                                                                                setSelectedBookId(book.id)
+                                                                                setBookOpen(false)
+                                                                                setSelectedEditionId(null)
+                                                                            }}
+                                                                            className="h-12 px-4 font-bold text-sm text-primarycolor cursor-pointer data-[selected=true]:bg-primarycolor data-[selected=true]:text-white"
+                                                                        >
+                                                                            <Check className={cn("mr-2 h-4 w-4", selectedBookId === book.id ? "opacity-100" : "opacity-0")} />
+                                                                            <span className="truncate">{book.title}</span>
+                                                                        </CommandItem>
+                                                                    ))}
+                                                                </CommandGroup>
+                                                            </CommandList>
+                                                        </Command>
+                                                    </PopoverContent>
+                                                </Popover>
+                                            </div>
+
+                                            <div className="md:col-span-5 space-y-2">
+                                                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Select Edition</label>
+                                                <Popover open={editionOpen} onOpenChange={setEditionOpen}>
+                                                    <PopoverTrigger asChild>
+                                                        <Button
+                                                            type="button"
+                                                            variant="outline"
+                                                            role="combobox"
+                                                            disabled={!selectedBookId}
+                                                            className="w-full h-12 px-4 rounded-xl border-2 border-slate-200 bg-white font-bold justify-between hover:bg-slate-100 transition-all text-slate-700 disabled:opacity-50"
+                                                        >
+                                                            <span className="truncate">{editions.find(e => e.id === selectedEditionId)?.edition_name || (selectedBookId ? "Choose Edition..." : "Select book first")}</span>
+                                                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                                        </Button>
+                                                    </PopoverTrigger>
+                                                    <PopoverContent className="w-[300px] p-0 rounded-2xl border-2 shadow-2xl overflow-hidden" align="start">
+                                                        <Command>
+                                                            <CommandInput placeholder="Search editions..." className="h-12 font-bold" />
+                                                            <CommandList className="max-h-[200px] overflow-y-auto custom-scrollbar">
+                                                                <CommandEmpty className="p-4 text-xs font-bold text-muted-foreground uppercase tracking-widest text-center">No edition found.</CommandEmpty>
+                                                                <CommandGroup>
+                                                                    {filteredEditions.map((ed) => (
+                                                                        <CommandItem
+                                                                            key={ed.id}
+                                                                            value={ed.edition_name}
+                                                                            onSelect={() => {
+                                                                                setSelectedEditionId(ed.id)
+                                                                                setEditionOpen(false)
+                                                                            }}
+                                                                            className="h-12 px-4 font-bold text-sm text-primarycolor cursor-pointer data-[selected=true]:bg-primarycolor data-[selected=true]:text-white"
+                                                                        >
+                                                                            <Check className={cn("mr-2 h-4 w-4", selectedEditionId === ed.id ? "opacity-100" : "opacity-0")} />
+                                                                            <span className="truncate">{ed.edition_name}</span>
+                                                                        </CommandItem>
+                                                                    ))}
+                                                                </CommandGroup>
+                                                            </CommandList>
+                                                        </Command>
+                                                    </PopoverContent>
+                                                </Popover>
+                                            </div>
+
+                                            <div className="md:col-span-2">
+                                                <Button 
+                                                    type="button"
+                                                    onClick={handleAddBook}
+                                                    disabled={!selectedEditionId}
+                                                    className="w-full h-12 rounded-xl bg-primarycolor hover:bg-secondarycolor font-black uppercase tracking-widest text-[10px]"
+                                                >
+                                                    Add Book
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Items List */}
+                                    {formData.items.length > 0 ? (
+                                        <div className="space-y-3">
+                                            {formData.items.map((item, index) => {
+                                                const bookName = books.find(b => b.id === item.bookId)?.title;
+                                                const editionName = editions.find(e => e.id === item.bookEditionId)?.edition_name;
+                                                
+                                                return (
+                                                    <div key={item.id} className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center bg-white border-2 border-slate-100 p-4 rounded-2xl relative group">
+                                                        <div className="md:col-span-4 flex items-center gap-3">
+                                                            <div className="size-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500 border-2 border-blue-100 shrink-0">
+                                                                <BookOpen className="size-5" />
+                                                            </div>
+                                                            <div className="overflow-hidden min-w-0 flex-1">
+                                                                <p className="font-bold text-sm text-slate-800 truncate" title={bookName}>{bookName || "Unknown Book"}</p>
+                                                                <p className="font-bold text-[10px] text-muted-foreground uppercase tracking-widest truncate">{editionName || "Unknown Edition"}</p>
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="md:col-span-2 space-y-1">
+                                                            <label className="text-[9px] font-black uppercase tracking-widest text-slate-400">Quantity</label>
+                                                            <Input 
+                                                                disabled={!isEditing}
+                                                                type="number"
+                                                                min="1"
+                                                                placeholder="Qty"
+                                                                value={item.quantity}
+                                                                onChange={(e) => updateItem(item.id, 'quantity', e.target.value)}
+                                                                className="h-10 rounded-lg font-bold disabled:opacity-100 disabled:bg-white"
+                                                            />
+                                                        </div>
+
+                                                        <div className="md:col-span-2 space-y-1">
+                                                            <label className="text-[9px] font-black uppercase tracking-widest text-slate-400">Unit Price</label>
+                                                            <Input 
+                                                                disabled={!isEditing}
+                                                                type="number"
+                                                                min="0"
+                                                                step="0.01"
+                                                                placeholder="Price"
+                                                                value={item.price_per_book}
+                                                                onChange={(e) => updateItem(item.id, 'price_per_book', e.target.value)}
+                                                                className="h-10 rounded-lg font-bold disabled:opacity-100 disabled:bg-white"
+                                                            />
+                                                        </div>
+
+                                                        <div className={cn("space-y-1", isEditing ? "md:col-span-3" : "md:col-span-4")}>
+                                                            <label className="text-[9px] font-black uppercase tracking-widest text-slate-400">Status</label>
+                                                            <select 
+                                                                disabled={!isEditing}
+                                                                value={item.status}
+                                                                onChange={(e) => updateItem(item.id, 'status', e.target.value)}
+                                                                className="w-full h-10 px-3 rounded-lg border border-slate-200 bg-white font-bold text-xs outline-none disabled:opacity-100 disabled:bg-white appearance-none"
+                                                            >
+                                                                <option value="NOT_STARTED">Waiting</option>
+                                                                <option value="STARTED">Started</option>
+                                                                <option value="ONPROGRESS">On Progress</option>
+                                                                <option value="COMPLETED">Completed</option>
+                                                            </select>
+                                                        </div>
+
+                                                        {isEditing && (
+                                                            <div className="md:col-span-1 flex justify-end">
+                                                                <Button 
+                                                                    type="button" 
+                                                                    variant="ghost" 
+                                                                    size="icon"
+                                                                    onClick={() => handleRemoveItem(item.id)}
+                                                                    className="text-red-400 hover:text-red-500 hover:bg-red-50"
+                                                                >
+                                                                    <Trash2 className="size-5" />
+                                                                </Button>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                )
+                                            })}
+                                        </div>
+                                    ) : (
+                                        <div className="py-12 border-2 border-dashed border-slate-200 rounded-3xl flex flex-col items-center justify-center text-center">
+                                            <div className="size-16 rounded-full bg-slate-50 flex items-center justify-center mb-4 text-slate-300">
+                                                <Layers className="size-8" />
+                                            </div>
+                                            <p className="font-bold text-slate-400">No books in this project.</p>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Totals & Memo */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 border-t-2 border-slate-100 pt-8">
+                                    <div className="space-y-4">
+                                        <div className="flex items-center justify-between">
+                                            <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">Total Project Amount</label>
+                                            {isEditing && (
+                                                <label className="flex items-center gap-2 cursor-pointer">
+                                                    <input 
+                                                        type="checkbox" 
+                                                        checked={formData.auto_calculate}
+                                                        onChange={(e) => setFormData({...formData, auto_calculate: e.target.checked})}
+                                                        className="rounded border-slate-300 text-primarycolor focus:ring-primarycolor"
+                                                    />
+                                                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Auto Calculate</span>
+                                                </label>
+                                            )}
+                                        </div>
+                                        <div className="relative">
+                                            <Calculator className="absolute left-4 top-1/2 -translate-y-1/2 size-5 text-muted-foreground" />
+                                            <Input 
+                                                disabled={!isEditing || formData.auto_calculate}
+                                                type="number"
+                                                step="0.01"
+                                                value={formData.total_price}
+                                                onChange={(e) => setFormData({...formData, total_price: e.target.value})}
+                                                className="h-16 pl-12 rounded-2xl border-2 font-black text-xl text-primarycolor bg-slate-50 disabled:opacity-100"
+                                                placeholder="0.00"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor/40 ml-1">Production Memo</label>
+                                        <Textarea 
+                                            disabled={!isEditing}
+                                            rows={3}
+                                            value={formData.memo}
+                                            onChange={(e) => setFormData({...formData, memo: e.target.value})}
+                                            className="p-6 rounded-[2rem] border-2 border-slate-100 font-bold text-sm bg-slate-50/50 disabled:opacity-100 disabled:bg-white transition-all resize-none"
+                                            placeholder="No instructions provided..."
+                                        />
+                                    </div>
                                 </div>
 
                                 {isEditing && (
@@ -357,23 +925,10 @@ export default function PrintOrderDetailClient({ order, printers, editions }: Pr
                                         onChange={(e) => setFormData({...formData, status: e.target.value})}
                                         className="w-full h-14 px-6 rounded-2xl border-2 border-slate-100 bg-primarycolor/5 text-primarycolor font-black text-xs outline-none focus:border-primarycolor transition-all appearance-none disabled:opacity-100"
                                     >
-                                        {statusOptions.map(opt => (
-                                            <option key={opt.value} value={opt.value}>{opt.label}</option>
-                                        ))}
-                                    </select>
-                                </div>
-
-                                <div className="space-y-2">
-                                    <label className="text-[8px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">Logistics Tracking</label>
-                                    <select 
-                                        disabled={!isEditing}
-                                        value={formData.tracking}
-                                        onChange={(e) => setFormData({...formData, tracking: e.target.value})}
-                                        className="w-full h-14 px-6 rounded-2xl border-2 border-slate-100 bg-secondarycolor/5 text-secondarycolor font-black text-xs outline-none focus:border-secondarycolor transition-all appearance-none disabled:opacity-100"
-                                    >
-                                        {trackingOptions.map(opt => (
-                                            <option key={opt.value} value={opt.value}>{opt.label}</option>
-                                        ))}
+                                        <option value="NOT_STARTED">Not Started / Waiting</option>
+                                        <option value="STARTED">Started</option>
+                                        <option value="ONPROGRESS">On Progress</option>
+                                        <option value="COMPLETED">Completed</option>
                                     </select>
                                 </div>
                             </div>
@@ -381,12 +936,16 @@ export default function PrintOrderDetailClient({ order, printers, editions }: Pr
                             {!isEditing && (
                                 <div className="pt-4 p-6 bg-slate-50 rounded-3xl border border-slate-100 space-y-4">
                                     <div className="flex items-center justify-between">
-                                        <span className="text-[8px] font-black text-muted-foreground uppercase">Last Sync</span>
-                                        <span className="text-[10px] font-bold text-primarycolor">{format(new Date(order.updatedAt), "HH:mm, MMM dd")}</span>
+                                        <span className="text-[8px] font-black text-muted-foreground uppercase">Total Books</span>
+                                        <span className="text-[10px] font-bold text-primarycolor">{totalBooks}</span>
                                     </div>
                                     <div className="flex items-center justify-between">
-                                        <span className="text-[8px] font-black text-muted-foreground uppercase">Efficiency</span>
-                                        <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">Optimal</span>
+                                        <span className="text-[8px] font-black text-muted-foreground uppercase">Total Units</span>
+                                        <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">{totalUnits.toLocaleString()}</span>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-[8px] font-black text-muted-foreground uppercase">Last Sync</span>
+                                        <span className="text-[10px] font-bold text-primarycolor">{format(new Date(order.updatedAt), "HH:mm, MMM dd")}</span>
                                     </div>
                                 </div>
                             )}
@@ -422,7 +981,7 @@ export default function PrintOrderDetailClient({ order, printers, editions }: Pr
                                 </div>
                                 <div>
                                     <h3 className="text-3xl font-black text-rose-500 uppercase tracking-tighter italic">Batch <span className="text-secondarycolor not-italic">Cancellation</span></h3>
-                                    <p className="text-muted-foreground font-bold leading-none">You are about to terminate this order.</p>
+                                    <p className="text-muted-foreground font-bold leading-none">You are about to terminate this project.</p>
                                 </div>
                             </div>
 
@@ -431,7 +990,7 @@ export default function PrintOrderDetailClient({ order, printers, editions }: Pr
                                     <AlertTriangle className="size-6 text-rose-500 shrink-0 mt-1" />
                                     <div className="space-y-2">
                                         <p className="text-sm font-bold text-rose-900/70 leading-relaxed">
-                                            Warning: Cancelling this batch will remove it from active logs. Historic data for <span className="text-rose-600 font-black">"{order.edition}"</span> will be moved to archives.
+                                            Warning: Cancelling this batch will remove it from active logs. Historic data for <span className="text-rose-600 font-black">"{order.project_name || `Project #${order.id}`}"</span> will be permanently deleted.
                                         </p>
                                     </div>
                                 </div>

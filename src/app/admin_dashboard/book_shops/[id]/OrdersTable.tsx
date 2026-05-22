@@ -154,11 +154,11 @@ export function OrdersTable({ data, onViewDetails }: OrdersTableProps) {
             <span className="text-[10px] opacity-40">ETB</span>
           </span>
           <div className="flex flex-col">
-            <span className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest">
-              Paid:
+            <span className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest leading-tight">
+              Amount Paid Instantly:
             </span>
             <Input
-              className="h-8 w-24 text-sm"
+              className="h-8 w-32 text-xs font-bold"
               value={
                 paymentEdits[row.original.id] ??
                 row.original.amount_paid.toString()

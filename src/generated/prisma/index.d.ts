@@ -74,6 +74,16 @@ export type printer = $Result.DefaultSelection<Prisma.$printerPayload>
  */
 export type printorder = $Result.DefaultSelection<Prisma.$printorderPayload>
 /**
+ * Model printorder_payments
+ * 
+ */
+export type printorder_payments = $Result.DefaultSelection<Prisma.$printorder_paymentsPayload>
+/**
+ * Model printorder_items
+ * 
+ */
+export type printorder_items = $Result.DefaultSelection<Prisma.$printorder_itemsPayload>
+/**
  * Model roles
  * 
  */
@@ -479,6 +489,26 @@ export class PrismaClient<
     * ```
     */
   get printorder(): Prisma.printorderDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.printorder_payments`: Exposes CRUD operations for the **printorder_payments** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Printorder_payments
+    * const printorder_payments = await prisma.printorder_payments.findMany()
+    * ```
+    */
+  get printorder_payments(): Prisma.printorder_paymentsDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.printorder_items`: Exposes CRUD operations for the **printorder_items** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Printorder_items
+    * const printorder_items = await prisma.printorder_items.findMany()
+    * ```
+    */
+  get printorder_items(): Prisma.printorder_itemsDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.roles`: Exposes CRUD operations for the **roles** model.
@@ -1062,6 +1092,8 @@ export namespace Prisma {
     dashboardmenu: 'dashboardmenu',
     printer: 'printer',
     printorder: 'printorder',
+    printorder_payments: 'printorder_payments',
+    printorder_items: 'printorder_items',
     roles: 'roles',
     stores: 'stores',
     translator: 'translator',
@@ -1093,7 +1125,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "accounts" | "bookedition" | "bookeditionstores" | "books" | "bookshopeditions" | "bookshopes" | "orders" | "order_items" | "damagedbooks" | "dashboardmenu" | "printer" | "printorder" | "roles" | "stores" | "translator" | "translatorbook" | "notification" | "activityLogs" | "notes" | "contracts" | "print_agreements" | "delivery_notes" | "invoices" | "approval_documents" | "settings"
+      modelProps: "accounts" | "bookedition" | "bookeditionstores" | "books" | "bookshopeditions" | "bookshopes" | "orders" | "order_items" | "damagedbooks" | "dashboardmenu" | "printer" | "printorder" | "printorder_payments" | "printorder_items" | "roles" | "stores" | "translator" | "translatorbook" | "notification" | "activityLogs" | "notes" | "contracts" | "print_agreements" | "delivery_notes" | "invoices" | "approval_documents" | "settings"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1886,6 +1918,138 @@ export namespace Prisma {
           count: {
             args: Prisma.printorderCountArgs<ExtArgs>
             result: $Utils.Optional<PrintorderCountAggregateOutputType> | number
+          }
+        }
+      }
+      printorder_payments: {
+        payload: Prisma.$printorder_paymentsPayload<ExtArgs>
+        fields: Prisma.printorder_paymentsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.printorder_paymentsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$printorder_paymentsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.printorder_paymentsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$printorder_paymentsPayload>
+          }
+          findFirst: {
+            args: Prisma.printorder_paymentsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$printorder_paymentsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.printorder_paymentsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$printorder_paymentsPayload>
+          }
+          findMany: {
+            args: Prisma.printorder_paymentsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$printorder_paymentsPayload>[]
+          }
+          create: {
+            args: Prisma.printorder_paymentsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$printorder_paymentsPayload>
+          }
+          createMany: {
+            args: Prisma.printorder_paymentsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.printorder_paymentsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$printorder_paymentsPayload>
+          }
+          update: {
+            args: Prisma.printorder_paymentsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$printorder_paymentsPayload>
+          }
+          deleteMany: {
+            args: Prisma.printorder_paymentsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.printorder_paymentsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.printorder_paymentsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$printorder_paymentsPayload>
+          }
+          aggregate: {
+            args: Prisma.Printorder_paymentsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePrintorder_payments>
+          }
+          groupBy: {
+            args: Prisma.printorder_paymentsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Printorder_paymentsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.printorder_paymentsCountArgs<ExtArgs>
+            result: $Utils.Optional<Printorder_paymentsCountAggregateOutputType> | number
+          }
+        }
+      }
+      printorder_items: {
+        payload: Prisma.$printorder_itemsPayload<ExtArgs>
+        fields: Prisma.printorder_itemsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.printorder_itemsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$printorder_itemsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.printorder_itemsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$printorder_itemsPayload>
+          }
+          findFirst: {
+            args: Prisma.printorder_itemsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$printorder_itemsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.printorder_itemsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$printorder_itemsPayload>
+          }
+          findMany: {
+            args: Prisma.printorder_itemsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$printorder_itemsPayload>[]
+          }
+          create: {
+            args: Prisma.printorder_itemsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$printorder_itemsPayload>
+          }
+          createMany: {
+            args: Prisma.printorder_itemsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.printorder_itemsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$printorder_itemsPayload>
+          }
+          update: {
+            args: Prisma.printorder_itemsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$printorder_itemsPayload>
+          }
+          deleteMany: {
+            args: Prisma.printorder_itemsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.printorder_itemsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.printorder_itemsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$printorder_itemsPayload>
+          }
+          aggregate: {
+            args: Prisma.Printorder_itemsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePrintorder_items>
+          }
+          groupBy: {
+            args: Prisma.printorder_itemsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Printorder_itemsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.printorder_itemsCountArgs<ExtArgs>
+            result: $Utils.Optional<Printorder_itemsCountAggregateOutputType> | number
           }
         }
       }
@@ -2855,6 +3019,8 @@ export namespace Prisma {
     dashboardmenu?: dashboardmenuOmit
     printer?: printerOmit
     printorder?: printorderOmit
+    printorder_payments?: printorder_paymentsOmit
+    printorder_items?: printorder_itemsOmit
     roles?: rolesOmit
     stores?: storesOmit
     translator?: translatorOmit
@@ -3010,6 +3176,7 @@ export namespace Prisma {
     bookshopeditions: number
     damagedbooks: number
     order_items: number
+    printorder_items: number
   }
 
   export type BookeditionCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3017,6 +3184,7 @@ export namespace Prisma {
     bookshopeditions?: boolean | BookeditionCountOutputTypeCountBookshopeditionsArgs
     damagedbooks?: boolean | BookeditionCountOutputTypeCountDamagedbooksArgs
     order_items?: boolean | BookeditionCountOutputTypeCountOrder_itemsArgs
+    printorder_items?: boolean | BookeditionCountOutputTypeCountPrintorder_itemsArgs
   }
 
   // Custom InputTypes
@@ -3056,6 +3224,13 @@ export namespace Prisma {
    */
   export type BookeditionCountOutputTypeCountOrder_itemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: order_itemsWhereInput
+  }
+
+  /**
+   * BookeditionCountOutputType without action
+   */
+  export type BookeditionCountOutputTypeCountPrintorder_itemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: printorder_itemsWhereInput
   }
 
 
@@ -3207,6 +3382,46 @@ export namespace Prisma {
    */
   export type PrinterCountOutputTypeCountPrintorderArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: printorderWhereInput
+  }
+
+
+  /**
+   * Count Type PrintorderCountOutputType
+   */
+
+  export type PrintorderCountOutputType = {
+    printorder_items: number
+    printorder_payments: number
+  }
+
+  export type PrintorderCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    printorder_items?: boolean | PrintorderCountOutputTypeCountPrintorder_itemsArgs
+    printorder_payments?: boolean | PrintorderCountOutputTypeCountPrintorder_paymentsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * PrintorderCountOutputType without action
+   */
+  export type PrintorderCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PrintorderCountOutputType
+     */
+    select?: PrintorderCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * PrintorderCountOutputType without action
+   */
+  export type PrintorderCountOutputTypeCountPrintorder_itemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: printorder_itemsWhereInput
+  }
+
+  /**
+   * PrintorderCountOutputType without action
+   */
+  export type PrintorderCountOutputTypeCountPrintorder_paymentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: printorder_paymentsWhereInput
   }
 
 
@@ -4808,6 +5023,7 @@ export namespace Prisma {
     bookshopeditions?: boolean | bookedition$bookshopeditionsArgs<ExtArgs>
     damagedbooks?: boolean | bookedition$damagedbooksArgs<ExtArgs>
     order_items?: boolean | bookedition$order_itemsArgs<ExtArgs>
+    printorder_items?: boolean | bookedition$printorder_itemsArgs<ExtArgs>
     _count?: boolean | BookeditionCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["bookedition"]>
 
@@ -4845,6 +5061,7 @@ export namespace Prisma {
     bookshopeditions?: boolean | bookedition$bookshopeditionsArgs<ExtArgs>
     damagedbooks?: boolean | bookedition$damagedbooksArgs<ExtArgs>
     order_items?: boolean | bookedition$order_itemsArgs<ExtArgs>
+    printorder_items?: boolean | bookedition$printorder_itemsArgs<ExtArgs>
     _count?: boolean | BookeditionCountOutputTypeDefaultArgs<ExtArgs>
   }
 
@@ -4856,6 +5073,7 @@ export namespace Prisma {
       bookshopeditions: Prisma.$bookshopeditionsPayload<ExtArgs>[]
       damagedbooks: Prisma.$damagedbooksPayload<ExtArgs>[]
       order_items: Prisma.$order_itemsPayload<ExtArgs>[]
+      printorder_items: Prisma.$printorder_itemsPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -5225,6 +5443,7 @@ export namespace Prisma {
     bookshopeditions<T extends bookedition$bookshopeditionsArgs<ExtArgs> = {}>(args?: Subset<T, bookedition$bookshopeditionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$bookshopeditionsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     damagedbooks<T extends bookedition$damagedbooksArgs<ExtArgs> = {}>(args?: Subset<T, bookedition$damagedbooksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$damagedbooksPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     order_items<T extends bookedition$order_itemsArgs<ExtArgs> = {}>(args?: Subset<T, bookedition$order_itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$order_itemsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    printorder_items<T extends bookedition$printorder_itemsArgs<ExtArgs> = {}>(args?: Subset<T, bookedition$printorder_itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$printorder_itemsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5712,6 +5931,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: Order_itemsScalarFieldEnum | Order_itemsScalarFieldEnum[]
+  }
+
+  /**
+   * bookedition.printorder_items
+   */
+  export type bookedition$printorder_itemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the printorder_items
+     */
+    select?: printorder_itemsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the printorder_items
+     */
+    omit?: printorder_itemsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: printorder_itemsInclude<ExtArgs> | null
+    where?: printorder_itemsWhereInput
+    orderBy?: printorder_itemsOrderByWithRelationInput | printorder_itemsOrderByWithRelationInput[]
+    cursor?: printorder_itemsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Printorder_itemsScalarFieldEnum | Printorder_itemsScalarFieldEnum[]
   }
 
   /**
@@ -14302,6 +14545,7 @@ export namespace Prisma {
     location: string | null
     phone: string | null
     email: string | null
+    status: string | null
     is_deleted: boolean | null
     updatedAt: Date | null
     createdAt: Date | null
@@ -14314,6 +14558,7 @@ export namespace Prisma {
     location: string | null
     phone: string | null
     email: string | null
+    status: string | null
     is_deleted: boolean | null
     updatedAt: Date | null
     createdAt: Date | null
@@ -14326,6 +14571,7 @@ export namespace Prisma {
     location: number
     phone: number
     email: number
+    status: number
     is_deleted: number
     updatedAt: number
     createdAt: number
@@ -14348,6 +14594,7 @@ export namespace Prisma {
     location?: true
     phone?: true
     email?: true
+    status?: true
     is_deleted?: true
     updatedAt?: true
     createdAt?: true
@@ -14360,6 +14607,7 @@ export namespace Prisma {
     location?: true
     phone?: true
     email?: true
+    status?: true
     is_deleted?: true
     updatedAt?: true
     createdAt?: true
@@ -14372,6 +14620,7 @@ export namespace Prisma {
     location?: true
     phone?: true
     email?: true
+    status?: true
     is_deleted?: true
     updatedAt?: true
     createdAt?: true
@@ -14471,6 +14720,7 @@ export namespace Prisma {
     location: string
     phone: string | null
     email: string | null
+    status: string
     is_deleted: boolean
     updatedAt: Date
     createdAt: Date
@@ -14502,6 +14752,7 @@ export namespace Prisma {
     location?: boolean
     phone?: boolean
     email?: boolean
+    status?: boolean
     is_deleted?: boolean
     updatedAt?: boolean
     createdAt?: boolean
@@ -14518,13 +14769,14 @@ export namespace Prisma {
     location?: boolean
     phone?: boolean
     email?: boolean
+    status?: boolean
     is_deleted?: boolean
     updatedAt?: boolean
     createdAt?: boolean
     deletedAt?: boolean
   }
 
-  export type printerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "location" | "phone" | "email" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt", ExtArgs["result"]["printer"]>
+  export type printerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "location" | "phone" | "email" | "status" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt", ExtArgs["result"]["printer"]>
   export type printerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     printorder?: boolean | printer$printorderArgs<ExtArgs>
     _count?: boolean | PrinterCountOutputTypeDefaultArgs<ExtArgs>
@@ -14541,6 +14793,7 @@ export namespace Prisma {
       location: string
       phone: string | null
       email: string | null
+      status: string
       is_deleted: boolean
       updatedAt: Date
       createdAt: Date
@@ -14920,6 +15173,7 @@ export namespace Prisma {
     readonly location: FieldRef<"printer", 'String'>
     readonly phone: FieldRef<"printer", 'String'>
     readonly email: FieldRef<"printer", 'String'>
+    readonly status: FieldRef<"printer", 'String'>
     readonly is_deleted: FieldRef<"printer", 'Boolean'>
     readonly updatedAt: FieldRef<"printer", 'DateTime'>
     readonly createdAt: FieldRef<"printer", 'DateTime'>
@@ -15324,19 +15578,23 @@ export namespace Prisma {
   export type PrintorderAvgAggregateOutputType = {
     id: number | null
     count: number | null
+    total_price: number | null
     printerId: number | null
   }
 
   export type PrintorderSumAggregateOutputType = {
     id: number | null
     count: number | null
+    total_price: number | null
     printerId: number | null
   }
 
   export type PrintorderMinAggregateOutputType = {
     id: number | null
+    project_name: string | null
     quality: string | null
     count: number | null
+    total_price: number | null
     status: $Enums.printorder_status | null
     memo: string | null
     tracking: $Enums.printorder_tracking | null
@@ -15352,8 +15610,10 @@ export namespace Prisma {
 
   export type PrintorderMaxAggregateOutputType = {
     id: number | null
+    project_name: string | null
     quality: string | null
     count: number | null
+    total_price: number | null
     status: $Enums.printorder_status | null
     memo: string | null
     tracking: $Enums.printorder_tracking | null
@@ -15369,8 +15629,10 @@ export namespace Prisma {
 
   export type PrintorderCountAggregateOutputType = {
     id: number
+    project_name: number
     quality: number
     count: number
+    total_price: number
     status: number
     memo: number
     tracking: number
@@ -15389,19 +15651,23 @@ export namespace Prisma {
   export type PrintorderAvgAggregateInputType = {
     id?: true
     count?: true
+    total_price?: true
     printerId?: true
   }
 
   export type PrintorderSumAggregateInputType = {
     id?: true
     count?: true
+    total_price?: true
     printerId?: true
   }
 
   export type PrintorderMinAggregateInputType = {
     id?: true
+    project_name?: true
     quality?: true
     count?: true
+    total_price?: true
     status?: true
     memo?: true
     tracking?: true
@@ -15417,8 +15683,10 @@ export namespace Prisma {
 
   export type PrintorderMaxAggregateInputType = {
     id?: true
+    project_name?: true
     quality?: true
     count?: true
+    total_price?: true
     status?: true
     memo?: true
     tracking?: true
@@ -15434,8 +15702,10 @@ export namespace Prisma {
 
   export type PrintorderCountAggregateInputType = {
     id?: true
+    project_name?: true
     quality?: true
     count?: true
+    total_price?: true
     status?: true
     memo?: true
     tracking?: true
@@ -15538,8 +15808,10 @@ export namespace Prisma {
 
   export type PrintorderGroupByOutputType = {
     id: number
-    quality: string
-    count: number
+    project_name: string | null
+    quality: string | null
+    count: number | null
+    total_price: number | null
     status: $Enums.printorder_status
     memo: string | null
     tracking: $Enums.printorder_tracking
@@ -15574,8 +15846,10 @@ export namespace Prisma {
 
   export type printorderSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    project_name?: boolean
     quality?: boolean
     count?: boolean
+    total_price?: boolean
     status?: boolean
     memo?: boolean
     tracking?: boolean
@@ -15588,14 +15862,19 @@ export namespace Prisma {
     createdAt?: boolean
     deletedAt?: boolean
     printer?: boolean | printerDefaultArgs<ExtArgs>
+    printorder_items?: boolean | printorder$printorder_itemsArgs<ExtArgs>
+    printorder_payments?: boolean | printorder$printorder_paymentsArgs<ExtArgs>
+    _count?: boolean | PrintorderCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["printorder"]>
 
 
 
   export type printorderSelectScalar = {
     id?: boolean
+    project_name?: boolean
     quality?: boolean
     count?: boolean
+    total_price?: boolean
     status?: boolean
     memo?: boolean
     tracking?: boolean
@@ -15609,20 +15888,27 @@ export namespace Prisma {
     deletedAt?: boolean
   }
 
-  export type printorderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "quality" | "count" | "status" | "memo" | "tracking" | "startDate" | "endDate" | "printerId" | "edition" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt", ExtArgs["result"]["printorder"]>
+  export type printorderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "project_name" | "quality" | "count" | "total_price" | "status" | "memo" | "tracking" | "startDate" | "endDate" | "printerId" | "edition" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt", ExtArgs["result"]["printorder"]>
   export type printorderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     printer?: boolean | printerDefaultArgs<ExtArgs>
+    printorder_items?: boolean | printorder$printorder_itemsArgs<ExtArgs>
+    printorder_payments?: boolean | printorder$printorder_paymentsArgs<ExtArgs>
+    _count?: boolean | PrintorderCountOutputTypeDefaultArgs<ExtArgs>
   }
 
   export type $printorderPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "printorder"
     objects: {
       printer: Prisma.$printerPayload<ExtArgs>
+      printorder_items: Prisma.$printorder_itemsPayload<ExtArgs>[]
+      printorder_payments: Prisma.$printorder_paymentsPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
-      quality: string
-      count: number
+      project_name: string | null
+      quality: string | null
+      count: number | null
+      total_price: number | null
       status: $Enums.printorder_status
       memo: string | null
       tracking: $Enums.printorder_tracking
@@ -15975,6 +16261,8 @@ export namespace Prisma {
   export interface Prisma__printorderClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     printer<T extends printerDefaultArgs<ExtArgs> = {}>(args?: Subset<T, printerDefaultArgs<ExtArgs>>): Prisma__printerClient<$Result.GetResult<Prisma.$printerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    printorder_items<T extends printorder$printorder_itemsArgs<ExtArgs> = {}>(args?: Subset<T, printorder$printorder_itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$printorder_itemsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    printorder_payments<T extends printorder$printorder_paymentsArgs<ExtArgs> = {}>(args?: Subset<T, printorder$printorder_paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$printorder_paymentsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -16005,8 +16293,10 @@ export namespace Prisma {
    */
   interface printorderFieldRefs {
     readonly id: FieldRef<"printorder", 'Int'>
+    readonly project_name: FieldRef<"printorder", 'String'>
     readonly quality: FieldRef<"printorder", 'String'>
     readonly count: FieldRef<"printorder", 'Int'>
+    readonly total_price: FieldRef<"printorder", 'Float'>
     readonly status: FieldRef<"printorder", 'printorder_status'>
     readonly memo: FieldRef<"printorder", 'String'>
     readonly tracking: FieldRef<"printorder", 'printorder_tracking'>
@@ -16361,6 +16651,54 @@ export namespace Prisma {
   }
 
   /**
+   * printorder.printorder_items
+   */
+  export type printorder$printorder_itemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the printorder_items
+     */
+    select?: printorder_itemsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the printorder_items
+     */
+    omit?: printorder_itemsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: printorder_itemsInclude<ExtArgs> | null
+    where?: printorder_itemsWhereInput
+    orderBy?: printorder_itemsOrderByWithRelationInput | printorder_itemsOrderByWithRelationInput[]
+    cursor?: printorder_itemsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Printorder_itemsScalarFieldEnum | Printorder_itemsScalarFieldEnum[]
+  }
+
+  /**
+   * printorder.printorder_payments
+   */
+  export type printorder$printorder_paymentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the printorder_payments
+     */
+    select?: printorder_paymentsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the printorder_payments
+     */
+    omit?: printorder_paymentsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: printorder_paymentsInclude<ExtArgs> | null
+    where?: printorder_paymentsWhereInput
+    orderBy?: printorder_paymentsOrderByWithRelationInput | printorder_paymentsOrderByWithRelationInput[]
+    cursor?: printorder_paymentsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Printorder_paymentsScalarFieldEnum | Printorder_paymentsScalarFieldEnum[]
+  }
+
+  /**
    * printorder without action
    */
   export type printorderDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -16376,6 +16714,2015 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: printorderInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model printorder_payments
+   */
+
+  export type AggregatePrintorder_payments = {
+    _count: Printorder_paymentsCountAggregateOutputType | null
+    _avg: Printorder_paymentsAvgAggregateOutputType | null
+    _sum: Printorder_paymentsSumAggregateOutputType | null
+    _min: Printorder_paymentsMinAggregateOutputType | null
+    _max: Printorder_paymentsMaxAggregateOutputType | null
+  }
+
+  export type Printorder_paymentsAvgAggregateOutputType = {
+    id: number | null
+    printorder_id: number | null
+    amount: number | null
+  }
+
+  export type Printorder_paymentsSumAggregateOutputType = {
+    id: number | null
+    printorder_id: number | null
+    amount: number | null
+  }
+
+  export type Printorder_paymentsMinAggregateOutputType = {
+    id: number | null
+    printorder_id: number | null
+    amount: number | null
+    payment_date: Date | null
+    reference: string | null
+    createdAt: Date | null
+  }
+
+  export type Printorder_paymentsMaxAggregateOutputType = {
+    id: number | null
+    printorder_id: number | null
+    amount: number | null
+    payment_date: Date | null
+    reference: string | null
+    createdAt: Date | null
+  }
+
+  export type Printorder_paymentsCountAggregateOutputType = {
+    id: number
+    printorder_id: number
+    amount: number
+    payment_date: number
+    reference: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type Printorder_paymentsAvgAggregateInputType = {
+    id?: true
+    printorder_id?: true
+    amount?: true
+  }
+
+  export type Printorder_paymentsSumAggregateInputType = {
+    id?: true
+    printorder_id?: true
+    amount?: true
+  }
+
+  export type Printorder_paymentsMinAggregateInputType = {
+    id?: true
+    printorder_id?: true
+    amount?: true
+    payment_date?: true
+    reference?: true
+    createdAt?: true
+  }
+
+  export type Printorder_paymentsMaxAggregateInputType = {
+    id?: true
+    printorder_id?: true
+    amount?: true
+    payment_date?: true
+    reference?: true
+    createdAt?: true
+  }
+
+  export type Printorder_paymentsCountAggregateInputType = {
+    id?: true
+    printorder_id?: true
+    amount?: true
+    payment_date?: true
+    reference?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type Printorder_paymentsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which printorder_payments to aggregate.
+     */
+    where?: printorder_paymentsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of printorder_payments to fetch.
+     */
+    orderBy?: printorder_paymentsOrderByWithRelationInput | printorder_paymentsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: printorder_paymentsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` printorder_payments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` printorder_payments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned printorder_payments
+    **/
+    _count?: true | Printorder_paymentsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: Printorder_paymentsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: Printorder_paymentsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Printorder_paymentsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Printorder_paymentsMaxAggregateInputType
+  }
+
+  export type GetPrintorder_paymentsAggregateType<T extends Printorder_paymentsAggregateArgs> = {
+        [P in keyof T & keyof AggregatePrintorder_payments]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePrintorder_payments[P]>
+      : GetScalarType<T[P], AggregatePrintorder_payments[P]>
+  }
+
+
+
+
+  export type printorder_paymentsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: printorder_paymentsWhereInput
+    orderBy?: printorder_paymentsOrderByWithAggregationInput | printorder_paymentsOrderByWithAggregationInput[]
+    by: Printorder_paymentsScalarFieldEnum[] | Printorder_paymentsScalarFieldEnum
+    having?: printorder_paymentsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Printorder_paymentsCountAggregateInputType | true
+    _avg?: Printorder_paymentsAvgAggregateInputType
+    _sum?: Printorder_paymentsSumAggregateInputType
+    _min?: Printorder_paymentsMinAggregateInputType
+    _max?: Printorder_paymentsMaxAggregateInputType
+  }
+
+  export type Printorder_paymentsGroupByOutputType = {
+    id: number
+    printorder_id: number
+    amount: number
+    payment_date: Date
+    reference: string | null
+    createdAt: Date
+    _count: Printorder_paymentsCountAggregateOutputType | null
+    _avg: Printorder_paymentsAvgAggregateOutputType | null
+    _sum: Printorder_paymentsSumAggregateOutputType | null
+    _min: Printorder_paymentsMinAggregateOutputType | null
+    _max: Printorder_paymentsMaxAggregateOutputType | null
+  }
+
+  type GetPrintorder_paymentsGroupByPayload<T extends printorder_paymentsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Printorder_paymentsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Printorder_paymentsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Printorder_paymentsGroupByOutputType[P]>
+            : GetScalarType<T[P], Printorder_paymentsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type printorder_paymentsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    printorder_id?: boolean
+    amount?: boolean
+    payment_date?: boolean
+    reference?: boolean
+    createdAt?: boolean
+    printorder?: boolean | printorderDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["printorder_payments"]>
+
+
+
+  export type printorder_paymentsSelectScalar = {
+    id?: boolean
+    printorder_id?: boolean
+    amount?: boolean
+    payment_date?: boolean
+    reference?: boolean
+    createdAt?: boolean
+  }
+
+  export type printorder_paymentsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "printorder_id" | "amount" | "payment_date" | "reference" | "createdAt", ExtArgs["result"]["printorder_payments"]>
+  export type printorder_paymentsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    printorder?: boolean | printorderDefaultArgs<ExtArgs>
+  }
+
+  export type $printorder_paymentsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "printorder_payments"
+    objects: {
+      printorder: Prisma.$printorderPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      printorder_id: number
+      amount: number
+      payment_date: Date
+      reference: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["printorder_payments"]>
+    composites: {}
+  }
+
+  type printorder_paymentsGetPayload<S extends boolean | null | undefined | printorder_paymentsDefaultArgs> = $Result.GetResult<Prisma.$printorder_paymentsPayload, S>
+
+  type printorder_paymentsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<printorder_paymentsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Printorder_paymentsCountAggregateInputType | true
+    }
+
+  export interface printorder_paymentsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['printorder_payments'], meta: { name: 'printorder_payments' } }
+    /**
+     * Find zero or one Printorder_payments that matches the filter.
+     * @param {printorder_paymentsFindUniqueArgs} args - Arguments to find a Printorder_payments
+     * @example
+     * // Get one Printorder_payments
+     * const printorder_payments = await prisma.printorder_payments.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends printorder_paymentsFindUniqueArgs>(args: SelectSubset<T, printorder_paymentsFindUniqueArgs<ExtArgs>>): Prisma__printorder_paymentsClient<$Result.GetResult<Prisma.$printorder_paymentsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Printorder_payments that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {printorder_paymentsFindUniqueOrThrowArgs} args - Arguments to find a Printorder_payments
+     * @example
+     * // Get one Printorder_payments
+     * const printorder_payments = await prisma.printorder_payments.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends printorder_paymentsFindUniqueOrThrowArgs>(args: SelectSubset<T, printorder_paymentsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__printorder_paymentsClient<$Result.GetResult<Prisma.$printorder_paymentsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Printorder_payments that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {printorder_paymentsFindFirstArgs} args - Arguments to find a Printorder_payments
+     * @example
+     * // Get one Printorder_payments
+     * const printorder_payments = await prisma.printorder_payments.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends printorder_paymentsFindFirstArgs>(args?: SelectSubset<T, printorder_paymentsFindFirstArgs<ExtArgs>>): Prisma__printorder_paymentsClient<$Result.GetResult<Prisma.$printorder_paymentsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Printorder_payments that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {printorder_paymentsFindFirstOrThrowArgs} args - Arguments to find a Printorder_payments
+     * @example
+     * // Get one Printorder_payments
+     * const printorder_payments = await prisma.printorder_payments.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends printorder_paymentsFindFirstOrThrowArgs>(args?: SelectSubset<T, printorder_paymentsFindFirstOrThrowArgs<ExtArgs>>): Prisma__printorder_paymentsClient<$Result.GetResult<Prisma.$printorder_paymentsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Printorder_payments that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {printorder_paymentsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Printorder_payments
+     * const printorder_payments = await prisma.printorder_payments.findMany()
+     * 
+     * // Get first 10 Printorder_payments
+     * const printorder_payments = await prisma.printorder_payments.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const printorder_paymentsWithIdOnly = await prisma.printorder_payments.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends printorder_paymentsFindManyArgs>(args?: SelectSubset<T, printorder_paymentsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$printorder_paymentsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Printorder_payments.
+     * @param {printorder_paymentsCreateArgs} args - Arguments to create a Printorder_payments.
+     * @example
+     * // Create one Printorder_payments
+     * const Printorder_payments = await prisma.printorder_payments.create({
+     *   data: {
+     *     // ... data to create a Printorder_payments
+     *   }
+     * })
+     * 
+     */
+    create<T extends printorder_paymentsCreateArgs>(args: SelectSubset<T, printorder_paymentsCreateArgs<ExtArgs>>): Prisma__printorder_paymentsClient<$Result.GetResult<Prisma.$printorder_paymentsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Printorder_payments.
+     * @param {printorder_paymentsCreateManyArgs} args - Arguments to create many Printorder_payments.
+     * @example
+     * // Create many Printorder_payments
+     * const printorder_payments = await prisma.printorder_payments.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends printorder_paymentsCreateManyArgs>(args?: SelectSubset<T, printorder_paymentsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Printorder_payments.
+     * @param {printorder_paymentsDeleteArgs} args - Arguments to delete one Printorder_payments.
+     * @example
+     * // Delete one Printorder_payments
+     * const Printorder_payments = await prisma.printorder_payments.delete({
+     *   where: {
+     *     // ... filter to delete one Printorder_payments
+     *   }
+     * })
+     * 
+     */
+    delete<T extends printorder_paymentsDeleteArgs>(args: SelectSubset<T, printorder_paymentsDeleteArgs<ExtArgs>>): Prisma__printorder_paymentsClient<$Result.GetResult<Prisma.$printorder_paymentsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Printorder_payments.
+     * @param {printorder_paymentsUpdateArgs} args - Arguments to update one Printorder_payments.
+     * @example
+     * // Update one Printorder_payments
+     * const printorder_payments = await prisma.printorder_payments.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends printorder_paymentsUpdateArgs>(args: SelectSubset<T, printorder_paymentsUpdateArgs<ExtArgs>>): Prisma__printorder_paymentsClient<$Result.GetResult<Prisma.$printorder_paymentsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Printorder_payments.
+     * @param {printorder_paymentsDeleteManyArgs} args - Arguments to filter Printorder_payments to delete.
+     * @example
+     * // Delete a few Printorder_payments
+     * const { count } = await prisma.printorder_payments.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends printorder_paymentsDeleteManyArgs>(args?: SelectSubset<T, printorder_paymentsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Printorder_payments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {printorder_paymentsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Printorder_payments
+     * const printorder_payments = await prisma.printorder_payments.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends printorder_paymentsUpdateManyArgs>(args: SelectSubset<T, printorder_paymentsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Printorder_payments.
+     * @param {printorder_paymentsUpsertArgs} args - Arguments to update or create a Printorder_payments.
+     * @example
+     * // Update or create a Printorder_payments
+     * const printorder_payments = await prisma.printorder_payments.upsert({
+     *   create: {
+     *     // ... data to create a Printorder_payments
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Printorder_payments we want to update
+     *   }
+     * })
+     */
+    upsert<T extends printorder_paymentsUpsertArgs>(args: SelectSubset<T, printorder_paymentsUpsertArgs<ExtArgs>>): Prisma__printorder_paymentsClient<$Result.GetResult<Prisma.$printorder_paymentsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Printorder_payments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {printorder_paymentsCountArgs} args - Arguments to filter Printorder_payments to count.
+     * @example
+     * // Count the number of Printorder_payments
+     * const count = await prisma.printorder_payments.count({
+     *   where: {
+     *     // ... the filter for the Printorder_payments we want to count
+     *   }
+     * })
+    **/
+    count<T extends printorder_paymentsCountArgs>(
+      args?: Subset<T, printorder_paymentsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Printorder_paymentsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Printorder_payments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Printorder_paymentsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Printorder_paymentsAggregateArgs>(args: Subset<T, Printorder_paymentsAggregateArgs>): Prisma.PrismaPromise<GetPrintorder_paymentsAggregateType<T>>
+
+    /**
+     * Group by Printorder_payments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {printorder_paymentsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends printorder_paymentsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: printorder_paymentsGroupByArgs['orderBy'] }
+        : { orderBy?: printorder_paymentsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, printorder_paymentsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPrintorder_paymentsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the printorder_payments model
+   */
+  readonly fields: printorder_paymentsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for printorder_payments.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__printorder_paymentsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    printorder<T extends printorderDefaultArgs<ExtArgs> = {}>(args?: Subset<T, printorderDefaultArgs<ExtArgs>>): Prisma__printorderClient<$Result.GetResult<Prisma.$printorderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the printorder_payments model
+   */
+  interface printorder_paymentsFieldRefs {
+    readonly id: FieldRef<"printorder_payments", 'Int'>
+    readonly printorder_id: FieldRef<"printorder_payments", 'Int'>
+    readonly amount: FieldRef<"printorder_payments", 'Float'>
+    readonly payment_date: FieldRef<"printorder_payments", 'DateTime'>
+    readonly reference: FieldRef<"printorder_payments", 'String'>
+    readonly createdAt: FieldRef<"printorder_payments", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * printorder_payments findUnique
+   */
+  export type printorder_paymentsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the printorder_payments
+     */
+    select?: printorder_paymentsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the printorder_payments
+     */
+    omit?: printorder_paymentsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: printorder_paymentsInclude<ExtArgs> | null
+    /**
+     * Filter, which printorder_payments to fetch.
+     */
+    where: printorder_paymentsWhereUniqueInput
+  }
+
+  /**
+   * printorder_payments findUniqueOrThrow
+   */
+  export type printorder_paymentsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the printorder_payments
+     */
+    select?: printorder_paymentsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the printorder_payments
+     */
+    omit?: printorder_paymentsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: printorder_paymentsInclude<ExtArgs> | null
+    /**
+     * Filter, which printorder_payments to fetch.
+     */
+    where: printorder_paymentsWhereUniqueInput
+  }
+
+  /**
+   * printorder_payments findFirst
+   */
+  export type printorder_paymentsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the printorder_payments
+     */
+    select?: printorder_paymentsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the printorder_payments
+     */
+    omit?: printorder_paymentsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: printorder_paymentsInclude<ExtArgs> | null
+    /**
+     * Filter, which printorder_payments to fetch.
+     */
+    where?: printorder_paymentsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of printorder_payments to fetch.
+     */
+    orderBy?: printorder_paymentsOrderByWithRelationInput | printorder_paymentsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for printorder_payments.
+     */
+    cursor?: printorder_paymentsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` printorder_payments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` printorder_payments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of printorder_payments.
+     */
+    distinct?: Printorder_paymentsScalarFieldEnum | Printorder_paymentsScalarFieldEnum[]
+  }
+
+  /**
+   * printorder_payments findFirstOrThrow
+   */
+  export type printorder_paymentsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the printorder_payments
+     */
+    select?: printorder_paymentsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the printorder_payments
+     */
+    omit?: printorder_paymentsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: printorder_paymentsInclude<ExtArgs> | null
+    /**
+     * Filter, which printorder_payments to fetch.
+     */
+    where?: printorder_paymentsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of printorder_payments to fetch.
+     */
+    orderBy?: printorder_paymentsOrderByWithRelationInput | printorder_paymentsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for printorder_payments.
+     */
+    cursor?: printorder_paymentsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` printorder_payments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` printorder_payments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of printorder_payments.
+     */
+    distinct?: Printorder_paymentsScalarFieldEnum | Printorder_paymentsScalarFieldEnum[]
+  }
+
+  /**
+   * printorder_payments findMany
+   */
+  export type printorder_paymentsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the printorder_payments
+     */
+    select?: printorder_paymentsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the printorder_payments
+     */
+    omit?: printorder_paymentsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: printorder_paymentsInclude<ExtArgs> | null
+    /**
+     * Filter, which printorder_payments to fetch.
+     */
+    where?: printorder_paymentsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of printorder_payments to fetch.
+     */
+    orderBy?: printorder_paymentsOrderByWithRelationInput | printorder_paymentsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing printorder_payments.
+     */
+    cursor?: printorder_paymentsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` printorder_payments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` printorder_payments.
+     */
+    skip?: number
+    distinct?: Printorder_paymentsScalarFieldEnum | Printorder_paymentsScalarFieldEnum[]
+  }
+
+  /**
+   * printorder_payments create
+   */
+  export type printorder_paymentsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the printorder_payments
+     */
+    select?: printorder_paymentsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the printorder_payments
+     */
+    omit?: printorder_paymentsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: printorder_paymentsInclude<ExtArgs> | null
+    /**
+     * The data needed to create a printorder_payments.
+     */
+    data: XOR<printorder_paymentsCreateInput, printorder_paymentsUncheckedCreateInput>
+  }
+
+  /**
+   * printorder_payments createMany
+   */
+  export type printorder_paymentsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many printorder_payments.
+     */
+    data: printorder_paymentsCreateManyInput | printorder_paymentsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * printorder_payments update
+   */
+  export type printorder_paymentsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the printorder_payments
+     */
+    select?: printorder_paymentsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the printorder_payments
+     */
+    omit?: printorder_paymentsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: printorder_paymentsInclude<ExtArgs> | null
+    /**
+     * The data needed to update a printorder_payments.
+     */
+    data: XOR<printorder_paymentsUpdateInput, printorder_paymentsUncheckedUpdateInput>
+    /**
+     * Choose, which printorder_payments to update.
+     */
+    where: printorder_paymentsWhereUniqueInput
+  }
+
+  /**
+   * printorder_payments updateMany
+   */
+  export type printorder_paymentsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update printorder_payments.
+     */
+    data: XOR<printorder_paymentsUpdateManyMutationInput, printorder_paymentsUncheckedUpdateManyInput>
+    /**
+     * Filter which printorder_payments to update
+     */
+    where?: printorder_paymentsWhereInput
+    /**
+     * Limit how many printorder_payments to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * printorder_payments upsert
+   */
+  export type printorder_paymentsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the printorder_payments
+     */
+    select?: printorder_paymentsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the printorder_payments
+     */
+    omit?: printorder_paymentsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: printorder_paymentsInclude<ExtArgs> | null
+    /**
+     * The filter to search for the printorder_payments to update in case it exists.
+     */
+    where: printorder_paymentsWhereUniqueInput
+    /**
+     * In case the printorder_payments found by the `where` argument doesn't exist, create a new printorder_payments with this data.
+     */
+    create: XOR<printorder_paymentsCreateInput, printorder_paymentsUncheckedCreateInput>
+    /**
+     * In case the printorder_payments was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<printorder_paymentsUpdateInput, printorder_paymentsUncheckedUpdateInput>
+  }
+
+  /**
+   * printorder_payments delete
+   */
+  export type printorder_paymentsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the printorder_payments
+     */
+    select?: printorder_paymentsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the printorder_payments
+     */
+    omit?: printorder_paymentsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: printorder_paymentsInclude<ExtArgs> | null
+    /**
+     * Filter which printorder_payments to delete.
+     */
+    where: printorder_paymentsWhereUniqueInput
+  }
+
+  /**
+   * printorder_payments deleteMany
+   */
+  export type printorder_paymentsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which printorder_payments to delete
+     */
+    where?: printorder_paymentsWhereInput
+    /**
+     * Limit how many printorder_payments to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * printorder_payments without action
+   */
+  export type printorder_paymentsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the printorder_payments
+     */
+    select?: printorder_paymentsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the printorder_payments
+     */
+    omit?: printorder_paymentsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: printorder_paymentsInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model printorder_items
+   */
+
+  export type AggregatePrintorder_items = {
+    _count: Printorder_itemsCountAggregateOutputType | null
+    _avg: Printorder_itemsAvgAggregateOutputType | null
+    _sum: Printorder_itemsSumAggregateOutputType | null
+    _min: Printorder_itemsMinAggregateOutputType | null
+    _max: Printorder_itemsMaxAggregateOutputType | null
+  }
+
+  export type Printorder_itemsAvgAggregateOutputType = {
+    id: number | null
+    printorder_id: number | null
+    bookEditionId: number | null
+    quantity: number | null
+    price_per_book: number | null
+  }
+
+  export type Printorder_itemsSumAggregateOutputType = {
+    id: number | null
+    printorder_id: number | null
+    bookEditionId: number | null
+    quantity: number | null
+    price_per_book: number | null
+  }
+
+  export type Printorder_itemsMinAggregateOutputType = {
+    id: number | null
+    printorder_id: number | null
+    bookEditionId: number | null
+    quantity: number | null
+    price_per_book: number | null
+    status: $Enums.printorder_status | null
+    is_deleted: boolean | null
+    updatedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type Printorder_itemsMaxAggregateOutputType = {
+    id: number | null
+    printorder_id: number | null
+    bookEditionId: number | null
+    quantity: number | null
+    price_per_book: number | null
+    status: $Enums.printorder_status | null
+    is_deleted: boolean | null
+    updatedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type Printorder_itemsCountAggregateOutputType = {
+    id: number
+    printorder_id: number
+    bookEditionId: number
+    quantity: number
+    price_per_book: number
+    status: number
+    is_deleted: number
+    updatedAt: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type Printorder_itemsAvgAggregateInputType = {
+    id?: true
+    printorder_id?: true
+    bookEditionId?: true
+    quantity?: true
+    price_per_book?: true
+  }
+
+  export type Printorder_itemsSumAggregateInputType = {
+    id?: true
+    printorder_id?: true
+    bookEditionId?: true
+    quantity?: true
+    price_per_book?: true
+  }
+
+  export type Printorder_itemsMinAggregateInputType = {
+    id?: true
+    printorder_id?: true
+    bookEditionId?: true
+    quantity?: true
+    price_per_book?: true
+    status?: true
+    is_deleted?: true
+    updatedAt?: true
+    createdAt?: true
+  }
+
+  export type Printorder_itemsMaxAggregateInputType = {
+    id?: true
+    printorder_id?: true
+    bookEditionId?: true
+    quantity?: true
+    price_per_book?: true
+    status?: true
+    is_deleted?: true
+    updatedAt?: true
+    createdAt?: true
+  }
+
+  export type Printorder_itemsCountAggregateInputType = {
+    id?: true
+    printorder_id?: true
+    bookEditionId?: true
+    quantity?: true
+    price_per_book?: true
+    status?: true
+    is_deleted?: true
+    updatedAt?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type Printorder_itemsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which printorder_items to aggregate.
+     */
+    where?: printorder_itemsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of printorder_items to fetch.
+     */
+    orderBy?: printorder_itemsOrderByWithRelationInput | printorder_itemsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: printorder_itemsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` printorder_items from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` printorder_items.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned printorder_items
+    **/
+    _count?: true | Printorder_itemsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: Printorder_itemsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: Printorder_itemsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Printorder_itemsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Printorder_itemsMaxAggregateInputType
+  }
+
+  export type GetPrintorder_itemsAggregateType<T extends Printorder_itemsAggregateArgs> = {
+        [P in keyof T & keyof AggregatePrintorder_items]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePrintorder_items[P]>
+      : GetScalarType<T[P], AggregatePrintorder_items[P]>
+  }
+
+
+
+
+  export type printorder_itemsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: printorder_itemsWhereInput
+    orderBy?: printorder_itemsOrderByWithAggregationInput | printorder_itemsOrderByWithAggregationInput[]
+    by: Printorder_itemsScalarFieldEnum[] | Printorder_itemsScalarFieldEnum
+    having?: printorder_itemsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Printorder_itemsCountAggregateInputType | true
+    _avg?: Printorder_itemsAvgAggregateInputType
+    _sum?: Printorder_itemsSumAggregateInputType
+    _min?: Printorder_itemsMinAggregateInputType
+    _max?: Printorder_itemsMaxAggregateInputType
+  }
+
+  export type Printorder_itemsGroupByOutputType = {
+    id: number
+    printorder_id: number
+    bookEditionId: number
+    quantity: number
+    price_per_book: number
+    status: $Enums.printorder_status
+    is_deleted: boolean
+    updatedAt: Date
+    createdAt: Date
+    _count: Printorder_itemsCountAggregateOutputType | null
+    _avg: Printorder_itemsAvgAggregateOutputType | null
+    _sum: Printorder_itemsSumAggregateOutputType | null
+    _min: Printorder_itemsMinAggregateOutputType | null
+    _max: Printorder_itemsMaxAggregateOutputType | null
+  }
+
+  type GetPrintorder_itemsGroupByPayload<T extends printorder_itemsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Printorder_itemsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Printorder_itemsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Printorder_itemsGroupByOutputType[P]>
+            : GetScalarType<T[P], Printorder_itemsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type printorder_itemsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    printorder_id?: boolean
+    bookEditionId?: boolean
+    quantity?: boolean
+    price_per_book?: boolean
+    status?: boolean
+    is_deleted?: boolean
+    updatedAt?: boolean
+    createdAt?: boolean
+    printorder?: boolean | printorderDefaultArgs<ExtArgs>
+    bookedition?: boolean | bookeditionDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["printorder_items"]>
+
+
+
+  export type printorder_itemsSelectScalar = {
+    id?: boolean
+    printorder_id?: boolean
+    bookEditionId?: boolean
+    quantity?: boolean
+    price_per_book?: boolean
+    status?: boolean
+    is_deleted?: boolean
+    updatedAt?: boolean
+    createdAt?: boolean
+  }
+
+  export type printorder_itemsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "printorder_id" | "bookEditionId" | "quantity" | "price_per_book" | "status" | "is_deleted" | "updatedAt" | "createdAt", ExtArgs["result"]["printorder_items"]>
+  export type printorder_itemsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    printorder?: boolean | printorderDefaultArgs<ExtArgs>
+    bookedition?: boolean | bookeditionDefaultArgs<ExtArgs>
+  }
+
+  export type $printorder_itemsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "printorder_items"
+    objects: {
+      printorder: Prisma.$printorderPayload<ExtArgs>
+      bookedition: Prisma.$bookeditionPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      printorder_id: number
+      bookEditionId: number
+      quantity: number
+      price_per_book: number
+      status: $Enums.printorder_status
+      is_deleted: boolean
+      updatedAt: Date
+      createdAt: Date
+    }, ExtArgs["result"]["printorder_items"]>
+    composites: {}
+  }
+
+  type printorder_itemsGetPayload<S extends boolean | null | undefined | printorder_itemsDefaultArgs> = $Result.GetResult<Prisma.$printorder_itemsPayload, S>
+
+  type printorder_itemsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<printorder_itemsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Printorder_itemsCountAggregateInputType | true
+    }
+
+  export interface printorder_itemsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['printorder_items'], meta: { name: 'printorder_items' } }
+    /**
+     * Find zero or one Printorder_items that matches the filter.
+     * @param {printorder_itemsFindUniqueArgs} args - Arguments to find a Printorder_items
+     * @example
+     * // Get one Printorder_items
+     * const printorder_items = await prisma.printorder_items.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends printorder_itemsFindUniqueArgs>(args: SelectSubset<T, printorder_itemsFindUniqueArgs<ExtArgs>>): Prisma__printorder_itemsClient<$Result.GetResult<Prisma.$printorder_itemsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Printorder_items that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {printorder_itemsFindUniqueOrThrowArgs} args - Arguments to find a Printorder_items
+     * @example
+     * // Get one Printorder_items
+     * const printorder_items = await prisma.printorder_items.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends printorder_itemsFindUniqueOrThrowArgs>(args: SelectSubset<T, printorder_itemsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__printorder_itemsClient<$Result.GetResult<Prisma.$printorder_itemsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Printorder_items that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {printorder_itemsFindFirstArgs} args - Arguments to find a Printorder_items
+     * @example
+     * // Get one Printorder_items
+     * const printorder_items = await prisma.printorder_items.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends printorder_itemsFindFirstArgs>(args?: SelectSubset<T, printorder_itemsFindFirstArgs<ExtArgs>>): Prisma__printorder_itemsClient<$Result.GetResult<Prisma.$printorder_itemsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Printorder_items that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {printorder_itemsFindFirstOrThrowArgs} args - Arguments to find a Printorder_items
+     * @example
+     * // Get one Printorder_items
+     * const printorder_items = await prisma.printorder_items.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends printorder_itemsFindFirstOrThrowArgs>(args?: SelectSubset<T, printorder_itemsFindFirstOrThrowArgs<ExtArgs>>): Prisma__printorder_itemsClient<$Result.GetResult<Prisma.$printorder_itemsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Printorder_items that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {printorder_itemsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Printorder_items
+     * const printorder_items = await prisma.printorder_items.findMany()
+     * 
+     * // Get first 10 Printorder_items
+     * const printorder_items = await prisma.printorder_items.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const printorder_itemsWithIdOnly = await prisma.printorder_items.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends printorder_itemsFindManyArgs>(args?: SelectSubset<T, printorder_itemsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$printorder_itemsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Printorder_items.
+     * @param {printorder_itemsCreateArgs} args - Arguments to create a Printorder_items.
+     * @example
+     * // Create one Printorder_items
+     * const Printorder_items = await prisma.printorder_items.create({
+     *   data: {
+     *     // ... data to create a Printorder_items
+     *   }
+     * })
+     * 
+     */
+    create<T extends printorder_itemsCreateArgs>(args: SelectSubset<T, printorder_itemsCreateArgs<ExtArgs>>): Prisma__printorder_itemsClient<$Result.GetResult<Prisma.$printorder_itemsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Printorder_items.
+     * @param {printorder_itemsCreateManyArgs} args - Arguments to create many Printorder_items.
+     * @example
+     * // Create many Printorder_items
+     * const printorder_items = await prisma.printorder_items.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends printorder_itemsCreateManyArgs>(args?: SelectSubset<T, printorder_itemsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Printorder_items.
+     * @param {printorder_itemsDeleteArgs} args - Arguments to delete one Printorder_items.
+     * @example
+     * // Delete one Printorder_items
+     * const Printorder_items = await prisma.printorder_items.delete({
+     *   where: {
+     *     // ... filter to delete one Printorder_items
+     *   }
+     * })
+     * 
+     */
+    delete<T extends printorder_itemsDeleteArgs>(args: SelectSubset<T, printorder_itemsDeleteArgs<ExtArgs>>): Prisma__printorder_itemsClient<$Result.GetResult<Prisma.$printorder_itemsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Printorder_items.
+     * @param {printorder_itemsUpdateArgs} args - Arguments to update one Printorder_items.
+     * @example
+     * // Update one Printorder_items
+     * const printorder_items = await prisma.printorder_items.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends printorder_itemsUpdateArgs>(args: SelectSubset<T, printorder_itemsUpdateArgs<ExtArgs>>): Prisma__printorder_itemsClient<$Result.GetResult<Prisma.$printorder_itemsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Printorder_items.
+     * @param {printorder_itemsDeleteManyArgs} args - Arguments to filter Printorder_items to delete.
+     * @example
+     * // Delete a few Printorder_items
+     * const { count } = await prisma.printorder_items.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends printorder_itemsDeleteManyArgs>(args?: SelectSubset<T, printorder_itemsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Printorder_items.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {printorder_itemsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Printorder_items
+     * const printorder_items = await prisma.printorder_items.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends printorder_itemsUpdateManyArgs>(args: SelectSubset<T, printorder_itemsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Printorder_items.
+     * @param {printorder_itemsUpsertArgs} args - Arguments to update or create a Printorder_items.
+     * @example
+     * // Update or create a Printorder_items
+     * const printorder_items = await prisma.printorder_items.upsert({
+     *   create: {
+     *     // ... data to create a Printorder_items
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Printorder_items we want to update
+     *   }
+     * })
+     */
+    upsert<T extends printorder_itemsUpsertArgs>(args: SelectSubset<T, printorder_itemsUpsertArgs<ExtArgs>>): Prisma__printorder_itemsClient<$Result.GetResult<Prisma.$printorder_itemsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Printorder_items.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {printorder_itemsCountArgs} args - Arguments to filter Printorder_items to count.
+     * @example
+     * // Count the number of Printorder_items
+     * const count = await prisma.printorder_items.count({
+     *   where: {
+     *     // ... the filter for the Printorder_items we want to count
+     *   }
+     * })
+    **/
+    count<T extends printorder_itemsCountArgs>(
+      args?: Subset<T, printorder_itemsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Printorder_itemsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Printorder_items.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Printorder_itemsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Printorder_itemsAggregateArgs>(args: Subset<T, Printorder_itemsAggregateArgs>): Prisma.PrismaPromise<GetPrintorder_itemsAggregateType<T>>
+
+    /**
+     * Group by Printorder_items.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {printorder_itemsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends printorder_itemsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: printorder_itemsGroupByArgs['orderBy'] }
+        : { orderBy?: printorder_itemsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, printorder_itemsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPrintorder_itemsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the printorder_items model
+   */
+  readonly fields: printorder_itemsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for printorder_items.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__printorder_itemsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    printorder<T extends printorderDefaultArgs<ExtArgs> = {}>(args?: Subset<T, printorderDefaultArgs<ExtArgs>>): Prisma__printorderClient<$Result.GetResult<Prisma.$printorderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    bookedition<T extends bookeditionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, bookeditionDefaultArgs<ExtArgs>>): Prisma__bookeditionClient<$Result.GetResult<Prisma.$bookeditionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the printorder_items model
+   */
+  interface printorder_itemsFieldRefs {
+    readonly id: FieldRef<"printorder_items", 'Int'>
+    readonly printorder_id: FieldRef<"printorder_items", 'Int'>
+    readonly bookEditionId: FieldRef<"printorder_items", 'Int'>
+    readonly quantity: FieldRef<"printorder_items", 'Int'>
+    readonly price_per_book: FieldRef<"printorder_items", 'Float'>
+    readonly status: FieldRef<"printorder_items", 'printorder_status'>
+    readonly is_deleted: FieldRef<"printorder_items", 'Boolean'>
+    readonly updatedAt: FieldRef<"printorder_items", 'DateTime'>
+    readonly createdAt: FieldRef<"printorder_items", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * printorder_items findUnique
+   */
+  export type printorder_itemsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the printorder_items
+     */
+    select?: printorder_itemsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the printorder_items
+     */
+    omit?: printorder_itemsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: printorder_itemsInclude<ExtArgs> | null
+    /**
+     * Filter, which printorder_items to fetch.
+     */
+    where: printorder_itemsWhereUniqueInput
+  }
+
+  /**
+   * printorder_items findUniqueOrThrow
+   */
+  export type printorder_itemsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the printorder_items
+     */
+    select?: printorder_itemsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the printorder_items
+     */
+    omit?: printorder_itemsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: printorder_itemsInclude<ExtArgs> | null
+    /**
+     * Filter, which printorder_items to fetch.
+     */
+    where: printorder_itemsWhereUniqueInput
+  }
+
+  /**
+   * printorder_items findFirst
+   */
+  export type printorder_itemsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the printorder_items
+     */
+    select?: printorder_itemsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the printorder_items
+     */
+    omit?: printorder_itemsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: printorder_itemsInclude<ExtArgs> | null
+    /**
+     * Filter, which printorder_items to fetch.
+     */
+    where?: printorder_itemsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of printorder_items to fetch.
+     */
+    orderBy?: printorder_itemsOrderByWithRelationInput | printorder_itemsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for printorder_items.
+     */
+    cursor?: printorder_itemsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` printorder_items from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` printorder_items.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of printorder_items.
+     */
+    distinct?: Printorder_itemsScalarFieldEnum | Printorder_itemsScalarFieldEnum[]
+  }
+
+  /**
+   * printorder_items findFirstOrThrow
+   */
+  export type printorder_itemsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the printorder_items
+     */
+    select?: printorder_itemsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the printorder_items
+     */
+    omit?: printorder_itemsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: printorder_itemsInclude<ExtArgs> | null
+    /**
+     * Filter, which printorder_items to fetch.
+     */
+    where?: printorder_itemsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of printorder_items to fetch.
+     */
+    orderBy?: printorder_itemsOrderByWithRelationInput | printorder_itemsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for printorder_items.
+     */
+    cursor?: printorder_itemsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` printorder_items from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` printorder_items.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of printorder_items.
+     */
+    distinct?: Printorder_itemsScalarFieldEnum | Printorder_itemsScalarFieldEnum[]
+  }
+
+  /**
+   * printorder_items findMany
+   */
+  export type printorder_itemsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the printorder_items
+     */
+    select?: printorder_itemsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the printorder_items
+     */
+    omit?: printorder_itemsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: printorder_itemsInclude<ExtArgs> | null
+    /**
+     * Filter, which printorder_items to fetch.
+     */
+    where?: printorder_itemsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of printorder_items to fetch.
+     */
+    orderBy?: printorder_itemsOrderByWithRelationInput | printorder_itemsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing printorder_items.
+     */
+    cursor?: printorder_itemsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` printorder_items from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` printorder_items.
+     */
+    skip?: number
+    distinct?: Printorder_itemsScalarFieldEnum | Printorder_itemsScalarFieldEnum[]
+  }
+
+  /**
+   * printorder_items create
+   */
+  export type printorder_itemsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the printorder_items
+     */
+    select?: printorder_itemsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the printorder_items
+     */
+    omit?: printorder_itemsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: printorder_itemsInclude<ExtArgs> | null
+    /**
+     * The data needed to create a printorder_items.
+     */
+    data: XOR<printorder_itemsCreateInput, printorder_itemsUncheckedCreateInput>
+  }
+
+  /**
+   * printorder_items createMany
+   */
+  export type printorder_itemsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many printorder_items.
+     */
+    data: printorder_itemsCreateManyInput | printorder_itemsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * printorder_items update
+   */
+  export type printorder_itemsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the printorder_items
+     */
+    select?: printorder_itemsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the printorder_items
+     */
+    omit?: printorder_itemsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: printorder_itemsInclude<ExtArgs> | null
+    /**
+     * The data needed to update a printorder_items.
+     */
+    data: XOR<printorder_itemsUpdateInput, printorder_itemsUncheckedUpdateInput>
+    /**
+     * Choose, which printorder_items to update.
+     */
+    where: printorder_itemsWhereUniqueInput
+  }
+
+  /**
+   * printorder_items updateMany
+   */
+  export type printorder_itemsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update printorder_items.
+     */
+    data: XOR<printorder_itemsUpdateManyMutationInput, printorder_itemsUncheckedUpdateManyInput>
+    /**
+     * Filter which printorder_items to update
+     */
+    where?: printorder_itemsWhereInput
+    /**
+     * Limit how many printorder_items to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * printorder_items upsert
+   */
+  export type printorder_itemsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the printorder_items
+     */
+    select?: printorder_itemsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the printorder_items
+     */
+    omit?: printorder_itemsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: printorder_itemsInclude<ExtArgs> | null
+    /**
+     * The filter to search for the printorder_items to update in case it exists.
+     */
+    where: printorder_itemsWhereUniqueInput
+    /**
+     * In case the printorder_items found by the `where` argument doesn't exist, create a new printorder_items with this data.
+     */
+    create: XOR<printorder_itemsCreateInput, printorder_itemsUncheckedCreateInput>
+    /**
+     * In case the printorder_items was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<printorder_itemsUpdateInput, printorder_itemsUncheckedUpdateInput>
+  }
+
+  /**
+   * printorder_items delete
+   */
+  export type printorder_itemsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the printorder_items
+     */
+    select?: printorder_itemsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the printorder_items
+     */
+    omit?: printorder_itemsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: printorder_itemsInclude<ExtArgs> | null
+    /**
+     * Filter which printorder_items to delete.
+     */
+    where: printorder_itemsWhereUniqueInput
+  }
+
+  /**
+   * printorder_items deleteMany
+   */
+  export type printorder_itemsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which printorder_items to delete
+     */
+    where?: printorder_itemsWhereInput
+    /**
+     * Limit how many printorder_items to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * printorder_items without action
+   */
+  export type printorder_itemsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the printorder_items
+     */
+    select?: printorder_itemsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the printorder_items
+     */
+    omit?: printorder_itemsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: printorder_itemsInclude<ExtArgs> | null
   }
 
 
@@ -29641,6 +31988,7 @@ export namespace Prisma {
     location: 'location',
     phone: 'phone',
     email: 'email',
+    status: 'status',
     is_deleted: 'is_deleted',
     updatedAt: 'updatedAt',
     createdAt: 'createdAt',
@@ -29652,8 +32000,10 @@ export namespace Prisma {
 
   export const PrintorderScalarFieldEnum: {
     id: 'id',
+    project_name: 'project_name',
     quality: 'quality',
     count: 'count',
+    total_price: 'total_price',
     status: 'status',
     memo: 'memo',
     tracking: 'tracking',
@@ -29668,6 +32018,33 @@ export namespace Prisma {
   };
 
   export type PrintorderScalarFieldEnum = (typeof PrintorderScalarFieldEnum)[keyof typeof PrintorderScalarFieldEnum]
+
+
+  export const Printorder_paymentsScalarFieldEnum: {
+    id: 'id',
+    printorder_id: 'printorder_id',
+    amount: 'amount',
+    payment_date: 'payment_date',
+    reference: 'reference',
+    createdAt: 'createdAt'
+  };
+
+  export type Printorder_paymentsScalarFieldEnum = (typeof Printorder_paymentsScalarFieldEnum)[keyof typeof Printorder_paymentsScalarFieldEnum]
+
+
+  export const Printorder_itemsScalarFieldEnum: {
+    id: 'id',
+    printorder_id: 'printorder_id',
+    bookEditionId: 'bookEditionId',
+    quantity: 'quantity',
+    price_per_book: 'price_per_book',
+    status: 'status',
+    is_deleted: 'is_deleted',
+    updatedAt: 'updatedAt',
+    createdAt: 'createdAt'
+  };
+
+  export type Printorder_itemsScalarFieldEnum = (typeof Printorder_itemsScalarFieldEnum)[keyof typeof Printorder_itemsScalarFieldEnum]
 
 
   export const RolesScalarFieldEnum: {
@@ -29985,19 +32362,28 @@ export namespace Prisma {
     name: 'name',
     location: 'location',
     phone: 'phone',
-    email: 'email'
+    email: 'email',
+    status: 'status'
   };
 
   export type printerOrderByRelevanceFieldEnum = (typeof printerOrderByRelevanceFieldEnum)[keyof typeof printerOrderByRelevanceFieldEnum]
 
 
   export const printorderOrderByRelevanceFieldEnum: {
+    project_name: 'project_name',
     quality: 'quality',
     memo: 'memo',
     edition: 'edition'
   };
 
   export type printorderOrderByRelevanceFieldEnum = (typeof printorderOrderByRelevanceFieldEnum)[keyof typeof printorderOrderByRelevanceFieldEnum]
+
+
+  export const printorder_paymentsOrderByRelevanceFieldEnum: {
+    reference: 'reference'
+  };
+
+  export type printorder_paymentsOrderByRelevanceFieldEnum = (typeof printorder_paymentsOrderByRelevanceFieldEnum)[keyof typeof printorder_paymentsOrderByRelevanceFieldEnum]
 
 
   export const rolesOrderByRelevanceFieldEnum: {
@@ -30332,6 +32718,7 @@ export namespace Prisma {
     bookshopeditions?: BookshopeditionsListRelationFilter
     damagedbooks?: DamagedbooksListRelationFilter
     order_items?: Order_itemsListRelationFilter
+    printorder_items?: Printorder_itemsListRelationFilter
   }
 
   export type bookeditionOrderByWithRelationInput = {
@@ -30362,6 +32749,7 @@ export namespace Prisma {
     bookshopeditions?: bookshopeditionsOrderByRelationAggregateInput
     damagedbooks?: damagedbooksOrderByRelationAggregateInput
     order_items?: order_itemsOrderByRelationAggregateInput
+    printorder_items?: printorder_itemsOrderByRelationAggregateInput
     _relevance?: bookeditionOrderByRelevanceInput
   }
 
@@ -30396,6 +32784,7 @@ export namespace Prisma {
     bookshopeditions?: BookshopeditionsListRelationFilter
     damagedbooks?: DamagedbooksListRelationFilter
     order_items?: Order_itemsListRelationFilter
+    printorder_items?: Printorder_itemsListRelationFilter
   }, "id">
 
   export type bookeditionOrderByWithAggregationInput = {
@@ -31194,6 +33583,7 @@ export namespace Prisma {
     location?: StringFilter<"printer"> | string
     phone?: StringNullableFilter<"printer"> | string | null
     email?: StringNullableFilter<"printer"> | string | null
+    status?: StringFilter<"printer"> | string
     is_deleted?: BoolFilter<"printer"> | boolean
     updatedAt?: DateTimeFilter<"printer"> | Date | string
     createdAt?: DateTimeFilter<"printer"> | Date | string
@@ -31207,6 +33597,7 @@ export namespace Prisma {
     location?: SortOrder
     phone?: SortOrderInput | SortOrder
     email?: SortOrderInput | SortOrder
+    status?: SortOrder
     is_deleted?: SortOrder
     updatedAt?: SortOrder
     createdAt?: SortOrder
@@ -31224,6 +33615,7 @@ export namespace Prisma {
     location?: StringFilter<"printer"> | string
     phone?: StringNullableFilter<"printer"> | string | null
     email?: StringNullableFilter<"printer"> | string | null
+    status?: StringFilter<"printer"> | string
     is_deleted?: BoolFilter<"printer"> | boolean
     updatedAt?: DateTimeFilter<"printer"> | Date | string
     createdAt?: DateTimeFilter<"printer"> | Date | string
@@ -31237,6 +33629,7 @@ export namespace Prisma {
     location?: SortOrder
     phone?: SortOrderInput | SortOrder
     email?: SortOrderInput | SortOrder
+    status?: SortOrder
     is_deleted?: SortOrder
     updatedAt?: SortOrder
     createdAt?: SortOrder
@@ -31257,6 +33650,7 @@ export namespace Prisma {
     location?: StringWithAggregatesFilter<"printer"> | string
     phone?: StringNullableWithAggregatesFilter<"printer"> | string | null
     email?: StringNullableWithAggregatesFilter<"printer"> | string | null
+    status?: StringWithAggregatesFilter<"printer"> | string
     is_deleted?: BoolWithAggregatesFilter<"printer"> | boolean
     updatedAt?: DateTimeWithAggregatesFilter<"printer"> | Date | string
     createdAt?: DateTimeWithAggregatesFilter<"printer"> | Date | string
@@ -31268,8 +33662,10 @@ export namespace Prisma {
     OR?: printorderWhereInput[]
     NOT?: printorderWhereInput | printorderWhereInput[]
     id?: IntFilter<"printorder"> | number
-    quality?: StringFilter<"printorder"> | string
-    count?: IntFilter<"printorder"> | number
+    project_name?: StringNullableFilter<"printorder"> | string | null
+    quality?: StringNullableFilter<"printorder"> | string | null
+    count?: IntNullableFilter<"printorder"> | number | null
+    total_price?: FloatNullableFilter<"printorder"> | number | null
     status?: Enumprintorder_statusFilter<"printorder"> | $Enums.printorder_status
     memo?: StringNullableFilter<"printorder"> | string | null
     tracking?: Enumprintorder_trackingFilter<"printorder"> | $Enums.printorder_tracking
@@ -31282,12 +33678,16 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"printorder"> | Date | string
     deletedAt?: DateTimeFilter<"printorder"> | Date | string
     printer?: XOR<PrinterScalarRelationFilter, printerWhereInput>
+    printorder_items?: Printorder_itemsListRelationFilter
+    printorder_payments?: Printorder_paymentsListRelationFilter
   }
 
   export type printorderOrderByWithRelationInput = {
     id?: SortOrder
-    quality?: SortOrder
-    count?: SortOrder
+    project_name?: SortOrderInput | SortOrder
+    quality?: SortOrderInput | SortOrder
+    count?: SortOrderInput | SortOrder
+    total_price?: SortOrderInput | SortOrder
     status?: SortOrder
     memo?: SortOrderInput | SortOrder
     tracking?: SortOrder
@@ -31300,6 +33700,8 @@ export namespace Prisma {
     createdAt?: SortOrder
     deletedAt?: SortOrder
     printer?: printerOrderByWithRelationInput
+    printorder_items?: printorder_itemsOrderByRelationAggregateInput
+    printorder_payments?: printorder_paymentsOrderByRelationAggregateInput
     _relevance?: printorderOrderByRelevanceInput
   }
 
@@ -31308,8 +33710,10 @@ export namespace Prisma {
     AND?: printorderWhereInput | printorderWhereInput[]
     OR?: printorderWhereInput[]
     NOT?: printorderWhereInput | printorderWhereInput[]
-    quality?: StringFilter<"printorder"> | string
-    count?: IntFilter<"printorder"> | number
+    project_name?: StringNullableFilter<"printorder"> | string | null
+    quality?: StringNullableFilter<"printorder"> | string | null
+    count?: IntNullableFilter<"printorder"> | number | null
+    total_price?: FloatNullableFilter<"printorder"> | number | null
     status?: Enumprintorder_statusFilter<"printorder"> | $Enums.printorder_status
     memo?: StringNullableFilter<"printorder"> | string | null
     tracking?: Enumprintorder_trackingFilter<"printorder"> | $Enums.printorder_tracking
@@ -31322,12 +33726,16 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"printorder"> | Date | string
     deletedAt?: DateTimeFilter<"printorder"> | Date | string
     printer?: XOR<PrinterScalarRelationFilter, printerWhereInput>
+    printorder_items?: Printorder_itemsListRelationFilter
+    printorder_payments?: Printorder_paymentsListRelationFilter
   }, "id">
 
   export type printorderOrderByWithAggregationInput = {
     id?: SortOrder
-    quality?: SortOrder
-    count?: SortOrder
+    project_name?: SortOrderInput | SortOrder
+    quality?: SortOrderInput | SortOrder
+    count?: SortOrderInput | SortOrder
+    total_price?: SortOrderInput | SortOrder
     status?: SortOrder
     memo?: SortOrderInput | SortOrder
     tracking?: SortOrder
@@ -31351,8 +33759,10 @@ export namespace Prisma {
     OR?: printorderScalarWhereWithAggregatesInput[]
     NOT?: printorderScalarWhereWithAggregatesInput | printorderScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"printorder"> | number
-    quality?: StringWithAggregatesFilter<"printorder"> | string
-    count?: IntWithAggregatesFilter<"printorder"> | number
+    project_name?: StringNullableWithAggregatesFilter<"printorder"> | string | null
+    quality?: StringNullableWithAggregatesFilter<"printorder"> | string | null
+    count?: IntNullableWithAggregatesFilter<"printorder"> | number | null
+    total_price?: FloatNullableWithAggregatesFilter<"printorder"> | number | null
     status?: Enumprintorder_statusWithAggregatesFilter<"printorder"> | $Enums.printorder_status
     memo?: StringNullableWithAggregatesFilter<"printorder"> | string | null
     tracking?: Enumprintorder_trackingWithAggregatesFilter<"printorder"> | $Enums.printorder_tracking
@@ -31364,6 +33774,149 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"printorder"> | Date | string
     createdAt?: DateTimeWithAggregatesFilter<"printorder"> | Date | string
     deletedAt?: DateTimeWithAggregatesFilter<"printorder"> | Date | string
+  }
+
+  export type printorder_paymentsWhereInput = {
+    AND?: printorder_paymentsWhereInput | printorder_paymentsWhereInput[]
+    OR?: printorder_paymentsWhereInput[]
+    NOT?: printorder_paymentsWhereInput | printorder_paymentsWhereInput[]
+    id?: IntFilter<"printorder_payments"> | number
+    printorder_id?: IntFilter<"printorder_payments"> | number
+    amount?: FloatFilter<"printorder_payments"> | number
+    payment_date?: DateTimeFilter<"printorder_payments"> | Date | string
+    reference?: StringNullableFilter<"printorder_payments"> | string | null
+    createdAt?: DateTimeFilter<"printorder_payments"> | Date | string
+    printorder?: XOR<PrintorderScalarRelationFilter, printorderWhereInput>
+  }
+
+  export type printorder_paymentsOrderByWithRelationInput = {
+    id?: SortOrder
+    printorder_id?: SortOrder
+    amount?: SortOrder
+    payment_date?: SortOrder
+    reference?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    printorder?: printorderOrderByWithRelationInput
+    _relevance?: printorder_paymentsOrderByRelevanceInput
+  }
+
+  export type printorder_paymentsWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: printorder_paymentsWhereInput | printorder_paymentsWhereInput[]
+    OR?: printorder_paymentsWhereInput[]
+    NOT?: printorder_paymentsWhereInput | printorder_paymentsWhereInput[]
+    printorder_id?: IntFilter<"printorder_payments"> | number
+    amount?: FloatFilter<"printorder_payments"> | number
+    payment_date?: DateTimeFilter<"printorder_payments"> | Date | string
+    reference?: StringNullableFilter<"printorder_payments"> | string | null
+    createdAt?: DateTimeFilter<"printorder_payments"> | Date | string
+    printorder?: XOR<PrintorderScalarRelationFilter, printorderWhereInput>
+  }, "id">
+
+  export type printorder_paymentsOrderByWithAggregationInput = {
+    id?: SortOrder
+    printorder_id?: SortOrder
+    amount?: SortOrder
+    payment_date?: SortOrder
+    reference?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: printorder_paymentsCountOrderByAggregateInput
+    _avg?: printorder_paymentsAvgOrderByAggregateInput
+    _max?: printorder_paymentsMaxOrderByAggregateInput
+    _min?: printorder_paymentsMinOrderByAggregateInput
+    _sum?: printorder_paymentsSumOrderByAggregateInput
+  }
+
+  export type printorder_paymentsScalarWhereWithAggregatesInput = {
+    AND?: printorder_paymentsScalarWhereWithAggregatesInput | printorder_paymentsScalarWhereWithAggregatesInput[]
+    OR?: printorder_paymentsScalarWhereWithAggregatesInput[]
+    NOT?: printorder_paymentsScalarWhereWithAggregatesInput | printorder_paymentsScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"printorder_payments"> | number
+    printorder_id?: IntWithAggregatesFilter<"printorder_payments"> | number
+    amount?: FloatWithAggregatesFilter<"printorder_payments"> | number
+    payment_date?: DateTimeWithAggregatesFilter<"printorder_payments"> | Date | string
+    reference?: StringNullableWithAggregatesFilter<"printorder_payments"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"printorder_payments"> | Date | string
+  }
+
+  export type printorder_itemsWhereInput = {
+    AND?: printorder_itemsWhereInput | printorder_itemsWhereInput[]
+    OR?: printorder_itemsWhereInput[]
+    NOT?: printorder_itemsWhereInput | printorder_itemsWhereInput[]
+    id?: IntFilter<"printorder_items"> | number
+    printorder_id?: IntFilter<"printorder_items"> | number
+    bookEditionId?: IntFilter<"printorder_items"> | number
+    quantity?: IntFilter<"printorder_items"> | number
+    price_per_book?: FloatFilter<"printorder_items"> | number
+    status?: Enumprintorder_statusFilter<"printorder_items"> | $Enums.printorder_status
+    is_deleted?: BoolFilter<"printorder_items"> | boolean
+    updatedAt?: DateTimeFilter<"printorder_items"> | Date | string
+    createdAt?: DateTimeFilter<"printorder_items"> | Date | string
+    printorder?: XOR<PrintorderScalarRelationFilter, printorderWhereInput>
+    bookedition?: XOR<BookeditionScalarRelationFilter, bookeditionWhereInput>
+  }
+
+  export type printorder_itemsOrderByWithRelationInput = {
+    id?: SortOrder
+    printorder_id?: SortOrder
+    bookEditionId?: SortOrder
+    quantity?: SortOrder
+    price_per_book?: SortOrder
+    status?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+    printorder?: printorderOrderByWithRelationInput
+    bookedition?: bookeditionOrderByWithRelationInput
+  }
+
+  export type printorder_itemsWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: printorder_itemsWhereInput | printorder_itemsWhereInput[]
+    OR?: printorder_itemsWhereInput[]
+    NOT?: printorder_itemsWhereInput | printorder_itemsWhereInput[]
+    printorder_id?: IntFilter<"printorder_items"> | number
+    bookEditionId?: IntFilter<"printorder_items"> | number
+    quantity?: IntFilter<"printorder_items"> | number
+    price_per_book?: FloatFilter<"printorder_items"> | number
+    status?: Enumprintorder_statusFilter<"printorder_items"> | $Enums.printorder_status
+    is_deleted?: BoolFilter<"printorder_items"> | boolean
+    updatedAt?: DateTimeFilter<"printorder_items"> | Date | string
+    createdAt?: DateTimeFilter<"printorder_items"> | Date | string
+    printorder?: XOR<PrintorderScalarRelationFilter, printorderWhereInput>
+    bookedition?: XOR<BookeditionScalarRelationFilter, bookeditionWhereInput>
+  }, "id">
+
+  export type printorder_itemsOrderByWithAggregationInput = {
+    id?: SortOrder
+    printorder_id?: SortOrder
+    bookEditionId?: SortOrder
+    quantity?: SortOrder
+    price_per_book?: SortOrder
+    status?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+    _count?: printorder_itemsCountOrderByAggregateInput
+    _avg?: printorder_itemsAvgOrderByAggregateInput
+    _max?: printorder_itemsMaxOrderByAggregateInput
+    _min?: printorder_itemsMinOrderByAggregateInput
+    _sum?: printorder_itemsSumOrderByAggregateInput
+  }
+
+  export type printorder_itemsScalarWhereWithAggregatesInput = {
+    AND?: printorder_itemsScalarWhereWithAggregatesInput | printorder_itemsScalarWhereWithAggregatesInput[]
+    OR?: printorder_itemsScalarWhereWithAggregatesInput[]
+    NOT?: printorder_itemsScalarWhereWithAggregatesInput | printorder_itemsScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"printorder_items"> | number
+    printorder_id?: IntWithAggregatesFilter<"printorder_items"> | number
+    bookEditionId?: IntWithAggregatesFilter<"printorder_items"> | number
+    quantity?: IntWithAggregatesFilter<"printorder_items"> | number
+    price_per_book?: FloatWithAggregatesFilter<"printorder_items"> | number
+    status?: Enumprintorder_statusWithAggregatesFilter<"printorder_items"> | $Enums.printorder_status
+    is_deleted?: BoolWithAggregatesFilter<"printorder_items"> | boolean
+    updatedAt?: DateTimeWithAggregatesFilter<"printorder_items"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"printorder_items"> | Date | string
   }
 
   export type rolesWhereInput = {
@@ -32574,6 +35127,7 @@ export namespace Prisma {
     bookshopeditions?: bookshopeditionsCreateNestedManyWithoutBookeditionInput
     damagedbooks?: damagedbooksCreateNestedManyWithoutBookeditionInput
     order_items?: order_itemsCreateNestedManyWithoutBookeditionInput
+    printorder_items?: printorder_itemsCreateNestedManyWithoutBookeditionInput
   }
 
   export type bookeditionUncheckedCreateInput = {
@@ -32603,6 +35157,7 @@ export namespace Prisma {
     bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookeditionInput
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutBookeditionInput
     order_items?: order_itemsUncheckedCreateNestedManyWithoutBookeditionInput
+    printorder_items?: printorder_itemsUncheckedCreateNestedManyWithoutBookeditionInput
   }
 
   export type bookeditionUpdateInput = {
@@ -32631,6 +35186,7 @@ export namespace Prisma {
     bookshopeditions?: bookshopeditionsUpdateManyWithoutBookeditionNestedInput
     damagedbooks?: damagedbooksUpdateManyWithoutBookeditionNestedInput
     order_items?: order_itemsUpdateManyWithoutBookeditionNestedInput
+    printorder_items?: printorder_itemsUpdateManyWithoutBookeditionNestedInput
   }
 
   export type bookeditionUncheckedUpdateInput = {
@@ -32660,6 +35216,7 @@ export namespace Prisma {
     bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookeditionNestedInput
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutBookeditionNestedInput
     order_items?: order_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
+    printorder_items?: printorder_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
   }
 
   export type bookeditionCreateManyInput = {
@@ -33513,6 +36070,7 @@ export namespace Prisma {
     location: string
     phone?: string | null
     email?: string | null
+    status?: string
     is_deleted?: boolean
     updatedAt: Date | string
     createdAt?: Date | string
@@ -33526,6 +36084,7 @@ export namespace Prisma {
     location: string
     phone?: string | null
     email?: string | null
+    status?: string
     is_deleted?: boolean
     updatedAt: Date | string
     createdAt?: Date | string
@@ -33538,6 +36097,7 @@ export namespace Prisma {
     location?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -33551,6 +36111,7 @@ export namespace Prisma {
     location?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -33564,6 +36125,7 @@ export namespace Prisma {
     location: string
     phone?: string | null
     email?: string | null
+    status?: string
     is_deleted?: boolean
     updatedAt: Date | string
     createdAt?: Date | string
@@ -33575,6 +36137,7 @@ export namespace Prisma {
     location?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -33587,6 +36150,7 @@ export namespace Prisma {
     location?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -33594,8 +36158,10 @@ export namespace Prisma {
   }
 
   export type printorderCreateInput = {
-    quality: string
-    count: number
+    project_name?: string | null
+    quality?: string | null
+    count?: number | null
+    total_price?: number | null
     status?: $Enums.printorder_status
     memo?: string | null
     tracking?: $Enums.printorder_tracking
@@ -33607,12 +36173,16 @@ export namespace Prisma {
     createdAt?: Date | string
     deletedAt?: Date | string
     printer: printerCreateNestedOneWithoutPrintorderInput
+    printorder_items?: printorder_itemsCreateNestedManyWithoutPrintorderInput
+    printorder_payments?: printorder_paymentsCreateNestedManyWithoutPrintorderInput
   }
 
   export type printorderUncheckedCreateInput = {
     id?: number
-    quality: string
-    count: number
+    project_name?: string | null
+    quality?: string | null
+    count?: number | null
+    total_price?: number | null
     status?: $Enums.printorder_status
     memo?: string | null
     tracking?: $Enums.printorder_tracking
@@ -33624,11 +36194,15 @@ export namespace Prisma {
     updatedAt: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+    printorder_items?: printorder_itemsUncheckedCreateNestedManyWithoutPrintorderInput
+    printorder_payments?: printorder_paymentsUncheckedCreateNestedManyWithoutPrintorderInput
   }
 
   export type printorderUpdateInput = {
-    quality?: StringFieldUpdateOperationsInput | string
-    count?: IntFieldUpdateOperationsInput | number
+    project_name?: NullableStringFieldUpdateOperationsInput | string | null
+    quality?: NullableStringFieldUpdateOperationsInput | string | null
+    count?: NullableIntFieldUpdateOperationsInput | number | null
+    total_price?: NullableFloatFieldUpdateOperationsInput | number | null
     status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     tracking?: Enumprintorder_trackingFieldUpdateOperationsInput | $Enums.printorder_tracking
@@ -33640,12 +36214,16 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     printer?: printerUpdateOneRequiredWithoutPrintorderNestedInput
+    printorder_items?: printorder_itemsUpdateManyWithoutPrintorderNestedInput
+    printorder_payments?: printorder_paymentsUpdateManyWithoutPrintorderNestedInput
   }
 
   export type printorderUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
-    quality?: StringFieldUpdateOperationsInput | string
-    count?: IntFieldUpdateOperationsInput | number
+    project_name?: NullableStringFieldUpdateOperationsInput | string | null
+    quality?: NullableStringFieldUpdateOperationsInput | string | null
+    count?: NullableIntFieldUpdateOperationsInput | number | null
+    total_price?: NullableFloatFieldUpdateOperationsInput | number | null
     status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     tracking?: Enumprintorder_trackingFieldUpdateOperationsInput | $Enums.printorder_tracking
@@ -33657,12 +36235,16 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    printorder_items?: printorder_itemsUncheckedUpdateManyWithoutPrintorderNestedInput
+    printorder_payments?: printorder_paymentsUncheckedUpdateManyWithoutPrintorderNestedInput
   }
 
   export type printorderCreateManyInput = {
     id?: number
-    quality: string
-    count: number
+    project_name?: string | null
+    quality?: string | null
+    count?: number | null
+    total_price?: number | null
     status?: $Enums.printorder_status
     memo?: string | null
     tracking?: $Enums.printorder_tracking
@@ -33677,8 +36259,10 @@ export namespace Prisma {
   }
 
   export type printorderUpdateManyMutationInput = {
-    quality?: StringFieldUpdateOperationsInput | string
-    count?: IntFieldUpdateOperationsInput | number
+    project_name?: NullableStringFieldUpdateOperationsInput | string | null
+    quality?: NullableStringFieldUpdateOperationsInput | string | null
+    count?: NullableIntFieldUpdateOperationsInput | number | null
+    total_price?: NullableFloatFieldUpdateOperationsInput | number | null
     status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     tracking?: Enumprintorder_trackingFieldUpdateOperationsInput | $Enums.printorder_tracking
@@ -33693,8 +36277,10 @@ export namespace Prisma {
 
   export type printorderUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
-    quality?: StringFieldUpdateOperationsInput | string
-    count?: IntFieldUpdateOperationsInput | number
+    project_name?: NullableStringFieldUpdateOperationsInput | string | null
+    quality?: NullableStringFieldUpdateOperationsInput | string | null
+    count?: NullableIntFieldUpdateOperationsInput | number | null
+    total_price?: NullableFloatFieldUpdateOperationsInput | number | null
     status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     tracking?: Enumprintorder_trackingFieldUpdateOperationsInput | $Enums.printorder_tracking
@@ -33706,6 +36292,144 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type printorder_paymentsCreateInput = {
+    amount: number
+    payment_date: Date | string
+    reference?: string | null
+    createdAt?: Date | string
+    printorder: printorderCreateNestedOneWithoutPrintorder_paymentsInput
+  }
+
+  export type printorder_paymentsUncheckedCreateInput = {
+    id?: number
+    printorder_id: number
+    amount: number
+    payment_date: Date | string
+    reference?: string | null
+    createdAt?: Date | string
+  }
+
+  export type printorder_paymentsUpdateInput = {
+    amount?: FloatFieldUpdateOperationsInput | number
+    payment_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    printorder?: printorderUpdateOneRequiredWithoutPrintorder_paymentsNestedInput
+  }
+
+  export type printorder_paymentsUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    printorder_id?: IntFieldUpdateOperationsInput | number
+    amount?: FloatFieldUpdateOperationsInput | number
+    payment_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type printorder_paymentsCreateManyInput = {
+    id?: number
+    printorder_id: number
+    amount: number
+    payment_date: Date | string
+    reference?: string | null
+    createdAt?: Date | string
+  }
+
+  export type printorder_paymentsUpdateManyMutationInput = {
+    amount?: FloatFieldUpdateOperationsInput | number
+    payment_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type printorder_paymentsUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    printorder_id?: IntFieldUpdateOperationsInput | number
+    amount?: FloatFieldUpdateOperationsInput | number
+    payment_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type printorder_itemsCreateInput = {
+    quantity?: number
+    price_per_book?: number
+    status?: $Enums.printorder_status
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+    printorder: printorderCreateNestedOneWithoutPrintorder_itemsInput
+    bookedition: bookeditionCreateNestedOneWithoutPrintorder_itemsInput
+  }
+
+  export type printorder_itemsUncheckedCreateInput = {
+    id?: number
+    printorder_id: number
+    bookEditionId: number
+    quantity?: number
+    price_per_book?: number
+    status?: $Enums.printorder_status
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type printorder_itemsUpdateInput = {
+    quantity?: IntFieldUpdateOperationsInput | number
+    price_per_book?: FloatFieldUpdateOperationsInput | number
+    status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    printorder?: printorderUpdateOneRequiredWithoutPrintorder_itemsNestedInput
+    bookedition?: bookeditionUpdateOneRequiredWithoutPrintorder_itemsNestedInput
+  }
+
+  export type printorder_itemsUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    printorder_id?: IntFieldUpdateOperationsInput | number
+    bookEditionId?: IntFieldUpdateOperationsInput | number
+    quantity?: IntFieldUpdateOperationsInput | number
+    price_per_book?: FloatFieldUpdateOperationsInput | number
+    status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type printorder_itemsCreateManyInput = {
+    id?: number
+    printorder_id: number
+    bookEditionId: number
+    quantity?: number
+    price_per_book?: number
+    status?: $Enums.printorder_status
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type printorder_itemsUpdateManyMutationInput = {
+    quantity?: IntFieldUpdateOperationsInput | number
+    price_per_book?: FloatFieldUpdateOperationsInput | number
+    status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type printorder_itemsUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    printorder_id?: IntFieldUpdateOperationsInput | number
+    bookEditionId?: IntFieldUpdateOperationsInput | number
+    quantity?: IntFieldUpdateOperationsInput | number
+    price_per_book?: FloatFieldUpdateOperationsInput | number
+    status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type rolesCreateInput = {
@@ -35131,6 +37855,12 @@ export namespace Prisma {
     none?: order_itemsWhereInput
   }
 
+  export type Printorder_itemsListRelationFilter = {
+    every?: printorder_itemsWhereInput
+    some?: printorder_itemsWhereInput
+    none?: printorder_itemsWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -35145,6 +37875,10 @@ export namespace Prisma {
   }
 
   export type order_itemsOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type printorder_itemsOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -35950,6 +38684,7 @@ export namespace Prisma {
     location?: SortOrder
     phone?: SortOrder
     email?: SortOrder
+    status?: SortOrder
     is_deleted?: SortOrder
     updatedAt?: SortOrder
     createdAt?: SortOrder
@@ -35966,6 +38701,7 @@ export namespace Prisma {
     location?: SortOrder
     phone?: SortOrder
     email?: SortOrder
+    status?: SortOrder
     is_deleted?: SortOrder
     updatedAt?: SortOrder
     createdAt?: SortOrder
@@ -35978,6 +38714,7 @@ export namespace Prisma {
     location?: SortOrder
     phone?: SortOrder
     email?: SortOrder
+    status?: SortOrder
     is_deleted?: SortOrder
     updatedAt?: SortOrder
     createdAt?: SortOrder
@@ -36018,6 +38755,16 @@ export namespace Prisma {
     isNot?: printerWhereInput
   }
 
+  export type Printorder_paymentsListRelationFilter = {
+    every?: printorder_paymentsWhereInput
+    some?: printorder_paymentsWhereInput
+    none?: printorder_paymentsWhereInput
+  }
+
+  export type printorder_paymentsOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type printorderOrderByRelevanceInput = {
     fields: printorderOrderByRelevanceFieldEnum | printorderOrderByRelevanceFieldEnum[]
     sort: SortOrder
@@ -36026,8 +38773,10 @@ export namespace Prisma {
 
   export type printorderCountOrderByAggregateInput = {
     id?: SortOrder
+    project_name?: SortOrder
     quality?: SortOrder
     count?: SortOrder
+    total_price?: SortOrder
     status?: SortOrder
     memo?: SortOrder
     tracking?: SortOrder
@@ -36044,13 +38793,16 @@ export namespace Prisma {
   export type printorderAvgOrderByAggregateInput = {
     id?: SortOrder
     count?: SortOrder
+    total_price?: SortOrder
     printerId?: SortOrder
   }
 
   export type printorderMaxOrderByAggregateInput = {
     id?: SortOrder
+    project_name?: SortOrder
     quality?: SortOrder
     count?: SortOrder
+    total_price?: SortOrder
     status?: SortOrder
     memo?: SortOrder
     tracking?: SortOrder
@@ -36066,8 +38818,10 @@ export namespace Prisma {
 
   export type printorderMinOrderByAggregateInput = {
     id?: SortOrder
+    project_name?: SortOrder
     quality?: SortOrder
     count?: SortOrder
+    total_price?: SortOrder
     status?: SortOrder
     memo?: SortOrder
     tracking?: SortOrder
@@ -36084,6 +38838,7 @@ export namespace Prisma {
   export type printorderSumOrderByAggregateInput = {
     id?: SortOrder
     count?: SortOrder
+    total_price?: SortOrder
     printerId?: SortOrder
   }
 
@@ -36119,6 +38874,108 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type PrintorderScalarRelationFilter = {
+    is?: printorderWhereInput
+    isNot?: printorderWhereInput
+  }
+
+  export type printorder_paymentsOrderByRelevanceInput = {
+    fields: printorder_paymentsOrderByRelevanceFieldEnum | printorder_paymentsOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type printorder_paymentsCountOrderByAggregateInput = {
+    id?: SortOrder
+    printorder_id?: SortOrder
+    amount?: SortOrder
+    payment_date?: SortOrder
+    reference?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type printorder_paymentsAvgOrderByAggregateInput = {
+    id?: SortOrder
+    printorder_id?: SortOrder
+    amount?: SortOrder
+  }
+
+  export type printorder_paymentsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    printorder_id?: SortOrder
+    amount?: SortOrder
+    payment_date?: SortOrder
+    reference?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type printorder_paymentsMinOrderByAggregateInput = {
+    id?: SortOrder
+    printorder_id?: SortOrder
+    amount?: SortOrder
+    payment_date?: SortOrder
+    reference?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type printorder_paymentsSumOrderByAggregateInput = {
+    id?: SortOrder
+    printorder_id?: SortOrder
+    amount?: SortOrder
+  }
+
+  export type printorder_itemsCountOrderByAggregateInput = {
+    id?: SortOrder
+    printorder_id?: SortOrder
+    bookEditionId?: SortOrder
+    quantity?: SortOrder
+    price_per_book?: SortOrder
+    status?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type printorder_itemsAvgOrderByAggregateInput = {
+    id?: SortOrder
+    printorder_id?: SortOrder
+    bookEditionId?: SortOrder
+    quantity?: SortOrder
+    price_per_book?: SortOrder
+  }
+
+  export type printorder_itemsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    printorder_id?: SortOrder
+    bookEditionId?: SortOrder
+    quantity?: SortOrder
+    price_per_book?: SortOrder
+    status?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type printorder_itemsMinOrderByAggregateInput = {
+    id?: SortOrder
+    printorder_id?: SortOrder
+    bookEditionId?: SortOrder
+    quantity?: SortOrder
+    price_per_book?: SortOrder
+    status?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type printorder_itemsSumOrderByAggregateInput = {
+    id?: SortOrder
+    printorder_id?: SortOrder
+    bookEditionId?: SortOrder
+    quantity?: SortOrder
+    price_per_book?: SortOrder
   }
 
   export type AccountsScalarRelationFilter = {
@@ -37099,6 +39956,13 @@ export namespace Prisma {
     connect?: order_itemsWhereUniqueInput | order_itemsWhereUniqueInput[]
   }
 
+  export type printorder_itemsCreateNestedManyWithoutBookeditionInput = {
+    create?: XOR<printorder_itemsCreateWithoutBookeditionInput, printorder_itemsUncheckedCreateWithoutBookeditionInput> | printorder_itemsCreateWithoutBookeditionInput[] | printorder_itemsUncheckedCreateWithoutBookeditionInput[]
+    connectOrCreate?: printorder_itemsCreateOrConnectWithoutBookeditionInput | printorder_itemsCreateOrConnectWithoutBookeditionInput[]
+    createMany?: printorder_itemsCreateManyBookeditionInputEnvelope
+    connect?: printorder_itemsWhereUniqueInput | printorder_itemsWhereUniqueInput[]
+  }
+
   export type bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput = {
     create?: XOR<bookeditionstoresCreateWithoutBookeditionInput, bookeditionstoresUncheckedCreateWithoutBookeditionInput> | bookeditionstoresCreateWithoutBookeditionInput[] | bookeditionstoresUncheckedCreateWithoutBookeditionInput[]
     connectOrCreate?: bookeditionstoresCreateOrConnectWithoutBookeditionInput | bookeditionstoresCreateOrConnectWithoutBookeditionInput[]
@@ -37125,6 +39989,13 @@ export namespace Prisma {
     connectOrCreate?: order_itemsCreateOrConnectWithoutBookeditionInput | order_itemsCreateOrConnectWithoutBookeditionInput[]
     createMany?: order_itemsCreateManyBookeditionInputEnvelope
     connect?: order_itemsWhereUniqueInput | order_itemsWhereUniqueInput[]
+  }
+
+  export type printorder_itemsUncheckedCreateNestedManyWithoutBookeditionInput = {
+    create?: XOR<printorder_itemsCreateWithoutBookeditionInput, printorder_itemsUncheckedCreateWithoutBookeditionInput> | printorder_itemsCreateWithoutBookeditionInput[] | printorder_itemsUncheckedCreateWithoutBookeditionInput[]
+    connectOrCreate?: printorder_itemsCreateOrConnectWithoutBookeditionInput | printorder_itemsCreateOrConnectWithoutBookeditionInput[]
+    createMany?: printorder_itemsCreateManyBookeditionInputEnvelope
+    connect?: printorder_itemsWhereUniqueInput | printorder_itemsWhereUniqueInput[]
   }
 
   export type NullableFloatFieldUpdateOperationsInput = {
@@ -37211,6 +40082,20 @@ export namespace Prisma {
     deleteMany?: order_itemsScalarWhereInput | order_itemsScalarWhereInput[]
   }
 
+  export type printorder_itemsUpdateManyWithoutBookeditionNestedInput = {
+    create?: XOR<printorder_itemsCreateWithoutBookeditionInput, printorder_itemsUncheckedCreateWithoutBookeditionInput> | printorder_itemsCreateWithoutBookeditionInput[] | printorder_itemsUncheckedCreateWithoutBookeditionInput[]
+    connectOrCreate?: printorder_itemsCreateOrConnectWithoutBookeditionInput | printorder_itemsCreateOrConnectWithoutBookeditionInput[]
+    upsert?: printorder_itemsUpsertWithWhereUniqueWithoutBookeditionInput | printorder_itemsUpsertWithWhereUniqueWithoutBookeditionInput[]
+    createMany?: printorder_itemsCreateManyBookeditionInputEnvelope
+    set?: printorder_itemsWhereUniqueInput | printorder_itemsWhereUniqueInput[]
+    disconnect?: printorder_itemsWhereUniqueInput | printorder_itemsWhereUniqueInput[]
+    delete?: printorder_itemsWhereUniqueInput | printorder_itemsWhereUniqueInput[]
+    connect?: printorder_itemsWhereUniqueInput | printorder_itemsWhereUniqueInput[]
+    update?: printorder_itemsUpdateWithWhereUniqueWithoutBookeditionInput | printorder_itemsUpdateWithWhereUniqueWithoutBookeditionInput[]
+    updateMany?: printorder_itemsUpdateManyWithWhereWithoutBookeditionInput | printorder_itemsUpdateManyWithWhereWithoutBookeditionInput[]
+    deleteMany?: printorder_itemsScalarWhereInput | printorder_itemsScalarWhereInput[]
+  }
+
   export type bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput = {
     create?: XOR<bookeditionstoresCreateWithoutBookeditionInput, bookeditionstoresUncheckedCreateWithoutBookeditionInput> | bookeditionstoresCreateWithoutBookeditionInput[] | bookeditionstoresUncheckedCreateWithoutBookeditionInput[]
     connectOrCreate?: bookeditionstoresCreateOrConnectWithoutBookeditionInput | bookeditionstoresCreateOrConnectWithoutBookeditionInput[]
@@ -37265,6 +40150,20 @@ export namespace Prisma {
     update?: order_itemsUpdateWithWhereUniqueWithoutBookeditionInput | order_itemsUpdateWithWhereUniqueWithoutBookeditionInput[]
     updateMany?: order_itemsUpdateManyWithWhereWithoutBookeditionInput | order_itemsUpdateManyWithWhereWithoutBookeditionInput[]
     deleteMany?: order_itemsScalarWhereInput | order_itemsScalarWhereInput[]
+  }
+
+  export type printorder_itemsUncheckedUpdateManyWithoutBookeditionNestedInput = {
+    create?: XOR<printorder_itemsCreateWithoutBookeditionInput, printorder_itemsUncheckedCreateWithoutBookeditionInput> | printorder_itemsCreateWithoutBookeditionInput[] | printorder_itemsUncheckedCreateWithoutBookeditionInput[]
+    connectOrCreate?: printorder_itemsCreateOrConnectWithoutBookeditionInput | printorder_itemsCreateOrConnectWithoutBookeditionInput[]
+    upsert?: printorder_itemsUpsertWithWhereUniqueWithoutBookeditionInput | printorder_itemsUpsertWithWhereUniqueWithoutBookeditionInput[]
+    createMany?: printorder_itemsCreateManyBookeditionInputEnvelope
+    set?: printorder_itemsWhereUniqueInput | printorder_itemsWhereUniqueInput[]
+    disconnect?: printorder_itemsWhereUniqueInput | printorder_itemsWhereUniqueInput[]
+    delete?: printorder_itemsWhereUniqueInput | printorder_itemsWhereUniqueInput[]
+    connect?: printorder_itemsWhereUniqueInput | printorder_itemsWhereUniqueInput[]
+    update?: printorder_itemsUpdateWithWhereUniqueWithoutBookeditionInput | printorder_itemsUpdateWithWhereUniqueWithoutBookeditionInput[]
+    updateMany?: printorder_itemsUpdateManyWithWhereWithoutBookeditionInput | printorder_itemsUpdateManyWithWhereWithoutBookeditionInput[]
+    deleteMany?: printorder_itemsScalarWhereInput | printorder_itemsScalarWhereInput[]
   }
 
   export type bookeditionCreateNestedOneWithoutBookeditionstoresInput = {
@@ -37745,6 +40644,34 @@ export namespace Prisma {
     connect?: printerWhereUniqueInput
   }
 
+  export type printorder_itemsCreateNestedManyWithoutPrintorderInput = {
+    create?: XOR<printorder_itemsCreateWithoutPrintorderInput, printorder_itemsUncheckedCreateWithoutPrintorderInput> | printorder_itemsCreateWithoutPrintorderInput[] | printorder_itemsUncheckedCreateWithoutPrintorderInput[]
+    connectOrCreate?: printorder_itemsCreateOrConnectWithoutPrintorderInput | printorder_itemsCreateOrConnectWithoutPrintorderInput[]
+    createMany?: printorder_itemsCreateManyPrintorderInputEnvelope
+    connect?: printorder_itemsWhereUniqueInput | printorder_itemsWhereUniqueInput[]
+  }
+
+  export type printorder_paymentsCreateNestedManyWithoutPrintorderInput = {
+    create?: XOR<printorder_paymentsCreateWithoutPrintorderInput, printorder_paymentsUncheckedCreateWithoutPrintorderInput> | printorder_paymentsCreateWithoutPrintorderInput[] | printorder_paymentsUncheckedCreateWithoutPrintorderInput[]
+    connectOrCreate?: printorder_paymentsCreateOrConnectWithoutPrintorderInput | printorder_paymentsCreateOrConnectWithoutPrintorderInput[]
+    createMany?: printorder_paymentsCreateManyPrintorderInputEnvelope
+    connect?: printorder_paymentsWhereUniqueInput | printorder_paymentsWhereUniqueInput[]
+  }
+
+  export type printorder_itemsUncheckedCreateNestedManyWithoutPrintorderInput = {
+    create?: XOR<printorder_itemsCreateWithoutPrintorderInput, printorder_itemsUncheckedCreateWithoutPrintorderInput> | printorder_itemsCreateWithoutPrintorderInput[] | printorder_itemsUncheckedCreateWithoutPrintorderInput[]
+    connectOrCreate?: printorder_itemsCreateOrConnectWithoutPrintorderInput | printorder_itemsCreateOrConnectWithoutPrintorderInput[]
+    createMany?: printorder_itemsCreateManyPrintorderInputEnvelope
+    connect?: printorder_itemsWhereUniqueInput | printorder_itemsWhereUniqueInput[]
+  }
+
+  export type printorder_paymentsUncheckedCreateNestedManyWithoutPrintorderInput = {
+    create?: XOR<printorder_paymentsCreateWithoutPrintorderInput, printorder_paymentsUncheckedCreateWithoutPrintorderInput> | printorder_paymentsCreateWithoutPrintorderInput[] | printorder_paymentsUncheckedCreateWithoutPrintorderInput[]
+    connectOrCreate?: printorder_paymentsCreateOrConnectWithoutPrintorderInput | printorder_paymentsCreateOrConnectWithoutPrintorderInput[]
+    createMany?: printorder_paymentsCreateManyPrintorderInputEnvelope
+    connect?: printorder_paymentsWhereUniqueInput | printorder_paymentsWhereUniqueInput[]
+  }
+
   export type Enumprintorder_statusFieldUpdateOperationsInput = {
     set?: $Enums.printorder_status
   }
@@ -37763,6 +40690,104 @@ export namespace Prisma {
     upsert?: printerUpsertWithoutPrintorderInput
     connect?: printerWhereUniqueInput
     update?: XOR<XOR<printerUpdateToOneWithWhereWithoutPrintorderInput, printerUpdateWithoutPrintorderInput>, printerUncheckedUpdateWithoutPrintorderInput>
+  }
+
+  export type printorder_itemsUpdateManyWithoutPrintorderNestedInput = {
+    create?: XOR<printorder_itemsCreateWithoutPrintorderInput, printorder_itemsUncheckedCreateWithoutPrintorderInput> | printorder_itemsCreateWithoutPrintorderInput[] | printorder_itemsUncheckedCreateWithoutPrintorderInput[]
+    connectOrCreate?: printorder_itemsCreateOrConnectWithoutPrintorderInput | printorder_itemsCreateOrConnectWithoutPrintorderInput[]
+    upsert?: printorder_itemsUpsertWithWhereUniqueWithoutPrintorderInput | printorder_itemsUpsertWithWhereUniqueWithoutPrintorderInput[]
+    createMany?: printorder_itemsCreateManyPrintorderInputEnvelope
+    set?: printorder_itemsWhereUniqueInput | printorder_itemsWhereUniqueInput[]
+    disconnect?: printorder_itemsWhereUniqueInput | printorder_itemsWhereUniqueInput[]
+    delete?: printorder_itemsWhereUniqueInput | printorder_itemsWhereUniqueInput[]
+    connect?: printorder_itemsWhereUniqueInput | printorder_itemsWhereUniqueInput[]
+    update?: printorder_itemsUpdateWithWhereUniqueWithoutPrintorderInput | printorder_itemsUpdateWithWhereUniqueWithoutPrintorderInput[]
+    updateMany?: printorder_itemsUpdateManyWithWhereWithoutPrintorderInput | printorder_itemsUpdateManyWithWhereWithoutPrintorderInput[]
+    deleteMany?: printorder_itemsScalarWhereInput | printorder_itemsScalarWhereInput[]
+  }
+
+  export type printorder_paymentsUpdateManyWithoutPrintorderNestedInput = {
+    create?: XOR<printorder_paymentsCreateWithoutPrintorderInput, printorder_paymentsUncheckedCreateWithoutPrintorderInput> | printorder_paymentsCreateWithoutPrintorderInput[] | printorder_paymentsUncheckedCreateWithoutPrintorderInput[]
+    connectOrCreate?: printorder_paymentsCreateOrConnectWithoutPrintorderInput | printorder_paymentsCreateOrConnectWithoutPrintorderInput[]
+    upsert?: printorder_paymentsUpsertWithWhereUniqueWithoutPrintorderInput | printorder_paymentsUpsertWithWhereUniqueWithoutPrintorderInput[]
+    createMany?: printorder_paymentsCreateManyPrintorderInputEnvelope
+    set?: printorder_paymentsWhereUniqueInput | printorder_paymentsWhereUniqueInput[]
+    disconnect?: printorder_paymentsWhereUniqueInput | printorder_paymentsWhereUniqueInput[]
+    delete?: printorder_paymentsWhereUniqueInput | printorder_paymentsWhereUniqueInput[]
+    connect?: printorder_paymentsWhereUniqueInput | printorder_paymentsWhereUniqueInput[]
+    update?: printorder_paymentsUpdateWithWhereUniqueWithoutPrintorderInput | printorder_paymentsUpdateWithWhereUniqueWithoutPrintorderInput[]
+    updateMany?: printorder_paymentsUpdateManyWithWhereWithoutPrintorderInput | printorder_paymentsUpdateManyWithWhereWithoutPrintorderInput[]
+    deleteMany?: printorder_paymentsScalarWhereInput | printorder_paymentsScalarWhereInput[]
+  }
+
+  export type printorder_itemsUncheckedUpdateManyWithoutPrintorderNestedInput = {
+    create?: XOR<printorder_itemsCreateWithoutPrintorderInput, printorder_itemsUncheckedCreateWithoutPrintorderInput> | printorder_itemsCreateWithoutPrintorderInput[] | printorder_itemsUncheckedCreateWithoutPrintorderInput[]
+    connectOrCreate?: printorder_itemsCreateOrConnectWithoutPrintorderInput | printorder_itemsCreateOrConnectWithoutPrintorderInput[]
+    upsert?: printorder_itemsUpsertWithWhereUniqueWithoutPrintorderInput | printorder_itemsUpsertWithWhereUniqueWithoutPrintorderInput[]
+    createMany?: printorder_itemsCreateManyPrintorderInputEnvelope
+    set?: printorder_itemsWhereUniqueInput | printorder_itemsWhereUniqueInput[]
+    disconnect?: printorder_itemsWhereUniqueInput | printorder_itemsWhereUniqueInput[]
+    delete?: printorder_itemsWhereUniqueInput | printorder_itemsWhereUniqueInput[]
+    connect?: printorder_itemsWhereUniqueInput | printorder_itemsWhereUniqueInput[]
+    update?: printorder_itemsUpdateWithWhereUniqueWithoutPrintorderInput | printorder_itemsUpdateWithWhereUniqueWithoutPrintorderInput[]
+    updateMany?: printorder_itemsUpdateManyWithWhereWithoutPrintorderInput | printorder_itemsUpdateManyWithWhereWithoutPrintorderInput[]
+    deleteMany?: printorder_itemsScalarWhereInput | printorder_itemsScalarWhereInput[]
+  }
+
+  export type printorder_paymentsUncheckedUpdateManyWithoutPrintorderNestedInput = {
+    create?: XOR<printorder_paymentsCreateWithoutPrintorderInput, printorder_paymentsUncheckedCreateWithoutPrintorderInput> | printorder_paymentsCreateWithoutPrintorderInput[] | printorder_paymentsUncheckedCreateWithoutPrintorderInput[]
+    connectOrCreate?: printorder_paymentsCreateOrConnectWithoutPrintorderInput | printorder_paymentsCreateOrConnectWithoutPrintorderInput[]
+    upsert?: printorder_paymentsUpsertWithWhereUniqueWithoutPrintorderInput | printorder_paymentsUpsertWithWhereUniqueWithoutPrintorderInput[]
+    createMany?: printorder_paymentsCreateManyPrintorderInputEnvelope
+    set?: printorder_paymentsWhereUniqueInput | printorder_paymentsWhereUniqueInput[]
+    disconnect?: printorder_paymentsWhereUniqueInput | printorder_paymentsWhereUniqueInput[]
+    delete?: printorder_paymentsWhereUniqueInput | printorder_paymentsWhereUniqueInput[]
+    connect?: printorder_paymentsWhereUniqueInput | printorder_paymentsWhereUniqueInput[]
+    update?: printorder_paymentsUpdateWithWhereUniqueWithoutPrintorderInput | printorder_paymentsUpdateWithWhereUniqueWithoutPrintorderInput[]
+    updateMany?: printorder_paymentsUpdateManyWithWhereWithoutPrintorderInput | printorder_paymentsUpdateManyWithWhereWithoutPrintorderInput[]
+    deleteMany?: printorder_paymentsScalarWhereInput | printorder_paymentsScalarWhereInput[]
+  }
+
+  export type printorderCreateNestedOneWithoutPrintorder_paymentsInput = {
+    create?: XOR<printorderCreateWithoutPrintorder_paymentsInput, printorderUncheckedCreateWithoutPrintorder_paymentsInput>
+    connectOrCreate?: printorderCreateOrConnectWithoutPrintorder_paymentsInput
+    connect?: printorderWhereUniqueInput
+  }
+
+  export type printorderUpdateOneRequiredWithoutPrintorder_paymentsNestedInput = {
+    create?: XOR<printorderCreateWithoutPrintorder_paymentsInput, printorderUncheckedCreateWithoutPrintorder_paymentsInput>
+    connectOrCreate?: printorderCreateOrConnectWithoutPrintorder_paymentsInput
+    upsert?: printorderUpsertWithoutPrintorder_paymentsInput
+    connect?: printorderWhereUniqueInput
+    update?: XOR<XOR<printorderUpdateToOneWithWhereWithoutPrintorder_paymentsInput, printorderUpdateWithoutPrintorder_paymentsInput>, printorderUncheckedUpdateWithoutPrintorder_paymentsInput>
+  }
+
+  export type printorderCreateNestedOneWithoutPrintorder_itemsInput = {
+    create?: XOR<printorderCreateWithoutPrintorder_itemsInput, printorderUncheckedCreateWithoutPrintorder_itemsInput>
+    connectOrCreate?: printorderCreateOrConnectWithoutPrintorder_itemsInput
+    connect?: printorderWhereUniqueInput
+  }
+
+  export type bookeditionCreateNestedOneWithoutPrintorder_itemsInput = {
+    create?: XOR<bookeditionCreateWithoutPrintorder_itemsInput, bookeditionUncheckedCreateWithoutPrintorder_itemsInput>
+    connectOrCreate?: bookeditionCreateOrConnectWithoutPrintorder_itemsInput
+    connect?: bookeditionWhereUniqueInput
+  }
+
+  export type printorderUpdateOneRequiredWithoutPrintorder_itemsNestedInput = {
+    create?: XOR<printorderCreateWithoutPrintorder_itemsInput, printorderUncheckedCreateWithoutPrintorder_itemsInput>
+    connectOrCreate?: printorderCreateOrConnectWithoutPrintorder_itemsInput
+    upsert?: printorderUpsertWithoutPrintorder_itemsInput
+    connect?: printorderWhereUniqueInput
+    update?: XOR<XOR<printorderUpdateToOneWithWhereWithoutPrintorder_itemsInput, printorderUpdateWithoutPrintorder_itemsInput>, printorderUncheckedUpdateWithoutPrintorder_itemsInput>
+  }
+
+  export type bookeditionUpdateOneRequiredWithoutPrintorder_itemsNestedInput = {
+    create?: XOR<bookeditionCreateWithoutPrintorder_itemsInput, bookeditionUncheckedCreateWithoutPrintorder_itemsInput>
+    connectOrCreate?: bookeditionCreateOrConnectWithoutPrintorder_itemsInput
+    upsert?: bookeditionUpsertWithoutPrintorder_itemsInput
+    connect?: bookeditionWhereUniqueInput
+    update?: XOR<XOR<bookeditionUpdateToOneWithWhereWithoutPrintorder_itemsInput, bookeditionUpdateWithoutPrintorder_itemsInput>, bookeditionUncheckedUpdateWithoutPrintorder_itemsInput>
   }
 
   export type accountsCreateNestedOneWithoutRolesInput = {
@@ -38749,6 +41774,37 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type printorder_itemsCreateWithoutBookeditionInput = {
+    quantity?: number
+    price_per_book?: number
+    status?: $Enums.printorder_status
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+    printorder: printorderCreateNestedOneWithoutPrintorder_itemsInput
+  }
+
+  export type printorder_itemsUncheckedCreateWithoutBookeditionInput = {
+    id?: number
+    printorder_id: number
+    quantity?: number
+    price_per_book?: number
+    status?: $Enums.printorder_status
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type printorder_itemsCreateOrConnectWithoutBookeditionInput = {
+    where: printorder_itemsWhereUniqueInput
+    create: XOR<printorder_itemsCreateWithoutBookeditionInput, printorder_itemsUncheckedCreateWithoutBookeditionInput>
+  }
+
+  export type printorder_itemsCreateManyBookeditionInputEnvelope = {
+    data: printorder_itemsCreateManyBookeditionInput | printorder_itemsCreateManyBookeditionInput[]
+    skipDuplicates?: boolean
+  }
+
   export type booksUpsertWithoutBookeditionInput = {
     update: XOR<booksUpdateWithoutBookeditionInput, booksUncheckedUpdateWithoutBookeditionInput>
     create: XOR<booksCreateWithoutBookeditionInput, booksUncheckedCreateWithoutBookeditionInput>
@@ -38925,6 +41981,37 @@ export namespace Prisma {
     price_at_order?: FloatFilter<"order_items"> | number
   }
 
+  export type printorder_itemsUpsertWithWhereUniqueWithoutBookeditionInput = {
+    where: printorder_itemsWhereUniqueInput
+    update: XOR<printorder_itemsUpdateWithoutBookeditionInput, printorder_itemsUncheckedUpdateWithoutBookeditionInput>
+    create: XOR<printorder_itemsCreateWithoutBookeditionInput, printorder_itemsUncheckedCreateWithoutBookeditionInput>
+  }
+
+  export type printorder_itemsUpdateWithWhereUniqueWithoutBookeditionInput = {
+    where: printorder_itemsWhereUniqueInput
+    data: XOR<printorder_itemsUpdateWithoutBookeditionInput, printorder_itemsUncheckedUpdateWithoutBookeditionInput>
+  }
+
+  export type printorder_itemsUpdateManyWithWhereWithoutBookeditionInput = {
+    where: printorder_itemsScalarWhereInput
+    data: XOR<printorder_itemsUpdateManyMutationInput, printorder_itemsUncheckedUpdateManyWithoutBookeditionInput>
+  }
+
+  export type printorder_itemsScalarWhereInput = {
+    AND?: printorder_itemsScalarWhereInput | printorder_itemsScalarWhereInput[]
+    OR?: printorder_itemsScalarWhereInput[]
+    NOT?: printorder_itemsScalarWhereInput | printorder_itemsScalarWhereInput[]
+    id?: IntFilter<"printorder_items"> | number
+    printorder_id?: IntFilter<"printorder_items"> | number
+    bookEditionId?: IntFilter<"printorder_items"> | number
+    quantity?: IntFilter<"printorder_items"> | number
+    price_per_book?: FloatFilter<"printorder_items"> | number
+    status?: Enumprintorder_statusFilter<"printorder_items"> | $Enums.printorder_status
+    is_deleted?: BoolFilter<"printorder_items"> | boolean
+    updatedAt?: DateTimeFilter<"printorder_items"> | Date | string
+    createdAt?: DateTimeFilter<"printorder_items"> | Date | string
+  }
+
   export type bookeditionCreateWithoutBookeditionstoresInput = {
     edition_name: string
     selling_price?: number | null
@@ -38950,6 +42037,7 @@ export namespace Prisma {
     bookshopeditions?: bookshopeditionsCreateNestedManyWithoutBookeditionInput
     damagedbooks?: damagedbooksCreateNestedManyWithoutBookeditionInput
     order_items?: order_itemsCreateNestedManyWithoutBookeditionInput
+    printorder_items?: printorder_itemsCreateNestedManyWithoutBookeditionInput
   }
 
   export type bookeditionUncheckedCreateWithoutBookeditionstoresInput = {
@@ -38978,6 +42066,7 @@ export namespace Prisma {
     bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookeditionInput
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutBookeditionInput
     order_items?: order_itemsUncheckedCreateNestedManyWithoutBookeditionInput
+    printorder_items?: printorder_itemsUncheckedCreateNestedManyWithoutBookeditionInput
   }
 
   export type bookeditionCreateOrConnectWithoutBookeditionstoresInput = {
@@ -39053,6 +42142,7 @@ export namespace Prisma {
     bookshopeditions?: bookshopeditionsUpdateManyWithoutBookeditionNestedInput
     damagedbooks?: damagedbooksUpdateManyWithoutBookeditionNestedInput
     order_items?: order_itemsUpdateManyWithoutBookeditionNestedInput
+    printorder_items?: printorder_itemsUpdateManyWithoutBookeditionNestedInput
   }
 
   export type bookeditionUncheckedUpdateWithoutBookeditionstoresInput = {
@@ -39081,6 +42171,7 @@ export namespace Prisma {
     bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookeditionNestedInput
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutBookeditionNestedInput
     order_items?: order_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
+    printorder_items?: printorder_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
   }
 
   export type storesUpsertWithoutBookeditionstoresInput = {
@@ -39146,6 +42237,7 @@ export namespace Prisma {
     bookshopeditions?: bookshopeditionsCreateNestedManyWithoutBookeditionInput
     damagedbooks?: damagedbooksCreateNestedManyWithoutBookeditionInput
     order_items?: order_itemsCreateNestedManyWithoutBookeditionInput
+    printorder_items?: printorder_itemsCreateNestedManyWithoutBookeditionInput
   }
 
   export type bookeditionUncheckedCreateWithoutBooksInput = {
@@ -39174,6 +42266,7 @@ export namespace Prisma {
     bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookeditionInput
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutBookeditionInput
     order_items?: order_itemsUncheckedCreateNestedManyWithoutBookeditionInput
+    printorder_items?: printorder_itemsUncheckedCreateNestedManyWithoutBookeditionInput
   }
 
   export type bookeditionCreateOrConnectWithoutBooksInput = {
@@ -39376,6 +42469,7 @@ export namespace Prisma {
     bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
     damagedbooks?: damagedbooksCreateNestedManyWithoutBookeditionInput
     order_items?: order_itemsCreateNestedManyWithoutBookeditionInput
+    printorder_items?: printorder_itemsCreateNestedManyWithoutBookeditionInput
   }
 
   export type bookeditionUncheckedCreateWithoutBookshopeditionsInput = {
@@ -39404,6 +42498,7 @@ export namespace Prisma {
     bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutBookeditionInput
     order_items?: order_itemsUncheckedCreateNestedManyWithoutBookeditionInput
+    printorder_items?: printorder_itemsUncheckedCreateNestedManyWithoutBookeditionInput
   }
 
   export type bookeditionCreateOrConnectWithoutBookshopeditionsInput = {
@@ -39479,6 +42574,7 @@ export namespace Prisma {
     bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
     damagedbooks?: damagedbooksUpdateManyWithoutBookeditionNestedInput
     order_items?: order_itemsUpdateManyWithoutBookeditionNestedInput
+    printorder_items?: printorder_itemsUpdateManyWithoutBookeditionNestedInput
   }
 
   export type bookeditionUncheckedUpdateWithoutBookshopeditionsInput = {
@@ -39507,6 +42603,7 @@ export namespace Prisma {
     bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutBookeditionNestedInput
     order_items?: order_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
+    printorder_items?: printorder_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
   }
 
   export type bookshopesUpsertWithoutBookshopeditionsInput = {
@@ -39838,6 +42935,7 @@ export namespace Prisma {
     bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsCreateNestedManyWithoutBookeditionInput
     damagedbooks?: damagedbooksCreateNestedManyWithoutBookeditionInput
+    printorder_items?: printorder_itemsCreateNestedManyWithoutBookeditionInput
   }
 
   export type bookeditionUncheckedCreateWithoutOrder_itemsInput = {
@@ -39866,6 +42964,7 @@ export namespace Prisma {
     bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookeditionInput
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutBookeditionInput
+    printorder_items?: printorder_itemsUncheckedCreateNestedManyWithoutBookeditionInput
   }
 
   export type bookeditionCreateOrConnectWithoutOrder_itemsInput = {
@@ -39947,6 +43046,7 @@ export namespace Prisma {
     bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUpdateManyWithoutBookeditionNestedInput
     damagedbooks?: damagedbooksUpdateManyWithoutBookeditionNestedInput
+    printorder_items?: printorder_itemsUpdateManyWithoutBookeditionNestedInput
   }
 
   export type bookeditionUncheckedUpdateWithoutOrder_itemsInput = {
@@ -39975,6 +43075,7 @@ export namespace Prisma {
     bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookeditionNestedInput
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutBookeditionNestedInput
+    printorder_items?: printorder_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
   }
 
   export type accountsCreateWithoutDamagedbooksInput = {
@@ -40100,6 +43201,7 @@ export namespace Prisma {
     bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsCreateNestedManyWithoutBookeditionInput
     order_items?: order_itemsCreateNestedManyWithoutBookeditionInput
+    printorder_items?: printorder_itemsCreateNestedManyWithoutBookeditionInput
   }
 
   export type bookeditionUncheckedCreateWithoutDamagedbooksInput = {
@@ -40128,6 +43230,7 @@ export namespace Prisma {
     bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookeditionInput
     order_items?: order_itemsUncheckedCreateNestedManyWithoutBookeditionInput
+    printorder_items?: printorder_itemsUncheckedCreateNestedManyWithoutBookeditionInput
   }
 
   export type bookeditionCreateOrConnectWithoutDamagedbooksInput = {
@@ -40313,6 +43416,7 @@ export namespace Prisma {
     bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUpdateManyWithoutBookeditionNestedInput
     order_items?: order_itemsUpdateManyWithoutBookeditionNestedInput
+    printorder_items?: printorder_itemsUpdateManyWithoutBookeditionNestedInput
   }
 
   export type bookeditionUncheckedUpdateWithoutDamagedbooksInput = {
@@ -40341,6 +43445,7 @@ export namespace Prisma {
     bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookeditionNestedInput
     order_items?: order_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
+    printorder_items?: printorder_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
   }
 
   export type storesUpsertWithoutDamagedbooksInput = {
@@ -40382,8 +43487,10 @@ export namespace Prisma {
   }
 
   export type printorderCreateWithoutPrinterInput = {
-    quality: string
-    count: number
+    project_name?: string | null
+    quality?: string | null
+    count?: number | null
+    total_price?: number | null
     status?: $Enums.printorder_status
     memo?: string | null
     tracking?: $Enums.printorder_tracking
@@ -40394,12 +43501,16 @@ export namespace Prisma {
     updatedAt: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+    printorder_items?: printorder_itemsCreateNestedManyWithoutPrintorderInput
+    printorder_payments?: printorder_paymentsCreateNestedManyWithoutPrintorderInput
   }
 
   export type printorderUncheckedCreateWithoutPrinterInput = {
     id?: number
-    quality: string
-    count: number
+    project_name?: string | null
+    quality?: string | null
+    count?: number | null
+    total_price?: number | null
     status?: $Enums.printorder_status
     memo?: string | null
     tracking?: $Enums.printorder_tracking
@@ -40410,6 +43521,8 @@ export namespace Prisma {
     updatedAt: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+    printorder_items?: printorder_itemsUncheckedCreateNestedManyWithoutPrintorderInput
+    printorder_payments?: printorder_paymentsUncheckedCreateNestedManyWithoutPrintorderInput
   }
 
   export type printorderCreateOrConnectWithoutPrinterInput = {
@@ -40443,8 +43556,10 @@ export namespace Prisma {
     OR?: printorderScalarWhereInput[]
     NOT?: printorderScalarWhereInput | printorderScalarWhereInput[]
     id?: IntFilter<"printorder"> | number
-    quality?: StringFilter<"printorder"> | string
-    count?: IntFilter<"printorder"> | number
+    project_name?: StringNullableFilter<"printorder"> | string | null
+    quality?: StringNullableFilter<"printorder"> | string | null
+    count?: IntNullableFilter<"printorder"> | number | null
+    total_price?: FloatNullableFilter<"printorder"> | number | null
     status?: Enumprintorder_statusFilter<"printorder"> | $Enums.printorder_status
     memo?: StringNullableFilter<"printorder"> | string | null
     tracking?: Enumprintorder_trackingFilter<"printorder"> | $Enums.printorder_tracking
@@ -40463,6 +43578,7 @@ export namespace Prisma {
     location: string
     phone?: string | null
     email?: string | null
+    status?: string
     is_deleted?: boolean
     updatedAt: Date | string
     createdAt?: Date | string
@@ -40475,6 +43591,7 @@ export namespace Prisma {
     location: string
     phone?: string | null
     email?: string | null
+    status?: string
     is_deleted?: boolean
     updatedAt: Date | string
     createdAt?: Date | string
@@ -40484,6 +43601,62 @@ export namespace Prisma {
   export type printerCreateOrConnectWithoutPrintorderInput = {
     where: printerWhereUniqueInput
     create: XOR<printerCreateWithoutPrintorderInput, printerUncheckedCreateWithoutPrintorderInput>
+  }
+
+  export type printorder_itemsCreateWithoutPrintorderInput = {
+    quantity?: number
+    price_per_book?: number
+    status?: $Enums.printorder_status
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+    bookedition: bookeditionCreateNestedOneWithoutPrintorder_itemsInput
+  }
+
+  export type printorder_itemsUncheckedCreateWithoutPrintorderInput = {
+    id?: number
+    bookEditionId: number
+    quantity?: number
+    price_per_book?: number
+    status?: $Enums.printorder_status
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type printorder_itemsCreateOrConnectWithoutPrintorderInput = {
+    where: printorder_itemsWhereUniqueInput
+    create: XOR<printorder_itemsCreateWithoutPrintorderInput, printorder_itemsUncheckedCreateWithoutPrintorderInput>
+  }
+
+  export type printorder_itemsCreateManyPrintorderInputEnvelope = {
+    data: printorder_itemsCreateManyPrintorderInput | printorder_itemsCreateManyPrintorderInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type printorder_paymentsCreateWithoutPrintorderInput = {
+    amount: number
+    payment_date: Date | string
+    reference?: string | null
+    createdAt?: Date | string
+  }
+
+  export type printorder_paymentsUncheckedCreateWithoutPrintorderInput = {
+    id?: number
+    amount: number
+    payment_date: Date | string
+    reference?: string | null
+    createdAt?: Date | string
+  }
+
+  export type printorder_paymentsCreateOrConnectWithoutPrintorderInput = {
+    where: printorder_paymentsWhereUniqueInput
+    create: XOR<printorder_paymentsCreateWithoutPrintorderInput, printorder_paymentsUncheckedCreateWithoutPrintorderInput>
+  }
+
+  export type printorder_paymentsCreateManyPrintorderInputEnvelope = {
+    data: printorder_paymentsCreateManyPrintorderInput | printorder_paymentsCreateManyPrintorderInput[]
+    skipDuplicates?: boolean
   }
 
   export type printerUpsertWithoutPrintorderInput = {
@@ -40502,6 +43675,7 @@ export namespace Prisma {
     location?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -40514,10 +43688,373 @@ export namespace Prisma {
     location?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type printorder_itemsUpsertWithWhereUniqueWithoutPrintorderInput = {
+    where: printorder_itemsWhereUniqueInput
+    update: XOR<printorder_itemsUpdateWithoutPrintorderInput, printorder_itemsUncheckedUpdateWithoutPrintorderInput>
+    create: XOR<printorder_itemsCreateWithoutPrintorderInput, printorder_itemsUncheckedCreateWithoutPrintorderInput>
+  }
+
+  export type printorder_itemsUpdateWithWhereUniqueWithoutPrintorderInput = {
+    where: printorder_itemsWhereUniqueInput
+    data: XOR<printorder_itemsUpdateWithoutPrintorderInput, printorder_itemsUncheckedUpdateWithoutPrintorderInput>
+  }
+
+  export type printorder_itemsUpdateManyWithWhereWithoutPrintorderInput = {
+    where: printorder_itemsScalarWhereInput
+    data: XOR<printorder_itemsUpdateManyMutationInput, printorder_itemsUncheckedUpdateManyWithoutPrintorderInput>
+  }
+
+  export type printorder_paymentsUpsertWithWhereUniqueWithoutPrintorderInput = {
+    where: printorder_paymentsWhereUniqueInput
+    update: XOR<printorder_paymentsUpdateWithoutPrintorderInput, printorder_paymentsUncheckedUpdateWithoutPrintorderInput>
+    create: XOR<printorder_paymentsCreateWithoutPrintorderInput, printorder_paymentsUncheckedCreateWithoutPrintorderInput>
+  }
+
+  export type printorder_paymentsUpdateWithWhereUniqueWithoutPrintorderInput = {
+    where: printorder_paymentsWhereUniqueInput
+    data: XOR<printorder_paymentsUpdateWithoutPrintorderInput, printorder_paymentsUncheckedUpdateWithoutPrintorderInput>
+  }
+
+  export type printorder_paymentsUpdateManyWithWhereWithoutPrintorderInput = {
+    where: printorder_paymentsScalarWhereInput
+    data: XOR<printorder_paymentsUpdateManyMutationInput, printorder_paymentsUncheckedUpdateManyWithoutPrintorderInput>
+  }
+
+  export type printorder_paymentsScalarWhereInput = {
+    AND?: printorder_paymentsScalarWhereInput | printorder_paymentsScalarWhereInput[]
+    OR?: printorder_paymentsScalarWhereInput[]
+    NOT?: printorder_paymentsScalarWhereInput | printorder_paymentsScalarWhereInput[]
+    id?: IntFilter<"printorder_payments"> | number
+    printorder_id?: IntFilter<"printorder_payments"> | number
+    amount?: FloatFilter<"printorder_payments"> | number
+    payment_date?: DateTimeFilter<"printorder_payments"> | Date | string
+    reference?: StringNullableFilter<"printorder_payments"> | string | null
+    createdAt?: DateTimeFilter<"printorder_payments"> | Date | string
+  }
+
+  export type printorderCreateWithoutPrintorder_paymentsInput = {
+    project_name?: string | null
+    quality?: string | null
+    count?: number | null
+    total_price?: number | null
+    status?: $Enums.printorder_status
+    memo?: string | null
+    tracking?: $Enums.printorder_tracking
+    startDate?: Date | string | null
+    endDate?: Date | string | null
+    edition?: string | null
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    printer: printerCreateNestedOneWithoutPrintorderInput
+    printorder_items?: printorder_itemsCreateNestedManyWithoutPrintorderInput
+  }
+
+  export type printorderUncheckedCreateWithoutPrintorder_paymentsInput = {
+    id?: number
+    project_name?: string | null
+    quality?: string | null
+    count?: number | null
+    total_price?: number | null
+    status?: $Enums.printorder_status
+    memo?: string | null
+    tracking?: $Enums.printorder_tracking
+    startDate?: Date | string | null
+    endDate?: Date | string | null
+    printerId: number
+    edition?: string | null
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    printorder_items?: printorder_itemsUncheckedCreateNestedManyWithoutPrintorderInput
+  }
+
+  export type printorderCreateOrConnectWithoutPrintorder_paymentsInput = {
+    where: printorderWhereUniqueInput
+    create: XOR<printorderCreateWithoutPrintorder_paymentsInput, printorderUncheckedCreateWithoutPrintorder_paymentsInput>
+  }
+
+  export type printorderUpsertWithoutPrintorder_paymentsInput = {
+    update: XOR<printorderUpdateWithoutPrintorder_paymentsInput, printorderUncheckedUpdateWithoutPrintorder_paymentsInput>
+    create: XOR<printorderCreateWithoutPrintorder_paymentsInput, printorderUncheckedCreateWithoutPrintorder_paymentsInput>
+    where?: printorderWhereInput
+  }
+
+  export type printorderUpdateToOneWithWhereWithoutPrintorder_paymentsInput = {
+    where?: printorderWhereInput
+    data: XOR<printorderUpdateWithoutPrintorder_paymentsInput, printorderUncheckedUpdateWithoutPrintorder_paymentsInput>
+  }
+
+  export type printorderUpdateWithoutPrintorder_paymentsInput = {
+    project_name?: NullableStringFieldUpdateOperationsInput | string | null
+    quality?: NullableStringFieldUpdateOperationsInput | string | null
+    count?: NullableIntFieldUpdateOperationsInput | number | null
+    total_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    tracking?: Enumprintorder_trackingFieldUpdateOperationsInput | $Enums.printorder_tracking
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    edition?: NullableStringFieldUpdateOperationsInput | string | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    printer?: printerUpdateOneRequiredWithoutPrintorderNestedInput
+    printorder_items?: printorder_itemsUpdateManyWithoutPrintorderNestedInput
+  }
+
+  export type printorderUncheckedUpdateWithoutPrintorder_paymentsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    project_name?: NullableStringFieldUpdateOperationsInput | string | null
+    quality?: NullableStringFieldUpdateOperationsInput | string | null
+    count?: NullableIntFieldUpdateOperationsInput | number | null
+    total_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    tracking?: Enumprintorder_trackingFieldUpdateOperationsInput | $Enums.printorder_tracking
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    printerId?: IntFieldUpdateOperationsInput | number
+    edition?: NullableStringFieldUpdateOperationsInput | string | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    printorder_items?: printorder_itemsUncheckedUpdateManyWithoutPrintorderNestedInput
+  }
+
+  export type printorderCreateWithoutPrintorder_itemsInput = {
+    project_name?: string | null
+    quality?: string | null
+    count?: number | null
+    total_price?: number | null
+    status?: $Enums.printorder_status
+    memo?: string | null
+    tracking?: $Enums.printorder_tracking
+    startDate?: Date | string | null
+    endDate?: Date | string | null
+    edition?: string | null
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    printer: printerCreateNestedOneWithoutPrintorderInput
+    printorder_payments?: printorder_paymentsCreateNestedManyWithoutPrintorderInput
+  }
+
+  export type printorderUncheckedCreateWithoutPrintorder_itemsInput = {
+    id?: number
+    project_name?: string | null
+    quality?: string | null
+    count?: number | null
+    total_price?: number | null
+    status?: $Enums.printorder_status
+    memo?: string | null
+    tracking?: $Enums.printorder_tracking
+    startDate?: Date | string | null
+    endDate?: Date | string | null
+    printerId: number
+    edition?: string | null
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    printorder_payments?: printorder_paymentsUncheckedCreateNestedManyWithoutPrintorderInput
+  }
+
+  export type printorderCreateOrConnectWithoutPrintorder_itemsInput = {
+    where: printorderWhereUniqueInput
+    create: XOR<printorderCreateWithoutPrintorder_itemsInput, printorderUncheckedCreateWithoutPrintorder_itemsInput>
+  }
+
+  export type bookeditionCreateWithoutPrintorder_itemsInput = {
+    edition_name: string
+    selling_price?: number | null
+    production_price?: number | null
+    printing_cost?: number | null
+    binding_cost?: number | null
+    design_cost?: number | null
+    translation_cost?: number | null
+    memo?: string | null
+    book_image_url?: string | null
+    total_print_count?: number | null
+    book_id?: number | null
+    number_of_pages?: number | null
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    editing_cost?: number | null
+    other_expenses?: number | null
+    transportation_cost?: number | null
+    count_remening_for_transfer?: number | null
+    books: booksCreateNestedOneWithoutBookeditionInput
+    bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
+    bookshopeditions?: bookshopeditionsCreateNestedManyWithoutBookeditionInput
+    damagedbooks?: damagedbooksCreateNestedManyWithoutBookeditionInput
+    order_items?: order_itemsCreateNestedManyWithoutBookeditionInput
+  }
+
+  export type bookeditionUncheckedCreateWithoutPrintorder_itemsInput = {
+    id?: number
+    edition_name: string
+    selling_price?: number | null
+    production_price?: number | null
+    printing_cost?: number | null
+    binding_cost?: number | null
+    design_cost?: number | null
+    translation_cost?: number | null
+    memo?: string | null
+    book_image_url?: string | null
+    total_print_count?: number | null
+    book_id?: number | null
+    number_of_pages?: number | null
+    bookId: number
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    editing_cost?: number | null
+    other_expenses?: number | null
+    transportation_cost?: number | null
+    count_remening_for_transfer?: number | null
+    bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
+    bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookeditionInput
+    damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutBookeditionInput
+    order_items?: order_itemsUncheckedCreateNestedManyWithoutBookeditionInput
+  }
+
+  export type bookeditionCreateOrConnectWithoutPrintorder_itemsInput = {
+    where: bookeditionWhereUniqueInput
+    create: XOR<bookeditionCreateWithoutPrintorder_itemsInput, bookeditionUncheckedCreateWithoutPrintorder_itemsInput>
+  }
+
+  export type printorderUpsertWithoutPrintorder_itemsInput = {
+    update: XOR<printorderUpdateWithoutPrintorder_itemsInput, printorderUncheckedUpdateWithoutPrintorder_itemsInput>
+    create: XOR<printorderCreateWithoutPrintorder_itemsInput, printorderUncheckedCreateWithoutPrintorder_itemsInput>
+    where?: printorderWhereInput
+  }
+
+  export type printorderUpdateToOneWithWhereWithoutPrintorder_itemsInput = {
+    where?: printorderWhereInput
+    data: XOR<printorderUpdateWithoutPrintorder_itemsInput, printorderUncheckedUpdateWithoutPrintorder_itemsInput>
+  }
+
+  export type printorderUpdateWithoutPrintorder_itemsInput = {
+    project_name?: NullableStringFieldUpdateOperationsInput | string | null
+    quality?: NullableStringFieldUpdateOperationsInput | string | null
+    count?: NullableIntFieldUpdateOperationsInput | number | null
+    total_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    tracking?: Enumprintorder_trackingFieldUpdateOperationsInput | $Enums.printorder_tracking
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    edition?: NullableStringFieldUpdateOperationsInput | string | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    printer?: printerUpdateOneRequiredWithoutPrintorderNestedInput
+    printorder_payments?: printorder_paymentsUpdateManyWithoutPrintorderNestedInput
+  }
+
+  export type printorderUncheckedUpdateWithoutPrintorder_itemsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    project_name?: NullableStringFieldUpdateOperationsInput | string | null
+    quality?: NullableStringFieldUpdateOperationsInput | string | null
+    count?: NullableIntFieldUpdateOperationsInput | number | null
+    total_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    tracking?: Enumprintorder_trackingFieldUpdateOperationsInput | $Enums.printorder_tracking
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    printerId?: IntFieldUpdateOperationsInput | number
+    edition?: NullableStringFieldUpdateOperationsInput | string | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    printorder_payments?: printorder_paymentsUncheckedUpdateManyWithoutPrintorderNestedInput
+  }
+
+  export type bookeditionUpsertWithoutPrintorder_itemsInput = {
+    update: XOR<bookeditionUpdateWithoutPrintorder_itemsInput, bookeditionUncheckedUpdateWithoutPrintorder_itemsInput>
+    create: XOR<bookeditionCreateWithoutPrintorder_itemsInput, bookeditionUncheckedCreateWithoutPrintorder_itemsInput>
+    where?: bookeditionWhereInput
+  }
+
+  export type bookeditionUpdateToOneWithWhereWithoutPrintorder_itemsInput = {
+    where?: bookeditionWhereInput
+    data: XOR<bookeditionUpdateWithoutPrintorder_itemsInput, bookeditionUncheckedUpdateWithoutPrintorder_itemsInput>
+  }
+
+  export type bookeditionUpdateWithoutPrintorder_itemsInput = {
+    edition_name?: StringFieldUpdateOperationsInput | string
+    selling_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    production_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    printing_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    binding_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    total_print_count?: NullableIntFieldUpdateOperationsInput | number | null
+    book_id?: NullableIntFieldUpdateOperationsInput | number | null
+    number_of_pages?: NullableIntFieldUpdateOperationsInput | number | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    editing_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
+    transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
+    books?: booksUpdateOneRequiredWithoutBookeditionNestedInput
+    bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
+    bookshopeditions?: bookshopeditionsUpdateManyWithoutBookeditionNestedInput
+    damagedbooks?: damagedbooksUpdateManyWithoutBookeditionNestedInput
+    order_items?: order_itemsUpdateManyWithoutBookeditionNestedInput
+  }
+
+  export type bookeditionUncheckedUpdateWithoutPrintorder_itemsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    edition_name?: StringFieldUpdateOperationsInput | string
+    selling_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    production_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    printing_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    binding_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    total_print_count?: NullableIntFieldUpdateOperationsInput | number | null
+    book_id?: NullableIntFieldUpdateOperationsInput | number | null
+    number_of_pages?: NullableIntFieldUpdateOperationsInput | number | null
+    bookId?: IntFieldUpdateOperationsInput | number
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    editing_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
+    transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
+    bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
+    bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookeditionNestedInput
+    damagedbooks?: damagedbooksUncheckedUpdateManyWithoutBookeditionNestedInput
+    order_items?: order_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
   }
 
   export type accountsCreateWithoutRolesInput = {
@@ -41317,6 +44854,17 @@ export namespace Prisma {
     price_at_order: number
   }
 
+  export type printorder_itemsCreateManyBookeditionInput = {
+    id?: number
+    printorder_id: number
+    quantity?: number
+    price_per_book?: number
+    status?: $Enums.printorder_status
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+  }
+
   export type bookeditionstoresUpdateWithoutBookeditionInput = {
     quantity?: NullableIntFieldUpdateOperationsInput | number | null
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
@@ -41451,6 +44999,38 @@ export namespace Prisma {
     price_at_order?: FloatFieldUpdateOperationsInput | number
   }
 
+  export type printorder_itemsUpdateWithoutBookeditionInput = {
+    quantity?: IntFieldUpdateOperationsInput | number
+    price_per_book?: FloatFieldUpdateOperationsInput | number
+    status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    printorder?: printorderUpdateOneRequiredWithoutPrintorder_itemsNestedInput
+  }
+
+  export type printorder_itemsUncheckedUpdateWithoutBookeditionInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    printorder_id?: IntFieldUpdateOperationsInput | number
+    quantity?: IntFieldUpdateOperationsInput | number
+    price_per_book?: FloatFieldUpdateOperationsInput | number
+    status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type printorder_itemsUncheckedUpdateManyWithoutBookeditionInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    printorder_id?: IntFieldUpdateOperationsInput | number
+    quantity?: IntFieldUpdateOperationsInput | number
+    price_per_book?: FloatFieldUpdateOperationsInput | number
+    status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type bookeditionCreateManyBooksInput = {
     id?: number
     edition_name: string
@@ -41527,6 +45107,7 @@ export namespace Prisma {
     bookshopeditions?: bookshopeditionsUpdateManyWithoutBookeditionNestedInput
     damagedbooks?: damagedbooksUpdateManyWithoutBookeditionNestedInput
     order_items?: order_itemsUpdateManyWithoutBookeditionNestedInput
+    printorder_items?: printorder_itemsUpdateManyWithoutBookeditionNestedInput
   }
 
   export type bookeditionUncheckedUpdateWithoutBooksInput = {
@@ -41555,6 +45136,7 @@ export namespace Prisma {
     bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookeditionNestedInput
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutBookeditionNestedInput
     order_items?: order_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
+    printorder_items?: printorder_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
   }
 
   export type bookeditionUncheckedUpdateManyWithoutBooksInput = {
@@ -41801,8 +45383,10 @@ export namespace Prisma {
 
   export type printorderCreateManyPrinterInput = {
     id?: number
-    quality: string
-    count: number
+    project_name?: string | null
+    quality?: string | null
+    count?: number | null
+    total_price?: number | null
     status?: $Enums.printorder_status
     memo?: string | null
     tracking?: $Enums.printorder_tracking
@@ -41816,8 +45400,10 @@ export namespace Prisma {
   }
 
   export type printorderUpdateWithoutPrinterInput = {
-    quality?: StringFieldUpdateOperationsInput | string
-    count?: IntFieldUpdateOperationsInput | number
+    project_name?: NullableStringFieldUpdateOperationsInput | string | null
+    quality?: NullableStringFieldUpdateOperationsInput | string | null
+    count?: NullableIntFieldUpdateOperationsInput | number | null
+    total_price?: NullableFloatFieldUpdateOperationsInput | number | null
     status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     tracking?: Enumprintorder_trackingFieldUpdateOperationsInput | $Enums.printorder_tracking
@@ -41828,12 +45414,36 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    printorder_items?: printorder_itemsUpdateManyWithoutPrintorderNestedInput
+    printorder_payments?: printorder_paymentsUpdateManyWithoutPrintorderNestedInput
   }
 
   export type printorderUncheckedUpdateWithoutPrinterInput = {
     id?: IntFieldUpdateOperationsInput | number
-    quality?: StringFieldUpdateOperationsInput | string
-    count?: IntFieldUpdateOperationsInput | number
+    project_name?: NullableStringFieldUpdateOperationsInput | string | null
+    quality?: NullableStringFieldUpdateOperationsInput | string | null
+    count?: NullableIntFieldUpdateOperationsInput | number | null
+    total_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    tracking?: Enumprintorder_trackingFieldUpdateOperationsInput | $Enums.printorder_tracking
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    edition?: NullableStringFieldUpdateOperationsInput | string | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    printorder_items?: printorder_itemsUncheckedUpdateManyWithoutPrintorderNestedInput
+    printorder_payments?: printorder_paymentsUncheckedUpdateManyWithoutPrintorderNestedInput
+  }
+
+  export type printorderUncheckedUpdateManyWithoutPrinterInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    project_name?: NullableStringFieldUpdateOperationsInput | string | null
+    quality?: NullableStringFieldUpdateOperationsInput | string | null
+    count?: NullableIntFieldUpdateOperationsInput | number | null
+    total_price?: NullableFloatFieldUpdateOperationsInput | number | null
     status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     tracking?: Enumprintorder_trackingFieldUpdateOperationsInput | $Enums.printorder_tracking
@@ -41846,20 +45456,78 @@ export namespace Prisma {
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type printorderUncheckedUpdateManyWithoutPrinterInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    quality?: StringFieldUpdateOperationsInput | string
-    count?: IntFieldUpdateOperationsInput | number
+  export type printorder_itemsCreateManyPrintorderInput = {
+    id?: number
+    bookEditionId: number
+    quantity?: number
+    price_per_book?: number
+    status?: $Enums.printorder_status
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type printorder_paymentsCreateManyPrintorderInput = {
+    id?: number
+    amount: number
+    payment_date: Date | string
+    reference?: string | null
+    createdAt?: Date | string
+  }
+
+  export type printorder_itemsUpdateWithoutPrintorderInput = {
+    quantity?: IntFieldUpdateOperationsInput | number
+    price_per_book?: FloatFieldUpdateOperationsInput | number
     status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
-    memo?: NullableStringFieldUpdateOperationsInput | string | null
-    tracking?: Enumprintorder_trackingFieldUpdateOperationsInput | $Enums.printorder_tracking
-    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    edition?: NullableStringFieldUpdateOperationsInput | string | null
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bookedition?: bookeditionUpdateOneRequiredWithoutPrintorder_itemsNestedInput
+  }
+
+  export type printorder_itemsUncheckedUpdateWithoutPrintorderInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    bookEditionId?: IntFieldUpdateOperationsInput | number
+    quantity?: IntFieldUpdateOperationsInput | number
+    price_per_book?: FloatFieldUpdateOperationsInput | number
+    status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type printorder_itemsUncheckedUpdateManyWithoutPrintorderInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    bookEditionId?: IntFieldUpdateOperationsInput | number
+    quantity?: IntFieldUpdateOperationsInput | number
+    price_per_book?: FloatFieldUpdateOperationsInput | number
+    status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type printorder_paymentsUpdateWithoutPrintorderInput = {
+    amount?: FloatFieldUpdateOperationsInput | number
+    payment_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type printorder_paymentsUncheckedUpdateWithoutPrintorderInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    amount?: FloatFieldUpdateOperationsInput | number
+    payment_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type printorder_paymentsUncheckedUpdateManyWithoutPrintorderInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    amount?: FloatFieldUpdateOperationsInput | number
+    payment_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type bookeditionstoresCreateManyStoresInput = {

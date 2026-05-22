@@ -277,6 +277,7 @@ exports.Prisma.PrinterScalarFieldEnum = {
   location: 'location',
   phone: 'phone',
   email: 'email',
+  status: 'status',
   is_deleted: 'is_deleted',
   updatedAt: 'updatedAt',
   createdAt: 'createdAt',
@@ -285,8 +286,10 @@ exports.Prisma.PrinterScalarFieldEnum = {
 
 exports.Prisma.PrintorderScalarFieldEnum = {
   id: 'id',
+  project_name: 'project_name',
   quality: 'quality',
   count: 'count',
+  total_price: 'total_price',
   status: 'status',
   memo: 'memo',
   tracking: 'tracking',
@@ -298,6 +301,27 @@ exports.Prisma.PrintorderScalarFieldEnum = {
   updatedAt: 'updatedAt',
   createdAt: 'createdAt',
   deletedAt: 'deletedAt'
+};
+
+exports.Prisma.Printorder_paymentsScalarFieldEnum = {
+  id: 'id',
+  printorder_id: 'printorder_id',
+  amount: 'amount',
+  payment_date: 'payment_date',
+  reference: 'reference',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.Printorder_itemsScalarFieldEnum = {
+  id: 'id',
+  printorder_id: 'printorder_id',
+  bookEditionId: 'bookEditionId',
+  quantity: 'quantity',
+  price_per_book: 'price_per_book',
+  status: 'status',
+  is_deleted: 'is_deleted',
+  updatedAt: 'updatedAt',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.RolesScalarFieldEnum = {
@@ -546,13 +570,19 @@ exports.Prisma.printerOrderByRelevanceFieldEnum = {
   name: 'name',
   location: 'location',
   phone: 'phone',
-  email: 'email'
+  email: 'email',
+  status: 'status'
 };
 
 exports.Prisma.printorderOrderByRelevanceFieldEnum = {
+  project_name: 'project_name',
   quality: 'quality',
   memo: 'memo',
   edition: 'edition'
+};
+
+exports.Prisma.printorder_paymentsOrderByRelevanceFieldEnum = {
+  reference: 'reference'
 };
 
 exports.Prisma.rolesOrderByRelevanceFieldEnum = {
@@ -711,6 +741,8 @@ exports.Prisma.ModelName = {
   dashboardmenu: 'dashboardmenu',
   printer: 'printer',
   printorder: 'printorder',
+  printorder_payments: 'printorder_payments',
+  printorder_items: 'printorder_items',
   roles: 'roles',
   stores: 'stores',
   translator: 'translator',

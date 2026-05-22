@@ -59,6 +59,7 @@ model bookedition {
   bookshopeditions            bookshopeditions[]
   damagedbooks                damagedbooks[]
   order_items                 order_items[]
+  printorder_items            printorder_items[]
 
   @@index([bookId], map: "BookEdition_bookId_fkey")
 }
@@ -212,6 +213,8 @@ model printer {
   location   String
   phone      String?
   email      String?
+ 
+  status     String       @default("available")
   is_deleted Boolean      @default(false)
   updatedAt  DateTime
   createdAt  DateTime     @default(now())
@@ -221,8 +224,10 @@ model printer {
 
 model printorder {
   id         Int                 @id @default(autoincrement())
-  quality    String
-  count      Int
+  project_name String?
+  quality    String?
+  count      Int?
+  total_price Float?
   status     printorder_status   @default(NOT_STARTED)
   memo       String?
   tracking   printorder_tracking @default(NOT_SET)
@@ -235,8 +240,40 @@ model printorder {
   createdAt  DateTime            @default(now())
   deletedAt  DateTime            @default(now())
   printer    printer             @relation(fields: [printerId], references: [id], onDelete: Cascade, map: "PrintOrder_printerId_fkey")
+  printorder_items printorder_items[]
+  printorder_payments printorder_payments[]
 
   @@index([printerId], map: "PrintOrder_printerId_fkey")
+}
+
+model printorder_payments {
+  id            Int        @id @default(autoincrement())
+  printorder_id Int
+  amount        Float
+  payment_date  DateTime
+  reference     String?
+  createdAt     DateTime   @default(now())
+  printorder    printorder @relation(fields: [printorder_id], references: [id], onDelete: Cascade)
+
+  @@index([printorder_id])
+}
+
+model printorder_items {
+  id             Int       @id @default(autoincrement())
+  printorder_id  Int
+  bookEditionId  Int
+  quantity       Int       @default(0)
+  price_per_book Float     @default(0)
+  status         printorder_status @default(NOT_STARTED)
+  is_deleted     Boolean   @default(false)
+  updatedAt      DateTime  @updatedAt
+  createdAt      DateTime  @default(now())
+  
+  printorder     printorder  @relation(fields: [printorder_id], references: [id], onDelete: Cascade)
+  bookedition    bookedition @relation(fields: [bookEditionId], references: [id], onDelete: Cascade)
+
+  @@index([printorder_id])
+  @@index([bookEditionId])
 }
 
 model roles {
