@@ -392,3 +392,28 @@ export async function approveOrder(
     };
   }
 }
+
+/**
+ * Update the amount paid for a specific order.
+ * This is used in the admin dashboard to allow quick edits of the paid amount.
+ */
+export async function updateOrderPayment(orderId: number, amountPaid: number) {
+  try {
+    const updated = await (prisma as any).orders.update({
+      where: { id: Number(orderId) },
+      data: {
+        amount_paid: amountPaid,
+        updatedAt: new Date(),
+      },
+    });
+
+    // Re‑validate the shop page so the UI reflects the change
+    if (updated?.bookShopId) {
+      revalidatePath(`/admin_dashboard/book_shops/${updated.bookShopId}`);
+    }
+    return { success: true, data: updated };
+  } catch (error) {
+    console.error("Update order payment error:", error);
+    return { success: false, error: "Failed to update order payment" };
+  }
+}

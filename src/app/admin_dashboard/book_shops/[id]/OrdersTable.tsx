@@ -12,24 +12,27 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { 
-    Search, 
-    ChevronLeft, 
-    ChevronRight, 
-    ShoppingBag, 
-    Calendar,
-    Filter,
-    ArrowUpDown,
-    CheckCircle2,
-    Clock,
-    MoreHorizontal,
-    Receipt,
-    Banknote,
-    FileText
+import {
+  Search,
+  ChevronLeft,
+  ChevronRight,
+  ShoppingBag,
+  Calendar,
+  Filter,
+  ArrowUpDown,
+  CheckCircle2,
+  Clock,
+  MoreHorizontal,
+  Receipt,
+  Banknote,
+  FileText,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+import { updateOrderPayment } from "@/app/actions/order-actions";
+import { useRouter } from "next/navigation";
 import {
   Table,
   TableBody,
@@ -40,7 +43,6 @@ import {
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-
 
 export type Order = {
   id: number;
@@ -72,24 +74,54 @@ interface OrdersTableProps {
 export function OrdersTable({ data, onViewDetails }: OrdersTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = React.useState("");
+  const router = useRouter();
+
+  const [paymentEdits, setPaymentEdits] = React.useState<
+    Record<number, string>
+  >({});
+
+  const handlePaymentBlur = async (orderId: number) => {
+    const val = paymentEdits[orderId];
+    if (val === undefined) return;
+    const amount = Number(val);
+    if (isNaN(amount)) {
+      toast.error("Invalid amount");
+      return;
+    }
+    const res = await updateOrderPayment(orderId, amount);
+    if (res.success) {
+      toast.success("Payment updated");
+      router.refresh();
+    } else {
+      toast.error(res.error || "Failed to update payment");
+    }
+  };
 
   const columns: ColumnDef<Order>[] = [
     {
       accessorKey: "id",
       header: "Order #",
-      cell: ({ row }) => <span className="font-black text-primarycolor">ORD-{row.original.id}</span>
+      cell: ({ row }) => (
+        <span className="font-black text-primarycolor">
+          ORD-{row.original.id}
+        </span>
+      ),
     },
     {
       accessorKey: "order_type",
       header: "Type",
       cell: ({ row }) => (
-        <div className={cn(
-          "px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest w-fit",
-          row.original.order_type === "requested" ? "bg-blue-100 text-blue-600" : "bg-purple-100 text-purple-600"
-        )}>
+        <div
+          className={cn(
+            "px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest w-fit",
+            row.original.order_type === "requested"
+              ? "bg-blue-100 text-blue-600"
+              : "bg-purple-100 text-purple-600",
+          )}
+        >
           {row.original.order_type}
         </div>
-      )
+      ),
     },
     {
       id: "books",
@@ -100,7 +132,9 @@ export function OrdersTable({ data, onViewDetails }: OrdersTableProps) {
         const others = items.length - 1;
         return (
           <div className="flex flex-col">
-            <span className="font-bold text-primarycolor line-clamp-1">{firstBook}</span>
+            <span className="font-bold text-primarycolor line-clamp-1">
+              {firstBook}
+            </span>
             {others > 0 && (
               <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">
                 + {others} more books
@@ -108,7 +142,7 @@ export function OrdersTable({ data, onViewDetails }: OrdersTableProps) {
             )}
           </div>
         );
-      }
+      },
     },
     {
       accessorKey: "total_amount",
@@ -116,13 +150,41 @@ export function OrdersTable({ data, onViewDetails }: OrdersTableProps) {
       cell: ({ row }) => (
         <div className="flex flex-col">
           <span className="font-black text-primarycolor">
-            {row.original.total_amount.toLocaleString()} <span className="text-[10px] opacity-40">ETB</span>
+            {row.original.total_amount.toLocaleString()}{" "}
+            <span className="text-[10px] opacity-40">ETB</span>
           </span>
-          <span className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest">
-            Paid: {row.original.amount_paid.toLocaleString()}
-          </span>
+          <div className="flex flex-col">
+            <span className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest">
+              Paid:
+            </span>
+            <Input
+              className="h-8 w-24 text-sm"
+              value={
+                paymentEdits[row.original.id] ??
+                row.original.amount_paid.toString()
+              }
+              onChange={async (e) => {
+                const newVal = e.target.value;
+                setPaymentEdits({
+                  ...paymentEdits,
+                  [row.original.id]: newVal,
+                });
+                // instantly update payment
+                const amount = Number(newVal);
+                if (!isNaN(amount)) {
+                  const res = await updateOrderPayment(row.original.id, amount);
+                  if (res.success) {
+                    toast.success("Payment updated");
+                    router.refresh();
+                  } else {
+                    toast.error(res.error || "Failed to update payment");
+                  }
+                }
+              }}
+            />
+          </div>
         </div>
-      )
+      ),
     },
     {
       accessorKey: "status",
@@ -139,7 +201,7 @@ export function OrdersTable({ data, onViewDetails }: OrdersTableProps) {
             </div>
           )}
         </div>
-      )
+      ),
     },
     {
       accessorKey: "createdAt",
@@ -151,21 +213,21 @@ export function OrdersTable({ data, onViewDetails }: OrdersTableProps) {
             {format(new Date(row.original.createdAt), "MMM dd, yyyy")}
           </span>
         </div>
-      )
+      ),
     },
     {
       id: "actions",
       cell: ({ row }) => (
-        <Button 
-          variant="ghost" 
-          size="sm" 
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={() => onViewDetails(row.original)}
           className="rounded-xl hover:bg-primarycolor hover:text-white font-black uppercase text-[10px] tracking-widest"
         >
           Details
         </Button>
-      )
-    }
+      ),
+    },
   ];
 
   const table = useReactTable({
@@ -205,10 +267,21 @@ export function OrdersTable({ data, onViewDetails }: OrdersTableProps) {
           <Table>
             <TableHeader className="bg-slate-50/50">
               {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id} className="hover:bg-transparent border-b-2 border-slate-100">
+                <TableRow
+                  key={headerGroup.id}
+                  className="hover:bg-transparent border-b-2 border-slate-100"
+                >
                   {headerGroup.headers.map((header) => (
-                    <TableHead key={header.id} className="h-16 px-6 text-[10px] font-black uppercase tracking-widest text-primarycolor/40">
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                    <TableHead
+                      key={header.id}
+                      className="h-16 px-6 text-[10px] font-black uppercase tracking-widest text-primarycolor/40"
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
                     </TableHead>
                   ))}
                 </TableRow>
@@ -217,17 +290,26 @@ export function OrdersTable({ data, onViewDetails }: OrdersTableProps) {
             <TableBody>
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
-                  <TableRow key={row.id} className="h-20 border-b border-slate-50 hover:bg-primarycolor/[0.02] transition-colors">
+                  <TableRow
+                    key={row.id}
+                    className="h-20 border-b border-slate-50 hover:bg-primarycolor/[0.02] transition-colors"
+                  >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id} className="px-6">
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
                       </TableCell>
                     ))}
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={6} className="h-48 text-center text-muted-foreground italic">
+                  <TableCell
+                    colSpan={6}
+                    className="h-48 text-center text-muted-foreground italic"
+                  >
                     No orders found
                   </TableCell>
                 </TableRow>
@@ -239,7 +321,8 @@ export function OrdersTable({ data, onViewDetails }: OrdersTableProps) {
 
       <div className="flex items-center justify-between px-6 py-4">
         <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
-          Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount() || 1}
+          Page {table.getState().pagination.pageIndex + 1} of{" "}
+          {table.getPageCount() || 1}
         </div>
         <div className="flex items-center gap-3">
           <Button

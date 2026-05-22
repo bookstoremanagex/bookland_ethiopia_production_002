@@ -493,18 +493,19 @@ export default function EditionsInfo({ book }: EditionsInfoProps) {
                 <div className="space-y-6">
                   <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">
-                      Image URL
+                      Print Count <span className="text-destructive">*</span>
                     </label>
                     <Input
-                      value={formData.book_image_url}
+                      required
+                      type="number"
+                      value={formData.total_print_count}
                       onChange={(e) =>
                         setFormData({
                           ...formData,
-                          book_image_url: e.target.value,
+                          total_print_count: e.target.value,
                         })
                       }
-                      placeholder="Link to specific cover"
-                      className="h-14 px-6 rounded-2xl border-2 font-bold text-sm"
+                      className="h-14 px-6 rounded-2xl border-2 font-bold"
                     />
                   </div>
 

@@ -22,10 +22,15 @@ import {
   Banknote,
   Package,
   ShoppingBag,
-  Info
+  Info,
 } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+import { updateOrderPayment } from "@/app/actions/order-actions";
+import { useRouter } from "next/navigation";
+import { Input } from "@/components/ui/input";
+import { Save } from "lucide-react";
 
 interface OrderDetailsModalProps {
   isOpen: boolean;
@@ -40,12 +45,49 @@ export default function OrderDetailsModal({
   order,
   shop,
 }: OrderDetailsModalProps) {
+  const router = useRouter();
+  const [isUpdating, setIsUpdating] = React.useState(false);
+  const [editAmount, setEditAmount] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    if (order) {
+      setEditAmount(order.amount_paid.toString());
+    }
+  }, [order]);
+
   if (!order) return null;
 
-  const remainingBalance = order.total_amount - order.amount_paid;
-  const paymentPercentage = order.total_amount > 0 
-    ? Math.round((order.amount_paid / order.total_amount) * 100) 
-    : 0;
+  const handleSavePayment = async () => {
+    if (editAmount === null) return;
+    const amount = Number(editAmount);
+    if (isNaN(amount)) {
+      toast.error("Invalid amount");
+      return;
+    }
+
+    setIsUpdating(true);
+    try {
+      const res = await updateOrderPayment(order.id, amount);
+      if (res.success) {
+        toast.success("Payment updated successfully");
+        router.refresh();
+      } else {
+        toast.error(res.error || "Failed to update payment");
+      }
+    } catch (err) {
+      toast.error("An error occurred while updating payment");
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const remainingBalance =
+    order.total_amount -
+    (editAmount !== null ? Number(editAmount) : order.amount_paid);
+  const paymentPercentage =
+    order.total_amount > 0
+      ? Math.round((order.amount_paid / order.total_amount) * 100)
+      : 0;
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -59,7 +101,10 @@ export default function OrderDetailsModal({
               </div>
               <div>
                 <DialogTitle className="text-2xl md:text-3xl font-black text-primarycolor uppercase italic">
-                  Order Details <span className="text-secondarycolor not-italic">#ORD-{order.id}</span>
+                  Order Details{" "}
+                  <span className="text-secondarycolor not-italic">
+                    #ORD-{order.id}
+                  </span>
                 </DialogTitle>
                 <DialogDescription className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                   View complete order information and items breakdown
@@ -76,10 +121,14 @@ export default function OrderDetailsModal({
                   <Clock className="size-3.5" /> Pending Approval
                 </div>
               )}
-              <div className={cn(
-                "px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest",
-                order.order_type === "requested" ? "bg-blue-100 text-blue-700" : "bg-purple-100 text-purple-700"
-              )}>
+              <div
+                className={cn(
+                  "px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest",
+                  order.order_type === "requested"
+                    ? "bg-blue-100 text-blue-700"
+                    : "bg-purple-100 text-purple-700",
+                )}
+              >
                 {order.order_type}
               </div>
             </div>
@@ -88,27 +137,38 @@ export default function OrderDetailsModal({
 
         {/* Content Container */}
         <div className="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar">
-          
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Shop Identity Information */}
             <div className="bg-white rounded-[2rem] p-6 border-2 border-primarycolor/5 shadow-sm space-y-6 relative overflow-hidden">
               <div className="absolute top-0 right-0 size-32 bg-primarycolor/5 rounded-full -mr-16 -mt-16 blur-2xl" />
               <div className="flex items-center gap-3 text-primarycolor relative">
                 <Building2 className="size-5" />
-                <h4 className="font-black uppercase tracking-widest text-xs italic">Shop Information</h4>
+                <h4 className="font-black uppercase tracking-widest text-xs italic">
+                  Shop Information
+                </h4>
               </div>
               <div className="space-y-4 relative">
                 <div>
-                  <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Shop Name</p>
-                  <p className="font-black text-primarycolor text-lg uppercase">{shop.name}</p>
+                  <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">
+                    Shop Name
+                  </p>
+                  <p className="font-black text-primarycolor text-lg uppercase">
+                    {shop.name}
+                  </p>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Branch</p>
-                    <p className="font-bold text-slate-700">{shop.branch || "Main Branch"}</p>
+                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">
+                      Branch
+                    </p>
+                    <p className="font-bold text-slate-700">
+                      {shop.branch || "Main Branch"}
+                    </p>
                   </div>
                   <div>
-                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Location</p>
+                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">
+                      Location
+                    </p>
                     <p className="font-bold text-slate-700 flex items-center gap-1.5">
                       <MapPin className="size-3.5 text-slate-400 shrink-0" />
                       <span className="truncate">{shop.location}</span>
@@ -117,14 +177,18 @@ export default function OrderDetailsModal({
                 </div>
                 <div className="grid grid-cols-2 gap-4 pt-2 border-t border-slate-50">
                   <div>
-                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Phone</p>
+                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">
+                      Phone
+                    </p>
                     <p className="font-bold text-slate-700 flex items-center gap-1.5">
                       <Phone className="size-3.5 text-slate-400 shrink-0" />
                       <span>{shop.phone || "N/A"}</span>
                     </p>
                   </div>
                   <div>
-                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Email</p>
+                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">
+                      Email
+                    </p>
                     <p className="font-bold text-slate-700 flex items-center gap-1.5">
                       <Mail className="size-3.5 text-slate-400 shrink-0" />
                       <span className="truncate">{shop.email || "N/A"}</span>
@@ -138,32 +202,53 @@ export default function OrderDetailsModal({
             <div className="bg-white rounded-[2rem] p-6 border-2 border-primarycolor/5 shadow-sm space-y-6">
               <div className="flex items-center gap-3 text-primarycolor">
                 <Info className="size-5" />
-                <h4 className="font-black uppercase tracking-widest text-xs italic">Order Metadata</h4>
+                <h4 className="font-black uppercase tracking-widest text-xs italic">
+                  Order Metadata
+                </h4>
               </div>
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Order ID</p>
-                    <p className="font-black text-primarycolor">ORD-{order.id}</p>
+                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">
+                      Order ID
+                    </p>
+                    <p className="font-black text-primarycolor">
+                      ORD-{order.id}
+                    </p>
                   </div>
                   <div>
-                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Date Placed</p>
+                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">
+                      Date Placed
+                    </p>
                     <p className="font-bold text-slate-700 flex items-center gap-1.5">
                       <Calendar className="size-3.5 text-slate-400 shrink-0" />
-                      <span>{format(new Date(order.createdAt), "MMM dd, yyyy HH:mm")}</span>
+                      <span>
+                        {format(
+                          new Date(order.createdAt),
+                          "MMM dd, yyyy HH:mm",
+                        )}
+                      </span>
                     </p>
                   </div>
                 </div>
                 <div>
-                  <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Approval Status</p>
+                  <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">
+                    Approval Status
+                  </p>
                   <p className="font-bold text-slate-700">
-                    {order.is_approved ? "Approved" : "Pending approval (Automatic false)"}
+                    {order.is_approved
+                      ? "Approved"
+                      : "Pending approval (Automatic false)"}
                   </p>
                 </div>
                 <div className="pt-2 border-t border-slate-50">
-                  <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest flex items-center gap-1"><FileText className="size-3" /> Memo / Note</p>
+                  <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest flex items-center gap-1">
+                    <FileText className="size-3" /> Memo / Note
+                  </p>
                   <p className="font-medium text-slate-600 italic text-sm mt-1 bg-slate-50 p-3 rounded-xl border border-slate-100 min-h-[50px]">
-                    {order.memo ? `"${order.memo}"` : "No internal memo or notes provided."}
+                    {order.memo
+                      ? `"${order.memo}"`
+                      : "No internal memo or notes provided."}
                   </p>
                 </div>
               </div>
@@ -174,26 +259,53 @@ export default function OrderDetailsModal({
           <div className="bg-white rounded-[2rem] p-8 border-2 border-primarycolor/5 shadow-sm space-y-6">
             <div className="flex items-center gap-3 text-primarycolor">
               <Banknote className="size-5" />
-              <h4 className="font-black uppercase tracking-widest text-xs italic">Financial Integrity Summary</h4>
+              <h4 className="font-black uppercase tracking-widest text-xs italic">
+                Financial Integrity Summary
+              </h4>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100">
-                <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Total Order Value</p>
+                <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">
+                  Total Order Value
+                </p>
                 <p className="text-3xl font-black text-primarycolor mt-1">
-                  {order.total_amount.toLocaleString()} <span className="text-sm">ETB</span>
+                  {order.total_amount.toLocaleString()}{" "}
+                  <span className="text-sm">ETB</span>
                 </p>
               </div>
-              <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-100">
-                <p className="text-[9px] font-black text-emerald-700 uppercase tracking-widest">Amount Paid Instantly</p>
-                <p className="text-3xl font-black text-emerald-800 mt-1">
-                  {order.amount_paid.toLocaleString()} <span className="text-sm">ETB</span>
+              <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-100 space-y-2">
+                <p className="text-[9px] font-black text-emerald-700 uppercase tracking-widest">
+                  Amount Paid Instantly
                 </p>
+                <div className="flex items-center gap-2">
+                  <Input
+                    type="number"
+                    value={editAmount ?? ""}
+                    onChange={(e) => setEditAmount(e.target.value)}
+                    className="h-10 w-full bg-white border-emerald-200 focus:border-emerald-500 font-black text-lg rounded-xl"
+                  />
+                  <Button
+                    size="icon"
+                    onClick={handleSavePayment}
+                    disabled={
+                      isUpdating ||
+                      editAmount === order.amount_paid.toString() ||
+                      editAmount === ""
+                    }
+                    className="h-10 w-10 shrink-0 bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-lg shadow-emerald-600/20"
+                  >
+                    <Save className="size-4" />
+                  </Button>
+                </div>
               </div>
               <div className="p-4 rounded-2xl bg-rose-50 border border-rose-100">
-                <p className="text-[9px] font-black text-rose-700 uppercase tracking-widest">Outstanding Debt</p>
+                <p className="text-[9px] font-black text-rose-700 uppercase tracking-widest">
+                  Outstanding Debt
+                </p>
                 <p className="text-3xl font-black text-rose-800 mt-1">
-                  {remainingBalance.toLocaleString()} <span className="text-sm">ETB</span>
+                  {remainingBalance.toLocaleString()}{" "}
+                  <span className="text-sm">ETB</span>
                 </p>
               </div>
             </div>
@@ -205,10 +317,12 @@ export default function OrderDetailsModal({
                 <span>{paymentPercentage}% Covered</span>
               </div>
               <div className="h-3 w-full bg-slate-100 rounded-full overflow-hidden">
-                <div 
+                <div
                   className={cn(
                     "h-full rounded-full transition-all duration-500",
-                    paymentPercentage >= 100 ? "bg-emerald-500" : "bg-primarycolor"
+                    paymentPercentage >= 100
+                      ? "bg-emerald-500"
+                      : "bg-primarycolor",
                   )}
                   style={{ width: `${paymentPercentage}%` }}
                 />
@@ -221,7 +335,9 @@ export default function OrderDetailsModal({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3 text-primarycolor">
                 <Package className="size-5" />
-                <h4 className="font-black uppercase tracking-widest text-xs italic">Ordered Book Items</h4>
+                <h4 className="font-black uppercase tracking-widest text-xs italic">
+                  Ordered Book Items
+                </h4>
               </div>
               <span className="px-3 py-1 bg-slate-100 rounded-full text-[9px] font-black text-slate-500 uppercase tracking-widest">
                 {order.order_items?.length || 0} unique books
@@ -232,15 +348,26 @@ export default function OrderDetailsModal({
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="bg-slate-50 border-b border-slate-100">
-                    <th className="p-4 text-[10px] font-black uppercase tracking-widest text-primarycolor/60">Book Title & Edition</th>
-                    <th className="p-4 text-[10px] font-black uppercase tracking-widest text-primarycolor/60 text-center">Quantity</th>
-                    <th className="p-4 text-[10px] font-black uppercase tracking-widest text-primarycolor/60 text-right">Unit Price</th>
-                    <th className="p-4 text-[10px] font-black uppercase tracking-widest text-primarycolor/60 text-right">Subtotal</th>
+                    <th className="p-4 text-[10px] font-black uppercase tracking-widest text-primarycolor/60">
+                      Book Title & Edition
+                    </th>
+                    <th className="p-4 text-[10px] font-black uppercase tracking-widest text-primarycolor/60 text-center">
+                      Quantity
+                    </th>
+                    <th className="p-4 text-[10px] font-black uppercase tracking-widest text-primarycolor/60 text-right">
+                      Unit Price
+                    </th>
+                    <th className="p-4 text-[10px] font-black uppercase tracking-widest text-primarycolor/60 text-right">
+                      Subtotal
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {order.order_items?.map((item: any, index: number) => (
-                    <tr key={item.id || index} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors h-16">
+                    <tr
+                      key={item.id || index}
+                      className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors h-16"
+                    >
                       <td className="p-4">
                         <p className="font-black text-primarycolor uppercase italic leading-tight">
                           {item.bookedition?.books?.title || "Unknown Book"}
@@ -256,7 +383,8 @@ export default function OrderDetailsModal({
                         {item.price_at_order.toLocaleString()} ETB
                       </td>
                       <td className="p-4 text-right font-black text-primarycolor">
-                        {(item.quantity * item.price_at_order).toLocaleString()} ETB
+                        {(item.quantity * item.price_at_order).toLocaleString()}{" "}
+                        ETB
                       </td>
                     </tr>
                   ))}
@@ -264,7 +392,6 @@ export default function OrderDetailsModal({
               </table>
             </div>
           </div>
-
         </div>
 
         {/* Footer */}
