@@ -54,6 +54,7 @@ export async function updatePrinter(id: number, formData: any) {
                 location: formData.location,
                 phone: formData.phone,
                 email: formData.email,
+                status: formData.status || "available",
                 updatedAt: new Date()
             }
         })

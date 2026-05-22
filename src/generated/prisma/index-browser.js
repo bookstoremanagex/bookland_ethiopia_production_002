@@ -170,6 +170,17 @@ exports.Prisma.BookeditionstoresScalarFieldEnum = {
   deletedAt: 'deletedAt'
 };
 
+exports.Prisma.BookeditionprintersScalarFieldEnum = {
+  id: 'id',
+  editionId: 'editionId',
+  quantity: 'quantity',
+  printerId: 'printerId',
+  is_deleted: 'is_deleted',
+  updatedAt: 'updatedAt',
+  createdAt: 'createdAt',
+  deletedAt: 'deletedAt'
+};
+
 exports.Prisma.BooksScalarFieldEnum = {
   id: 'id',
   unique_identification_code: 'unique_identification_code',
@@ -253,6 +264,7 @@ exports.Prisma.DamagedbooksScalarFieldEnum = {
   type: 'type',
   book_id: 'book_id',
   store_id: 'store_id',
+  printer_id: 'printer_id',
   edition_id: 'edition_id',
   count: 'count',
   memo: 'memo',
@@ -732,6 +744,7 @@ exports.Prisma.ModelName = {
   accounts: 'accounts',
   bookedition: 'bookedition',
   bookeditionstores: 'bookeditionstores',
+  bookeditionprinters: 'bookeditionprinters',
   books: 'books',
   bookshopeditions: 'bookshopeditions',
   bookshopes: 'bookshopes',

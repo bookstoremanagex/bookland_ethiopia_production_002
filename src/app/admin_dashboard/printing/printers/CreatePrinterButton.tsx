@@ -59,7 +59,7 @@ export default function CreatePrinterButton() {
                                     <Printer className="size-6 md:size-8" />
                                 </div>
                                 <div>
-                                    <h3 className="text-xl md:text-2xl font-black text-primarycolor uppercase tracking-tight italic">New <span className="text-rose-500 not-italic">Partner</span></h3>
+                                    <h3 className="text-xl md:text-2xl font-black text-primarycolor uppercase tracking-tight italic">New Partner</h3>
                                     <p className="text-muted-foreground font-bold text-[10px] md:text-sm">Register a new printing facility.</p>
                                 </div>
                             </div>

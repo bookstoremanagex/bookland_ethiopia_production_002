@@ -29,6 +29,11 @@ export type bookedition = $Result.DefaultSelection<Prisma.$bookeditionPayload>
  */
 export type bookeditionstores = $Result.DefaultSelection<Prisma.$bookeditionstoresPayload>
 /**
+ * Model bookeditionprinters
+ * 
+ */
+export type bookeditionprinters = $Result.DefaultSelection<Prisma.$bookeditionprintersPayload>
+/**
  * Model books
  * 
  */
@@ -399,6 +404,16 @@ export class PrismaClient<
     * ```
     */
   get bookeditionstores(): Prisma.bookeditionstoresDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.bookeditionprinters`: Exposes CRUD operations for the **bookeditionprinters** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Bookeditionprinters
+    * const bookeditionprinters = await prisma.bookeditionprinters.findMany()
+    * ```
+    */
+  get bookeditionprinters(): Prisma.bookeditionprintersDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.books`: Exposes CRUD operations for the **books** model.
@@ -1083,6 +1098,7 @@ export namespace Prisma {
     accounts: 'accounts',
     bookedition: 'bookedition',
     bookeditionstores: 'bookeditionstores',
+    bookeditionprinters: 'bookeditionprinters',
     books: 'books',
     bookshopeditions: 'bookshopeditions',
     bookshopes: 'bookshopes',
@@ -1125,7 +1141,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "accounts" | "bookedition" | "bookeditionstores" | "books" | "bookshopeditions" | "bookshopes" | "orders" | "order_items" | "damagedbooks" | "dashboardmenu" | "printer" | "printorder" | "printorder_payments" | "printorder_items" | "roles" | "stores" | "translator" | "translatorbook" | "notification" | "activityLogs" | "notes" | "contracts" | "print_agreements" | "delivery_notes" | "invoices" | "approval_documents" | "settings"
+      modelProps: "accounts" | "bookedition" | "bookeditionstores" | "bookeditionprinters" | "books" | "bookshopeditions" | "bookshopes" | "orders" | "order_items" | "damagedbooks" | "dashboardmenu" | "printer" | "printorder" | "printorder_payments" | "printorder_items" | "roles" | "stores" | "translator" | "translatorbook" | "notification" | "activityLogs" | "notes" | "contracts" | "print_agreements" | "delivery_notes" | "invoices" | "approval_documents" | "settings"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1324,6 +1340,72 @@ export namespace Prisma {
           count: {
             args: Prisma.bookeditionstoresCountArgs<ExtArgs>
             result: $Utils.Optional<BookeditionstoresCountAggregateOutputType> | number
+          }
+        }
+      }
+      bookeditionprinters: {
+        payload: Prisma.$bookeditionprintersPayload<ExtArgs>
+        fields: Prisma.bookeditionprintersFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.bookeditionprintersFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$bookeditionprintersPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.bookeditionprintersFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$bookeditionprintersPayload>
+          }
+          findFirst: {
+            args: Prisma.bookeditionprintersFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$bookeditionprintersPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.bookeditionprintersFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$bookeditionprintersPayload>
+          }
+          findMany: {
+            args: Prisma.bookeditionprintersFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$bookeditionprintersPayload>[]
+          }
+          create: {
+            args: Prisma.bookeditionprintersCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$bookeditionprintersPayload>
+          }
+          createMany: {
+            args: Prisma.bookeditionprintersCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.bookeditionprintersDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$bookeditionprintersPayload>
+          }
+          update: {
+            args: Prisma.bookeditionprintersUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$bookeditionprintersPayload>
+          }
+          deleteMany: {
+            args: Prisma.bookeditionprintersDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.bookeditionprintersUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.bookeditionprintersUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$bookeditionprintersPayload>
+          }
+          aggregate: {
+            args: Prisma.BookeditionprintersAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateBookeditionprinters>
+          }
+          groupBy: {
+            args: Prisma.bookeditionprintersGroupByArgs<ExtArgs>
+            result: $Utils.Optional<BookeditionprintersGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.bookeditionprintersCountArgs<ExtArgs>
+            result: $Utils.Optional<BookeditionprintersCountAggregateOutputType> | number
           }
         }
       }
@@ -3010,6 +3092,7 @@ export namespace Prisma {
     accounts?: accountsOmit
     bookedition?: bookeditionOmit
     bookeditionstores?: bookeditionstoresOmit
+    bookeditionprinters?: bookeditionprintersOmit
     books?: booksOmit
     bookshopeditions?: bookshopeditionsOmit
     bookshopes?: bookshopesOmit
@@ -3173,6 +3256,7 @@ export namespace Prisma {
 
   export type BookeditionCountOutputType = {
     bookeditionstores: number
+    bookeditionprinters: number
     bookshopeditions: number
     damagedbooks: number
     order_items: number
@@ -3181,6 +3265,7 @@ export namespace Prisma {
 
   export type BookeditionCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     bookeditionstores?: boolean | BookeditionCountOutputTypeCountBookeditionstoresArgs
+    bookeditionprinters?: boolean | BookeditionCountOutputTypeCountBookeditionprintersArgs
     bookshopeditions?: boolean | BookeditionCountOutputTypeCountBookshopeditionsArgs
     damagedbooks?: boolean | BookeditionCountOutputTypeCountDamagedbooksArgs
     order_items?: boolean | BookeditionCountOutputTypeCountOrder_itemsArgs
@@ -3203,6 +3288,13 @@ export namespace Prisma {
    */
   export type BookeditionCountOutputTypeCountBookeditionstoresArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: bookeditionstoresWhereInput
+  }
+
+  /**
+   * BookeditionCountOutputType without action
+   */
+  export type BookeditionCountOutputTypeCountBookeditionprintersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: bookeditionprintersWhereInput
   }
 
   /**
@@ -3360,10 +3452,14 @@ export namespace Prisma {
 
   export type PrinterCountOutputType = {
     printorder: number
+    bookeditionprinters: number
+    damagedbooks: number
   }
 
   export type PrinterCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     printorder?: boolean | PrinterCountOutputTypeCountPrintorderArgs
+    bookeditionprinters?: boolean | PrinterCountOutputTypeCountBookeditionprintersArgs
+    damagedbooks?: boolean | PrinterCountOutputTypeCountDamagedbooksArgs
   }
 
   // Custom InputTypes
@@ -3382,6 +3478,20 @@ export namespace Prisma {
    */
   export type PrinterCountOutputTypeCountPrintorderArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: printorderWhereInput
+  }
+
+  /**
+   * PrinterCountOutputType without action
+   */
+  export type PrinterCountOutputTypeCountBookeditionprintersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: bookeditionprintersWhereInput
+  }
+
+  /**
+   * PrinterCountOutputType without action
+   */
+  export type PrinterCountOutputTypeCountDamagedbooksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: damagedbooksWhereInput
   }
 
 
@@ -5020,6 +5130,7 @@ export namespace Prisma {
     count_remening_for_transfer?: boolean
     books?: boolean | booksDefaultArgs<ExtArgs>
     bookeditionstores?: boolean | bookedition$bookeditionstoresArgs<ExtArgs>
+    bookeditionprinters?: boolean | bookedition$bookeditionprintersArgs<ExtArgs>
     bookshopeditions?: boolean | bookedition$bookshopeditionsArgs<ExtArgs>
     damagedbooks?: boolean | bookedition$damagedbooksArgs<ExtArgs>
     order_items?: boolean | bookedition$order_itemsArgs<ExtArgs>
@@ -5058,6 +5169,7 @@ export namespace Prisma {
   export type bookeditionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     books?: boolean | booksDefaultArgs<ExtArgs>
     bookeditionstores?: boolean | bookedition$bookeditionstoresArgs<ExtArgs>
+    bookeditionprinters?: boolean | bookedition$bookeditionprintersArgs<ExtArgs>
     bookshopeditions?: boolean | bookedition$bookshopeditionsArgs<ExtArgs>
     damagedbooks?: boolean | bookedition$damagedbooksArgs<ExtArgs>
     order_items?: boolean | bookedition$order_itemsArgs<ExtArgs>
@@ -5070,6 +5182,7 @@ export namespace Prisma {
     objects: {
       books: Prisma.$booksPayload<ExtArgs>
       bookeditionstores: Prisma.$bookeditionstoresPayload<ExtArgs>[]
+      bookeditionprinters: Prisma.$bookeditionprintersPayload<ExtArgs>[]
       bookshopeditions: Prisma.$bookshopeditionsPayload<ExtArgs>[]
       damagedbooks: Prisma.$damagedbooksPayload<ExtArgs>[]
       order_items: Prisma.$order_itemsPayload<ExtArgs>[]
@@ -5440,6 +5553,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     books<T extends booksDefaultArgs<ExtArgs> = {}>(args?: Subset<T, booksDefaultArgs<ExtArgs>>): Prisma__booksClient<$Result.GetResult<Prisma.$booksPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     bookeditionstores<T extends bookedition$bookeditionstoresArgs<ExtArgs> = {}>(args?: Subset<T, bookedition$bookeditionstoresArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$bookeditionstoresPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    bookeditionprinters<T extends bookedition$bookeditionprintersArgs<ExtArgs> = {}>(args?: Subset<T, bookedition$bookeditionprintersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$bookeditionprintersPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     bookshopeditions<T extends bookedition$bookshopeditionsArgs<ExtArgs> = {}>(args?: Subset<T, bookedition$bookshopeditionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$bookshopeditionsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     damagedbooks<T extends bookedition$damagedbooksArgs<ExtArgs> = {}>(args?: Subset<T, bookedition$damagedbooksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$damagedbooksPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     order_items<T extends bookedition$order_itemsArgs<ExtArgs> = {}>(args?: Subset<T, bookedition$order_itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$order_itemsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -5859,6 +5973,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: BookeditionstoresScalarFieldEnum | BookeditionstoresScalarFieldEnum[]
+  }
+
+  /**
+   * bookedition.bookeditionprinters
+   */
+  export type bookedition$bookeditionprintersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the bookeditionprinters
+     */
+    select?: bookeditionprintersSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the bookeditionprinters
+     */
+    omit?: bookeditionprintersOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: bookeditionprintersInclude<ExtArgs> | null
+    where?: bookeditionprintersWhereInput
+    orderBy?: bookeditionprintersOrderByWithRelationInput | bookeditionprintersOrderByWithRelationInput[]
+    cursor?: bookeditionprintersWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BookeditionprintersScalarFieldEnum | BookeditionprintersScalarFieldEnum[]
   }
 
   /**
@@ -6985,6 +7123,1018 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: bookeditionstoresInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model bookeditionprinters
+   */
+
+  export type AggregateBookeditionprinters = {
+    _count: BookeditionprintersCountAggregateOutputType | null
+    _avg: BookeditionprintersAvgAggregateOutputType | null
+    _sum: BookeditionprintersSumAggregateOutputType | null
+    _min: BookeditionprintersMinAggregateOutputType | null
+    _max: BookeditionprintersMaxAggregateOutputType | null
+  }
+
+  export type BookeditionprintersAvgAggregateOutputType = {
+    id: number | null
+    editionId: number | null
+    quantity: number | null
+    printerId: number | null
+  }
+
+  export type BookeditionprintersSumAggregateOutputType = {
+    id: number | null
+    editionId: number | null
+    quantity: number | null
+    printerId: number | null
+  }
+
+  export type BookeditionprintersMinAggregateOutputType = {
+    id: number | null
+    editionId: number | null
+    quantity: number | null
+    printerId: number | null
+    is_deleted: boolean | null
+    updatedAt: Date | null
+    createdAt: Date | null
+    deletedAt: Date | null
+  }
+
+  export type BookeditionprintersMaxAggregateOutputType = {
+    id: number | null
+    editionId: number | null
+    quantity: number | null
+    printerId: number | null
+    is_deleted: boolean | null
+    updatedAt: Date | null
+    createdAt: Date | null
+    deletedAt: Date | null
+  }
+
+  export type BookeditionprintersCountAggregateOutputType = {
+    id: number
+    editionId: number
+    quantity: number
+    printerId: number
+    is_deleted: number
+    updatedAt: number
+    createdAt: number
+    deletedAt: number
+    _all: number
+  }
+
+
+  export type BookeditionprintersAvgAggregateInputType = {
+    id?: true
+    editionId?: true
+    quantity?: true
+    printerId?: true
+  }
+
+  export type BookeditionprintersSumAggregateInputType = {
+    id?: true
+    editionId?: true
+    quantity?: true
+    printerId?: true
+  }
+
+  export type BookeditionprintersMinAggregateInputType = {
+    id?: true
+    editionId?: true
+    quantity?: true
+    printerId?: true
+    is_deleted?: true
+    updatedAt?: true
+    createdAt?: true
+    deletedAt?: true
+  }
+
+  export type BookeditionprintersMaxAggregateInputType = {
+    id?: true
+    editionId?: true
+    quantity?: true
+    printerId?: true
+    is_deleted?: true
+    updatedAt?: true
+    createdAt?: true
+    deletedAt?: true
+  }
+
+  export type BookeditionprintersCountAggregateInputType = {
+    id?: true
+    editionId?: true
+    quantity?: true
+    printerId?: true
+    is_deleted?: true
+    updatedAt?: true
+    createdAt?: true
+    deletedAt?: true
+    _all?: true
+  }
+
+  export type BookeditionprintersAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which bookeditionprinters to aggregate.
+     */
+    where?: bookeditionprintersWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of bookeditionprinters to fetch.
+     */
+    orderBy?: bookeditionprintersOrderByWithRelationInput | bookeditionprintersOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: bookeditionprintersWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` bookeditionprinters from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` bookeditionprinters.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned bookeditionprinters
+    **/
+    _count?: true | BookeditionprintersCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: BookeditionprintersAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: BookeditionprintersSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: BookeditionprintersMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: BookeditionprintersMaxAggregateInputType
+  }
+
+  export type GetBookeditionprintersAggregateType<T extends BookeditionprintersAggregateArgs> = {
+        [P in keyof T & keyof AggregateBookeditionprinters]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateBookeditionprinters[P]>
+      : GetScalarType<T[P], AggregateBookeditionprinters[P]>
+  }
+
+
+
+
+  export type bookeditionprintersGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: bookeditionprintersWhereInput
+    orderBy?: bookeditionprintersOrderByWithAggregationInput | bookeditionprintersOrderByWithAggregationInput[]
+    by: BookeditionprintersScalarFieldEnum[] | BookeditionprintersScalarFieldEnum
+    having?: bookeditionprintersScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: BookeditionprintersCountAggregateInputType | true
+    _avg?: BookeditionprintersAvgAggregateInputType
+    _sum?: BookeditionprintersSumAggregateInputType
+    _min?: BookeditionprintersMinAggregateInputType
+    _max?: BookeditionprintersMaxAggregateInputType
+  }
+
+  export type BookeditionprintersGroupByOutputType = {
+    id: number
+    editionId: number
+    quantity: number | null
+    printerId: number
+    is_deleted: boolean
+    updatedAt: Date
+    createdAt: Date
+    deletedAt: Date
+    _count: BookeditionprintersCountAggregateOutputType | null
+    _avg: BookeditionprintersAvgAggregateOutputType | null
+    _sum: BookeditionprintersSumAggregateOutputType | null
+    _min: BookeditionprintersMinAggregateOutputType | null
+    _max: BookeditionprintersMaxAggregateOutputType | null
+  }
+
+  type GetBookeditionprintersGroupByPayload<T extends bookeditionprintersGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<BookeditionprintersGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof BookeditionprintersGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], BookeditionprintersGroupByOutputType[P]>
+            : GetScalarType<T[P], BookeditionprintersGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type bookeditionprintersSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    editionId?: boolean
+    quantity?: boolean
+    printerId?: boolean
+    is_deleted?: boolean
+    updatedAt?: boolean
+    createdAt?: boolean
+    deletedAt?: boolean
+    bookedition?: boolean | bookeditionDefaultArgs<ExtArgs>
+    printer?: boolean | printerDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["bookeditionprinters"]>
+
+
+
+  export type bookeditionprintersSelectScalar = {
+    id?: boolean
+    editionId?: boolean
+    quantity?: boolean
+    printerId?: boolean
+    is_deleted?: boolean
+    updatedAt?: boolean
+    createdAt?: boolean
+    deletedAt?: boolean
+  }
+
+  export type bookeditionprintersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "editionId" | "quantity" | "printerId" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt", ExtArgs["result"]["bookeditionprinters"]>
+  export type bookeditionprintersInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    bookedition?: boolean | bookeditionDefaultArgs<ExtArgs>
+    printer?: boolean | printerDefaultArgs<ExtArgs>
+  }
+
+  export type $bookeditionprintersPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "bookeditionprinters"
+    objects: {
+      bookedition: Prisma.$bookeditionPayload<ExtArgs>
+      printer: Prisma.$printerPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      editionId: number
+      quantity: number | null
+      printerId: number
+      is_deleted: boolean
+      updatedAt: Date
+      createdAt: Date
+      deletedAt: Date
+    }, ExtArgs["result"]["bookeditionprinters"]>
+    composites: {}
+  }
+
+  type bookeditionprintersGetPayload<S extends boolean | null | undefined | bookeditionprintersDefaultArgs> = $Result.GetResult<Prisma.$bookeditionprintersPayload, S>
+
+  type bookeditionprintersCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<bookeditionprintersFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: BookeditionprintersCountAggregateInputType | true
+    }
+
+  export interface bookeditionprintersDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['bookeditionprinters'], meta: { name: 'bookeditionprinters' } }
+    /**
+     * Find zero or one Bookeditionprinters that matches the filter.
+     * @param {bookeditionprintersFindUniqueArgs} args - Arguments to find a Bookeditionprinters
+     * @example
+     * // Get one Bookeditionprinters
+     * const bookeditionprinters = await prisma.bookeditionprinters.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends bookeditionprintersFindUniqueArgs>(args: SelectSubset<T, bookeditionprintersFindUniqueArgs<ExtArgs>>): Prisma__bookeditionprintersClient<$Result.GetResult<Prisma.$bookeditionprintersPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Bookeditionprinters that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {bookeditionprintersFindUniqueOrThrowArgs} args - Arguments to find a Bookeditionprinters
+     * @example
+     * // Get one Bookeditionprinters
+     * const bookeditionprinters = await prisma.bookeditionprinters.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends bookeditionprintersFindUniqueOrThrowArgs>(args: SelectSubset<T, bookeditionprintersFindUniqueOrThrowArgs<ExtArgs>>): Prisma__bookeditionprintersClient<$Result.GetResult<Prisma.$bookeditionprintersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Bookeditionprinters that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {bookeditionprintersFindFirstArgs} args - Arguments to find a Bookeditionprinters
+     * @example
+     * // Get one Bookeditionprinters
+     * const bookeditionprinters = await prisma.bookeditionprinters.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends bookeditionprintersFindFirstArgs>(args?: SelectSubset<T, bookeditionprintersFindFirstArgs<ExtArgs>>): Prisma__bookeditionprintersClient<$Result.GetResult<Prisma.$bookeditionprintersPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Bookeditionprinters that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {bookeditionprintersFindFirstOrThrowArgs} args - Arguments to find a Bookeditionprinters
+     * @example
+     * // Get one Bookeditionprinters
+     * const bookeditionprinters = await prisma.bookeditionprinters.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends bookeditionprintersFindFirstOrThrowArgs>(args?: SelectSubset<T, bookeditionprintersFindFirstOrThrowArgs<ExtArgs>>): Prisma__bookeditionprintersClient<$Result.GetResult<Prisma.$bookeditionprintersPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Bookeditionprinters that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {bookeditionprintersFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Bookeditionprinters
+     * const bookeditionprinters = await prisma.bookeditionprinters.findMany()
+     * 
+     * // Get first 10 Bookeditionprinters
+     * const bookeditionprinters = await prisma.bookeditionprinters.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const bookeditionprintersWithIdOnly = await prisma.bookeditionprinters.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends bookeditionprintersFindManyArgs>(args?: SelectSubset<T, bookeditionprintersFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$bookeditionprintersPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Bookeditionprinters.
+     * @param {bookeditionprintersCreateArgs} args - Arguments to create a Bookeditionprinters.
+     * @example
+     * // Create one Bookeditionprinters
+     * const Bookeditionprinters = await prisma.bookeditionprinters.create({
+     *   data: {
+     *     // ... data to create a Bookeditionprinters
+     *   }
+     * })
+     * 
+     */
+    create<T extends bookeditionprintersCreateArgs>(args: SelectSubset<T, bookeditionprintersCreateArgs<ExtArgs>>): Prisma__bookeditionprintersClient<$Result.GetResult<Prisma.$bookeditionprintersPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Bookeditionprinters.
+     * @param {bookeditionprintersCreateManyArgs} args - Arguments to create many Bookeditionprinters.
+     * @example
+     * // Create many Bookeditionprinters
+     * const bookeditionprinters = await prisma.bookeditionprinters.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends bookeditionprintersCreateManyArgs>(args?: SelectSubset<T, bookeditionprintersCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Bookeditionprinters.
+     * @param {bookeditionprintersDeleteArgs} args - Arguments to delete one Bookeditionprinters.
+     * @example
+     * // Delete one Bookeditionprinters
+     * const Bookeditionprinters = await prisma.bookeditionprinters.delete({
+     *   where: {
+     *     // ... filter to delete one Bookeditionprinters
+     *   }
+     * })
+     * 
+     */
+    delete<T extends bookeditionprintersDeleteArgs>(args: SelectSubset<T, bookeditionprintersDeleteArgs<ExtArgs>>): Prisma__bookeditionprintersClient<$Result.GetResult<Prisma.$bookeditionprintersPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Bookeditionprinters.
+     * @param {bookeditionprintersUpdateArgs} args - Arguments to update one Bookeditionprinters.
+     * @example
+     * // Update one Bookeditionprinters
+     * const bookeditionprinters = await prisma.bookeditionprinters.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends bookeditionprintersUpdateArgs>(args: SelectSubset<T, bookeditionprintersUpdateArgs<ExtArgs>>): Prisma__bookeditionprintersClient<$Result.GetResult<Prisma.$bookeditionprintersPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Bookeditionprinters.
+     * @param {bookeditionprintersDeleteManyArgs} args - Arguments to filter Bookeditionprinters to delete.
+     * @example
+     * // Delete a few Bookeditionprinters
+     * const { count } = await prisma.bookeditionprinters.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends bookeditionprintersDeleteManyArgs>(args?: SelectSubset<T, bookeditionprintersDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Bookeditionprinters.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {bookeditionprintersUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Bookeditionprinters
+     * const bookeditionprinters = await prisma.bookeditionprinters.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends bookeditionprintersUpdateManyArgs>(args: SelectSubset<T, bookeditionprintersUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Bookeditionprinters.
+     * @param {bookeditionprintersUpsertArgs} args - Arguments to update or create a Bookeditionprinters.
+     * @example
+     * // Update or create a Bookeditionprinters
+     * const bookeditionprinters = await prisma.bookeditionprinters.upsert({
+     *   create: {
+     *     // ... data to create a Bookeditionprinters
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Bookeditionprinters we want to update
+     *   }
+     * })
+     */
+    upsert<T extends bookeditionprintersUpsertArgs>(args: SelectSubset<T, bookeditionprintersUpsertArgs<ExtArgs>>): Prisma__bookeditionprintersClient<$Result.GetResult<Prisma.$bookeditionprintersPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Bookeditionprinters.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {bookeditionprintersCountArgs} args - Arguments to filter Bookeditionprinters to count.
+     * @example
+     * // Count the number of Bookeditionprinters
+     * const count = await prisma.bookeditionprinters.count({
+     *   where: {
+     *     // ... the filter for the Bookeditionprinters we want to count
+     *   }
+     * })
+    **/
+    count<T extends bookeditionprintersCountArgs>(
+      args?: Subset<T, bookeditionprintersCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], BookeditionprintersCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Bookeditionprinters.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BookeditionprintersAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends BookeditionprintersAggregateArgs>(args: Subset<T, BookeditionprintersAggregateArgs>): Prisma.PrismaPromise<GetBookeditionprintersAggregateType<T>>
+
+    /**
+     * Group by Bookeditionprinters.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {bookeditionprintersGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends bookeditionprintersGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: bookeditionprintersGroupByArgs['orderBy'] }
+        : { orderBy?: bookeditionprintersGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, bookeditionprintersGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetBookeditionprintersGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the bookeditionprinters model
+   */
+  readonly fields: bookeditionprintersFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for bookeditionprinters.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__bookeditionprintersClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    bookedition<T extends bookeditionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, bookeditionDefaultArgs<ExtArgs>>): Prisma__bookeditionClient<$Result.GetResult<Prisma.$bookeditionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    printer<T extends printerDefaultArgs<ExtArgs> = {}>(args?: Subset<T, printerDefaultArgs<ExtArgs>>): Prisma__printerClient<$Result.GetResult<Prisma.$printerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the bookeditionprinters model
+   */
+  interface bookeditionprintersFieldRefs {
+    readonly id: FieldRef<"bookeditionprinters", 'Int'>
+    readonly editionId: FieldRef<"bookeditionprinters", 'Int'>
+    readonly quantity: FieldRef<"bookeditionprinters", 'Int'>
+    readonly printerId: FieldRef<"bookeditionprinters", 'Int'>
+    readonly is_deleted: FieldRef<"bookeditionprinters", 'Boolean'>
+    readonly updatedAt: FieldRef<"bookeditionprinters", 'DateTime'>
+    readonly createdAt: FieldRef<"bookeditionprinters", 'DateTime'>
+    readonly deletedAt: FieldRef<"bookeditionprinters", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * bookeditionprinters findUnique
+   */
+  export type bookeditionprintersFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the bookeditionprinters
+     */
+    select?: bookeditionprintersSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the bookeditionprinters
+     */
+    omit?: bookeditionprintersOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: bookeditionprintersInclude<ExtArgs> | null
+    /**
+     * Filter, which bookeditionprinters to fetch.
+     */
+    where: bookeditionprintersWhereUniqueInput
+  }
+
+  /**
+   * bookeditionprinters findUniqueOrThrow
+   */
+  export type bookeditionprintersFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the bookeditionprinters
+     */
+    select?: bookeditionprintersSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the bookeditionprinters
+     */
+    omit?: bookeditionprintersOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: bookeditionprintersInclude<ExtArgs> | null
+    /**
+     * Filter, which bookeditionprinters to fetch.
+     */
+    where: bookeditionprintersWhereUniqueInput
+  }
+
+  /**
+   * bookeditionprinters findFirst
+   */
+  export type bookeditionprintersFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the bookeditionprinters
+     */
+    select?: bookeditionprintersSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the bookeditionprinters
+     */
+    omit?: bookeditionprintersOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: bookeditionprintersInclude<ExtArgs> | null
+    /**
+     * Filter, which bookeditionprinters to fetch.
+     */
+    where?: bookeditionprintersWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of bookeditionprinters to fetch.
+     */
+    orderBy?: bookeditionprintersOrderByWithRelationInput | bookeditionprintersOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for bookeditionprinters.
+     */
+    cursor?: bookeditionprintersWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` bookeditionprinters from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` bookeditionprinters.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of bookeditionprinters.
+     */
+    distinct?: BookeditionprintersScalarFieldEnum | BookeditionprintersScalarFieldEnum[]
+  }
+
+  /**
+   * bookeditionprinters findFirstOrThrow
+   */
+  export type bookeditionprintersFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the bookeditionprinters
+     */
+    select?: bookeditionprintersSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the bookeditionprinters
+     */
+    omit?: bookeditionprintersOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: bookeditionprintersInclude<ExtArgs> | null
+    /**
+     * Filter, which bookeditionprinters to fetch.
+     */
+    where?: bookeditionprintersWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of bookeditionprinters to fetch.
+     */
+    orderBy?: bookeditionprintersOrderByWithRelationInput | bookeditionprintersOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for bookeditionprinters.
+     */
+    cursor?: bookeditionprintersWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` bookeditionprinters from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` bookeditionprinters.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of bookeditionprinters.
+     */
+    distinct?: BookeditionprintersScalarFieldEnum | BookeditionprintersScalarFieldEnum[]
+  }
+
+  /**
+   * bookeditionprinters findMany
+   */
+  export type bookeditionprintersFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the bookeditionprinters
+     */
+    select?: bookeditionprintersSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the bookeditionprinters
+     */
+    omit?: bookeditionprintersOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: bookeditionprintersInclude<ExtArgs> | null
+    /**
+     * Filter, which bookeditionprinters to fetch.
+     */
+    where?: bookeditionprintersWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of bookeditionprinters to fetch.
+     */
+    orderBy?: bookeditionprintersOrderByWithRelationInput | bookeditionprintersOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing bookeditionprinters.
+     */
+    cursor?: bookeditionprintersWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` bookeditionprinters from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` bookeditionprinters.
+     */
+    skip?: number
+    distinct?: BookeditionprintersScalarFieldEnum | BookeditionprintersScalarFieldEnum[]
+  }
+
+  /**
+   * bookeditionprinters create
+   */
+  export type bookeditionprintersCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the bookeditionprinters
+     */
+    select?: bookeditionprintersSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the bookeditionprinters
+     */
+    omit?: bookeditionprintersOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: bookeditionprintersInclude<ExtArgs> | null
+    /**
+     * The data needed to create a bookeditionprinters.
+     */
+    data: XOR<bookeditionprintersCreateInput, bookeditionprintersUncheckedCreateInput>
+  }
+
+  /**
+   * bookeditionprinters createMany
+   */
+  export type bookeditionprintersCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many bookeditionprinters.
+     */
+    data: bookeditionprintersCreateManyInput | bookeditionprintersCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * bookeditionprinters update
+   */
+  export type bookeditionprintersUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the bookeditionprinters
+     */
+    select?: bookeditionprintersSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the bookeditionprinters
+     */
+    omit?: bookeditionprintersOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: bookeditionprintersInclude<ExtArgs> | null
+    /**
+     * The data needed to update a bookeditionprinters.
+     */
+    data: XOR<bookeditionprintersUpdateInput, bookeditionprintersUncheckedUpdateInput>
+    /**
+     * Choose, which bookeditionprinters to update.
+     */
+    where: bookeditionprintersWhereUniqueInput
+  }
+
+  /**
+   * bookeditionprinters updateMany
+   */
+  export type bookeditionprintersUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update bookeditionprinters.
+     */
+    data: XOR<bookeditionprintersUpdateManyMutationInput, bookeditionprintersUncheckedUpdateManyInput>
+    /**
+     * Filter which bookeditionprinters to update
+     */
+    where?: bookeditionprintersWhereInput
+    /**
+     * Limit how many bookeditionprinters to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * bookeditionprinters upsert
+   */
+  export type bookeditionprintersUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the bookeditionprinters
+     */
+    select?: bookeditionprintersSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the bookeditionprinters
+     */
+    omit?: bookeditionprintersOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: bookeditionprintersInclude<ExtArgs> | null
+    /**
+     * The filter to search for the bookeditionprinters to update in case it exists.
+     */
+    where: bookeditionprintersWhereUniqueInput
+    /**
+     * In case the bookeditionprinters found by the `where` argument doesn't exist, create a new bookeditionprinters with this data.
+     */
+    create: XOR<bookeditionprintersCreateInput, bookeditionprintersUncheckedCreateInput>
+    /**
+     * In case the bookeditionprinters was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<bookeditionprintersUpdateInput, bookeditionprintersUncheckedUpdateInput>
+  }
+
+  /**
+   * bookeditionprinters delete
+   */
+  export type bookeditionprintersDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the bookeditionprinters
+     */
+    select?: bookeditionprintersSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the bookeditionprinters
+     */
+    omit?: bookeditionprintersOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: bookeditionprintersInclude<ExtArgs> | null
+    /**
+     * Filter which bookeditionprinters to delete.
+     */
+    where: bookeditionprintersWhereUniqueInput
+  }
+
+  /**
+   * bookeditionprinters deleteMany
+   */
+  export type bookeditionprintersDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which bookeditionprinters to delete
+     */
+    where?: bookeditionprintersWhereInput
+    /**
+     * Limit how many bookeditionprinters to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * bookeditionprinters without action
+   */
+  export type bookeditionprintersDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the bookeditionprinters
+     */
+    select?: bookeditionprintersSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the bookeditionprinters
+     */
+    omit?: bookeditionprintersOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: bookeditionprintersInclude<ExtArgs> | null
   }
 
 
@@ -12471,6 +13621,7 @@ export namespace Prisma {
     id: number | null
     book_id: number | null
     store_id: number | null
+    printer_id: number | null
     edition_id: number | null
     count: number | null
     account_id: number | null
@@ -12480,6 +13631,7 @@ export namespace Prisma {
     id: number | null
     book_id: number | null
     store_id: number | null
+    printer_id: number | null
     edition_id: number | null
     count: number | null
     account_id: number | null
@@ -12490,6 +13642,7 @@ export namespace Prisma {
     type: $Enums.damagedbooks_type | null
     book_id: number | null
     store_id: number | null
+    printer_id: number | null
     edition_id: number | null
     count: number | null
     memo: string | null
@@ -12505,6 +13658,7 @@ export namespace Prisma {
     type: $Enums.damagedbooks_type | null
     book_id: number | null
     store_id: number | null
+    printer_id: number | null
     edition_id: number | null
     count: number | null
     memo: string | null
@@ -12520,6 +13674,7 @@ export namespace Prisma {
     type: number
     book_id: number
     store_id: number
+    printer_id: number
     edition_id: number
     count: number
     memo: number
@@ -12536,6 +13691,7 @@ export namespace Prisma {
     id?: true
     book_id?: true
     store_id?: true
+    printer_id?: true
     edition_id?: true
     count?: true
     account_id?: true
@@ -12545,6 +13701,7 @@ export namespace Prisma {
     id?: true
     book_id?: true
     store_id?: true
+    printer_id?: true
     edition_id?: true
     count?: true
     account_id?: true
@@ -12555,6 +13712,7 @@ export namespace Prisma {
     type?: true
     book_id?: true
     store_id?: true
+    printer_id?: true
     edition_id?: true
     count?: true
     memo?: true
@@ -12570,6 +13728,7 @@ export namespace Prisma {
     type?: true
     book_id?: true
     store_id?: true
+    printer_id?: true
     edition_id?: true
     count?: true
     memo?: true
@@ -12585,6 +13744,7 @@ export namespace Prisma {
     type?: true
     book_id?: true
     store_id?: true
+    printer_id?: true
     edition_id?: true
     count?: true
     memo?: true
@@ -12687,6 +13847,7 @@ export namespace Prisma {
     type: $Enums.damagedbooks_type | null
     book_id: number | null
     store_id: number | null
+    printer_id: number | null
     edition_id: number | null
     count: number | null
     memo: string | null
@@ -12721,6 +13882,7 @@ export namespace Prisma {
     type?: boolean
     book_id?: boolean
     store_id?: boolean
+    printer_id?: boolean
     edition_id?: boolean
     count?: boolean
     memo?: boolean
@@ -12733,6 +13895,7 @@ export namespace Prisma {
     books?: boolean | damagedbooks$booksArgs<ExtArgs>
     bookedition?: boolean | damagedbooks$bookeditionArgs<ExtArgs>
     stores?: boolean | damagedbooks$storesArgs<ExtArgs>
+    printer?: boolean | damagedbooks$printerArgs<ExtArgs>
   }, ExtArgs["result"]["damagedbooks"]>
 
 
@@ -12742,6 +13905,7 @@ export namespace Prisma {
     type?: boolean
     book_id?: boolean
     store_id?: boolean
+    printer_id?: boolean
     edition_id?: boolean
     count?: boolean
     memo?: boolean
@@ -12752,12 +13916,13 @@ export namespace Prisma {
     deletedAt?: boolean
   }
 
-  export type damagedbooksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "type" | "book_id" | "store_id" | "edition_id" | "count" | "memo" | "account_id" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt", ExtArgs["result"]["damagedbooks"]>
+  export type damagedbooksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "type" | "book_id" | "store_id" | "printer_id" | "edition_id" | "count" | "memo" | "account_id" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt", ExtArgs["result"]["damagedbooks"]>
   export type damagedbooksInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     accounts?: boolean | damagedbooks$accountsArgs<ExtArgs>
     books?: boolean | damagedbooks$booksArgs<ExtArgs>
     bookedition?: boolean | damagedbooks$bookeditionArgs<ExtArgs>
     stores?: boolean | damagedbooks$storesArgs<ExtArgs>
+    printer?: boolean | damagedbooks$printerArgs<ExtArgs>
   }
 
   export type $damagedbooksPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -12767,12 +13932,14 @@ export namespace Prisma {
       books: Prisma.$booksPayload<ExtArgs> | null
       bookedition: Prisma.$bookeditionPayload<ExtArgs> | null
       stores: Prisma.$storesPayload<ExtArgs> | null
+      printer: Prisma.$printerPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
       type: $Enums.damagedbooks_type | null
       book_id: number | null
       store_id: number | null
+      printer_id: number | null
       edition_id: number | null
       count: number | null
       memo: string | null
@@ -13125,6 +14292,7 @@ export namespace Prisma {
     books<T extends damagedbooks$booksArgs<ExtArgs> = {}>(args?: Subset<T, damagedbooks$booksArgs<ExtArgs>>): Prisma__booksClient<$Result.GetResult<Prisma.$booksPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     bookedition<T extends damagedbooks$bookeditionArgs<ExtArgs> = {}>(args?: Subset<T, damagedbooks$bookeditionArgs<ExtArgs>>): Prisma__bookeditionClient<$Result.GetResult<Prisma.$bookeditionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     stores<T extends damagedbooks$storesArgs<ExtArgs> = {}>(args?: Subset<T, damagedbooks$storesArgs<ExtArgs>>): Prisma__storesClient<$Result.GetResult<Prisma.$storesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    printer<T extends damagedbooks$printerArgs<ExtArgs> = {}>(args?: Subset<T, damagedbooks$printerArgs<ExtArgs>>): Prisma__printerClient<$Result.GetResult<Prisma.$printerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -13158,6 +14326,7 @@ export namespace Prisma {
     readonly type: FieldRef<"damagedbooks", 'damagedbooks_type'>
     readonly book_id: FieldRef<"damagedbooks", 'Int'>
     readonly store_id: FieldRef<"damagedbooks", 'Int'>
+    readonly printer_id: FieldRef<"damagedbooks", 'Int'>
     readonly edition_id: FieldRef<"damagedbooks", 'Int'>
     readonly count: FieldRef<"damagedbooks", 'Int'>
     readonly memo: FieldRef<"damagedbooks", 'String'>
@@ -13582,6 +14751,25 @@ export namespace Prisma {
      */
     include?: storesInclude<ExtArgs> | null
     where?: storesWhereInput
+  }
+
+  /**
+   * damagedbooks.printer
+   */
+  export type damagedbooks$printerArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the printer
+     */
+    select?: printerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the printer
+     */
+    omit?: printerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: printerInclude<ExtArgs> | null
+    where?: printerWhereInput
   }
 
   /**
@@ -14758,6 +15946,8 @@ export namespace Prisma {
     createdAt?: boolean
     deletedAt?: boolean
     printorder?: boolean | printer$printorderArgs<ExtArgs>
+    bookeditionprinters?: boolean | printer$bookeditionprintersArgs<ExtArgs>
+    damagedbooks?: boolean | printer$damagedbooksArgs<ExtArgs>
     _count?: boolean | PrinterCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["printer"]>
 
@@ -14779,6 +15969,8 @@ export namespace Prisma {
   export type printerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "location" | "phone" | "email" | "status" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt", ExtArgs["result"]["printer"]>
   export type printerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     printorder?: boolean | printer$printorderArgs<ExtArgs>
+    bookeditionprinters?: boolean | printer$bookeditionprintersArgs<ExtArgs>
+    damagedbooks?: boolean | printer$damagedbooksArgs<ExtArgs>
     _count?: boolean | PrinterCountOutputTypeDefaultArgs<ExtArgs>
   }
 
@@ -14786,6 +15978,8 @@ export namespace Prisma {
     name: "printer"
     objects: {
       printorder: Prisma.$printorderPayload<ExtArgs>[]
+      bookeditionprinters: Prisma.$bookeditionprintersPayload<ExtArgs>[]
+      damagedbooks: Prisma.$damagedbooksPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -15139,6 +16333,8 @@ export namespace Prisma {
   export interface Prisma__printerClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     printorder<T extends printer$printorderArgs<ExtArgs> = {}>(args?: Subset<T, printer$printorderArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$printorderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    bookeditionprinters<T extends printer$bookeditionprintersArgs<ExtArgs> = {}>(args?: Subset<T, printer$bookeditionprintersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$bookeditionprintersPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    damagedbooks<T extends printer$damagedbooksArgs<ExtArgs> = {}>(args?: Subset<T, printer$damagedbooksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$damagedbooksPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -15542,6 +16738,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: PrintorderScalarFieldEnum | PrintorderScalarFieldEnum[]
+  }
+
+  /**
+   * printer.bookeditionprinters
+   */
+  export type printer$bookeditionprintersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the bookeditionprinters
+     */
+    select?: bookeditionprintersSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the bookeditionprinters
+     */
+    omit?: bookeditionprintersOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: bookeditionprintersInclude<ExtArgs> | null
+    where?: bookeditionprintersWhereInput
+    orderBy?: bookeditionprintersOrderByWithRelationInput | bookeditionprintersOrderByWithRelationInput[]
+    cursor?: bookeditionprintersWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BookeditionprintersScalarFieldEnum | BookeditionprintersScalarFieldEnum[]
+  }
+
+  /**
+   * printer.damagedbooks
+   */
+  export type printer$damagedbooksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the damagedbooks
+     */
+    select?: damagedbooksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the damagedbooks
+     */
+    omit?: damagedbooksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: damagedbooksInclude<ExtArgs> | null
+    where?: damagedbooksWhereInput
+    orderBy?: damagedbooksOrderByWithRelationInput | damagedbooksOrderByWithRelationInput[]
+    cursor?: damagedbooksWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DamagedbooksScalarFieldEnum | DamagedbooksScalarFieldEnum[]
   }
 
   /**
@@ -31860,6 +33104,20 @@ export namespace Prisma {
   export type BookeditionstoresScalarFieldEnum = (typeof BookeditionstoresScalarFieldEnum)[keyof typeof BookeditionstoresScalarFieldEnum]
 
 
+  export const BookeditionprintersScalarFieldEnum: {
+    id: 'id',
+    editionId: 'editionId',
+    quantity: 'quantity',
+    printerId: 'printerId',
+    is_deleted: 'is_deleted',
+    updatedAt: 'updatedAt',
+    createdAt: 'createdAt',
+    deletedAt: 'deletedAt'
+  };
+
+  export type BookeditionprintersScalarFieldEnum = (typeof BookeditionprintersScalarFieldEnum)[keyof typeof BookeditionprintersScalarFieldEnum]
+
+
   export const BooksScalarFieldEnum: {
     id: 'id',
     unique_identification_code: 'unique_identification_code',
@@ -31958,6 +33216,7 @@ export namespace Prisma {
     type: 'type',
     book_id: 'book_id',
     store_id: 'store_id',
+    printer_id: 'printer_id',
     edition_id: 'edition_id',
     count: 'count',
     memo: 'memo',
@@ -32715,6 +33974,7 @@ export namespace Prisma {
     count_remening_for_transfer?: IntNullableFilter<"bookedition"> | number | null
     books?: XOR<BooksScalarRelationFilter, booksWhereInput>
     bookeditionstores?: BookeditionstoresListRelationFilter
+    bookeditionprinters?: BookeditionprintersListRelationFilter
     bookshopeditions?: BookshopeditionsListRelationFilter
     damagedbooks?: DamagedbooksListRelationFilter
     order_items?: Order_itemsListRelationFilter
@@ -32746,6 +34006,7 @@ export namespace Prisma {
     count_remening_for_transfer?: SortOrderInput | SortOrder
     books?: booksOrderByWithRelationInput
     bookeditionstores?: bookeditionstoresOrderByRelationAggregateInput
+    bookeditionprinters?: bookeditionprintersOrderByRelationAggregateInput
     bookshopeditions?: bookshopeditionsOrderByRelationAggregateInput
     damagedbooks?: damagedbooksOrderByRelationAggregateInput
     order_items?: order_itemsOrderByRelationAggregateInput
@@ -32781,6 +34042,7 @@ export namespace Prisma {
     count_remening_for_transfer?: IntNullableFilter<"bookedition"> | number | null
     books?: XOR<BooksScalarRelationFilter, booksWhereInput>
     bookeditionstores?: BookeditionstoresListRelationFilter
+    bookeditionprinters?: BookeditionprintersListRelationFilter
     bookshopeditions?: BookshopeditionsListRelationFilter
     damagedbooks?: DamagedbooksListRelationFilter
     order_items?: Order_itemsListRelationFilter
@@ -32918,6 +34180,81 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"bookeditionstores"> | Date | string
     createdAt?: DateTimeWithAggregatesFilter<"bookeditionstores"> | Date | string
     deletedAt?: DateTimeWithAggregatesFilter<"bookeditionstores"> | Date | string
+  }
+
+  export type bookeditionprintersWhereInput = {
+    AND?: bookeditionprintersWhereInput | bookeditionprintersWhereInput[]
+    OR?: bookeditionprintersWhereInput[]
+    NOT?: bookeditionprintersWhereInput | bookeditionprintersWhereInput[]
+    id?: IntFilter<"bookeditionprinters"> | number
+    editionId?: IntFilter<"bookeditionprinters"> | number
+    quantity?: IntNullableFilter<"bookeditionprinters"> | number | null
+    printerId?: IntFilter<"bookeditionprinters"> | number
+    is_deleted?: BoolFilter<"bookeditionprinters"> | boolean
+    updatedAt?: DateTimeFilter<"bookeditionprinters"> | Date | string
+    createdAt?: DateTimeFilter<"bookeditionprinters"> | Date | string
+    deletedAt?: DateTimeFilter<"bookeditionprinters"> | Date | string
+    bookedition?: XOR<BookeditionScalarRelationFilter, bookeditionWhereInput>
+    printer?: XOR<PrinterScalarRelationFilter, printerWhereInput>
+  }
+
+  export type bookeditionprintersOrderByWithRelationInput = {
+    id?: SortOrder
+    editionId?: SortOrder
+    quantity?: SortOrderInput | SortOrder
+    printerId?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+    deletedAt?: SortOrder
+    bookedition?: bookeditionOrderByWithRelationInput
+    printer?: printerOrderByWithRelationInput
+  }
+
+  export type bookeditionprintersWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: bookeditionprintersWhereInput | bookeditionprintersWhereInput[]
+    OR?: bookeditionprintersWhereInput[]
+    NOT?: bookeditionprintersWhereInput | bookeditionprintersWhereInput[]
+    editionId?: IntFilter<"bookeditionprinters"> | number
+    quantity?: IntNullableFilter<"bookeditionprinters"> | number | null
+    printerId?: IntFilter<"bookeditionprinters"> | number
+    is_deleted?: BoolFilter<"bookeditionprinters"> | boolean
+    updatedAt?: DateTimeFilter<"bookeditionprinters"> | Date | string
+    createdAt?: DateTimeFilter<"bookeditionprinters"> | Date | string
+    deletedAt?: DateTimeFilter<"bookeditionprinters"> | Date | string
+    bookedition?: XOR<BookeditionScalarRelationFilter, bookeditionWhereInput>
+    printer?: XOR<PrinterScalarRelationFilter, printerWhereInput>
+  }, "id">
+
+  export type bookeditionprintersOrderByWithAggregationInput = {
+    id?: SortOrder
+    editionId?: SortOrder
+    quantity?: SortOrderInput | SortOrder
+    printerId?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+    deletedAt?: SortOrder
+    _count?: bookeditionprintersCountOrderByAggregateInput
+    _avg?: bookeditionprintersAvgOrderByAggregateInput
+    _max?: bookeditionprintersMaxOrderByAggregateInput
+    _min?: bookeditionprintersMinOrderByAggregateInput
+    _sum?: bookeditionprintersSumOrderByAggregateInput
+  }
+
+  export type bookeditionprintersScalarWhereWithAggregatesInput = {
+    AND?: bookeditionprintersScalarWhereWithAggregatesInput | bookeditionprintersScalarWhereWithAggregatesInput[]
+    OR?: bookeditionprintersScalarWhereWithAggregatesInput[]
+    NOT?: bookeditionprintersScalarWhereWithAggregatesInput | bookeditionprintersScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"bookeditionprinters"> | number
+    editionId?: IntWithAggregatesFilter<"bookeditionprinters"> | number
+    quantity?: IntNullableWithAggregatesFilter<"bookeditionprinters"> | number | null
+    printerId?: IntWithAggregatesFilter<"bookeditionprinters"> | number
+    is_deleted?: BoolWithAggregatesFilter<"bookeditionprinters"> | boolean
+    updatedAt?: DateTimeWithAggregatesFilter<"bookeditionprinters"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"bookeditionprinters"> | Date | string
+    deletedAt?: DateTimeWithAggregatesFilter<"bookeditionprinters"> | Date | string
   }
 
   export type booksWhereInput = {
@@ -33425,6 +34762,7 @@ export namespace Prisma {
     type?: Enumdamagedbooks_typeNullableFilter<"damagedbooks"> | $Enums.damagedbooks_type | null
     book_id?: IntNullableFilter<"damagedbooks"> | number | null
     store_id?: IntNullableFilter<"damagedbooks"> | number | null
+    printer_id?: IntNullableFilter<"damagedbooks"> | number | null
     edition_id?: IntNullableFilter<"damagedbooks"> | number | null
     count?: IntNullableFilter<"damagedbooks"> | number | null
     memo?: StringNullableFilter<"damagedbooks"> | string | null
@@ -33437,6 +34775,7 @@ export namespace Prisma {
     books?: XOR<BooksNullableScalarRelationFilter, booksWhereInput> | null
     bookedition?: XOR<BookeditionNullableScalarRelationFilter, bookeditionWhereInput> | null
     stores?: XOR<StoresNullableScalarRelationFilter, storesWhereInput> | null
+    printer?: XOR<PrinterNullableScalarRelationFilter, printerWhereInput> | null
   }
 
   export type damagedbooksOrderByWithRelationInput = {
@@ -33444,6 +34783,7 @@ export namespace Prisma {
     type?: SortOrderInput | SortOrder
     book_id?: SortOrderInput | SortOrder
     store_id?: SortOrderInput | SortOrder
+    printer_id?: SortOrderInput | SortOrder
     edition_id?: SortOrderInput | SortOrder
     count?: SortOrderInput | SortOrder
     memo?: SortOrderInput | SortOrder
@@ -33456,6 +34796,7 @@ export namespace Prisma {
     books?: booksOrderByWithRelationInput
     bookedition?: bookeditionOrderByWithRelationInput
     stores?: storesOrderByWithRelationInput
+    printer?: printerOrderByWithRelationInput
     _relevance?: damagedbooksOrderByRelevanceInput
   }
 
@@ -33467,6 +34808,7 @@ export namespace Prisma {
     type?: Enumdamagedbooks_typeNullableFilter<"damagedbooks"> | $Enums.damagedbooks_type | null
     book_id?: IntNullableFilter<"damagedbooks"> | number | null
     store_id?: IntNullableFilter<"damagedbooks"> | number | null
+    printer_id?: IntNullableFilter<"damagedbooks"> | number | null
     edition_id?: IntNullableFilter<"damagedbooks"> | number | null
     count?: IntNullableFilter<"damagedbooks"> | number | null
     memo?: StringNullableFilter<"damagedbooks"> | string | null
@@ -33479,6 +34821,7 @@ export namespace Prisma {
     books?: XOR<BooksNullableScalarRelationFilter, booksWhereInput> | null
     bookedition?: XOR<BookeditionNullableScalarRelationFilter, bookeditionWhereInput> | null
     stores?: XOR<StoresNullableScalarRelationFilter, storesWhereInput> | null
+    printer?: XOR<PrinterNullableScalarRelationFilter, printerWhereInput> | null
   }, "id">
 
   export type damagedbooksOrderByWithAggregationInput = {
@@ -33486,6 +34829,7 @@ export namespace Prisma {
     type?: SortOrderInput | SortOrder
     book_id?: SortOrderInput | SortOrder
     store_id?: SortOrderInput | SortOrder
+    printer_id?: SortOrderInput | SortOrder
     edition_id?: SortOrderInput | SortOrder
     count?: SortOrderInput | SortOrder
     memo?: SortOrderInput | SortOrder
@@ -33509,6 +34853,7 @@ export namespace Prisma {
     type?: Enumdamagedbooks_typeNullableWithAggregatesFilter<"damagedbooks"> | $Enums.damagedbooks_type | null
     book_id?: IntNullableWithAggregatesFilter<"damagedbooks"> | number | null
     store_id?: IntNullableWithAggregatesFilter<"damagedbooks"> | number | null
+    printer_id?: IntNullableWithAggregatesFilter<"damagedbooks"> | number | null
     edition_id?: IntNullableWithAggregatesFilter<"damagedbooks"> | number | null
     count?: IntNullableWithAggregatesFilter<"damagedbooks"> | number | null
     memo?: StringNullableWithAggregatesFilter<"damagedbooks"> | string | null
@@ -33589,6 +34934,8 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"printer"> | Date | string
     deletedAt?: DateTimeFilter<"printer"> | Date | string
     printorder?: PrintorderListRelationFilter
+    bookeditionprinters?: BookeditionprintersListRelationFilter
+    damagedbooks?: DamagedbooksListRelationFilter
   }
 
   export type printerOrderByWithRelationInput = {
@@ -33603,6 +34950,8 @@ export namespace Prisma {
     createdAt?: SortOrder
     deletedAt?: SortOrder
     printorder?: printorderOrderByRelationAggregateInput
+    bookeditionprinters?: bookeditionprintersOrderByRelationAggregateInput
+    damagedbooks?: damagedbooksOrderByRelationAggregateInput
     _relevance?: printerOrderByRelevanceInput
   }
 
@@ -33621,6 +34970,8 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"printer"> | Date | string
     deletedAt?: DateTimeFilter<"printer"> | Date | string
     printorder?: PrintorderListRelationFilter
+    bookeditionprinters?: BookeditionprintersListRelationFilter
+    damagedbooks?: DamagedbooksListRelationFilter
   }, "id">
 
   export type printerOrderByWithAggregationInput = {
@@ -35124,6 +36475,7 @@ export namespace Prisma {
     count_remening_for_transfer?: number | null
     books: booksCreateNestedOneWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
+    bookeditionprinters?: bookeditionprintersCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsCreateNestedManyWithoutBookeditionInput
     damagedbooks?: damagedbooksCreateNestedManyWithoutBookeditionInput
     order_items?: order_itemsCreateNestedManyWithoutBookeditionInput
@@ -35154,6 +36506,7 @@ export namespace Prisma {
     transportation_cost?: number | null
     count_remening_for_transfer?: number | null
     bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
+    bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookeditionInput
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutBookeditionInput
     order_items?: order_itemsUncheckedCreateNestedManyWithoutBookeditionInput
@@ -35183,6 +36536,7 @@ export namespace Prisma {
     count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
     books?: booksUpdateOneRequiredWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
+    bookeditionprinters?: bookeditionprintersUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUpdateManyWithoutBookeditionNestedInput
     damagedbooks?: damagedbooksUpdateManyWithoutBookeditionNestedInput
     order_items?: order_itemsUpdateManyWithoutBookeditionNestedInput
@@ -35213,6 +36567,7 @@ export namespace Prisma {
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
     bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
+    bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookeditionNestedInput
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutBookeditionNestedInput
     order_items?: order_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
@@ -35358,6 +36713,78 @@ export namespace Prisma {
     editionId?: IntFieldUpdateOperationsInput | number
     quantity?: NullableIntFieldUpdateOperationsInput | number | null
     storeId?: IntFieldUpdateOperationsInput | number
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type bookeditionprintersCreateInput = {
+    quantity?: number | null
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    bookedition: bookeditionCreateNestedOneWithoutBookeditionprintersInput
+    printer: printerCreateNestedOneWithoutBookeditionprintersInput
+  }
+
+  export type bookeditionprintersUncheckedCreateInput = {
+    id?: number
+    editionId: number
+    quantity?: number | null
+    printerId: number
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+  }
+
+  export type bookeditionprintersUpdateInput = {
+    quantity?: NullableIntFieldUpdateOperationsInput | number | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bookedition?: bookeditionUpdateOneRequiredWithoutBookeditionprintersNestedInput
+    printer?: printerUpdateOneRequiredWithoutBookeditionprintersNestedInput
+  }
+
+  export type bookeditionprintersUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    editionId?: IntFieldUpdateOperationsInput | number
+    quantity?: NullableIntFieldUpdateOperationsInput | number | null
+    printerId?: IntFieldUpdateOperationsInput | number
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type bookeditionprintersCreateManyInput = {
+    id?: number
+    editionId: number
+    quantity?: number | null
+    printerId: number
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+  }
+
+  export type bookeditionprintersUpdateManyMutationInput = {
+    quantity?: NullableIntFieldUpdateOperationsInput | number | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type bookeditionprintersUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    editionId?: IntFieldUpdateOperationsInput | number
+    quantity?: NullableIntFieldUpdateOperationsInput | number | null
+    printerId?: IntFieldUpdateOperationsInput | number
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -35926,6 +37353,7 @@ export namespace Prisma {
     books?: booksCreateNestedOneWithoutDamagedbooksInput
     bookedition?: bookeditionCreateNestedOneWithoutDamagedbooksInput
     stores?: storesCreateNestedOneWithoutDamagedbooksInput
+    printer?: printerCreateNestedOneWithoutDamagedbooksInput
   }
 
   export type damagedbooksUncheckedCreateInput = {
@@ -35933,6 +37361,7 @@ export namespace Prisma {
     type?: $Enums.damagedbooks_type | null
     book_id?: number | null
     store_id?: number | null
+    printer_id?: number | null
     edition_id?: number | null
     count?: number | null
     memo?: string | null
@@ -35955,6 +37384,7 @@ export namespace Prisma {
     books?: booksUpdateOneWithoutDamagedbooksNestedInput
     bookedition?: bookeditionUpdateOneWithoutDamagedbooksNestedInput
     stores?: storesUpdateOneWithoutDamagedbooksNestedInput
+    printer?: printerUpdateOneWithoutDamagedbooksNestedInput
   }
 
   export type damagedbooksUncheckedUpdateInput = {
@@ -35962,6 +37392,7 @@ export namespace Prisma {
     type?: NullableEnumdamagedbooks_typeFieldUpdateOperationsInput | $Enums.damagedbooks_type | null
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
     store_id?: NullableIntFieldUpdateOperationsInput | number | null
+    printer_id?: NullableIntFieldUpdateOperationsInput | number | null
     edition_id?: NullableIntFieldUpdateOperationsInput | number | null
     count?: NullableIntFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -35977,6 +37408,7 @@ export namespace Prisma {
     type?: $Enums.damagedbooks_type | null
     book_id?: number | null
     store_id?: number | null
+    printer_id?: number | null
     edition_id?: number | null
     count?: number | null
     memo?: string | null
@@ -36002,6 +37434,7 @@ export namespace Prisma {
     type?: NullableEnumdamagedbooks_typeFieldUpdateOperationsInput | $Enums.damagedbooks_type | null
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
     store_id?: NullableIntFieldUpdateOperationsInput | number | null
+    printer_id?: NullableIntFieldUpdateOperationsInput | number | null
     edition_id?: NullableIntFieldUpdateOperationsInput | number | null
     count?: NullableIntFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -36076,6 +37509,8 @@ export namespace Prisma {
     createdAt?: Date | string
     deletedAt?: Date | string
     printorder?: printorderCreateNestedManyWithoutPrinterInput
+    bookeditionprinters?: bookeditionprintersCreateNestedManyWithoutPrinterInput
+    damagedbooks?: damagedbooksCreateNestedManyWithoutPrinterInput
   }
 
   export type printerUncheckedCreateInput = {
@@ -36090,6 +37525,8 @@ export namespace Prisma {
     createdAt?: Date | string
     deletedAt?: Date | string
     printorder?: printorderUncheckedCreateNestedManyWithoutPrinterInput
+    bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutPrinterInput
+    damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutPrinterInput
   }
 
   export type printerUpdateInput = {
@@ -36103,6 +37540,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     printorder?: printorderUpdateManyWithoutPrinterNestedInput
+    bookeditionprinters?: bookeditionprintersUpdateManyWithoutPrinterNestedInput
+    damagedbooks?: damagedbooksUpdateManyWithoutPrinterNestedInput
   }
 
   export type printerUncheckedUpdateInput = {
@@ -36117,6 +37556,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     printorder?: printorderUncheckedUpdateManyWithoutPrinterNestedInput
+    bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutPrinterNestedInput
+    damagedbooks?: damagedbooksUncheckedUpdateManyWithoutPrinterNestedInput
   }
 
   export type printerCreateManyInput = {
@@ -37843,6 +39284,12 @@ export namespace Prisma {
     none?: bookeditionstoresWhereInput
   }
 
+  export type BookeditionprintersListRelationFilter = {
+    every?: bookeditionprintersWhereInput
+    some?: bookeditionprintersWhereInput
+    none?: bookeditionprintersWhereInput
+  }
+
   export type BookshopeditionsListRelationFilter = {
     every?: bookshopeditionsWhereInput
     some?: bookshopeditionsWhereInput
@@ -37867,6 +39314,10 @@ export namespace Prisma {
   }
 
   export type bookeditionstoresOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type bookeditionprintersOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -38104,6 +39555,58 @@ export namespace Prisma {
     editionId?: SortOrder
     quantity?: SortOrder
     storeId?: SortOrder
+  }
+
+  export type PrinterScalarRelationFilter = {
+    is?: printerWhereInput
+    isNot?: printerWhereInput
+  }
+
+  export type bookeditionprintersCountOrderByAggregateInput = {
+    id?: SortOrder
+    editionId?: SortOrder
+    quantity?: SortOrder
+    printerId?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+    deletedAt?: SortOrder
+  }
+
+  export type bookeditionprintersAvgOrderByAggregateInput = {
+    id?: SortOrder
+    editionId?: SortOrder
+    quantity?: SortOrder
+    printerId?: SortOrder
+  }
+
+  export type bookeditionprintersMaxOrderByAggregateInput = {
+    id?: SortOrder
+    editionId?: SortOrder
+    quantity?: SortOrder
+    printerId?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+    deletedAt?: SortOrder
+  }
+
+  export type bookeditionprintersMinOrderByAggregateInput = {
+    id?: SortOrder
+    editionId?: SortOrder
+    quantity?: SortOrder
+    printerId?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+    deletedAt?: SortOrder
+  }
+
+  export type bookeditionprintersSumOrderByAggregateInput = {
+    id?: SortOrder
+    editionId?: SortOrder
+    quantity?: SortOrder
+    printerId?: SortOrder
   }
 
   export type Enumbooks_productionstatusNullableFilter<$PrismaModel = never> = {
@@ -38545,6 +40048,11 @@ export namespace Prisma {
     isNot?: storesWhereInput | null
   }
 
+  export type PrinterNullableScalarRelationFilter = {
+    is?: printerWhereInput | null
+    isNot?: printerWhereInput | null
+  }
+
   export type damagedbooksOrderByRelevanceInput = {
     fields: damagedbooksOrderByRelevanceFieldEnum | damagedbooksOrderByRelevanceFieldEnum[]
     sort: SortOrder
@@ -38556,6 +40064,7 @@ export namespace Prisma {
     type?: SortOrder
     book_id?: SortOrder
     store_id?: SortOrder
+    printer_id?: SortOrder
     edition_id?: SortOrder
     count?: SortOrder
     memo?: SortOrder
@@ -38570,6 +40079,7 @@ export namespace Prisma {
     id?: SortOrder
     book_id?: SortOrder
     store_id?: SortOrder
+    printer_id?: SortOrder
     edition_id?: SortOrder
     count?: SortOrder
     account_id?: SortOrder
@@ -38580,6 +40090,7 @@ export namespace Prisma {
     type?: SortOrder
     book_id?: SortOrder
     store_id?: SortOrder
+    printer_id?: SortOrder
     edition_id?: SortOrder
     count?: SortOrder
     memo?: SortOrder
@@ -38595,6 +40106,7 @@ export namespace Prisma {
     type?: SortOrder
     book_id?: SortOrder
     store_id?: SortOrder
+    printer_id?: SortOrder
     edition_id?: SortOrder
     count?: SortOrder
     memo?: SortOrder
@@ -38609,6 +40121,7 @@ export namespace Prisma {
     id?: SortOrder
     book_id?: SortOrder
     store_id?: SortOrder
+    printer_id?: SortOrder
     edition_id?: SortOrder
     count?: SortOrder
     account_id?: SortOrder
@@ -38748,11 +40261,6 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
-  export type PrinterScalarRelationFilter = {
-    is?: printerWhereInput
-    isNot?: printerWhereInput
   }
 
   export type Printorder_paymentsListRelationFilter = {
@@ -39935,6 +41443,13 @@ export namespace Prisma {
     connect?: bookeditionstoresWhereUniqueInput | bookeditionstoresWhereUniqueInput[]
   }
 
+  export type bookeditionprintersCreateNestedManyWithoutBookeditionInput = {
+    create?: XOR<bookeditionprintersCreateWithoutBookeditionInput, bookeditionprintersUncheckedCreateWithoutBookeditionInput> | bookeditionprintersCreateWithoutBookeditionInput[] | bookeditionprintersUncheckedCreateWithoutBookeditionInput[]
+    connectOrCreate?: bookeditionprintersCreateOrConnectWithoutBookeditionInput | bookeditionprintersCreateOrConnectWithoutBookeditionInput[]
+    createMany?: bookeditionprintersCreateManyBookeditionInputEnvelope
+    connect?: bookeditionprintersWhereUniqueInput | bookeditionprintersWhereUniqueInput[]
+  }
+
   export type bookshopeditionsCreateNestedManyWithoutBookeditionInput = {
     create?: XOR<bookshopeditionsCreateWithoutBookeditionInput, bookshopeditionsUncheckedCreateWithoutBookeditionInput> | bookshopeditionsCreateWithoutBookeditionInput[] | bookshopeditionsUncheckedCreateWithoutBookeditionInput[]
     connectOrCreate?: bookshopeditionsCreateOrConnectWithoutBookeditionInput | bookshopeditionsCreateOrConnectWithoutBookeditionInput[]
@@ -39968,6 +41483,13 @@ export namespace Prisma {
     connectOrCreate?: bookeditionstoresCreateOrConnectWithoutBookeditionInput | bookeditionstoresCreateOrConnectWithoutBookeditionInput[]
     createMany?: bookeditionstoresCreateManyBookeditionInputEnvelope
     connect?: bookeditionstoresWhereUniqueInput | bookeditionstoresWhereUniqueInput[]
+  }
+
+  export type bookeditionprintersUncheckedCreateNestedManyWithoutBookeditionInput = {
+    create?: XOR<bookeditionprintersCreateWithoutBookeditionInput, bookeditionprintersUncheckedCreateWithoutBookeditionInput> | bookeditionprintersCreateWithoutBookeditionInput[] | bookeditionprintersUncheckedCreateWithoutBookeditionInput[]
+    connectOrCreate?: bookeditionprintersCreateOrConnectWithoutBookeditionInput | bookeditionprintersCreateOrConnectWithoutBookeditionInput[]
+    createMany?: bookeditionprintersCreateManyBookeditionInputEnvelope
+    connect?: bookeditionprintersWhereUniqueInput | bookeditionprintersWhereUniqueInput[]
   }
 
   export type bookshopeditionsUncheckedCreateNestedManyWithoutBookeditionInput = {
@@ -40040,6 +41562,20 @@ export namespace Prisma {
     deleteMany?: bookeditionstoresScalarWhereInput | bookeditionstoresScalarWhereInput[]
   }
 
+  export type bookeditionprintersUpdateManyWithoutBookeditionNestedInput = {
+    create?: XOR<bookeditionprintersCreateWithoutBookeditionInput, bookeditionprintersUncheckedCreateWithoutBookeditionInput> | bookeditionprintersCreateWithoutBookeditionInput[] | bookeditionprintersUncheckedCreateWithoutBookeditionInput[]
+    connectOrCreate?: bookeditionprintersCreateOrConnectWithoutBookeditionInput | bookeditionprintersCreateOrConnectWithoutBookeditionInput[]
+    upsert?: bookeditionprintersUpsertWithWhereUniqueWithoutBookeditionInput | bookeditionprintersUpsertWithWhereUniqueWithoutBookeditionInput[]
+    createMany?: bookeditionprintersCreateManyBookeditionInputEnvelope
+    set?: bookeditionprintersWhereUniqueInput | bookeditionprintersWhereUniqueInput[]
+    disconnect?: bookeditionprintersWhereUniqueInput | bookeditionprintersWhereUniqueInput[]
+    delete?: bookeditionprintersWhereUniqueInput | bookeditionprintersWhereUniqueInput[]
+    connect?: bookeditionprintersWhereUniqueInput | bookeditionprintersWhereUniqueInput[]
+    update?: bookeditionprintersUpdateWithWhereUniqueWithoutBookeditionInput | bookeditionprintersUpdateWithWhereUniqueWithoutBookeditionInput[]
+    updateMany?: bookeditionprintersUpdateManyWithWhereWithoutBookeditionInput | bookeditionprintersUpdateManyWithWhereWithoutBookeditionInput[]
+    deleteMany?: bookeditionprintersScalarWhereInput | bookeditionprintersScalarWhereInput[]
+  }
+
   export type bookshopeditionsUpdateManyWithoutBookeditionNestedInput = {
     create?: XOR<bookshopeditionsCreateWithoutBookeditionInput, bookshopeditionsUncheckedCreateWithoutBookeditionInput> | bookshopeditionsCreateWithoutBookeditionInput[] | bookshopeditionsUncheckedCreateWithoutBookeditionInput[]
     connectOrCreate?: bookshopeditionsCreateOrConnectWithoutBookeditionInput | bookshopeditionsCreateOrConnectWithoutBookeditionInput[]
@@ -40108,6 +41644,20 @@ export namespace Prisma {
     update?: bookeditionstoresUpdateWithWhereUniqueWithoutBookeditionInput | bookeditionstoresUpdateWithWhereUniqueWithoutBookeditionInput[]
     updateMany?: bookeditionstoresUpdateManyWithWhereWithoutBookeditionInput | bookeditionstoresUpdateManyWithWhereWithoutBookeditionInput[]
     deleteMany?: bookeditionstoresScalarWhereInput | bookeditionstoresScalarWhereInput[]
+  }
+
+  export type bookeditionprintersUncheckedUpdateManyWithoutBookeditionNestedInput = {
+    create?: XOR<bookeditionprintersCreateWithoutBookeditionInput, bookeditionprintersUncheckedCreateWithoutBookeditionInput> | bookeditionprintersCreateWithoutBookeditionInput[] | bookeditionprintersUncheckedCreateWithoutBookeditionInput[]
+    connectOrCreate?: bookeditionprintersCreateOrConnectWithoutBookeditionInput | bookeditionprintersCreateOrConnectWithoutBookeditionInput[]
+    upsert?: bookeditionprintersUpsertWithWhereUniqueWithoutBookeditionInput | bookeditionprintersUpsertWithWhereUniqueWithoutBookeditionInput[]
+    createMany?: bookeditionprintersCreateManyBookeditionInputEnvelope
+    set?: bookeditionprintersWhereUniqueInput | bookeditionprintersWhereUniqueInput[]
+    disconnect?: bookeditionprintersWhereUniqueInput | bookeditionprintersWhereUniqueInput[]
+    delete?: bookeditionprintersWhereUniqueInput | bookeditionprintersWhereUniqueInput[]
+    connect?: bookeditionprintersWhereUniqueInput | bookeditionprintersWhereUniqueInput[]
+    update?: bookeditionprintersUpdateWithWhereUniqueWithoutBookeditionInput | bookeditionprintersUpdateWithWhereUniqueWithoutBookeditionInput[]
+    updateMany?: bookeditionprintersUpdateManyWithWhereWithoutBookeditionInput | bookeditionprintersUpdateManyWithWhereWithoutBookeditionInput[]
+    deleteMany?: bookeditionprintersScalarWhereInput | bookeditionprintersScalarWhereInput[]
   }
 
   export type bookshopeditionsUncheckedUpdateManyWithoutBookeditionNestedInput = {
@@ -40192,6 +41742,34 @@ export namespace Prisma {
     upsert?: storesUpsertWithoutBookeditionstoresInput
     connect?: storesWhereUniqueInput
     update?: XOR<XOR<storesUpdateToOneWithWhereWithoutBookeditionstoresInput, storesUpdateWithoutBookeditionstoresInput>, storesUncheckedUpdateWithoutBookeditionstoresInput>
+  }
+
+  export type bookeditionCreateNestedOneWithoutBookeditionprintersInput = {
+    create?: XOR<bookeditionCreateWithoutBookeditionprintersInput, bookeditionUncheckedCreateWithoutBookeditionprintersInput>
+    connectOrCreate?: bookeditionCreateOrConnectWithoutBookeditionprintersInput
+    connect?: bookeditionWhereUniqueInput
+  }
+
+  export type printerCreateNestedOneWithoutBookeditionprintersInput = {
+    create?: XOR<printerCreateWithoutBookeditionprintersInput, printerUncheckedCreateWithoutBookeditionprintersInput>
+    connectOrCreate?: printerCreateOrConnectWithoutBookeditionprintersInput
+    connect?: printerWhereUniqueInput
+  }
+
+  export type bookeditionUpdateOneRequiredWithoutBookeditionprintersNestedInput = {
+    create?: XOR<bookeditionCreateWithoutBookeditionprintersInput, bookeditionUncheckedCreateWithoutBookeditionprintersInput>
+    connectOrCreate?: bookeditionCreateOrConnectWithoutBookeditionprintersInput
+    upsert?: bookeditionUpsertWithoutBookeditionprintersInput
+    connect?: bookeditionWhereUniqueInput
+    update?: XOR<XOR<bookeditionUpdateToOneWithWhereWithoutBookeditionprintersInput, bookeditionUpdateWithoutBookeditionprintersInput>, bookeditionUncheckedUpdateWithoutBookeditionprintersInput>
+  }
+
+  export type printerUpdateOneRequiredWithoutBookeditionprintersNestedInput = {
+    create?: XOR<printerCreateWithoutBookeditionprintersInput, printerUncheckedCreateWithoutBookeditionprintersInput>
+    connectOrCreate?: printerCreateOrConnectWithoutBookeditionprintersInput
+    upsert?: printerUpsertWithoutBookeditionprintersInput
+    connect?: printerWhereUniqueInput
+    update?: XOR<XOR<printerUpdateToOneWithWhereWithoutBookeditionprintersInput, printerUpdateWithoutBookeditionprintersInput>, printerUncheckedUpdateWithoutBookeditionprintersInput>
   }
 
   export type bookeditionCreateNestedManyWithoutBooksInput = {
@@ -40552,6 +42130,12 @@ export namespace Prisma {
     connect?: storesWhereUniqueInput
   }
 
+  export type printerCreateNestedOneWithoutDamagedbooksInput = {
+    create?: XOR<printerCreateWithoutDamagedbooksInput, printerUncheckedCreateWithoutDamagedbooksInput>
+    connectOrCreate?: printerCreateOrConnectWithoutDamagedbooksInput
+    connect?: printerWhereUniqueInput
+  }
+
   export type NullableEnumdamagedbooks_typeFieldUpdateOperationsInput = {
     set?: $Enums.damagedbooks_type | null
   }
@@ -40596,6 +42180,16 @@ export namespace Prisma {
     update?: XOR<XOR<storesUpdateToOneWithWhereWithoutDamagedbooksInput, storesUpdateWithoutDamagedbooksInput>, storesUncheckedUpdateWithoutDamagedbooksInput>
   }
 
+  export type printerUpdateOneWithoutDamagedbooksNestedInput = {
+    create?: XOR<printerCreateWithoutDamagedbooksInput, printerUncheckedCreateWithoutDamagedbooksInput>
+    connectOrCreate?: printerCreateOrConnectWithoutDamagedbooksInput
+    upsert?: printerUpsertWithoutDamagedbooksInput
+    disconnect?: printerWhereInput | boolean
+    delete?: printerWhereInput | boolean
+    connect?: printerWhereUniqueInput
+    update?: XOR<XOR<printerUpdateToOneWithWhereWithoutDamagedbooksInput, printerUpdateWithoutDamagedbooksInput>, printerUncheckedUpdateWithoutDamagedbooksInput>
+  }
+
   export type printorderCreateNestedManyWithoutPrinterInput = {
     create?: XOR<printorderCreateWithoutPrinterInput, printorderUncheckedCreateWithoutPrinterInput> | printorderCreateWithoutPrinterInput[] | printorderUncheckedCreateWithoutPrinterInput[]
     connectOrCreate?: printorderCreateOrConnectWithoutPrinterInput | printorderCreateOrConnectWithoutPrinterInput[]
@@ -40603,11 +42197,39 @@ export namespace Prisma {
     connect?: printorderWhereUniqueInput | printorderWhereUniqueInput[]
   }
 
+  export type bookeditionprintersCreateNestedManyWithoutPrinterInput = {
+    create?: XOR<bookeditionprintersCreateWithoutPrinterInput, bookeditionprintersUncheckedCreateWithoutPrinterInput> | bookeditionprintersCreateWithoutPrinterInput[] | bookeditionprintersUncheckedCreateWithoutPrinterInput[]
+    connectOrCreate?: bookeditionprintersCreateOrConnectWithoutPrinterInput | bookeditionprintersCreateOrConnectWithoutPrinterInput[]
+    createMany?: bookeditionprintersCreateManyPrinterInputEnvelope
+    connect?: bookeditionprintersWhereUniqueInput | bookeditionprintersWhereUniqueInput[]
+  }
+
+  export type damagedbooksCreateNestedManyWithoutPrinterInput = {
+    create?: XOR<damagedbooksCreateWithoutPrinterInput, damagedbooksUncheckedCreateWithoutPrinterInput> | damagedbooksCreateWithoutPrinterInput[] | damagedbooksUncheckedCreateWithoutPrinterInput[]
+    connectOrCreate?: damagedbooksCreateOrConnectWithoutPrinterInput | damagedbooksCreateOrConnectWithoutPrinterInput[]
+    createMany?: damagedbooksCreateManyPrinterInputEnvelope
+    connect?: damagedbooksWhereUniqueInput | damagedbooksWhereUniqueInput[]
+  }
+
   export type printorderUncheckedCreateNestedManyWithoutPrinterInput = {
     create?: XOR<printorderCreateWithoutPrinterInput, printorderUncheckedCreateWithoutPrinterInput> | printorderCreateWithoutPrinterInput[] | printorderUncheckedCreateWithoutPrinterInput[]
     connectOrCreate?: printorderCreateOrConnectWithoutPrinterInput | printorderCreateOrConnectWithoutPrinterInput[]
     createMany?: printorderCreateManyPrinterInputEnvelope
     connect?: printorderWhereUniqueInput | printorderWhereUniqueInput[]
+  }
+
+  export type bookeditionprintersUncheckedCreateNestedManyWithoutPrinterInput = {
+    create?: XOR<bookeditionprintersCreateWithoutPrinterInput, bookeditionprintersUncheckedCreateWithoutPrinterInput> | bookeditionprintersCreateWithoutPrinterInput[] | bookeditionprintersUncheckedCreateWithoutPrinterInput[]
+    connectOrCreate?: bookeditionprintersCreateOrConnectWithoutPrinterInput | bookeditionprintersCreateOrConnectWithoutPrinterInput[]
+    createMany?: bookeditionprintersCreateManyPrinterInputEnvelope
+    connect?: bookeditionprintersWhereUniqueInput | bookeditionprintersWhereUniqueInput[]
+  }
+
+  export type damagedbooksUncheckedCreateNestedManyWithoutPrinterInput = {
+    create?: XOR<damagedbooksCreateWithoutPrinterInput, damagedbooksUncheckedCreateWithoutPrinterInput> | damagedbooksCreateWithoutPrinterInput[] | damagedbooksUncheckedCreateWithoutPrinterInput[]
+    connectOrCreate?: damagedbooksCreateOrConnectWithoutPrinterInput | damagedbooksCreateOrConnectWithoutPrinterInput[]
+    createMany?: damagedbooksCreateManyPrinterInputEnvelope
+    connect?: damagedbooksWhereUniqueInput | damagedbooksWhereUniqueInput[]
   }
 
   export type printorderUpdateManyWithoutPrinterNestedInput = {
@@ -40624,6 +42246,34 @@ export namespace Prisma {
     deleteMany?: printorderScalarWhereInput | printorderScalarWhereInput[]
   }
 
+  export type bookeditionprintersUpdateManyWithoutPrinterNestedInput = {
+    create?: XOR<bookeditionprintersCreateWithoutPrinterInput, bookeditionprintersUncheckedCreateWithoutPrinterInput> | bookeditionprintersCreateWithoutPrinterInput[] | bookeditionprintersUncheckedCreateWithoutPrinterInput[]
+    connectOrCreate?: bookeditionprintersCreateOrConnectWithoutPrinterInput | bookeditionprintersCreateOrConnectWithoutPrinterInput[]
+    upsert?: bookeditionprintersUpsertWithWhereUniqueWithoutPrinterInput | bookeditionprintersUpsertWithWhereUniqueWithoutPrinterInput[]
+    createMany?: bookeditionprintersCreateManyPrinterInputEnvelope
+    set?: bookeditionprintersWhereUniqueInput | bookeditionprintersWhereUniqueInput[]
+    disconnect?: bookeditionprintersWhereUniqueInput | bookeditionprintersWhereUniqueInput[]
+    delete?: bookeditionprintersWhereUniqueInput | bookeditionprintersWhereUniqueInput[]
+    connect?: bookeditionprintersWhereUniqueInput | bookeditionprintersWhereUniqueInput[]
+    update?: bookeditionprintersUpdateWithWhereUniqueWithoutPrinterInput | bookeditionprintersUpdateWithWhereUniqueWithoutPrinterInput[]
+    updateMany?: bookeditionprintersUpdateManyWithWhereWithoutPrinterInput | bookeditionprintersUpdateManyWithWhereWithoutPrinterInput[]
+    deleteMany?: bookeditionprintersScalarWhereInput | bookeditionprintersScalarWhereInput[]
+  }
+
+  export type damagedbooksUpdateManyWithoutPrinterNestedInput = {
+    create?: XOR<damagedbooksCreateWithoutPrinterInput, damagedbooksUncheckedCreateWithoutPrinterInput> | damagedbooksCreateWithoutPrinterInput[] | damagedbooksUncheckedCreateWithoutPrinterInput[]
+    connectOrCreate?: damagedbooksCreateOrConnectWithoutPrinterInput | damagedbooksCreateOrConnectWithoutPrinterInput[]
+    upsert?: damagedbooksUpsertWithWhereUniqueWithoutPrinterInput | damagedbooksUpsertWithWhereUniqueWithoutPrinterInput[]
+    createMany?: damagedbooksCreateManyPrinterInputEnvelope
+    set?: damagedbooksWhereUniqueInput | damagedbooksWhereUniqueInput[]
+    disconnect?: damagedbooksWhereUniqueInput | damagedbooksWhereUniqueInput[]
+    delete?: damagedbooksWhereUniqueInput | damagedbooksWhereUniqueInput[]
+    connect?: damagedbooksWhereUniqueInput | damagedbooksWhereUniqueInput[]
+    update?: damagedbooksUpdateWithWhereUniqueWithoutPrinterInput | damagedbooksUpdateWithWhereUniqueWithoutPrinterInput[]
+    updateMany?: damagedbooksUpdateManyWithWhereWithoutPrinterInput | damagedbooksUpdateManyWithWhereWithoutPrinterInput[]
+    deleteMany?: damagedbooksScalarWhereInput | damagedbooksScalarWhereInput[]
+  }
+
   export type printorderUncheckedUpdateManyWithoutPrinterNestedInput = {
     create?: XOR<printorderCreateWithoutPrinterInput, printorderUncheckedCreateWithoutPrinterInput> | printorderCreateWithoutPrinterInput[] | printorderUncheckedCreateWithoutPrinterInput[]
     connectOrCreate?: printorderCreateOrConnectWithoutPrinterInput | printorderCreateOrConnectWithoutPrinterInput[]
@@ -40636,6 +42286,34 @@ export namespace Prisma {
     update?: printorderUpdateWithWhereUniqueWithoutPrinterInput | printorderUpdateWithWhereUniqueWithoutPrinterInput[]
     updateMany?: printorderUpdateManyWithWhereWithoutPrinterInput | printorderUpdateManyWithWhereWithoutPrinterInput[]
     deleteMany?: printorderScalarWhereInput | printorderScalarWhereInput[]
+  }
+
+  export type bookeditionprintersUncheckedUpdateManyWithoutPrinterNestedInput = {
+    create?: XOR<bookeditionprintersCreateWithoutPrinterInput, bookeditionprintersUncheckedCreateWithoutPrinterInput> | bookeditionprintersCreateWithoutPrinterInput[] | bookeditionprintersUncheckedCreateWithoutPrinterInput[]
+    connectOrCreate?: bookeditionprintersCreateOrConnectWithoutPrinterInput | bookeditionprintersCreateOrConnectWithoutPrinterInput[]
+    upsert?: bookeditionprintersUpsertWithWhereUniqueWithoutPrinterInput | bookeditionprintersUpsertWithWhereUniqueWithoutPrinterInput[]
+    createMany?: bookeditionprintersCreateManyPrinterInputEnvelope
+    set?: bookeditionprintersWhereUniqueInput | bookeditionprintersWhereUniqueInput[]
+    disconnect?: bookeditionprintersWhereUniqueInput | bookeditionprintersWhereUniqueInput[]
+    delete?: bookeditionprintersWhereUniqueInput | bookeditionprintersWhereUniqueInput[]
+    connect?: bookeditionprintersWhereUniqueInput | bookeditionprintersWhereUniqueInput[]
+    update?: bookeditionprintersUpdateWithWhereUniqueWithoutPrinterInput | bookeditionprintersUpdateWithWhereUniqueWithoutPrinterInput[]
+    updateMany?: bookeditionprintersUpdateManyWithWhereWithoutPrinterInput | bookeditionprintersUpdateManyWithWhereWithoutPrinterInput[]
+    deleteMany?: bookeditionprintersScalarWhereInput | bookeditionprintersScalarWhereInput[]
+  }
+
+  export type damagedbooksUncheckedUpdateManyWithoutPrinterNestedInput = {
+    create?: XOR<damagedbooksCreateWithoutPrinterInput, damagedbooksUncheckedCreateWithoutPrinterInput> | damagedbooksCreateWithoutPrinterInput[] | damagedbooksUncheckedCreateWithoutPrinterInput[]
+    connectOrCreate?: damagedbooksCreateOrConnectWithoutPrinterInput | damagedbooksCreateOrConnectWithoutPrinterInput[]
+    upsert?: damagedbooksUpsertWithWhereUniqueWithoutPrinterInput | damagedbooksUpsertWithWhereUniqueWithoutPrinterInput[]
+    createMany?: damagedbooksCreateManyPrinterInputEnvelope
+    set?: damagedbooksWhereUniqueInput | damagedbooksWhereUniqueInput[]
+    disconnect?: damagedbooksWhereUniqueInput | damagedbooksWhereUniqueInput[]
+    delete?: damagedbooksWhereUniqueInput | damagedbooksWhereUniqueInput[]
+    connect?: damagedbooksWhereUniqueInput | damagedbooksWhereUniqueInput[]
+    update?: damagedbooksUpdateWithWhereUniqueWithoutPrinterInput | damagedbooksUpdateWithWhereUniqueWithoutPrinterInput[]
+    updateMany?: damagedbooksUpdateManyWithWhereWithoutPrinterInput | damagedbooksUpdateManyWithWhereWithoutPrinterInput[]
+    deleteMany?: damagedbooksScalarWhereInput | damagedbooksScalarWhereInput[]
   }
 
   export type printerCreateNestedOneWithoutPrintorderInput = {
@@ -41377,6 +43055,7 @@ export namespace Prisma {
     books?: booksCreateNestedOneWithoutDamagedbooksInput
     bookedition?: bookeditionCreateNestedOneWithoutDamagedbooksInput
     stores?: storesCreateNestedOneWithoutDamagedbooksInput
+    printer?: printerCreateNestedOneWithoutDamagedbooksInput
   }
 
   export type damagedbooksUncheckedCreateWithoutAccountsInput = {
@@ -41384,6 +43063,7 @@ export namespace Prisma {
     type?: $Enums.damagedbooks_type | null
     book_id?: number | null
     store_id?: number | null
+    printer_id?: number | null
     edition_id?: number | null
     count?: number | null
     memo?: string | null
@@ -41515,6 +43195,7 @@ export namespace Prisma {
     type?: Enumdamagedbooks_typeNullableFilter<"damagedbooks"> | $Enums.damagedbooks_type | null
     book_id?: IntNullableFilter<"damagedbooks"> | number | null
     store_id?: IntNullableFilter<"damagedbooks"> | number | null
+    printer_id?: IntNullableFilter<"damagedbooks"> | number | null
     edition_id?: IntNullableFilter<"damagedbooks"> | number | null
     count?: IntNullableFilter<"damagedbooks"> | number | null
     memo?: StringNullableFilter<"damagedbooks"> | string | null
@@ -41675,6 +43356,35 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type bookeditionprintersCreateWithoutBookeditionInput = {
+    quantity?: number | null
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    printer: printerCreateNestedOneWithoutBookeditionprintersInput
+  }
+
+  export type bookeditionprintersUncheckedCreateWithoutBookeditionInput = {
+    id?: number
+    quantity?: number | null
+    printerId: number
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+  }
+
+  export type bookeditionprintersCreateOrConnectWithoutBookeditionInput = {
+    where: bookeditionprintersWhereUniqueInput
+    create: XOR<bookeditionprintersCreateWithoutBookeditionInput, bookeditionprintersUncheckedCreateWithoutBookeditionInput>
+  }
+
+  export type bookeditionprintersCreateManyBookeditionInputEnvelope = {
+    data: bookeditionprintersCreateManyBookeditionInput | bookeditionprintersCreateManyBookeditionInput[]
+    skipDuplicates?: boolean
+  }
+
   export type bookshopeditionsCreateWithoutBookeditionInput = {
     quantity?: number
     price_per_peice?: number | null
@@ -41725,6 +43435,7 @@ export namespace Prisma {
     accounts?: accountsCreateNestedOneWithoutDamagedbooksInput
     books?: booksCreateNestedOneWithoutDamagedbooksInput
     stores?: storesCreateNestedOneWithoutDamagedbooksInput
+    printer?: printerCreateNestedOneWithoutDamagedbooksInput
   }
 
   export type damagedbooksUncheckedCreateWithoutBookeditionInput = {
@@ -41732,6 +43443,7 @@ export namespace Prisma {
     type?: $Enums.damagedbooks_type | null
     book_id?: number | null
     store_id?: number | null
+    printer_id?: number | null
     count?: number | null
     memo?: string | null
     account_id?: number | null
@@ -41903,6 +43615,36 @@ export namespace Prisma {
     deletedAt?: DateTimeFilter<"bookeditionstores"> | Date | string
   }
 
+  export type bookeditionprintersUpsertWithWhereUniqueWithoutBookeditionInput = {
+    where: bookeditionprintersWhereUniqueInput
+    update: XOR<bookeditionprintersUpdateWithoutBookeditionInput, bookeditionprintersUncheckedUpdateWithoutBookeditionInput>
+    create: XOR<bookeditionprintersCreateWithoutBookeditionInput, bookeditionprintersUncheckedCreateWithoutBookeditionInput>
+  }
+
+  export type bookeditionprintersUpdateWithWhereUniqueWithoutBookeditionInput = {
+    where: bookeditionprintersWhereUniqueInput
+    data: XOR<bookeditionprintersUpdateWithoutBookeditionInput, bookeditionprintersUncheckedUpdateWithoutBookeditionInput>
+  }
+
+  export type bookeditionprintersUpdateManyWithWhereWithoutBookeditionInput = {
+    where: bookeditionprintersScalarWhereInput
+    data: XOR<bookeditionprintersUpdateManyMutationInput, bookeditionprintersUncheckedUpdateManyWithoutBookeditionInput>
+  }
+
+  export type bookeditionprintersScalarWhereInput = {
+    AND?: bookeditionprintersScalarWhereInput | bookeditionprintersScalarWhereInput[]
+    OR?: bookeditionprintersScalarWhereInput[]
+    NOT?: bookeditionprintersScalarWhereInput | bookeditionprintersScalarWhereInput[]
+    id?: IntFilter<"bookeditionprinters"> | number
+    editionId?: IntFilter<"bookeditionprinters"> | number
+    quantity?: IntNullableFilter<"bookeditionprinters"> | number | null
+    printerId?: IntFilter<"bookeditionprinters"> | number
+    is_deleted?: BoolFilter<"bookeditionprinters"> | boolean
+    updatedAt?: DateTimeFilter<"bookeditionprinters"> | Date | string
+    createdAt?: DateTimeFilter<"bookeditionprinters"> | Date | string
+    deletedAt?: DateTimeFilter<"bookeditionprinters"> | Date | string
+  }
+
   export type bookshopeditionsUpsertWithWhereUniqueWithoutBookeditionInput = {
     where: bookshopeditionsWhereUniqueInput
     update: XOR<bookshopeditionsUpdateWithoutBookeditionInput, bookshopeditionsUncheckedUpdateWithoutBookeditionInput>
@@ -42034,6 +43776,7 @@ export namespace Prisma {
     transportation_cost?: number | null
     count_remening_for_transfer?: number | null
     books: booksCreateNestedOneWithoutBookeditionInput
+    bookeditionprinters?: bookeditionprintersCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsCreateNestedManyWithoutBookeditionInput
     damagedbooks?: damagedbooksCreateNestedManyWithoutBookeditionInput
     order_items?: order_itemsCreateNestedManyWithoutBookeditionInput
@@ -42063,6 +43806,7 @@ export namespace Prisma {
     other_expenses?: number | null
     transportation_cost?: number | null
     count_remening_for_transfer?: number | null
+    bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookeditionInput
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutBookeditionInput
     order_items?: order_itemsUncheckedCreateNestedManyWithoutBookeditionInput
@@ -42139,6 +43883,7 @@ export namespace Prisma {
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
     books?: booksUpdateOneRequiredWithoutBookeditionNestedInput
+    bookeditionprinters?: bookeditionprintersUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUpdateManyWithoutBookeditionNestedInput
     damagedbooks?: damagedbooksUpdateManyWithoutBookeditionNestedInput
     order_items?: order_itemsUpdateManyWithoutBookeditionNestedInput
@@ -42168,6 +43913,7 @@ export namespace Prisma {
     other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
+    bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookeditionNestedInput
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutBookeditionNestedInput
     order_items?: order_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
@@ -42212,6 +43958,214 @@ export namespace Prisma {
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutStoresNestedInput
   }
 
+  export type bookeditionCreateWithoutBookeditionprintersInput = {
+    edition_name: string
+    selling_price?: number | null
+    production_price?: number | null
+    printing_cost?: number | null
+    binding_cost?: number | null
+    design_cost?: number | null
+    translation_cost?: number | null
+    memo?: string | null
+    book_image_url?: string | null
+    total_print_count?: number | null
+    book_id?: number | null
+    number_of_pages?: number | null
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    editing_cost?: number | null
+    other_expenses?: number | null
+    transportation_cost?: number | null
+    count_remening_for_transfer?: number | null
+    books: booksCreateNestedOneWithoutBookeditionInput
+    bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
+    bookshopeditions?: bookshopeditionsCreateNestedManyWithoutBookeditionInput
+    damagedbooks?: damagedbooksCreateNestedManyWithoutBookeditionInput
+    order_items?: order_itemsCreateNestedManyWithoutBookeditionInput
+    printorder_items?: printorder_itemsCreateNestedManyWithoutBookeditionInput
+  }
+
+  export type bookeditionUncheckedCreateWithoutBookeditionprintersInput = {
+    id?: number
+    edition_name: string
+    selling_price?: number | null
+    production_price?: number | null
+    printing_cost?: number | null
+    binding_cost?: number | null
+    design_cost?: number | null
+    translation_cost?: number | null
+    memo?: string | null
+    book_image_url?: string | null
+    total_print_count?: number | null
+    book_id?: number | null
+    number_of_pages?: number | null
+    bookId: number
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    editing_cost?: number | null
+    other_expenses?: number | null
+    transportation_cost?: number | null
+    count_remening_for_transfer?: number | null
+    bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
+    bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookeditionInput
+    damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutBookeditionInput
+    order_items?: order_itemsUncheckedCreateNestedManyWithoutBookeditionInput
+    printorder_items?: printorder_itemsUncheckedCreateNestedManyWithoutBookeditionInput
+  }
+
+  export type bookeditionCreateOrConnectWithoutBookeditionprintersInput = {
+    where: bookeditionWhereUniqueInput
+    create: XOR<bookeditionCreateWithoutBookeditionprintersInput, bookeditionUncheckedCreateWithoutBookeditionprintersInput>
+  }
+
+  export type printerCreateWithoutBookeditionprintersInput = {
+    name: string
+    location: string
+    phone?: string | null
+    email?: string | null
+    status?: string
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    printorder?: printorderCreateNestedManyWithoutPrinterInput
+    damagedbooks?: damagedbooksCreateNestedManyWithoutPrinterInput
+  }
+
+  export type printerUncheckedCreateWithoutBookeditionprintersInput = {
+    id?: number
+    name: string
+    location: string
+    phone?: string | null
+    email?: string | null
+    status?: string
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    printorder?: printorderUncheckedCreateNestedManyWithoutPrinterInput
+    damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutPrinterInput
+  }
+
+  export type printerCreateOrConnectWithoutBookeditionprintersInput = {
+    where: printerWhereUniqueInput
+    create: XOR<printerCreateWithoutBookeditionprintersInput, printerUncheckedCreateWithoutBookeditionprintersInput>
+  }
+
+  export type bookeditionUpsertWithoutBookeditionprintersInput = {
+    update: XOR<bookeditionUpdateWithoutBookeditionprintersInput, bookeditionUncheckedUpdateWithoutBookeditionprintersInput>
+    create: XOR<bookeditionCreateWithoutBookeditionprintersInput, bookeditionUncheckedCreateWithoutBookeditionprintersInput>
+    where?: bookeditionWhereInput
+  }
+
+  export type bookeditionUpdateToOneWithWhereWithoutBookeditionprintersInput = {
+    where?: bookeditionWhereInput
+    data: XOR<bookeditionUpdateWithoutBookeditionprintersInput, bookeditionUncheckedUpdateWithoutBookeditionprintersInput>
+  }
+
+  export type bookeditionUpdateWithoutBookeditionprintersInput = {
+    edition_name?: StringFieldUpdateOperationsInput | string
+    selling_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    production_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    printing_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    binding_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    total_print_count?: NullableIntFieldUpdateOperationsInput | number | null
+    book_id?: NullableIntFieldUpdateOperationsInput | number | null
+    number_of_pages?: NullableIntFieldUpdateOperationsInput | number | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    editing_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
+    transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
+    books?: booksUpdateOneRequiredWithoutBookeditionNestedInput
+    bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
+    bookshopeditions?: bookshopeditionsUpdateManyWithoutBookeditionNestedInput
+    damagedbooks?: damagedbooksUpdateManyWithoutBookeditionNestedInput
+    order_items?: order_itemsUpdateManyWithoutBookeditionNestedInput
+    printorder_items?: printorder_itemsUpdateManyWithoutBookeditionNestedInput
+  }
+
+  export type bookeditionUncheckedUpdateWithoutBookeditionprintersInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    edition_name?: StringFieldUpdateOperationsInput | string
+    selling_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    production_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    printing_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    binding_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    total_print_count?: NullableIntFieldUpdateOperationsInput | number | null
+    book_id?: NullableIntFieldUpdateOperationsInput | number | null
+    number_of_pages?: NullableIntFieldUpdateOperationsInput | number | null
+    bookId?: IntFieldUpdateOperationsInput | number
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    editing_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
+    transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
+    bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
+    bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookeditionNestedInput
+    damagedbooks?: damagedbooksUncheckedUpdateManyWithoutBookeditionNestedInput
+    order_items?: order_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
+    printorder_items?: printorder_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
+  }
+
+  export type printerUpsertWithoutBookeditionprintersInput = {
+    update: XOR<printerUpdateWithoutBookeditionprintersInput, printerUncheckedUpdateWithoutBookeditionprintersInput>
+    create: XOR<printerCreateWithoutBookeditionprintersInput, printerUncheckedCreateWithoutBookeditionprintersInput>
+    where?: printerWhereInput
+  }
+
+  export type printerUpdateToOneWithWhereWithoutBookeditionprintersInput = {
+    where?: printerWhereInput
+    data: XOR<printerUpdateWithoutBookeditionprintersInput, printerUncheckedUpdateWithoutBookeditionprintersInput>
+  }
+
+  export type printerUpdateWithoutBookeditionprintersInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    location?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    printorder?: printorderUpdateManyWithoutPrinterNestedInput
+    damagedbooks?: damagedbooksUpdateManyWithoutPrinterNestedInput
+  }
+
+  export type printerUncheckedUpdateWithoutBookeditionprintersInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    location?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    printorder?: printorderUncheckedUpdateManyWithoutPrinterNestedInput
+    damagedbooks?: damagedbooksUncheckedUpdateManyWithoutPrinterNestedInput
+  }
+
   export type bookeditionCreateWithoutBooksInput = {
     edition_name: string
     selling_price?: number | null
@@ -42234,6 +44188,7 @@ export namespace Prisma {
     transportation_cost?: number | null
     count_remening_for_transfer?: number | null
     bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
+    bookeditionprinters?: bookeditionprintersCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsCreateNestedManyWithoutBookeditionInput
     damagedbooks?: damagedbooksCreateNestedManyWithoutBookeditionInput
     order_items?: order_itemsCreateNestedManyWithoutBookeditionInput
@@ -42263,6 +44218,7 @@ export namespace Prisma {
     transportation_cost?: number | null
     count_remening_for_transfer?: number | null
     bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
+    bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookeditionInput
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutBookeditionInput
     order_items?: order_itemsUncheckedCreateNestedManyWithoutBookeditionInput
@@ -42290,12 +44246,14 @@ export namespace Prisma {
     accounts?: accountsCreateNestedOneWithoutDamagedbooksInput
     bookedition?: bookeditionCreateNestedOneWithoutDamagedbooksInput
     stores?: storesCreateNestedOneWithoutDamagedbooksInput
+    printer?: printerCreateNestedOneWithoutDamagedbooksInput
   }
 
   export type damagedbooksUncheckedCreateWithoutBooksInput = {
     id?: number
     type?: $Enums.damagedbooks_type | null
     store_id?: number | null
+    printer_id?: number | null
     edition_id?: number | null
     count?: number | null
     memo?: string | null
@@ -42467,6 +44425,7 @@ export namespace Prisma {
     count_remening_for_transfer?: number | null
     books: booksCreateNestedOneWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
+    bookeditionprinters?: bookeditionprintersCreateNestedManyWithoutBookeditionInput
     damagedbooks?: damagedbooksCreateNestedManyWithoutBookeditionInput
     order_items?: order_itemsCreateNestedManyWithoutBookeditionInput
     printorder_items?: printorder_itemsCreateNestedManyWithoutBookeditionInput
@@ -42496,6 +44455,7 @@ export namespace Prisma {
     transportation_cost?: number | null
     count_remening_for_transfer?: number | null
     bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
+    bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutBookeditionInput
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutBookeditionInput
     order_items?: order_itemsUncheckedCreateNestedManyWithoutBookeditionInput
     printorder_items?: printorder_itemsUncheckedCreateNestedManyWithoutBookeditionInput
@@ -42572,6 +44532,7 @@ export namespace Prisma {
     count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
     books?: booksUpdateOneRequiredWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
+    bookeditionprinters?: bookeditionprintersUpdateManyWithoutBookeditionNestedInput
     damagedbooks?: damagedbooksUpdateManyWithoutBookeditionNestedInput
     order_items?: order_itemsUpdateManyWithoutBookeditionNestedInput
     printorder_items?: printorder_itemsUpdateManyWithoutBookeditionNestedInput
@@ -42601,6 +44562,7 @@ export namespace Prisma {
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
     bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
+    bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutBookeditionNestedInput
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutBookeditionNestedInput
     order_items?: order_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
     printorder_items?: printorder_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
@@ -42933,6 +44895,7 @@ export namespace Prisma {
     count_remening_for_transfer?: number | null
     books: booksCreateNestedOneWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
+    bookeditionprinters?: bookeditionprintersCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsCreateNestedManyWithoutBookeditionInput
     damagedbooks?: damagedbooksCreateNestedManyWithoutBookeditionInput
     printorder_items?: printorder_itemsCreateNestedManyWithoutBookeditionInput
@@ -42962,6 +44925,7 @@ export namespace Prisma {
     transportation_cost?: number | null
     count_remening_for_transfer?: number | null
     bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
+    bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookeditionInput
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutBookeditionInput
     printorder_items?: printorder_itemsUncheckedCreateNestedManyWithoutBookeditionInput
@@ -43044,6 +45008,7 @@ export namespace Prisma {
     count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
     books?: booksUpdateOneRequiredWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
+    bookeditionprinters?: bookeditionprintersUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUpdateManyWithoutBookeditionNestedInput
     damagedbooks?: damagedbooksUpdateManyWithoutBookeditionNestedInput
     printorder_items?: printorder_itemsUpdateManyWithoutBookeditionNestedInput
@@ -43073,6 +45038,7 @@ export namespace Prisma {
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
     bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
+    bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookeditionNestedInput
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutBookeditionNestedInput
     printorder_items?: printorder_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
@@ -43199,6 +45165,7 @@ export namespace Prisma {
     count_remening_for_transfer?: number | null
     books: booksCreateNestedOneWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
+    bookeditionprinters?: bookeditionprintersCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsCreateNestedManyWithoutBookeditionInput
     order_items?: order_itemsCreateNestedManyWithoutBookeditionInput
     printorder_items?: printorder_itemsCreateNestedManyWithoutBookeditionInput
@@ -43228,6 +45195,7 @@ export namespace Prisma {
     transportation_cost?: number | null
     count_remening_for_transfer?: number | null
     bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
+    bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookeditionInput
     order_items?: order_itemsUncheckedCreateNestedManyWithoutBookeditionInput
     printorder_items?: printorder_itemsUncheckedCreateNestedManyWithoutBookeditionInput
@@ -43268,6 +45236,40 @@ export namespace Prisma {
   export type storesCreateOrConnectWithoutDamagedbooksInput = {
     where: storesWhereUniqueInput
     create: XOR<storesCreateWithoutDamagedbooksInput, storesUncheckedCreateWithoutDamagedbooksInput>
+  }
+
+  export type printerCreateWithoutDamagedbooksInput = {
+    name: string
+    location: string
+    phone?: string | null
+    email?: string | null
+    status?: string
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    printorder?: printorderCreateNestedManyWithoutPrinterInput
+    bookeditionprinters?: bookeditionprintersCreateNestedManyWithoutPrinterInput
+  }
+
+  export type printerUncheckedCreateWithoutDamagedbooksInput = {
+    id?: number
+    name: string
+    location: string
+    phone?: string | null
+    email?: string | null
+    status?: string
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    printorder?: printorderUncheckedCreateNestedManyWithoutPrinterInput
+    bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutPrinterInput
+  }
+
+  export type printerCreateOrConnectWithoutDamagedbooksInput = {
+    where: printerWhereUniqueInput
+    create: XOR<printerCreateWithoutDamagedbooksInput, printerUncheckedCreateWithoutDamagedbooksInput>
   }
 
   export type accountsUpsertWithoutDamagedbooksInput = {
@@ -43414,6 +45416,7 @@ export namespace Prisma {
     count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
     books?: booksUpdateOneRequiredWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
+    bookeditionprinters?: bookeditionprintersUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUpdateManyWithoutBookeditionNestedInput
     order_items?: order_itemsUpdateManyWithoutBookeditionNestedInput
     printorder_items?: printorder_itemsUpdateManyWithoutBookeditionNestedInput
@@ -43443,6 +45446,7 @@ export namespace Prisma {
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
     bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
+    bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookeditionNestedInput
     order_items?: order_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
     printorder_items?: printorder_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
@@ -43484,6 +45488,46 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutStoresNestedInput
+  }
+
+  export type printerUpsertWithoutDamagedbooksInput = {
+    update: XOR<printerUpdateWithoutDamagedbooksInput, printerUncheckedUpdateWithoutDamagedbooksInput>
+    create: XOR<printerCreateWithoutDamagedbooksInput, printerUncheckedCreateWithoutDamagedbooksInput>
+    where?: printerWhereInput
+  }
+
+  export type printerUpdateToOneWithWhereWithoutDamagedbooksInput = {
+    where?: printerWhereInput
+    data: XOR<printerUpdateWithoutDamagedbooksInput, printerUncheckedUpdateWithoutDamagedbooksInput>
+  }
+
+  export type printerUpdateWithoutDamagedbooksInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    location?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    printorder?: printorderUpdateManyWithoutPrinterNestedInput
+    bookeditionprinters?: bookeditionprintersUpdateManyWithoutPrinterNestedInput
+  }
+
+  export type printerUncheckedUpdateWithoutDamagedbooksInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    location?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    printorder?: printorderUncheckedUpdateManyWithoutPrinterNestedInput
+    bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutPrinterNestedInput
   }
 
   export type printorderCreateWithoutPrinterInput = {
@@ -43535,6 +45579,74 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type bookeditionprintersCreateWithoutPrinterInput = {
+    quantity?: number | null
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    bookedition: bookeditionCreateNestedOneWithoutBookeditionprintersInput
+  }
+
+  export type bookeditionprintersUncheckedCreateWithoutPrinterInput = {
+    id?: number
+    editionId: number
+    quantity?: number | null
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+  }
+
+  export type bookeditionprintersCreateOrConnectWithoutPrinterInput = {
+    where: bookeditionprintersWhereUniqueInput
+    create: XOR<bookeditionprintersCreateWithoutPrinterInput, bookeditionprintersUncheckedCreateWithoutPrinterInput>
+  }
+
+  export type bookeditionprintersCreateManyPrinterInputEnvelope = {
+    data: bookeditionprintersCreateManyPrinterInput | bookeditionprintersCreateManyPrinterInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type damagedbooksCreateWithoutPrinterInput = {
+    type?: $Enums.damagedbooks_type | null
+    count?: number | null
+    memo?: string | null
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    accounts?: accountsCreateNestedOneWithoutDamagedbooksInput
+    books?: booksCreateNestedOneWithoutDamagedbooksInput
+    bookedition?: bookeditionCreateNestedOneWithoutDamagedbooksInput
+    stores?: storesCreateNestedOneWithoutDamagedbooksInput
+  }
+
+  export type damagedbooksUncheckedCreateWithoutPrinterInput = {
+    id?: number
+    type?: $Enums.damagedbooks_type | null
+    book_id?: number | null
+    store_id?: number | null
+    edition_id?: number | null
+    count?: number | null
+    memo?: string | null
+    account_id?: number | null
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+  }
+
+  export type damagedbooksCreateOrConnectWithoutPrinterInput = {
+    where: damagedbooksWhereUniqueInput
+    create: XOR<damagedbooksCreateWithoutPrinterInput, damagedbooksUncheckedCreateWithoutPrinterInput>
+  }
+
+  export type damagedbooksCreateManyPrinterInputEnvelope = {
+    data: damagedbooksCreateManyPrinterInput | damagedbooksCreateManyPrinterInput[]
+    skipDuplicates?: boolean
+  }
+
   export type printorderUpsertWithWhereUniqueWithoutPrinterInput = {
     where: printorderWhereUniqueInput
     update: XOR<printorderUpdateWithoutPrinterInput, printorderUncheckedUpdateWithoutPrinterInput>
@@ -43573,6 +45685,38 @@ export namespace Prisma {
     deletedAt?: DateTimeFilter<"printorder"> | Date | string
   }
 
+  export type bookeditionprintersUpsertWithWhereUniqueWithoutPrinterInput = {
+    where: bookeditionprintersWhereUniqueInput
+    update: XOR<bookeditionprintersUpdateWithoutPrinterInput, bookeditionprintersUncheckedUpdateWithoutPrinterInput>
+    create: XOR<bookeditionprintersCreateWithoutPrinterInput, bookeditionprintersUncheckedCreateWithoutPrinterInput>
+  }
+
+  export type bookeditionprintersUpdateWithWhereUniqueWithoutPrinterInput = {
+    where: bookeditionprintersWhereUniqueInput
+    data: XOR<bookeditionprintersUpdateWithoutPrinterInput, bookeditionprintersUncheckedUpdateWithoutPrinterInput>
+  }
+
+  export type bookeditionprintersUpdateManyWithWhereWithoutPrinterInput = {
+    where: bookeditionprintersScalarWhereInput
+    data: XOR<bookeditionprintersUpdateManyMutationInput, bookeditionprintersUncheckedUpdateManyWithoutPrinterInput>
+  }
+
+  export type damagedbooksUpsertWithWhereUniqueWithoutPrinterInput = {
+    where: damagedbooksWhereUniqueInput
+    update: XOR<damagedbooksUpdateWithoutPrinterInput, damagedbooksUncheckedUpdateWithoutPrinterInput>
+    create: XOR<damagedbooksCreateWithoutPrinterInput, damagedbooksUncheckedCreateWithoutPrinterInput>
+  }
+
+  export type damagedbooksUpdateWithWhereUniqueWithoutPrinterInput = {
+    where: damagedbooksWhereUniqueInput
+    data: XOR<damagedbooksUpdateWithoutPrinterInput, damagedbooksUncheckedUpdateWithoutPrinterInput>
+  }
+
+  export type damagedbooksUpdateManyWithWhereWithoutPrinterInput = {
+    where: damagedbooksScalarWhereInput
+    data: XOR<damagedbooksUpdateManyMutationInput, damagedbooksUncheckedUpdateManyWithoutPrinterInput>
+  }
+
   export type printerCreateWithoutPrintorderInput = {
     name: string
     location: string
@@ -43583,6 +45727,8 @@ export namespace Prisma {
     updatedAt: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+    bookeditionprinters?: bookeditionprintersCreateNestedManyWithoutPrinterInput
+    damagedbooks?: damagedbooksCreateNestedManyWithoutPrinterInput
   }
 
   export type printerUncheckedCreateWithoutPrintorderInput = {
@@ -43596,6 +45742,8 @@ export namespace Prisma {
     updatedAt: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+    bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutPrinterInput
+    damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutPrinterInput
   }
 
   export type printerCreateOrConnectWithoutPrintorderInput = {
@@ -43680,6 +45828,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bookeditionprinters?: bookeditionprintersUpdateManyWithoutPrinterNestedInput
+    damagedbooks?: damagedbooksUpdateManyWithoutPrinterNestedInput
   }
 
   export type printerUncheckedUpdateWithoutPrintorderInput = {
@@ -43693,6 +45843,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutPrinterNestedInput
+    damagedbooks?: damagedbooksUncheckedUpdateManyWithoutPrinterNestedInput
   }
 
   export type printorder_itemsUpsertWithWhereUniqueWithoutPrintorderInput = {
@@ -43900,6 +46052,7 @@ export namespace Prisma {
     count_remening_for_transfer?: number | null
     books: booksCreateNestedOneWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
+    bookeditionprinters?: bookeditionprintersCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsCreateNestedManyWithoutBookeditionInput
     damagedbooks?: damagedbooksCreateNestedManyWithoutBookeditionInput
     order_items?: order_itemsCreateNestedManyWithoutBookeditionInput
@@ -43929,6 +46082,7 @@ export namespace Prisma {
     transportation_cost?: number | null
     count_remening_for_transfer?: number | null
     bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
+    bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookeditionInput
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutBookeditionInput
     order_items?: order_itemsUncheckedCreateNestedManyWithoutBookeditionInput
@@ -44023,6 +46177,7 @@ export namespace Prisma {
     count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
     books?: booksUpdateOneRequiredWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
+    bookeditionprinters?: bookeditionprintersUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUpdateManyWithoutBookeditionNestedInput
     damagedbooks?: damagedbooksUpdateManyWithoutBookeditionNestedInput
     order_items?: order_itemsUpdateManyWithoutBookeditionNestedInput
@@ -44052,6 +46207,7 @@ export namespace Prisma {
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
     bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
+    bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookeditionNestedInput
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutBookeditionNestedInput
     order_items?: order_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
@@ -44175,12 +46331,14 @@ export namespace Prisma {
     accounts?: accountsCreateNestedOneWithoutDamagedbooksInput
     books?: booksCreateNestedOneWithoutDamagedbooksInput
     bookedition?: bookeditionCreateNestedOneWithoutDamagedbooksInput
+    printer?: printerCreateNestedOneWithoutDamagedbooksInput
   }
 
   export type damagedbooksUncheckedCreateWithoutStoresInput = {
     id?: number
     type?: $Enums.damagedbooks_type | null
     book_id?: number | null
+    printer_id?: number | null
     edition_id?: number | null
     count?: number | null
     memo?: string | null
@@ -44649,6 +46807,7 @@ export namespace Prisma {
     type?: $Enums.damagedbooks_type | null
     book_id?: number | null
     store_id?: number | null
+    printer_id?: number | null
     edition_id?: number | null
     count?: number | null
     memo?: string | null
@@ -44723,6 +46882,7 @@ export namespace Prisma {
     books?: booksUpdateOneWithoutDamagedbooksNestedInput
     bookedition?: bookeditionUpdateOneWithoutDamagedbooksNestedInput
     stores?: storesUpdateOneWithoutDamagedbooksNestedInput
+    printer?: printerUpdateOneWithoutDamagedbooksNestedInput
   }
 
   export type damagedbooksUncheckedUpdateWithoutAccountsInput = {
@@ -44730,6 +46890,7 @@ export namespace Prisma {
     type?: NullableEnumdamagedbooks_typeFieldUpdateOperationsInput | $Enums.damagedbooks_type | null
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
     store_id?: NullableIntFieldUpdateOperationsInput | number | null
+    printer_id?: NullableIntFieldUpdateOperationsInput | number | null
     edition_id?: NullableIntFieldUpdateOperationsInput | number | null
     count?: NullableIntFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -44744,6 +46905,7 @@ export namespace Prisma {
     type?: NullableEnumdamagedbooks_typeFieldUpdateOperationsInput | $Enums.damagedbooks_type | null
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
     store_id?: NullableIntFieldUpdateOperationsInput | number | null
+    printer_id?: NullableIntFieldUpdateOperationsInput | number | null
     edition_id?: NullableIntFieldUpdateOperationsInput | number | null
     count?: NullableIntFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -44818,6 +46980,16 @@ export namespace Prisma {
     deletedAt?: Date | string
   }
 
+  export type bookeditionprintersCreateManyBookeditionInput = {
+    id?: number
+    quantity?: number | null
+    printerId: number
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+  }
+
   export type bookshopeditionsCreateManyBookeditionInput = {
     id?: number
     bookShopId: number
@@ -44838,6 +47010,7 @@ export namespace Prisma {
     type?: $Enums.damagedbooks_type | null
     book_id?: number | null
     store_id?: number | null
+    printer_id?: number | null
     count?: number | null
     memo?: string | null
     account_id?: number | null
@@ -44888,6 +47061,35 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     quantity?: NullableIntFieldUpdateOperationsInput | number | null
     storeId?: IntFieldUpdateOperationsInput | number
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type bookeditionprintersUpdateWithoutBookeditionInput = {
+    quantity?: NullableIntFieldUpdateOperationsInput | number | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    printer?: printerUpdateOneRequiredWithoutBookeditionprintersNestedInput
+  }
+
+  export type bookeditionprintersUncheckedUpdateWithoutBookeditionInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    quantity?: NullableIntFieldUpdateOperationsInput | number | null
+    printerId?: IntFieldUpdateOperationsInput | number
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type bookeditionprintersUncheckedUpdateManyWithoutBookeditionInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    quantity?: NullableIntFieldUpdateOperationsInput | number | null
+    printerId?: IntFieldUpdateOperationsInput | number
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -44949,6 +47151,7 @@ export namespace Prisma {
     accounts?: accountsUpdateOneWithoutDamagedbooksNestedInput
     books?: booksUpdateOneWithoutDamagedbooksNestedInput
     stores?: storesUpdateOneWithoutDamagedbooksNestedInput
+    printer?: printerUpdateOneWithoutDamagedbooksNestedInput
   }
 
   export type damagedbooksUncheckedUpdateWithoutBookeditionInput = {
@@ -44956,6 +47159,7 @@ export namespace Prisma {
     type?: NullableEnumdamagedbooks_typeFieldUpdateOperationsInput | $Enums.damagedbooks_type | null
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
     store_id?: NullableIntFieldUpdateOperationsInput | number | null
+    printer_id?: NullableIntFieldUpdateOperationsInput | number | null
     count?: NullableIntFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     account_id?: NullableIntFieldUpdateOperationsInput | number | null
@@ -44970,6 +47174,7 @@ export namespace Prisma {
     type?: NullableEnumdamagedbooks_typeFieldUpdateOperationsInput | $Enums.damagedbooks_type | null
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
     store_id?: NullableIntFieldUpdateOperationsInput | number | null
+    printer_id?: NullableIntFieldUpdateOperationsInput | number | null
     count?: NullableIntFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     account_id?: NullableIntFieldUpdateOperationsInput | number | null
@@ -45059,6 +47264,7 @@ export namespace Prisma {
     id?: number
     type?: $Enums.damagedbooks_type | null
     store_id?: number | null
+    printer_id?: number | null
     edition_id?: number | null
     count?: number | null
     memo?: string | null
@@ -45104,6 +47310,7 @@ export namespace Prisma {
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
     bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
+    bookeditionprinters?: bookeditionprintersUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUpdateManyWithoutBookeditionNestedInput
     damagedbooks?: damagedbooksUpdateManyWithoutBookeditionNestedInput
     order_items?: order_itemsUpdateManyWithoutBookeditionNestedInput
@@ -45133,6 +47340,7 @@ export namespace Prisma {
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
     bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
+    bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookeditionNestedInput
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutBookeditionNestedInput
     order_items?: order_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
@@ -45174,12 +47382,14 @@ export namespace Prisma {
     accounts?: accountsUpdateOneWithoutDamagedbooksNestedInput
     bookedition?: bookeditionUpdateOneWithoutDamagedbooksNestedInput
     stores?: storesUpdateOneWithoutDamagedbooksNestedInput
+    printer?: printerUpdateOneWithoutDamagedbooksNestedInput
   }
 
   export type damagedbooksUncheckedUpdateWithoutBooksInput = {
     id?: IntFieldUpdateOperationsInput | number
     type?: NullableEnumdamagedbooks_typeFieldUpdateOperationsInput | $Enums.damagedbooks_type | null
     store_id?: NullableIntFieldUpdateOperationsInput | number | null
+    printer_id?: NullableIntFieldUpdateOperationsInput | number | null
     edition_id?: NullableIntFieldUpdateOperationsInput | number | null
     count?: NullableIntFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -45194,6 +47404,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     type?: NullableEnumdamagedbooks_typeFieldUpdateOperationsInput | $Enums.damagedbooks_type | null
     store_id?: NullableIntFieldUpdateOperationsInput | number | null
+    printer_id?: NullableIntFieldUpdateOperationsInput | number | null
     edition_id?: NullableIntFieldUpdateOperationsInput | number | null
     count?: NullableIntFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -45399,6 +47610,31 @@ export namespace Prisma {
     deletedAt?: Date | string
   }
 
+  export type bookeditionprintersCreateManyPrinterInput = {
+    id?: number
+    editionId: number
+    quantity?: number | null
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+  }
+
+  export type damagedbooksCreateManyPrinterInput = {
+    id?: number
+    type?: $Enums.damagedbooks_type | null
+    book_id?: number | null
+    store_id?: number | null
+    edition_id?: number | null
+    count?: number | null
+    memo?: string | null
+    account_id?: number | null
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+  }
+
   export type printorderUpdateWithoutPrinterInput = {
     project_name?: NullableStringFieldUpdateOperationsInput | string | null
     quality?: NullableStringFieldUpdateOperationsInput | string | null
@@ -45450,6 +47686,79 @@ export namespace Prisma {
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     edition?: NullableStringFieldUpdateOperationsInput | string | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type bookeditionprintersUpdateWithoutPrinterInput = {
+    quantity?: NullableIntFieldUpdateOperationsInput | number | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bookedition?: bookeditionUpdateOneRequiredWithoutBookeditionprintersNestedInput
+  }
+
+  export type bookeditionprintersUncheckedUpdateWithoutPrinterInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    editionId?: IntFieldUpdateOperationsInput | number
+    quantity?: NullableIntFieldUpdateOperationsInput | number | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type bookeditionprintersUncheckedUpdateManyWithoutPrinterInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    editionId?: IntFieldUpdateOperationsInput | number
+    quantity?: NullableIntFieldUpdateOperationsInput | number | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type damagedbooksUpdateWithoutPrinterInput = {
+    type?: NullableEnumdamagedbooks_typeFieldUpdateOperationsInput | $Enums.damagedbooks_type | null
+    count?: NullableIntFieldUpdateOperationsInput | number | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: accountsUpdateOneWithoutDamagedbooksNestedInput
+    books?: booksUpdateOneWithoutDamagedbooksNestedInput
+    bookedition?: bookeditionUpdateOneWithoutDamagedbooksNestedInput
+    stores?: storesUpdateOneWithoutDamagedbooksNestedInput
+  }
+
+  export type damagedbooksUncheckedUpdateWithoutPrinterInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    type?: NullableEnumdamagedbooks_typeFieldUpdateOperationsInput | $Enums.damagedbooks_type | null
+    book_id?: NullableIntFieldUpdateOperationsInput | number | null
+    store_id?: NullableIntFieldUpdateOperationsInput | number | null
+    edition_id?: NullableIntFieldUpdateOperationsInput | number | null
+    count?: NullableIntFieldUpdateOperationsInput | number | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    account_id?: NullableIntFieldUpdateOperationsInput | number | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type damagedbooksUncheckedUpdateManyWithoutPrinterInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    type?: NullableEnumdamagedbooks_typeFieldUpdateOperationsInput | $Enums.damagedbooks_type | null
+    book_id?: NullableIntFieldUpdateOperationsInput | number | null
+    store_id?: NullableIntFieldUpdateOperationsInput | number | null
+    edition_id?: NullableIntFieldUpdateOperationsInput | number | null
+    count?: NullableIntFieldUpdateOperationsInput | number | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    account_id?: NullableIntFieldUpdateOperationsInput | number | null
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -45544,6 +47853,7 @@ export namespace Prisma {
     id?: number
     type?: $Enums.damagedbooks_type | null
     book_id?: number | null
+    printer_id?: number | null
     edition_id?: number | null
     count?: number | null
     memo?: string | null
@@ -45594,12 +47904,14 @@ export namespace Prisma {
     accounts?: accountsUpdateOneWithoutDamagedbooksNestedInput
     books?: booksUpdateOneWithoutDamagedbooksNestedInput
     bookedition?: bookeditionUpdateOneWithoutDamagedbooksNestedInput
+    printer?: printerUpdateOneWithoutDamagedbooksNestedInput
   }
 
   export type damagedbooksUncheckedUpdateWithoutStoresInput = {
     id?: IntFieldUpdateOperationsInput | number
     type?: NullableEnumdamagedbooks_typeFieldUpdateOperationsInput | $Enums.damagedbooks_type | null
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
+    printer_id?: NullableIntFieldUpdateOperationsInput | number | null
     edition_id?: NullableIntFieldUpdateOperationsInput | number | null
     count?: NullableIntFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -45614,6 +47926,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     type?: NullableEnumdamagedbooks_typeFieldUpdateOperationsInput | $Enums.damagedbooks_type | null
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
+    printer_id?: NullableIntFieldUpdateOperationsInput | number | null
     edition_id?: NullableIntFieldUpdateOperationsInput | number | null
     count?: NullableIntFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null

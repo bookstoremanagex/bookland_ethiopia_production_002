@@ -13,7 +13,17 @@ export default async function PrinterDetailPage({
     const printer = await (prisma as any).printer.findUnique({
         where: { id: printerId },
         include: {
-            printorder: true
+            printorder: true,
+            bookeditionprinters: {
+                where: { is_deleted: false },
+                include: {
+                    bookedition: {
+                        include: {
+                            books: true
+                        }
+                    }
+                }
+            }
         }
     });
 

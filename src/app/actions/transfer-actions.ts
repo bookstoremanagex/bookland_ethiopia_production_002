@@ -47,6 +47,7 @@ export async function getBookEditionsForTransfer(bookId: number) {
             where: {
                 bookId: id,
                 is_deleted: false,
+                count_remening_for_transfer: { gt: 0 },
             },
             orderBy: {
                 createdAt: 'desc'

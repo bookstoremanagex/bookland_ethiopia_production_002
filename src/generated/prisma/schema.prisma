@@ -32,7 +32,7 @@ model accounts {
 }
 
 model bookedition {
-  id                          Int                 @id @default(autoincrement())
+  id                          Int                   @id @default(autoincrement())
   edition_name                String
   selling_price               Float?
   production_price            Float?
@@ -46,18 +46,21 @@ model bookedition {
   book_id                     Int?
   number_of_pages             Int?
   bookId                      Int
-  is_deleted                  Boolean             @default(false)
+  is_deleted                  Boolean               @default(false)
   updatedAt                   DateTime
-  createdAt                   DateTime            @default(now())
-  deletedAt                   DateTime            @default(now())
+  createdAt                   DateTime              @default(now())
+  deletedAt                   DateTime              @default(now())
   editing_cost                Float?
   other_expenses              Float?
   transportation_cost         Float?
-  count_remening_for_transfer Int?                @default(0)
-  books                       books               @relation(fields: [bookId], references: [id], map: "BookEdition_bookId_fkey")
+  count_remening_for_transfer Int?                  @default(0)
+  books                       books                 @relation(fields: [bookId], references: [id], map: "BookEdition_bookId_fkey")
   bookeditionstores           bookeditionstores[]
+  bookeditionprinters         bookeditionprinters[]
   bookshopeditions            bookshopeditions[]
   damagedbooks                damagedbooks[]
+  order_items                 order_items[]
+  printorder_items            printorder_items[]
 
   @@index([bookId], map: "BookEdition_bookId_fkey")
 }
@@ -78,6 +81,22 @@ model bookeditionstores {
   @@index([storeId], map: "BookEditionStores_storeId_fkey")
 }
 
+model bookeditionprinters {
+  id          Int         @id @default(autoincrement())
+  editionId   Int
+  quantity    Int?        @default(0)
+  printerId   Int
+  is_deleted  Boolean     @default(false)
+  updatedAt   DateTime
+  createdAt   DateTime    @default(now())
+  deletedAt   DateTime    @default(now())
+  bookedition bookedition @relation(fields: [editionId], references: [id], onDelete: Cascade, map: "BookEditionPrinters_editionId_fkey")
+  printer     printer     @relation(fields: [printerId], references: [id], onDelete: Cascade, map: "BookEditionPrinters_printerId_fkey")
+
+  @@index([editionId], map: "BookEditionPrinters_editionId_fkey")
+  @@index([printerId], map: "BookEditionPrinters_printerId_fkey")
+}
+
 model books {
   id                         Int                     @id @default(autoincrement())
   unique_identification_code String                  @unique(map: "Books_unique_identification_code_key")
@@ -86,9 +105,9 @@ model books {
   author                     String?
   translator                 String?
   designer                   String?
-  language                   String
-  edition                    String
-  category                   String
+  language                   String?
+  edition                    String?
+  category                   String?
   publication_year           String
   print_batch_id             String?
   book_sku                   String                  @unique(map: "Books_book_sku_key")
@@ -144,6 +163,33 @@ model bookshopes {
   createdAt        DateTime           @default(now())
   deletedAt        DateTime           @default(now())
   bookshopeditions bookshopeditions[]
+  orders           orders[]
+}
+
+model orders {
+  id           Int           @id @default(autoincrement())
+  bookShopId   Int
+  order_type   String // "requested" or "on round"
+  memo         String?       @db.Text
+  is_approved  Boolean       @default(false)
+  total_amount Float         @default(0)
+  amount_paid  Float         @default(0)
+  status       String        @default("Pending")
+  is_deleted   Boolean       @default(false)
+  updatedAt    DateTime      @updatedAt
+  createdAt    DateTime      @default(now())
+  bookshopes   bookshopes    @relation(fields: [bookShopId], references: [id], onDelete: Cascade)
+  order_items  order_items[]
+}
+
+model order_items {
+  id             Int         @id @default(autoincrement())
+  orderId        Int
+  bookEditionId  Int
+  quantity       Int
+  price_at_order Float
+  order          orders      @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  bookedition    bookedition @relation(fields: [bookEditionId], references: [id], onDelete: Cascade)
 }
 
 model damagedbooks {
@@ -151,6 +197,7 @@ model damagedbooks {
   type        damagedbooks_type?
   book_id     Int?
   store_id    Int?
+  printer_id  Int?
   edition_id  Int?
   count       Int?
   memo        String?
@@ -163,11 +210,13 @@ model damagedbooks {
   books       books?             @relation(fields: [book_id], references: [id], map: "DamagedBooks_book_id_fkey")
   bookedition bookedition?       @relation(fields: [edition_id], references: [id], map: "DamagedBooks_edition_id_fkey")
   stores      stores?            @relation(fields: [store_id], references: [id], map: "DamagedBooks_store_id_fkey")
+  printer     printer?           @relation(fields: [printer_id], references: [id], map: "DamagedBooks_printer_id_fkey")
 
   @@index([account_id], map: "DamagedBooks_account_id_fkey")
   @@index([book_id], map: "DamagedBooks_book_id_fkey")
   @@index([edition_id], map: "DamagedBooks_edition_id_fkey")
   @@index([store_id], map: "DamagedBooks_store_id_fkey")
+  @@index([printer_id], map: "DamagedBooks_printer_id_fkey")
 }
 
 model dashboardmenu {
@@ -179,36 +228,74 @@ model dashboardmenu {
 }
 
 model printer {
-  id         Int          @id @default(autoincrement())
-  name       String
-  location   String
-  phone      String?
-  email      String?
-  is_deleted Boolean      @default(false)
-  updatedAt  DateTime
-  createdAt  DateTime     @default(now())
-  deletedAt  DateTime     @default(now())
-  printorder printorder[]
+  id       Int     @id @default(autoincrement())
+  name     String
+  location String
+  phone    String?
+  email    String?
+
+  status              String                @default("available")
+  is_deleted          Boolean               @default(false)
+  updatedAt           DateTime
+  createdAt           DateTime              @default(now())
+  deletedAt           DateTime              @default(now())
+  printorder          printorder[]
+  bookeditionprinters bookeditionprinters[]
+  damagedbooks        damagedbooks[]
 }
 
 model printorder {
-  id         Int                 @id @default(autoincrement())
-  quality    String
-  count      Int
-  status     printorder_status   @default(NOT_STARTED)
-  memo       String?
-  tracking   printorder_tracking @default(NOT_SET)
-  startDate  DateTime?
-  endDate    DateTime?
-  printerId  Int
-  edition    String?
-  is_deleted Boolean             @default(false)
-  updatedAt  DateTime
-  createdAt  DateTime            @default(now())
-  deletedAt  DateTime            @default(now())
-  printer    printer             @relation(fields: [printerId], references: [id], onDelete: Cascade, map: "PrintOrder_printerId_fkey")
+  id                  Int                   @id @default(autoincrement())
+  project_name        String?
+  quality             String?
+  count               Int?
+  total_price         Float?
+  status              printorder_status     @default(NOT_STARTED)
+  memo                String?
+  tracking            printorder_tracking   @default(NOT_SET)
+  startDate           DateTime?
+  endDate             DateTime?
+  printerId           Int
+  edition             String?
+  is_deleted          Boolean               @default(false)
+  updatedAt           DateTime
+  createdAt           DateTime              @default(now())
+  deletedAt           DateTime              @default(now())
+  printer             printer               @relation(fields: [printerId], references: [id], onDelete: Cascade, map: "PrintOrder_printerId_fkey")
+  printorder_items    printorder_items[]
+  printorder_payments printorder_payments[]
 
   @@index([printerId], map: "PrintOrder_printerId_fkey")
+}
+
+model printorder_payments {
+  id            Int        @id @default(autoincrement())
+  printorder_id Int
+  amount        Float
+  payment_date  DateTime
+  reference     String?
+  createdAt     DateTime   @default(now())
+  printorder    printorder @relation(fields: [printorder_id], references: [id], onDelete: Cascade)
+
+  @@index([printorder_id])
+}
+
+model printorder_items {
+  id             Int               @id @default(autoincrement())
+  printorder_id  Int
+  bookEditionId  Int
+  quantity       Int               @default(0)
+  price_per_book Float             @default(0)
+  status         printorder_status @default(NOT_STARTED)
+  is_deleted     Boolean           @default(false)
+  updatedAt      DateTime          @updatedAt
+  createdAt      DateTime          @default(now())
+
+  printorder  printorder  @relation(fields: [printorder_id], references: [id], onDelete: Cascade)
+  bookedition bookedition @relation(fields: [bookEditionId], references: [id], onDelete: Cascade)
+
+  @@index([printorder_id])
+  @@index([bookEditionId])
 }
 
 model roles {

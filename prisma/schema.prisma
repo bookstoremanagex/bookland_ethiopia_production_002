@@ -56,6 +56,7 @@ model bookedition {
   count_remening_for_transfer Int?                @default(0)
   books                       books               @relation(fields: [bookId], references: [id], map: "BookEdition_bookId_fkey")
   bookeditionstores           bookeditionstores[]
+  bookeditionprinters         bookeditionprinters[]
   bookshopeditions            bookshopeditions[]
   damagedbooks                damagedbooks[]
   order_items                 order_items[]
@@ -78,6 +79,22 @@ model bookeditionstores {
 
   @@index([editionId], map: "BookEditionStores_editionId_fkey")
   @@index([storeId], map: "BookEditionStores_storeId_fkey")
+}
+
+model bookeditionprinters {
+  id          Int         @id @default(autoincrement())
+  editionId   Int
+  quantity    Int?        @default(0)
+  printerId   Int
+  is_deleted  Boolean     @default(false)
+  updatedAt   DateTime
+  createdAt   DateTime    @default(now())
+  deletedAt   DateTime    @default(now())
+  bookedition bookedition @relation(fields: [editionId], references: [id], onDelete: Cascade, map: "BookEditionPrinters_editionId_fkey")
+  printer     printer     @relation(fields: [printerId], references: [id], onDelete: Cascade, map: "BookEditionPrinters_printerId_fkey")
+
+  @@index([editionId], map: "BookEditionPrinters_editionId_fkey")
+  @@index([printerId], map: "BookEditionPrinters_printerId_fkey")
 }
 
 model books {
@@ -180,6 +197,7 @@ model damagedbooks {
   type        damagedbooks_type?
   book_id     Int?
   store_id    Int?
+  printer_id  Int?
   edition_id  Int?
   count       Int?
   memo        String?
@@ -192,11 +210,13 @@ model damagedbooks {
   books       books?             @relation(fields: [book_id], references: [id], map: "DamagedBooks_book_id_fkey")
   bookedition bookedition?       @relation(fields: [edition_id], references: [id], map: "DamagedBooks_edition_id_fkey")
   stores      stores?            @relation(fields: [store_id], references: [id], map: "DamagedBooks_store_id_fkey")
+  printer     printer?           @relation(fields: [printer_id], references: [id], map: "DamagedBooks_printer_id_fkey")
 
   @@index([account_id], map: "DamagedBooks_account_id_fkey")
   @@index([book_id], map: "DamagedBooks_book_id_fkey")
   @@index([edition_id], map: "DamagedBooks_edition_id_fkey")
   @@index([store_id], map: "DamagedBooks_store_id_fkey")
+  @@index([printer_id], map: "DamagedBooks_printer_id_fkey")
 }
 
 model dashboardmenu {
@@ -208,18 +228,20 @@ model dashboardmenu {
 }
 
 model printer {
-  id         Int          @id @default(autoincrement())
-  name       String
-  location   String
-  phone      String?
-  email      String?
+  id                  Int                  @id @default(autoincrement())
+  name                String
+  location            String
+  phone               String?
+  email               String?
  
-  status     String       @default("available")
-  is_deleted Boolean      @default(false)
-  updatedAt  DateTime
-  createdAt  DateTime     @default(now())
-  deletedAt  DateTime     @default(now())
-  printorder printorder[]
+  status              String               @default("available")
+  is_deleted          Boolean              @default(false)
+  updatedAt           DateTime
+  createdAt           DateTime             @default(now())
+  deletedAt           DateTime             @default(now())
+  printorder          printorder[]
+  bookeditionprinters bookeditionprinters[]
+  damagedbooks        damagedbooks[]
 }
 
 model printorder {

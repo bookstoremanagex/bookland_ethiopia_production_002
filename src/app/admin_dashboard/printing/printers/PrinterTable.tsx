@@ -22,7 +22,8 @@ import {
     Phone,
     Mail,
     Printer,
-    ClipboardList
+    ClipboardList,
+    Package
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -86,8 +87,29 @@ export const columns: ColumnDef<any>[] = [
     ),
   },
   {
+    id: "stock",
+    header: "Stock",
+    cell: ({ row }) => {
+      const totalUnits = (row.original.bookeditionprinters || []).reduce((acc: number, item: any) => acc + (item.quantity || 0), 0)
+      const itemCount = (row.original.bookeditionprinters || []).length
+      return (
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5">
+            <Package className="size-3.5 text-primarycolor/40" />
+            <span className="font-bold text-primarycolor text-xs">{totalUnits} units</span>
+          </div>
+          {itemCount > 0 && (
+            <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">
+              ({itemCount} items)
+            </span>
+          )}
+        </div>
+      )
+    },
+  },
+  {
     id: "orders",
-    header: "Total Orders",
+    header: "Orders",
     cell: ({ row }) => (
         <div className="flex items-center gap-2">
             <ClipboardList className="size-3.5 text-rose-500" />
