@@ -3,11 +3,17 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { bookSchema, type BookFormValues } from "../../lib/validation/book-schema";
+import {
+  bookSchema,
+  type BookFormValues,
+} from "../../lib/validation/book-schema";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { cn } from "../../lib/utils";
-import { createBook, uploadBookImageAction } from "../../app/actions/book-actions";
+import {
+  createBook,
+  uploadBookImageAction,
+} from "../../app/actions/book-actions";
 import { useRouter, usePathname } from "next/navigation";
 import { toast } from "sonner";
 
@@ -18,8 +24,8 @@ interface AddBookFormProps {
 export function AddBookForm({ className }: AddBookFormProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const dashboardRoot = pathname.split('/').slice(0, 2).join('/');
-  
+  const dashboardRoot = pathname.split("/").slice(0, 2).join("/");
+
   const [imageType, setImageType] = React.useState<"upload" | "link">("upload");
   const [imageFile, setImageFile] = React.useState<File | null>(null);
   const [imagePreview, setImagePreview] = React.useState<string | null>(null);
@@ -76,7 +82,7 @@ export function AddBookForm({ className }: AddBookFormProps) {
       if (imageType === "upload" && imageFile) {
         const formData = new FormData();
         formData.append("file", imageFile);
-        
+
         const uploadRes = await uploadBookImageAction(formData);
         if (!uploadRes.success) {
           toast.error(uploadRes.error || "Failed to upload cover image");
@@ -115,14 +121,18 @@ export function AddBookForm({ className }: AddBookFormProps) {
         onSubmit={handleSubmit(onSubmit)}
         className={cn(
           "w-full max-w-4xl bg-card rounded-2xl border-2 border-primarycolor/10 shadow-2xl overflow-hidden transition-all duration-300 hover:border-primarycolor/20",
-          className
+          className,
         )}
       >
         {/* Header Section */}
         <div className="p-6 md:p-10 bg-linear-to-br from-primarycolor/5 to-secondarycolor/10 border-b border-primarycolor/10">
           <div className="space-y-1">
-            <h2 className="text-2xl md:text-4xl font-black tracking-tighter text-primarycolor uppercase italic italic">Add <span className="text-secondarycolor not-italic">Book</span></h2>
-            <p className="text-muted-foreground font-bold text-[10px] md:text-sm uppercase tracking-widest opacity-60">Register a new addition to your collection.</p>
+            <h2 className="text-2xl md:text-4xl font-black tracking-tighter text-primarycolor uppercase italic italic">
+              Add <span className="text-secondarycolor not-italic">Book</span>
+            </h2>
+            <p className="text-muted-foreground font-bold text-[10px] md:text-sm uppercase tracking-widest opacity-60">
+              Register a new addition to your collection.
+            </p>
           </div>
         </div>
 
@@ -130,7 +140,10 @@ export function AddBookForm({ className }: AddBookFormProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
             {/* Title */}
             <div className="space-y-2 group">
-              <label htmlFor="title" className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor">
+              <label
+                htmlFor="title"
+                className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor"
+              >
                 Title <span className="text-destructive">*</span>
               </label>
               <Input
@@ -141,13 +154,18 @@ export function AddBookForm({ className }: AddBookFormProps) {
                 className="border-primarycolor/20 focus:border-primarycolor focus:ring-primarycolor/20"
               />
               {errors.title && (
-                <p className="text-xs font-medium text-destructive animate-in fade-in slide-in-from-top-1">{errors.title.message}</p>
+                <p className="text-xs font-medium text-destructive animate-in fade-in slide-in-from-top-1">
+                  {errors.title.message}
+                </p>
               )}
             </div>
 
             {/* Author */}
             <div className="space-y-2 group">
-              <label htmlFor="author" className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor">
+              <label
+                htmlFor="author"
+                className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor"
+              >
                 Author <span className="text-destructive">*</span>
               </label>
               <Input
@@ -158,13 +176,18 @@ export function AddBookForm({ className }: AddBookFormProps) {
                 className="border-primarycolor/20 focus:border-primarycolor focus:ring-primarycolor/20"
               />
               {errors.author && (
-                <p className="text-xs font-medium text-destructive animate-in fade-in slide-in-from-top-1">{errors.author.message}</p>
+                <p className="text-xs font-medium text-destructive animate-in fade-in slide-in-from-top-1">
+                  {errors.author.message}
+                </p>
               )}
             </div>
 
             {/* Pen Name */}
             <div className="space-y-2 group">
-              <label htmlFor="pen_name" className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor">
+              <label
+                htmlFor="pen_name"
+                className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor"
+              >
                 Pen Name
               </label>
               <Input
@@ -177,7 +200,10 @@ export function AddBookForm({ className }: AddBookFormProps) {
 
             {/* ISBN */}
             <div className="space-y-2 group">
-              <label htmlFor="isbn" className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor">
+              <label
+                htmlFor="isbn"
+                className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor"
+              >
                 ISBN
               </label>
               <Input
@@ -190,8 +216,11 @@ export function AddBookForm({ className }: AddBookFormProps) {
 
             {/* Language */}
             <div className="space-y-2 group">
-              <label htmlFor="language" className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor">
-                Language <span className="text-destructive">*</span>
+              <label
+                htmlFor="language"
+                className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor"
+              >
+                Language
               </label>
               <Input
                 id="language"
@@ -201,14 +230,19 @@ export function AddBookForm({ className }: AddBookFormProps) {
                 className="border-primarycolor/20 focus:border-primarycolor focus:ring-primarycolor/20"
               />
               {errors.language && (
-                <p className="text-xs font-medium text-destructive animate-in fade-in slide-in-from-top-1">{errors.language.message}</p>
+                <p className="text-xs font-medium text-destructive animate-in fade-in slide-in-from-top-1">
+                  {errors.language.message}
+                </p>
               )}
             </div>
 
             {/* Edition */}
             <div className="space-y-2 group">
-              <label htmlFor="edition" className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor">
-                Edition <span className="text-destructive">*</span>
+              <label
+                htmlFor="edition"
+                className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor"
+              >
+                Edition
               </label>
               <Input
                 id="edition"
@@ -218,13 +252,18 @@ export function AddBookForm({ className }: AddBookFormProps) {
                 className="border-primarycolor/20 focus:border-primarycolor focus:ring-primarycolor/20"
               />
               {errors.edition && (
-                <p className="text-xs font-medium text-destructive animate-in fade-in slide-in-from-top-1">{errors.edition.message}</p>
+                <p className="text-xs font-medium text-destructive animate-in fade-in slide-in-from-top-1">
+                  {errors.edition.message}
+                </p>
               )}
             </div>
 
             {/* Category */}
             <div className="space-y-2 group">
-              <label htmlFor="category" className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor">
+              <label
+                htmlFor="category"
+                className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor"
+              >
                 Category <span className="text-destructive">*</span>
               </label>
               <Input
@@ -235,13 +274,18 @@ export function AddBookForm({ className }: AddBookFormProps) {
                 className="border-primarycolor/20 focus:border-primarycolor focus:ring-primarycolor/20"
               />
               {errors.category && (
-                <p className="text-xs font-medium text-destructive animate-in fade-in slide-in-from-top-1">{errors.category.message}</p>
+                <p className="text-xs font-medium text-destructive animate-in fade-in slide-in-from-top-1">
+                  {errors.category.message}
+                </p>
               )}
             </div>
 
             {/* Publication Year */}
             <div className="space-y-2 group">
-              <label htmlFor="publication_year" className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor">
+              <label
+                htmlFor="publication_year"
+                className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor"
+              >
                 Publication Year <span className="text-destructive">*</span>
               </label>
               <Input
@@ -252,13 +296,18 @@ export function AddBookForm({ className }: AddBookFormProps) {
                 className="border-primarycolor/20 focus:border-primarycolor focus:ring-primarycolor/20"
               />
               {errors.publication_year && (
-                <p className="text-xs font-medium text-destructive animate-in fade-in slide-in-from-top-1">{errors.publication_year.message}</p>
+                <p className="text-xs font-medium text-destructive animate-in fade-in slide-in-from-top-1">
+                  {errors.publication_year.message}
+                </p>
               )}
             </div>
 
             {/* Number of Pages */}
             <div className="space-y-2 group">
-              <label htmlFor="number_of_pages" className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor">
+              <label
+                htmlFor="number_of_pages"
+                className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor"
+              >
                 Number of Pages
               </label>
               <Input
@@ -272,7 +321,10 @@ export function AddBookForm({ className }: AddBookFormProps) {
 
             {/* Translator */}
             <div className="space-y-2 group">
-              <label htmlFor="translator" className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor">
+              <label
+                htmlFor="translator"
+                className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor"
+              >
                 Translator
               </label>
               <Input
@@ -285,7 +337,10 @@ export function AddBookForm({ className }: AddBookFormProps) {
 
             {/* Designer */}
             <div className="space-y-2 group">
-              <label htmlFor="designer" className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor">
+              <label
+                htmlFor="designer"
+                className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor"
+              >
                 Designer
               </label>
               <Input
@@ -298,7 +353,10 @@ export function AddBookForm({ className }: AddBookFormProps) {
 
             {/* Print Batch ID */}
             <div className="space-y-2 group">
-              <label htmlFor="print_batch_id" className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor">
+              <label
+                htmlFor="print_batch_id"
+                className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor"
+              >
                 Print Batch ID
               </label>
               <Input
@@ -311,7 +369,10 @@ export function AddBookForm({ className }: AddBookFormProps) {
 
             {/* Status */}
             <div className="space-y-2 group">
-              <label htmlFor="status" className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor">
+              <label
+                htmlFor="status"
+                className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor"
+              >
                 Status
               </label>
               <select
@@ -327,7 +388,10 @@ export function AddBookForm({ className }: AddBookFormProps) {
 
             {/* Production Status */}
             <div className="space-y-2 group">
-              <label htmlFor="productionstatus" className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor">
+              <label
+                htmlFor="productionstatus"
+                className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor"
+              >
                 Production Status
               </label>
               <select
@@ -359,7 +423,7 @@ export function AddBookForm({ className }: AddBookFormProps) {
                   "flex-1 py-3 px-4 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest border-2 transition-all cursor-pointer",
                   imageType === "upload"
                     ? "bg-primarycolor text-white border-primarycolor"
-                    : "bg-white text-primarycolor/70 border-primarycolor/10 hover:border-primarycolor/20"
+                    : "bg-white text-primarycolor/70 border-primarycolor/10 hover:border-primarycolor/20",
                 )}
               >
                 Upload File
@@ -371,7 +435,7 @@ export function AddBookForm({ className }: AddBookFormProps) {
                   "flex-1 py-3 px-4 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest border-2 transition-all cursor-pointer",
                   imageType === "link"
                     ? "bg-primarycolor text-white border-primarycolor"
-                    : "bg-white text-primarycolor/70 border-primarycolor/10 hover:border-primarycolor/20"
+                    : "bg-white text-primarycolor/70 border-primarycolor/10 hover:border-primarycolor/20",
                 )}
               >
                 Provide Link
@@ -380,10 +444,12 @@ export function AddBookForm({ className }: AddBookFormProps) {
 
             {imageType === "upload" ? (
               <div className="space-y-4">
-                <div className={cn(
-                  "border-2 border-dashed border-primarycolor/20 rounded-xl p-8 text-center bg-white cursor-pointer hover:border-primarycolor/40 transition-colors relative flex flex-col items-center justify-center min-h-[160px]",
-                  imageFile && "border-solid border-primarycolor/30"
-                )}>
+                <div
+                  className={cn(
+                    "border-2 border-dashed border-primarycolor/20 rounded-xl p-8 text-center bg-white cursor-pointer hover:border-primarycolor/40 transition-colors relative flex flex-col items-center justify-center min-h-[160px]",
+                    imageFile && "border-solid border-primarycolor/30",
+                  )}
+                >
                   <input
                     type="file"
                     accept="image/*"
@@ -398,14 +464,21 @@ export function AddBookForm({ className }: AddBookFormProps) {
                         className="w-24 h-36 object-cover rounded-lg shadow-md border-2 border-primarycolor/10"
                       />
                       <span className="text-xs font-bold text-secondarycolor/80 bg-primarycolor/5 px-3 py-1 rounded-full">
-                        {imageFile?.name} ({(imageFile!.size / 1024).toFixed(1)} KB)
+                        {imageFile?.name} ({(imageFile!.size / 1024).toFixed(1)}{" "}
+                        KB)
                       </span>
                     </div>
                   ) : (
                     <div className="space-y-2">
-                      <div className="text-primarycolor font-black text-2xl uppercase tracking-widest">+</div>
-                      <div className="text-sm font-bold text-secondarycolor">Click to upload cover image</div>
-                      <div className="text-xs text-muted-foreground font-semibold">Supports JPG, PNG, WEBP (Max 4MB)</div>
+                      <div className="text-primarycolor font-black text-2xl uppercase tracking-widest">
+                        +
+                      </div>
+                      <div className="text-sm font-bold text-secondarycolor">
+                        Click to upload cover image
+                      </div>
+                      <div className="text-xs text-muted-foreground font-semibold">
+                        Supports JPG, PNG, WEBP (Max 4MB)
+                      </div>
                     </div>
                   )}
                 </div>
@@ -424,7 +497,10 @@ export function AddBookForm({ className }: AddBookFormProps) {
 
           {/* Info / Description */}
           <div className="space-y-2 group">
-            <label htmlFor="info" className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor">
+            <label
+              htmlFor="info"
+              className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor"
+            >
               Additional Information
             </label>
             <textarea
@@ -458,7 +534,9 @@ export function AddBookForm({ className }: AddBookFormProps) {
               {isSubmitting || isUploading ? (
                 <div className="flex items-center gap-2">
                   <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  {isUploading && !isSubmitting ? "Uploading image..." : "Adding..."}
+                  {isUploading && !isSubmitting
+                    ? "Uploading image..."
+                    : "Adding..."}
                 </div>
               ) : (
                 "Save Book"

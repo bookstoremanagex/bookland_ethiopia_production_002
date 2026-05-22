@@ -7,8 +7,8 @@ export const bookSchema = z.object({
   pen_name: z.string().optional().nullable(),
   translator: z.string().optional().nullable(),
   designer: z.string().optional().nullable(),
-  language: z.string().min(1, "Language is required"),
-  edition: z.string().min(1, "Edition is required"),
+  language: z.string().optional().nullable(),
+  edition: z.string().optional().nullable(),
   category: z.string().min(1, "Category is required"),
   publication_year: z.string().min(1, "Publication year is required"),
   print_batch_id: z.string().optional().nullable(),
@@ -16,15 +16,18 @@ export const bookSchema = z.object({
   info: z.string().optional().nullable(),
   book_image_url: z.string().optional().nullable(),
   status: z.string().min(1, "Status is required"),
-  productionstatus: z.enum([
-    "ON_PRODUCTION",
-    "TRANSLATION",
-    "DESIGN",
-    "PRINTING",
-    "PREPRINTING",
-    "DISTRIBUTION",
-    "SALES"
-  ]).optional().nullable(),
+  productionstatus: z
+    .enum([
+      "ON_PRODUCTION",
+      "TRANSLATION",
+      "DESIGN",
+      "PRINTING",
+      "PREPRINTING",
+      "DISTRIBUTION",
+      "SALES",
+    ])
+    .optional()
+    .nullable(),
 });
 
 export type BookFormValues = z.infer<typeof bookSchema>;

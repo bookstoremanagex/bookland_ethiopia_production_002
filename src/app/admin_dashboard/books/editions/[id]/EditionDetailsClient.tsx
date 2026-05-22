@@ -431,8 +431,13 @@ export default function EditionDetailsClient({ initialEdition, stores }: Edition
 
                         <StoreInventoryTable
                             editionId={edition.id}
-                            inventory={edition.bookEditionStores || []}
+                            inventory={edition.bookeditionstores || []}
                             allStores={stores}
+                            remainingForTransfer={Number(edition.count_remening_for_transfer || 0)}
+                            onRemainingChange={(newRemaining: number) => {
+                                setEdition((prev: any) => ({ ...prev, count_remening_for_transfer: newRemaining }));
+                                setFormData((prev: any) => ({ ...prev, count_remening_for_transfer: newRemaining.toString() }));
+                            }}
                         />
                     </div>
 

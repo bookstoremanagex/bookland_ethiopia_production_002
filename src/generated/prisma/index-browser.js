@@ -226,6 +226,28 @@ exports.Prisma.BookshopesScalarFieldEnum = {
   deletedAt: 'deletedAt'
 };
 
+exports.Prisma.OrdersScalarFieldEnum = {
+  id: 'id',
+  bookShopId: 'bookShopId',
+  order_type: 'order_type',
+  memo: 'memo',
+  is_approved: 'is_approved',
+  total_amount: 'total_amount',
+  amount_paid: 'amount_paid',
+  status: 'status',
+  is_deleted: 'is_deleted',
+  updatedAt: 'updatedAt',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.Order_itemsScalarFieldEnum = {
+  id: 'id',
+  orderId: 'orderId',
+  bookEditionId: 'bookEditionId',
+  quantity: 'quantity',
+  price_at_order: 'price_at_order'
+};
+
 exports.Prisma.DamagedbooksScalarFieldEnum = {
   id: 'id',
   type: 'type',
@@ -505,6 +527,12 @@ exports.Prisma.bookshopesOrderByRelevanceFieldEnum = {
   email: 'email'
 };
 
+exports.Prisma.ordersOrderByRelevanceFieldEnum = {
+  order_type: 'order_type',
+  memo: 'memo',
+  status: 'status'
+};
+
 exports.Prisma.damagedbooksOrderByRelevanceFieldEnum = {
   memo: 'memo'
 };
@@ -677,6 +705,8 @@ exports.Prisma.ModelName = {
   books: 'books',
   bookshopeditions: 'bookshopeditions',
   bookshopes: 'bookshopes',
+  orders: 'orders',
+  order_items: 'order_items',
   damagedbooks: 'damagedbooks',
   dashboardmenu: 'dashboardmenu',
   printer: 'printer',

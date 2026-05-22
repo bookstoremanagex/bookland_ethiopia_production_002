@@ -12,7 +12,8 @@ import {
   Building2,
   AlertCircle,
   ShieldAlert,
-  AlertTriangle
+  AlertTriangle,
+  RefreshCw
 } from 'lucide-react';
 import { Button } from '../../../../../components/ui/button';
 import { Input } from '../../../../../components/ui/input';
@@ -21,6 +22,7 @@ import {
   updateStoreInventory,
   deleteStoreInventory
 } from '../../../../actions/store-inventory-actions';
+import { getEditionById } from '../../../../actions/edition-actions';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 
@@ -28,18 +30,23 @@ interface StoreInventoryTableProps {
   editionId: number;
   inventory: any[];
   allStores: any[];
+  remainingForTransfer: number;
+  onRemainingChange: (newRemaining: number) => void;
 }
 
 export default function StoreInventoryTable({
   editionId,
   inventory: initialInventory,
-  allStores
+  allStores,
+  remainingForTransfer,
+  onRemainingChange
 }: StoreInventoryTableProps) {
   const [inventory, setInventory] = useState(initialInventory);
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editValue, setEditValue] = useState<string>("");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<any>(null);
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
@@ -49,20 +56,49 @@ export default function StoreInventoryTable({
     quantity: "0"
   });
 
+  // Calculate max allowed for edit: current item quantity + remaining
+  const getMaxForEdit = (currentQuantity: number) => currentQuantity + remainingForTransfer;
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    try {
+      const response = await getEditionById(editionId);
+      if (response.success && response.data) {
+        setInventory(response.data.bookeditionstores || []);
+        onRemainingChange(Number(response.data.count_remening_for_transfer || 0));
+        toast.success("Inventory refreshed");
+      } else {
+        toast.error("Failed to refresh inventory");
+      }
+    } catch (error) {
+      toast.error("An error occurred while refreshing");
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
   const handleAdd = async () => {
     if (!newAssignment.storeId) return toast.error("Please select a store");
+    const qty = Number(newAssignment.quantity);
+    if (qty < 0) return toast.error("Quantity cannot be negative");
+    if (qty > remainingForTransfer) {
+      return toast.error(`Cannot assign ${qty} units. Only ${remainingForTransfer} remaining for transfer.`);
+    }
     setIsProcessing(true);
     try {
       const response = await assignEditionToStore({
         editionId,
         storeId: Number(newAssignment.storeId),
-        quantity: Number(newAssignment.quantity)
+        quantity: qty
       });
       if (response.success) {
         toast.success("Edition assigned to store");
         setInventory([...inventory, response.data]);
         setIsAdding(false);
         setNewAssignment({ storeId: "", quantity: "0" });
+        if (response.newRemaining !== undefined) {
+          onRemainingChange(response.newRemaining);
+        }
       } else {
         toast.error(response.error || "Failed to assign");
       }
@@ -74,13 +110,27 @@ export default function StoreInventoryTable({
   };
 
   const handleUpdate = async (id: number) => {
+    const newQty = Number(editValue);
+    const currentItem = inventory.find(item => item.id === id);
+    if (!currentItem) return;
+    const oldQty = Number(currentItem.quantity);
+    const diff = newQty - oldQty;
+
+    if (newQty < 0) return toast.error("Quantity cannot be negative");
+    if (diff > 0 && diff > remainingForTransfer) {
+      return toast.error(`Cannot increase by ${diff}. Only ${remainingForTransfer} remaining for transfer.`);
+    }
+
     setIsProcessing(true);
     try {
-      const response = await updateStoreInventory(id, Number(editValue), editionId);
+      const response = await updateStoreInventory(id, newQty, editionId);
       if (response.success) {
         toast.success("Inventory updated");
-        setInventory(inventory.map(item => item.id === id ? { ...item, quantity: Number(editValue) } : item));
+        setInventory(inventory.map(item => item.id === id ? { ...item, quantity: newQty } : item));
         setEditingId(null);
+        if (response.newRemaining !== undefined) {
+          onRemainingChange(response.newRemaining);
+        }
       } else {
         toast.error(response.error || "Failed to update");
       }
@@ -102,6 +152,9 @@ export default function StoreInventoryTable({
         setShowDeleteConfirm(false);
         setItemToDelete(null);
         setDeleteConfirmText("");
+        if (response.newRemaining !== undefined) {
+          onRemainingChange(response.newRemaining);
+        }
       } else {
         toast.error(response.error || "Failed to remove");
       }
@@ -124,12 +177,22 @@ export default function StoreInventoryTable({
             <p className="text-muted-foreground font-bold text-xs md:text-base">Distribution tracking across physical stores.</p>
           </div>
         </div>
-        <Button
-          onClick={() => setIsAdding(true)}
-          className="h-12 md:h-14 px-6 md:px-8 rounded-xl md:rounded-2xl bg-primarycolor hover:bg-secondarycolor font-black uppercase tracking-widest text-[10px] md:text-xs gap-2"
-        >
-          <Plus className="size-4" /> Add to Store
-        </Button>
+        <div className="flex items-center gap-3">
+          <Button
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+            variant="outline"
+            className="h-12 md:h-14 w-12 md:w-14 p-0 rounded-xl md:rounded-2xl border-2 border-primarycolor/10 hover:bg-primarycolor/5 text-primarycolor shrink-0 shadow-sm transition-all"
+          >
+            <RefreshCw className={cn("size-5", isRefreshing && "animate-spin")} />
+          </Button>
+          <Button
+            onClick={() => setIsAdding(true)}
+            className="h-12 md:h-14 px-6 md:px-8 rounded-xl md:rounded-2xl bg-primarycolor hover:bg-secondarycolor font-black uppercase tracking-widest text-[10px] md:text-xs gap-2"
+          >
+            <Plus className="size-4" /> Add to Store
+          </Button>
+        </div>
       </div>
 
       {/* Desktop View */}
@@ -158,11 +221,14 @@ export default function StoreInventoryTable({
                   <td className="p-6 font-bold text-muted-foreground text-sm">{item.stores.location}</td>
                   <td className="p-6 text-center">
                     {editingId === item.id ? (
-                      <div className="flex items-center justify-center gap-2">
+                      <div className="flex flex-col items-center gap-1">
+                        <div className="flex items-center gap-2">
                         <Input
                           type="number"
                           value={editValue}
                           onChange={(e) => setEditValue(e.target.value)}
+                          min={0}
+                          max={getMaxForEdit(item.quantity)}
                           className="w-24 h-10 rounded-xl border-2 font-black text-center"
                           autoFocus
                         />
@@ -172,6 +238,8 @@ export default function StoreInventoryTable({
                         <Button size="icon" variant="ghost" className="size-8 rounded-lg" onClick={() => setEditingId(null)}>
                           <X className="size-4" />
                         </Button>
+                        </div>
+                        <span className="text-[9px] font-bold text-muted-foreground">Max: {getMaxForEdit(item.quantity)} units</span>
                       </div>
                     ) : (
                       <div className="flex items-center justify-center gap-3">
@@ -248,19 +316,24 @@ export default function StoreInventoryTable({
               </div>
 
               {editingId === item.id ? (
-                <div className="flex items-center gap-2 pt-3 border-t border-primarycolor/5">
-                  <Input
-                    type="number"
-                    value={editValue}
-                    onChange={(e) => setEditValue(e.target.value)}
-                    className="flex-1 h-10 rounded-xl border-2 font-black"
-                  />
-                  <Button size="icon" className="size-10 bg-emerald-500 rounded-xl" onClick={() => handleUpdate(item.id)} disabled={isProcessing}>
-                    <Check className="size-4" />
-                  </Button>
-                  <Button size="icon" variant="ghost" className="size-10 rounded-xl" onClick={() => setEditingId(null)}>
-                    <X className="size-4" />
-                  </Button>
+                <div className="pt-3 border-t border-primarycolor/5 space-y-1">
+                  <div className="flex items-center gap-2">
+                    <Input
+                      type="number"
+                      value={editValue}
+                      onChange={(e) => setEditValue(e.target.value)}
+                      min={0}
+                      max={getMaxForEdit(item.quantity)}
+                      className="flex-1 h-10 rounded-xl border-2 font-black"
+                    />
+                    <Button size="icon" className="size-10 bg-emerald-500 rounded-xl" onClick={() => handleUpdate(item.id)} disabled={isProcessing}>
+                      <Check className="size-4" />
+                    </Button>
+                    <Button size="icon" variant="ghost" className="size-10 rounded-xl" onClick={() => setEditingId(null)}>
+                      <X className="size-4" />
+                    </Button>
+                  </div>
+                  <span className="text-[9px] font-bold text-muted-foreground ml-1">Max: {getMaxForEdit(item.quantity)} units available</span>
                 </div>
               ) : (
                 <div className="flex items-center justify-between pt-3 border-t border-primarycolor/5">
@@ -306,8 +379,11 @@ export default function StoreInventoryTable({
               type="number"
               value={newAssignment.quantity}
               onChange={(e) => setNewAssignment({ ...newAssignment, quantity: e.target.value })}
+              min={0}
+              max={remainingForTransfer}
               className="h-12 px-4 rounded-xl border-2 font-bold"
             />
+            <span className="text-[9px] font-bold text-muted-foreground ml-1">{remainingForTransfer} units available for transfer</span>
           </div>
           <div className="flex items-end gap-2">
             <Button className="flex-1 h-12 rounded-xl bg-primarycolor font-black uppercase tracking-widest text-[10px]" onClick={handleAdd} disabled={isProcessing}>Assign Store</Button>

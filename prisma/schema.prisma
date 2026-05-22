@@ -58,6 +58,7 @@ model bookedition {
   bookeditionstores           bookeditionstores[]
   bookshopeditions            bookshopeditions[]
   damagedbooks                damagedbooks[]
+  order_items                 order_items[]
 
   @@index([bookId], map: "BookEdition_bookId_fkey")
 }
@@ -86,9 +87,9 @@ model books {
   author                     String?
   translator                 String?
   designer                   String?
-  language                   String
-  edition                    String
-  category                   String
+  language                   String?
+  edition                    String?
+  category                   String?
   publication_year           String
   print_batch_id             String?
   book_sku                   String                  @unique(map: "Books_book_sku_key")
@@ -144,6 +145,33 @@ model bookshopes {
   createdAt        DateTime           @default(now())
   deletedAt        DateTime           @default(now())
   bookshopeditions bookshopeditions[]
+  orders           orders[]
+}
+
+model orders {
+  id              Int           @id @default(autoincrement())
+  bookShopId      Int
+  order_type      String        // "requested" or "on round"
+  memo            String?       @db.Text
+  is_approved     Boolean       @default(false)
+  total_amount    Float         @default(0)
+  amount_paid     Float         @default(0)
+  status          String        @default("Pending")
+  is_deleted      Boolean       @default(false)
+  updatedAt       DateTime      @updatedAt
+  createdAt       DateTime      @default(now())
+  bookshopes      bookshopes    @relation(fields: [bookShopId], references: [id], onDelete: Cascade)
+  order_items     order_items[]
+}
+
+model order_items {
+  id              Int           @id @default(autoincrement())
+  orderId         Int
+  bookEditionId   Int
+  quantity        Int
+  price_at_order  Float
+  order           orders        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  bookedition     bookedition   @relation(fields: [bookEditionId], references: [id], onDelete: Cascade)
 }
 
 model damagedbooks {

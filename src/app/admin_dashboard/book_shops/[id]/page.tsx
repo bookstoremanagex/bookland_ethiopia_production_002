@@ -17,6 +17,21 @@ export default async function ShopDetailsPage({ params }: { params: Promise<{ id
           }
         },
         orderBy: { createdAt: 'desc' }
+      },
+      orders: {
+        where: { is_deleted: false },
+        include: {
+          order_items: {
+            include: {
+              bookedition: {
+                include: {
+                  books: true
+                }
+              }
+            }
+          }
+        },
+        orderBy: { createdAt: 'desc' }
       }
     }
   });
