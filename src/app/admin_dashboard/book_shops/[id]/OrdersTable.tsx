@@ -30,9 +30,6 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { toast } from "sonner";
-import { updateOrderPayment } from "@/app/actions/order-actions";
-import { useRouter } from "next/navigation";
 import {
   Table,
   TableBody,
@@ -74,28 +71,6 @@ interface OrdersTableProps {
 export function OrdersTable({ data, onViewDetails }: OrdersTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = React.useState("");
-  const router = useRouter();
-
-  const [paymentEdits, setPaymentEdits] = React.useState<
-    Record<number, string>
-  >({});
-
-  const handlePaymentBlur = async (orderId: number) => {
-    const val = paymentEdits[orderId];
-    if (val === undefined) return;
-    const amount = Number(val);
-    if (isNaN(amount)) {
-      toast.error("Invalid amount");
-      return;
-    }
-    const res = await updateOrderPayment(orderId, amount);
-    if (res.success) {
-      toast.success("Payment updated");
-      router.refresh();
-    } else {
-      toast.error(res.error || "Failed to update payment");
-    }
-  };
 
   const columns: ColumnDef<Order>[] = [
     {
@@ -153,36 +128,9 @@ export function OrdersTable({ data, onViewDetails }: OrdersTableProps) {
             {row.original.total_amount.toLocaleString()}{" "}
             <span className="text-[10px] opacity-40">ETB</span>
           </span>
-          <div className="flex flex-col">
-            <span className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest leading-tight">
-              Amount Paid Instantly:
-            </span>
-            <Input
-              className="h-8 w-32 text-xs font-bold"
-              value={
-                paymentEdits[row.original.id] ??
-                row.original.amount_paid.toString()
-              }
-              onChange={async (e) => {
-                const newVal = e.target.value;
-                setPaymentEdits({
-                  ...paymentEdits,
-                  [row.original.id]: newVal,
-                });
-                // instantly update payment
-                const amount = Number(newVal);
-                if (!isNaN(amount)) {
-                  const res = await updateOrderPayment(row.original.id, amount);
-                  if (res.success) {
-                    toast.success("Payment updated");
-                    router.refresh();
-                  } else {
-                    toast.error(res.error || "Failed to update payment");
-                  }
-                }
-              }}
-            />
-          </div>
+          <span className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest leading-tight">
+            Paid: {row.original.amount_paid.toLocaleString()} ETB
+          </span>
         </div>
       ),
     },

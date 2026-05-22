@@ -41,6 +41,7 @@ interface StoreOption {
     storeId: number;
     storeName: string;
     availableQty: number;
+    type: "store" | "printer";
 }
 
 interface EditionBreakdown {
@@ -137,7 +138,8 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
         try {
             const results: BookBreakdown[] = [];
             for (const ub of uniqueBooks) {
-                const res = await getBookStockBreakdown(ub.bookId);
+                const editionsInOrder = (editionBreakdownPerBook.get(ub.bookId) || []).map(e => e.editionId);
+                const res = await getBookStockBreakdown(ub.bookId, editionsInOrder);
                 if (res.success && res.data) {
                     results.push({ ...ub, editions: res.data as EditionBreakdown[] });
                 }
@@ -259,6 +261,7 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                                     storeStockId: st.storeStockId,
                                     quantity: st.quantity,
                                     price: editionData.price,
+                                    type: storeData.type,
                                 });
                             }
                         }
@@ -637,12 +640,17 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                                                                                         )}
                                                                                     >
                                                                                         <div className="flex items-center justify-between gap-2">
-                                                                                            <div>
-                                                                                                <p className="font-black text-slate-700 text-xs uppercase">{store.storeName}</p>
-                                                                                                <p className="text-[8px] text-muted-foreground uppercase tracking-widest mt-0.5">
-                                                                                                    Available: {store.availableQty}
-                                                                                                </p>
-                                                                                            </div>
+                                                                                    <div>
+                                                                                        <p className="font-black text-slate-700 text-xs uppercase">{store.storeName}</p>
+                                                                                        <div className="flex items-center gap-1.5 mt-0.5">
+                                                                                            {store.type === "printer" && (
+                                                                                                <span className="px-1.5 py-0.5 rounded bg-purple-100 text-purple-700 text-[7px] font-black uppercase tracking-widest">Printer</span>
+                                                                                            )}
+                                                                                            <p className="text-[8px] text-muted-foreground uppercase tracking-widest">
+                                                                                                Available: {store.availableQty}
+                                                                                            </p>
+                                                                                        </div>
+                                                                                    </div>
                                                                                         </div>
                                                                                         <Input
                                                                                             type="number"

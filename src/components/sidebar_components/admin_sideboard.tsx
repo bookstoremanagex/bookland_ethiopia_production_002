@@ -99,32 +99,35 @@ export function AdminAppSidebar() {
   const { isMounted, setMounted, activePath, setActivePath } =
     useSidebarStore();
   const [pendingOrdersCount, setPendingOrdersCount] = React.useState(0);
+  const [unreadNotifCount, setUnreadNotifCount] = React.useState(0);
 
   React.useEffect(() => {
     setMounted(true);
     setActivePath(pathname);
   }, [pathname, setMounted, setActivePath]);
 
-  // Fetch pending orders count
+  // Fetch pending orders & unread notifications count
   React.useEffect(() => {
-    const fetchPendingCount = async () => {
+    const fetchCounts = async () => {
       try {
-        const { getPendingOrdersCount } =
-          await import("@/app/actions/order-actions");
-        const res = await getPendingOrdersCount();
-        if (res.success) {
-          setPendingOrdersCount(res.count || 0);
-        }
+        const [{ getPendingOrdersCount }, { getUnreadCount }] =
+          await Promise.all([
+            import("@/app/actions/order-actions"),
+            import("@/app/actions/notification-actions"),
+          ]);
+        const [ordersRes, notifRes] = await Promise.all([
+          getPendingOrdersCount(),
+          getUnreadCount(),
+        ]);
+        if (ordersRes.success) setPendingOrdersCount(ordersRes.count || 0);
+        if (notifRes.success) setUnreadNotifCount(notifRes.count || 0);
       } catch (error) {
-        console.error("Failed to fetch pending orders count:", error);
+        console.error("Failed to fetch counts:", error);
       }
     };
 
-    // Fetch immediately on mount
-    fetchPendingCount();
-
-    // Set up interval to refresh every 30 seconds
-    const interval = setInterval(fetchPendingCount, 30000);
+    fetchCounts();
+    const interval = setInterval(fetchCounts, 30000);
     return () => clearInterval(interval);
   }, []);
 
@@ -166,7 +169,11 @@ export function AdminAppSidebar() {
                 {menuItems.map((item) => {
                   const active = activeUrl === item.url;
                   const showBadge =
-                    item.title === "Manage Orders" && pendingOrdersCount > 0;
+                    (item.title === "Manage Orders" && pendingOrdersCount > 0) ||
+                    (item.title === "Notifications" && unreadNotifCount > 0);
+                  const badgeCount =
+                    item.title === "Manage Orders" ? pendingOrdersCount :
+                    item.title === "Notifications" ? unreadNotifCount : 0;
                   return (
                     <SidebarMenuItem key={item.title}>
                       <SidebarMenuButton
@@ -201,7 +208,7 @@ export function AdminAppSidebar() {
                           {showBadge && (
                             <div className="ml-auto flex items-center gap-2 shrink-0">
                               <div className="size-6 rounded-full bg-rose-500 text-white text-[10px] font-black flex items-center justify-center">
-                                {pendingOrdersCount}
+                                {badgeCount}
                               </div>
                             </div>
                           )}

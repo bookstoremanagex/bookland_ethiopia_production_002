@@ -3,6 +3,17 @@
 import prisma from "../../lib/prisma";
 import { revalidatePath } from "next/cache";
 
+export async function getUnreadCount() {
+  try {
+    const count = await (prisma as any).notification.count({
+      where: { is_deleted: false, is_read: false }
+    })
+    return { success: true, count }
+  } catch (error: any) {
+    return { success: false, count: 0 }
+  }
+}
+
 export async function getNotifications() {
   try {
     const notifications = await (prisma as any).notification.findMany({
@@ -17,6 +28,34 @@ export async function getNotifications() {
   } catch (error: any) {
     console.warn("Database empty or notifications not found. Defaulting to empty list.", error);
     return { success: true, data: [] };
+  }
+}
+
+export async function createNotification(data: {
+  title: string
+  message: string
+  details?: string
+  type?: string
+  notification_to?: string
+  notification_from?: string
+}) {
+  try {
+    const notification = await (prisma as any).notification.create({
+      data: {
+        title: data.title,
+        message: data.message,
+        details: data.details || null,
+        type: data.type || "INFO",
+        notification_to: data.notification_to || "ADMIN",
+        notification_from: data.notification_from || null,
+        updatedAt: new Date(),
+      }
+    })
+    revalidatePath("/admin_dashboard/notifications")
+    return { success: true, data: notification }
+  } catch (error: any) {
+    console.error("Error creating notification:", error)
+    return { success: false, error: error.message || "Failed to create notification" }
   }
 }
 

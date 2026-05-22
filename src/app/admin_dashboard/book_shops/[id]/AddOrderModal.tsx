@@ -105,7 +105,7 @@ export default function AddOrderModal({ isOpen, onClose, shopId, shopName }: Add
 
             setCart([...cart, {
                 ...book,
-                quantity: 1,
+                quantity: 0,
                 editions: editions,
                 maxStock: totalStock
             }]);
@@ -119,12 +119,14 @@ export default function AddOrderModal({ isOpen, onClose, shopId, shopName }: Add
     const updateQuantity = (bookId: number, qty: number) => {
         setCart(cart.map(item => {
             if (item.id === bookId) {
-                const newQty = Math.min(Math.max(1, qty), item.maxStock);
+                const newQty = Math.min(qty, item.maxStock);
                 return { ...item, quantity: newQty };
             }
             return item;
         }));
     };
+
+    const hasInvalidQuantity = cart.some(item => item.quantity <= 0);
 
     const removeFromCart = (bookId: number) => {
         setCart(cart.filter(item => item.id !== bookId));
@@ -406,7 +408,7 @@ export default function AddOrderModal({ isOpen, onClose, shopId, shopName }: Add
                             <Button variant="outline" onClick={onClose} className="rounded-2xl h-12 px-8 font-black uppercase tracking-widest text-[10px]">Cancel</Button>
                             <Button 
                                 onClick={() => setStep(2)} 
-                                disabled={cart.length === 0}
+                                disabled={cart.length === 0 || hasInvalidQuantity}
                                 className="bg-primarycolor hover:bg-secondarycolor text-white rounded-2xl h-12 px-10 font-black uppercase tracking-widest text-[10px] shadow-xl shadow-primarycolor/20 gap-2"
                             >
                                 Continue <ChevronRight className="size-4" />

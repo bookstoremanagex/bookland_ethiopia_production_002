@@ -2,6 +2,8 @@
 
 import prisma from "../../lib/prisma";
 import { revalidatePath } from "next/cache";
+import { getCurrentSession } from "./auth-actions";
+import { createNotification } from "./notification-actions";
 
 export async function getOrdersByShopId(shopId: number) {
   try {
@@ -140,6 +142,42 @@ export async function createOrder(data: {
     });
 
     revalidatePath(`/admin_dashboard/book_shops/${data.bookShopId}`);
+
+    // Create notification
+    try {
+      const session = await getCurrentSession();
+      const shop = await (prisma as any).bookshopes.findUnique({
+        where: { id: Number(data.bookShopId) }
+      });
+
+      const itemsDetail = finalOrderItems
+        .map((item: any, i: number) => {
+          const origItem = data.items[Math.min(i, data.items.length - 1)];
+          return `${origItem?.bookId ? `Book #${origItem.bookId}` : `Edition #${item.bookEditionId}`} x${item.quantity} @ ${item.price_at_order} ETB`;
+        })
+        .join(", ");
+
+      const detailsObj = {
+        shopName: shop?.name || `Shop #${data.bookShopId}`,
+        placedBy: session?.name || "Unknown",
+        items: itemsDetail,
+        totalAmount: totalAmount,
+        orderId: order.id,
+        orderType: data.order_type,
+      };
+
+      await createNotification({
+        title: `New Order from ${shop?.name || `Shop #${data.bookShopId}`}`,
+        message: `A new order has been placed by ${session?.name || "Unknown"} at ${shop?.name || `Shop #${data.bookShopId}`}. Total: ${totalAmount.toLocaleString()} ETB. Please check the Manage Orders menu for details.`,
+        details: JSON.stringify(detailsObj),
+        type: "ORDER",
+        notification_to: "ADMIN",
+        notification_from: session?.name || "System",
+      });
+    } catch (notifError) {
+      console.error("Failed to create notification for new order:", notifError);
+    }
+
     return { success: true, data: order };
   } catch (error: any) {
     console.error("Create order error:", error);
@@ -208,15 +246,23 @@ export async function getAllOrders() {
  * For each edition of a given book, returns the list of stores that have stock,
  * with the store name, storeId, editionId, edition name, price, and available quantity.
  */
-export async function getBookStockBreakdown(bookId: number) {
+export async function getBookStockBreakdown(bookId: number, editionIds?: number[]) {
   try {
     const id = Number(bookId);
+    const where: any = { bookId: id, is_deleted: false };
+    if (editionIds && editionIds.length > 0) {
+      where.id = { in: editionIds };
+    }
     const editions = await (prisma as any).bookedition.findMany({
-      where: { bookId: id, is_deleted: false },
+      where,
       include: {
         bookeditionstores: {
           where: { is_deleted: false, quantity: { gt: 0 } },
           include: { stores: true },
+        },
+        bookeditionprinters: {
+          where: { is_deleted: false, quantity: { gt: 0 } },
+          include: { printer: true },
         },
       },
       orderBy: { createdAt: "desc" },
@@ -227,12 +273,22 @@ export async function getBookStockBreakdown(bookId: number) {
         editionId: ed.id,
         editionName: ed.edition_name,
         price: ed.selling_price || 0,
-        stores: ed.bookeditionstores.map((s: any) => ({
-          storeStockId: s.id,
-          storeId: s.storeId,
-          storeName: s.stores?.name || "Unknown Store",
-          availableQty: s.quantity || 0,
-        })),
+        stores: [
+          ...ed.bookeditionstores.map((s: any) => ({
+            storeStockId: s.id,
+            storeId: s.storeId,
+            storeName: s.stores?.name || "Unknown Store",
+            availableQty: s.quantity || 0,
+            type: "store" as const,
+          })),
+          ...ed.bookeditionprinters.map((p: any) => ({
+            storeStockId: p.id,
+            storeId: p.printerId,
+            storeName: p.printer?.name || "Unknown Printer",
+            availableQty: p.quantity || 0,
+            type: "printer" as const,
+          })),
+        ],
       }))
       .filter((edition: any) => edition.stores.length > 0);
 
@@ -257,13 +313,14 @@ export async function approveOrder(
     storeStockId: number;
     quantity: number;
     price: number;
+    type: "store" | "printer";
   }[],
 ) {
   try {
     const id = Number(orderId);
     const order = await (prisma as any).orders.findUnique({
       where: { id },
-      include: { order_items: true },
+      include: { order_items: true, bookshopes: true },
     });
 
     if (!order) return { success: false, error: "Order not found" };
@@ -277,37 +334,57 @@ export async function approveOrder(
       storeStockId: Number(a.storeStockId),
       quantity: Math.round(Number(a.quantity)),
       price: Number(a.price),
+      type: a.type,
     }));
+
+    // Calculate total for the approved allocations
+    let newTotal = 0;
+    for (const alloc of sanitized) {
+      newTotal += alloc.quantity * alloc.price;
+    }
 
     await (prisma as any).$transaction(
       async (tx: any) => {
-        // Calculate total for the approved allocations
-        let newTotal = 0;
-        for (const alloc of sanitized) {
-          newTotal += alloc.quantity * alloc.price;
-        }
 
         // Proportional paid amount per item
         const paidRatio =
           order.total_amount > 0 ? order.amount_paid / order.total_amount : 0;
 
         for (const alloc of sanitized) {
-          // 1. Deduct from store stock
-          const storeStock = await tx.bookeditionstores.findUnique({
-            where: { id: alloc.storeStockId },
-          });
-          if (!storeStock || (storeStock.quantity || 0) < alloc.quantity) {
-            throw new Error(
-              `Insufficient stock at store for edition ${alloc.bookEditionId}`,
-            );
+          // 1. Deduct from store or printer stock
+          if (alloc.type === "printer") {
+            const printerStock = await tx.bookeditionprinters.findUnique({
+              where: { id: alloc.storeStockId },
+            });
+            if (!printerStock || (printerStock.quantity || 0) < alloc.quantity) {
+              throw new Error(
+                `Insufficient stock at printer for edition ${alloc.bookEditionId}`,
+              );
+            }
+            await tx.bookeditionprinters.update({
+              where: { id: alloc.storeStockId },
+              data: {
+                quantity: { decrement: alloc.quantity },
+                updatedAt: new Date(),
+              },
+            });
+          } else {
+            const storeStock = await tx.bookeditionstores.findUnique({
+              where: { id: alloc.storeStockId },
+            });
+            if (!storeStock || (storeStock.quantity || 0) < alloc.quantity) {
+              throw new Error(
+                `Insufficient stock at store for edition ${alloc.bookEditionId}`,
+              );
+            }
+            await tx.bookeditionstores.update({
+              where: { id: alloc.storeStockId },
+              data: {
+                quantity: { decrement: alloc.quantity },
+                updatedAt: new Date(),
+              },
+            });
           }
-          await tx.bookeditionstores.update({
-            where: { id: alloc.storeStockId },
-            data: {
-              quantity: { decrement: alloc.quantity },
-              updatedAt: new Date(),
-            },
-          });
 
           // 2. Add to bookshop editions (create or update)
           const existing = await tx.bookshopeditions.findFirst({
@@ -381,6 +458,31 @@ export async function approveOrder(
 
     revalidatePath("/admin_dashboard/manage_orders");
     revalidatePath(`/admin_dashboard/book_shops/${order.bookShopId}`);
+
+    // Record activity log (in a try-catch so it doesn't break the approval response)
+    try {
+      const session = await getCurrentSession();
+      if (session?.id) {
+        const shopName = order.bookshopes?.name || `Shop #${order.bookShopId}`;
+        await (prisma as any).activityLogs.create({
+          data: {
+            accountId: session.id,
+            action: `Approved shop order ORD-${order.id} for ${shopName}`,
+            details: JSON.stringify({
+              orderId: order.id,
+              shopId: order.bookShopId,
+              shopName,
+              totalAmount: newTotal,
+              allocations: sanitized.length,
+            }),
+            updatedAt: new Date(),
+          },
+        });
+      }
+    } catch (logError) {
+      console.error("Failed to record activity log for order approval:", logError);
+    }
+
     return { success: true };
   } catch (error: any) {
     console.error("Approve order error:", error);

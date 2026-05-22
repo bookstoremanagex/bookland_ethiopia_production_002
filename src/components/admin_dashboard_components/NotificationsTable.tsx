@@ -13,7 +13,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Search, ChevronLeft, ChevronRight, Bell, Check, Trash2, MailOpen, AlertCircle } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight, Bell, Check, Trash2, MailOpen, AlertCircle, ShoppingBag, User, Building2, DollarSign, Package, X } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import {
@@ -24,6 +24,12 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
 import { cn } from "../../lib/utils";
 import { markAsRead, deleteNotification } from "../../app/actions/notification-actions";
 import { toast } from "sonner";
@@ -56,6 +62,8 @@ export function NotificationsTable({ data: initialData = [] }: NotificationsTabl
   const [globalFilter, setGlobalFilter] = React.useState("");
   const [statusFilter, setStatusFilter] = React.useState<"all" | "read" | "unread">("all");
   const [typeFilter, setTypeFilter] = React.useState<string>("all");
+  const [detailItem, setDetailItem] = React.useState<NotificationItem | null>(null);
+  const [isDetailOpen, setIsDetailOpen] = React.useState(false);
 
   React.useEffect(() => {
     setData(initialData || []);
@@ -136,20 +144,29 @@ export function NotificationsTable({ data: initialData = [] }: NotificationsTabl
       header: "Title",
       cell: ({ row }) => {
         const isRead = row.original.is_read;
+        const handleClick = async () => {
+          if (!isRead) {
+            await handleMarkAsRead(row.original.id);
+          }
+          setDetailItem(row.original);
+          setIsDetailOpen(true);
+        };
         return (
-          <div className="space-y-1 min-w-[200px] max-w-[300px]">
-            <div className={cn(
-              "line-clamp-1 leading-snug",
-              isRead ? "font-bold text-secondarycolor/70" : "font-black text-primarycolor"
-            )}>
-              {row.getValue("title") || "Untitled Notification"}
-            </div>
-            {row.original.notification_from && (
-              <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
-                From: {row.original.notification_from}
+          <button onClick={handleClick} className="text-left w-full">
+            <div className="space-y-1 min-w-[200px] max-w-[300px]">
+              <div className={cn(
+                "line-clamp-1 leading-snug hover:underline cursor-pointer",
+                isRead ? "font-bold text-secondarycolor/70" : "font-black text-primarycolor"
+              )}>
+                {row.getValue("title") || "Untitled Notification"}
               </div>
-            )}
-          </div>
+              {row.original.notification_from && (
+                <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                  From: {row.original.notification_from}
+                </div>
+              )}
+            </div>
+          </button>
         );
       },
     },
@@ -157,13 +174,8 @@ export function NotificationsTable({ data: initialData = [] }: NotificationsTabl
       accessorKey: "message",
       header: "Message",
       cell: ({ row }) => (
-        <div className="max-w-[400px] text-sm text-secondarycolor/80 leading-relaxed font-semibold">
+        <div className="max-w-[400px] text-sm text-secondarycolor/80 leading-relaxed font-semibold line-clamp-2">
           {row.getValue("message")}
-          {row.original.details && (
-            <p className="text-[11px] text-muted-foreground font-semibold mt-1 bg-slate-50 p-2 rounded-lg border border-slate-100 italic">
-              {row.original.details}
-            </p>
-          )}
         </div>
       ),
     },
@@ -329,9 +341,14 @@ export function NotificationsTable({ data: initialData = [] }: NotificationsTabl
                 <TableRow
                   key={row.id}
                   className={cn(
-                    "group hover:bg-primarycolor/5 transition-all duration-300 border-primarycolor/5 hover:shadow-inner",
+                    "group hover:bg-primarycolor/5 transition-all duration-300 border-primarycolor/5 hover:shadow-inner cursor-pointer",
                     !row.original.is_read && "bg-emerald-50/20"
                   )}
+                  onClick={async () => {
+                    if (!row.original.is_read) await handleMarkAsRead(row.original.id);
+                    setDetailItem(row.original);
+                    setIsDetailOpen(true);
+                  }}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="py-5 px-6 transition-transform duration-300 group-hover:translate-x-1">
@@ -375,12 +392,18 @@ export function NotificationsTable({ data: initialData = [] }: NotificationsTabl
                         item.is_read ? "bg-slate-300 ring-slate-50" : "bg-emerald-500 ring-emerald-50 animate-pulse"
                       )}
                     />
-                    <h3 className={cn(
-                      "text-lg line-clamp-1 leading-tight",
-                      item.is_read ? "font-bold text-secondarycolor/70" : "font-black text-primarycolor"
-                    )}>
-                      {item.title || "Untitled"}
-                    </h3>
+                    <button onClick={async () => {
+                      if (!item.is_read) await handleMarkAsRead(item.id);
+                      setDetailItem(item);
+                      setIsDetailOpen(true);
+                    }} className="text-left">
+                      <h3 className={cn(
+                        "text-lg line-clamp-1 leading-tight hover:underline cursor-pointer",
+                        item.is_read ? "font-bold text-secondarycolor/70" : "font-black text-primarycolor"
+                      )}>
+                        {item.title || "Untitled"}
+                      </h3>
+                    </button>
                   </div>
                   {item.type && (
                     <span className="text-[9px] font-black uppercase tracking-widest bg-primarycolor/5 px-2 py-1 rounded-md text-primarycolor border border-primarycolor/10">
@@ -434,6 +457,99 @@ export function NotificationsTable({ data: initialData = [] }: NotificationsTabl
           </div>
         )}
       </div>
+
+      {/* Notification Detail Dialog */}
+      <Dialog open={isDetailOpen} onOpenChange={setIsDetailOpen}>
+        <DialogContent className="sm:max-w-lg max-h-[90vh] rounded-[2.5rem] p-0 border-4 border-primarycolor/5 flex flex-col">
+          <div className="shrink-0 p-8 pb-0">
+            <DialogHeader className="space-y-4">
+              <div className="size-14 rounded-2xl bg-primarycolor/10 flex items-center justify-center text-primarycolor">
+                <Bell className="size-7" />
+              </div>
+              <div>
+                <DialogTitle className="text-2xl font-black text-primarycolor uppercase italic leading-tight">
+                  {detailItem?.title || "Notification"}
+                </DialogTitle>
+                {detailItem?.notification_from && (
+                  <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1">
+                    From: {detailItem.notification_from}
+                  </p>
+                )}
+              </div>
+            </DialogHeader>
+          </div>
+
+          <div className="flex-1 overflow-y-auto px-8 py-4 custom-scrollbar">
+            <p className="font-bold text-secondarycolor/80 leading-relaxed">
+              {detailItem?.message}
+            </p>
+
+            {detailItem?.details && (() => {
+              try {
+                const parsed = JSON.parse(detailItem.details);
+                if (parsed.shopName) {
+                  return (
+                    <div className="space-y-4 mt-6">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                          <div className="flex items-center gap-2">
+                            <Building2 className="size-4 text-primarycolor/40" />
+                            <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Shop</p>
+                          </div>
+                          <p className="font-black text-primarycolor">{parsed.shopName}</p>
+                        </div>
+                        <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                          <div className="flex items-center gap-2">
+                            <User className="size-4 text-primarycolor/40" />
+                            <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Placed By</p>
+                          </div>
+                          <p className="font-black text-primarycolor">{parsed.placedBy}</p>
+                        </div>
+                      </div>
+                      <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                        <div className="flex items-center gap-2">
+                          <Package className="size-4 text-primarycolor/40" />
+                          <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Items</p>
+                        </div>
+                        <p className="font-bold text-primarycolor text-sm">{parsed.items}</p>
+                      </div>
+                      <div className="p-4 rounded-2xl bg-primarycolor/5 border border-primarycolor/10 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <DollarSign className="size-5 text-primarycolor" />
+                          <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Total Amount</p>
+                        </div>
+                        <p className="text-xl font-black text-primarycolor">{parsed.totalAmount?.toLocaleString()} ETB</p>
+                      </div>
+                    </div>
+                  );
+                }
+              } catch {}
+              return null;
+            })()}
+
+            {detailItem?.type && (
+              <div className="flex items-center gap-2 mt-6">
+                <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border bg-blue-50 text-blue-700 border-blue-200">
+                  {detailItem.type}
+                </span>
+                <span className="text-xs font-bold text-muted-foreground">
+                  {new Date(detailItem.createdAt).toLocaleString()}
+                </span>
+              </div>
+            )}
+          </div>
+
+          <div className="shrink-0 flex justify-end gap-3 p-8 pt-4 border-t border-slate-100">
+            <Button
+              variant="outline"
+              onClick={() => setIsDetailOpen(false)}
+              className="rounded-xl h-12 px-6 font-black uppercase tracking-widest text-[10px]"
+            >
+              Close
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Pagination Section */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-8 px-4 py-8 border-t-2 border-primarycolor/5">
