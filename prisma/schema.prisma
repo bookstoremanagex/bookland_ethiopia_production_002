@@ -487,6 +487,33 @@ model settings {
   createdAt    DateTime @default(now())
 }
 
+model checks {
+  id          Int          @id @default(autoincrement())
+  username    String?
+  bankname    String?
+  type        check_types?
+  amount      String?
+  recordeddate DateTime?
+  memo        String?
+  status      check_status @default(PENDING)
+  is_deleted  Boolean      @default(false)
+  deletedAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now())
+  createdAt   DateTime     @default(now())
+}
+
+enum check_types {
+  COLLATERAL
+  PAYMENT
+}
+
+enum check_status {
+  PENDING
+  CLEARED
+  BOUNCED
+  CANCELLED
+}
+
 enum notification_to {
   ADMIN
   FINANCE
@@ -497,7 +524,6 @@ enum notification_to {
   RETAIL_MANAGER
   PRINTER
 }
-
 enum damagedbooks_type {
   STORE
   PRINTING

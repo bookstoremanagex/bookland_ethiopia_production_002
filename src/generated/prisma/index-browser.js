@@ -508,6 +508,21 @@ exports.Prisma.SettingsScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.ChecksScalarFieldEnum = {
+  id: 'id',
+  username: 'username',
+  bankname: 'bankname',
+  type: 'type',
+  amount: 'amount',
+  recordeddate: 'recordeddate',
+  memo: 'memo',
+  status: 'status',
+  is_deleted: 'is_deleted',
+  deletedAt: 'deletedAt',
+  updatedAt: 'updatedAt',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -684,6 +699,13 @@ exports.Prisma.approval_documentsOrderByRelevanceFieldEnum = {
 exports.Prisma.settingsOrderByRelevanceFieldEnum = {
   primaryColor: 'primaryColor'
 };
+
+exports.Prisma.checksOrderByRelevanceFieldEnum = {
+  username: 'username',
+  bankname: 'bankname',
+  amount: 'amount',
+  memo: 'memo'
+};
 exports.books_productionstatus = exports.$Enums.books_productionstatus = {
   ON_PRODUCTION: 'ON_PRODUCTION',
   TRANSLATION: 'TRANSLATION',
@@ -740,6 +762,18 @@ exports.notification_to = exports.$Enums.notification_to = {
   PRINTER: 'PRINTER'
 };
 
+exports.check_types = exports.$Enums.check_types = {
+  COLLATERAL: 'COLLATERAL',
+  PAYMENT: 'PAYMENT'
+};
+
+exports.check_status = exports.$Enums.check_status = {
+  PENDING: 'PENDING',
+  CLEARED: 'CLEARED',
+  BOUNCED: 'BOUNCED',
+  CANCELLED: 'CANCELLED'
+};
+
 exports.Prisma.ModelName = {
   accounts: 'accounts',
   bookedition: 'bookedition',
@@ -768,7 +802,8 @@ exports.Prisma.ModelName = {
   delivery_notes: 'delivery_notes',
   invoices: 'invoices',
   approval_documents: 'approval_documents',
-  settings: 'settings'
+  settings: 'settings',
+  checks: 'checks'
 };
 
 /**

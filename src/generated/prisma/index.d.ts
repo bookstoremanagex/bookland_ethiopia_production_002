@@ -153,12 +153,35 @@ export type approval_documents = $Result.DefaultSelection<Prisma.$approval_docum
  * 
  */
 export type settings = $Result.DefaultSelection<Prisma.$settingsPayload>
+/**
+ * Model checks
+ * 
+ */
+export type checks = $Result.DefaultSelection<Prisma.$checksPayload>
 
 /**
  * Enums
  */
 export namespace $Enums {
-  export const notification_to: {
+  export const check_types: {
+  COLLATERAL: 'COLLATERAL',
+  PAYMENT: 'PAYMENT'
+};
+
+export type check_types = (typeof check_types)[keyof typeof check_types]
+
+
+export const check_status: {
+  PENDING: 'PENDING',
+  CLEARED: 'CLEARED',
+  BOUNCED: 'BOUNCED',
+  CANCELLED: 'CANCELLED'
+};
+
+export type check_status = (typeof check_status)[keyof typeof check_status]
+
+
+export const notification_to: {
   ADMIN: 'ADMIN',
   FINANCE: 'FINANCE',
   OPERATION_MANAGER: 'OPERATION_MANAGER',
@@ -232,6 +255,14 @@ export const books_productionstatus: {
 export type books_productionstatus = (typeof books_productionstatus)[keyof typeof books_productionstatus]
 
 }
+
+export type check_types = $Enums.check_types
+
+export const check_types: typeof $Enums.check_types
+
+export type check_status = $Enums.check_status
+
+export const check_status: typeof $Enums.check_status
 
 export type notification_to = $Enums.notification_to
 
@@ -654,6 +685,16 @@ export class PrismaClient<
     * ```
     */
   get settings(): Prisma.settingsDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.checks`: Exposes CRUD operations for the **checks** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Checks
+    * const checks = await prisma.checks.findMany()
+    * ```
+    */
+  get checks(): Prisma.checksDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1122,7 +1163,8 @@ export namespace Prisma {
     delivery_notes: 'delivery_notes',
     invoices: 'invoices',
     approval_documents: 'approval_documents',
-    settings: 'settings'
+    settings: 'settings',
+    checks: 'checks'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1141,7 +1183,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "accounts" | "bookedition" | "bookeditionstores" | "bookeditionprinters" | "books" | "bookshopeditions" | "bookshopes" | "orders" | "order_items" | "damagedbooks" | "dashboardmenu" | "printer" | "printorder" | "printorder_payments" | "printorder_items" | "roles" | "stores" | "translator" | "translatorbook" | "notification" | "activityLogs" | "notes" | "contracts" | "print_agreements" | "delivery_notes" | "invoices" | "approval_documents" | "settings"
+      modelProps: "accounts" | "bookedition" | "bookeditionstores" | "bookeditionprinters" | "books" | "bookshopeditions" | "bookshopes" | "orders" | "order_items" | "damagedbooks" | "dashboardmenu" | "printer" | "printorder" | "printorder_payments" | "printorder_items" | "roles" | "stores" | "translator" | "translatorbook" | "notification" | "activityLogs" | "notes" | "contracts" | "print_agreements" | "delivery_notes" | "invoices" | "approval_documents" | "settings" | "checks"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2993,6 +3035,72 @@ export namespace Prisma {
           }
         }
       }
+      checks: {
+        payload: Prisma.$checksPayload<ExtArgs>
+        fields: Prisma.checksFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.checksFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$checksPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.checksFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$checksPayload>
+          }
+          findFirst: {
+            args: Prisma.checksFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$checksPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.checksFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$checksPayload>
+          }
+          findMany: {
+            args: Prisma.checksFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$checksPayload>[]
+          }
+          create: {
+            args: Prisma.checksCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$checksPayload>
+          }
+          createMany: {
+            args: Prisma.checksCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.checksDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$checksPayload>
+          }
+          update: {
+            args: Prisma.checksUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$checksPayload>
+          }
+          deleteMany: {
+            args: Prisma.checksDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.checksUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.checksUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$checksPayload>
+          }
+          aggregate: {
+            args: Prisma.ChecksAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateChecks>
+          }
+          groupBy: {
+            args: Prisma.checksGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ChecksGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.checksCountArgs<ExtArgs>
+            result: $Utils.Optional<ChecksCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -3117,6 +3225,7 @@ export namespace Prisma {
     invoices?: invoicesOmit
     approval_documents?: approval_documentsOmit
     settings?: settingsOmit
+    checks?: checksOmit
   }
 
   /* Types for Logging */
@@ -33033,6 +33142,999 @@ export namespace Prisma {
 
 
   /**
+   * Model checks
+   */
+
+  export type AggregateChecks = {
+    _count: ChecksCountAggregateOutputType | null
+    _avg: ChecksAvgAggregateOutputType | null
+    _sum: ChecksSumAggregateOutputType | null
+    _min: ChecksMinAggregateOutputType | null
+    _max: ChecksMaxAggregateOutputType | null
+  }
+
+  export type ChecksAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type ChecksSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type ChecksMinAggregateOutputType = {
+    id: number | null
+    username: string | null
+    bankname: string | null
+    type: $Enums.check_types | null
+    amount: string | null
+    recordeddate: Date | null
+    memo: string | null
+    status: $Enums.check_status | null
+    is_deleted: boolean | null
+    deletedAt: Date | null
+    updatedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type ChecksMaxAggregateOutputType = {
+    id: number | null
+    username: string | null
+    bankname: string | null
+    type: $Enums.check_types | null
+    amount: string | null
+    recordeddate: Date | null
+    memo: string | null
+    status: $Enums.check_status | null
+    is_deleted: boolean | null
+    deletedAt: Date | null
+    updatedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type ChecksCountAggregateOutputType = {
+    id: number
+    username: number
+    bankname: number
+    type: number
+    amount: number
+    recordeddate: number
+    memo: number
+    status: number
+    is_deleted: number
+    deletedAt: number
+    updatedAt: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ChecksAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type ChecksSumAggregateInputType = {
+    id?: true
+  }
+
+  export type ChecksMinAggregateInputType = {
+    id?: true
+    username?: true
+    bankname?: true
+    type?: true
+    amount?: true
+    recordeddate?: true
+    memo?: true
+    status?: true
+    is_deleted?: true
+    deletedAt?: true
+    updatedAt?: true
+    createdAt?: true
+  }
+
+  export type ChecksMaxAggregateInputType = {
+    id?: true
+    username?: true
+    bankname?: true
+    type?: true
+    amount?: true
+    recordeddate?: true
+    memo?: true
+    status?: true
+    is_deleted?: true
+    deletedAt?: true
+    updatedAt?: true
+    createdAt?: true
+  }
+
+  export type ChecksCountAggregateInputType = {
+    id?: true
+    username?: true
+    bankname?: true
+    type?: true
+    amount?: true
+    recordeddate?: true
+    memo?: true
+    status?: true
+    is_deleted?: true
+    deletedAt?: true
+    updatedAt?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ChecksAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which checks to aggregate.
+     */
+    where?: checksWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of checks to fetch.
+     */
+    orderBy?: checksOrderByWithRelationInput | checksOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: checksWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` checks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` checks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned checks
+    **/
+    _count?: true | ChecksCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ChecksAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ChecksSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ChecksMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ChecksMaxAggregateInputType
+  }
+
+  export type GetChecksAggregateType<T extends ChecksAggregateArgs> = {
+        [P in keyof T & keyof AggregateChecks]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateChecks[P]>
+      : GetScalarType<T[P], AggregateChecks[P]>
+  }
+
+
+
+
+  export type checksGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: checksWhereInput
+    orderBy?: checksOrderByWithAggregationInput | checksOrderByWithAggregationInput[]
+    by: ChecksScalarFieldEnum[] | ChecksScalarFieldEnum
+    having?: checksScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ChecksCountAggregateInputType | true
+    _avg?: ChecksAvgAggregateInputType
+    _sum?: ChecksSumAggregateInputType
+    _min?: ChecksMinAggregateInputType
+    _max?: ChecksMaxAggregateInputType
+  }
+
+  export type ChecksGroupByOutputType = {
+    id: number
+    username: string | null
+    bankname: string | null
+    type: $Enums.check_types | null
+    amount: string | null
+    recordeddate: Date | null
+    memo: string | null
+    status: $Enums.check_status
+    is_deleted: boolean
+    deletedAt: Date
+    updatedAt: Date
+    createdAt: Date
+    _count: ChecksCountAggregateOutputType | null
+    _avg: ChecksAvgAggregateOutputType | null
+    _sum: ChecksSumAggregateOutputType | null
+    _min: ChecksMinAggregateOutputType | null
+    _max: ChecksMaxAggregateOutputType | null
+  }
+
+  type GetChecksGroupByPayload<T extends checksGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ChecksGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ChecksGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ChecksGroupByOutputType[P]>
+            : GetScalarType<T[P], ChecksGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type checksSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    username?: boolean
+    bankname?: boolean
+    type?: boolean
+    amount?: boolean
+    recordeddate?: boolean
+    memo?: boolean
+    status?: boolean
+    is_deleted?: boolean
+    deletedAt?: boolean
+    updatedAt?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["checks"]>
+
+
+
+  export type checksSelectScalar = {
+    id?: boolean
+    username?: boolean
+    bankname?: boolean
+    type?: boolean
+    amount?: boolean
+    recordeddate?: boolean
+    memo?: boolean
+    status?: boolean
+    is_deleted?: boolean
+    deletedAt?: boolean
+    updatedAt?: boolean
+    createdAt?: boolean
+  }
+
+  export type checksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "username" | "bankname" | "type" | "amount" | "recordeddate" | "memo" | "status" | "is_deleted" | "deletedAt" | "updatedAt" | "createdAt", ExtArgs["result"]["checks"]>
+
+  export type $checksPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "checks"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      username: string | null
+      bankname: string | null
+      type: $Enums.check_types | null
+      amount: string | null
+      recordeddate: Date | null
+      memo: string | null
+      status: $Enums.check_status
+      is_deleted: boolean
+      deletedAt: Date
+      updatedAt: Date
+      createdAt: Date
+    }, ExtArgs["result"]["checks"]>
+    composites: {}
+  }
+
+  type checksGetPayload<S extends boolean | null | undefined | checksDefaultArgs> = $Result.GetResult<Prisma.$checksPayload, S>
+
+  type checksCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<checksFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ChecksCountAggregateInputType | true
+    }
+
+  export interface checksDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['checks'], meta: { name: 'checks' } }
+    /**
+     * Find zero or one Checks that matches the filter.
+     * @param {checksFindUniqueArgs} args - Arguments to find a Checks
+     * @example
+     * // Get one Checks
+     * const checks = await prisma.checks.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends checksFindUniqueArgs>(args: SelectSubset<T, checksFindUniqueArgs<ExtArgs>>): Prisma__checksClient<$Result.GetResult<Prisma.$checksPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Checks that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {checksFindUniqueOrThrowArgs} args - Arguments to find a Checks
+     * @example
+     * // Get one Checks
+     * const checks = await prisma.checks.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends checksFindUniqueOrThrowArgs>(args: SelectSubset<T, checksFindUniqueOrThrowArgs<ExtArgs>>): Prisma__checksClient<$Result.GetResult<Prisma.$checksPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Checks that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {checksFindFirstArgs} args - Arguments to find a Checks
+     * @example
+     * // Get one Checks
+     * const checks = await prisma.checks.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends checksFindFirstArgs>(args?: SelectSubset<T, checksFindFirstArgs<ExtArgs>>): Prisma__checksClient<$Result.GetResult<Prisma.$checksPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Checks that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {checksFindFirstOrThrowArgs} args - Arguments to find a Checks
+     * @example
+     * // Get one Checks
+     * const checks = await prisma.checks.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends checksFindFirstOrThrowArgs>(args?: SelectSubset<T, checksFindFirstOrThrowArgs<ExtArgs>>): Prisma__checksClient<$Result.GetResult<Prisma.$checksPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Checks that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {checksFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Checks
+     * const checks = await prisma.checks.findMany()
+     * 
+     * // Get first 10 Checks
+     * const checks = await prisma.checks.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const checksWithIdOnly = await prisma.checks.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends checksFindManyArgs>(args?: SelectSubset<T, checksFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$checksPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Checks.
+     * @param {checksCreateArgs} args - Arguments to create a Checks.
+     * @example
+     * // Create one Checks
+     * const Checks = await prisma.checks.create({
+     *   data: {
+     *     // ... data to create a Checks
+     *   }
+     * })
+     * 
+     */
+    create<T extends checksCreateArgs>(args: SelectSubset<T, checksCreateArgs<ExtArgs>>): Prisma__checksClient<$Result.GetResult<Prisma.$checksPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Checks.
+     * @param {checksCreateManyArgs} args - Arguments to create many Checks.
+     * @example
+     * // Create many Checks
+     * const checks = await prisma.checks.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends checksCreateManyArgs>(args?: SelectSubset<T, checksCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Checks.
+     * @param {checksDeleteArgs} args - Arguments to delete one Checks.
+     * @example
+     * // Delete one Checks
+     * const Checks = await prisma.checks.delete({
+     *   where: {
+     *     // ... filter to delete one Checks
+     *   }
+     * })
+     * 
+     */
+    delete<T extends checksDeleteArgs>(args: SelectSubset<T, checksDeleteArgs<ExtArgs>>): Prisma__checksClient<$Result.GetResult<Prisma.$checksPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Checks.
+     * @param {checksUpdateArgs} args - Arguments to update one Checks.
+     * @example
+     * // Update one Checks
+     * const checks = await prisma.checks.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends checksUpdateArgs>(args: SelectSubset<T, checksUpdateArgs<ExtArgs>>): Prisma__checksClient<$Result.GetResult<Prisma.$checksPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Checks.
+     * @param {checksDeleteManyArgs} args - Arguments to filter Checks to delete.
+     * @example
+     * // Delete a few Checks
+     * const { count } = await prisma.checks.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends checksDeleteManyArgs>(args?: SelectSubset<T, checksDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Checks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {checksUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Checks
+     * const checks = await prisma.checks.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends checksUpdateManyArgs>(args: SelectSubset<T, checksUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Checks.
+     * @param {checksUpsertArgs} args - Arguments to update or create a Checks.
+     * @example
+     * // Update or create a Checks
+     * const checks = await prisma.checks.upsert({
+     *   create: {
+     *     // ... data to create a Checks
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Checks we want to update
+     *   }
+     * })
+     */
+    upsert<T extends checksUpsertArgs>(args: SelectSubset<T, checksUpsertArgs<ExtArgs>>): Prisma__checksClient<$Result.GetResult<Prisma.$checksPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Checks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {checksCountArgs} args - Arguments to filter Checks to count.
+     * @example
+     * // Count the number of Checks
+     * const count = await prisma.checks.count({
+     *   where: {
+     *     // ... the filter for the Checks we want to count
+     *   }
+     * })
+    **/
+    count<T extends checksCountArgs>(
+      args?: Subset<T, checksCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ChecksCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Checks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChecksAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ChecksAggregateArgs>(args: Subset<T, ChecksAggregateArgs>): Prisma.PrismaPromise<GetChecksAggregateType<T>>
+
+    /**
+     * Group by Checks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {checksGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends checksGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: checksGroupByArgs['orderBy'] }
+        : { orderBy?: checksGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, checksGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetChecksGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the checks model
+   */
+  readonly fields: checksFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for checks.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__checksClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the checks model
+   */
+  interface checksFieldRefs {
+    readonly id: FieldRef<"checks", 'Int'>
+    readonly username: FieldRef<"checks", 'String'>
+    readonly bankname: FieldRef<"checks", 'String'>
+    readonly type: FieldRef<"checks", 'check_types'>
+    readonly amount: FieldRef<"checks", 'String'>
+    readonly recordeddate: FieldRef<"checks", 'DateTime'>
+    readonly memo: FieldRef<"checks", 'String'>
+    readonly status: FieldRef<"checks", 'check_status'>
+    readonly is_deleted: FieldRef<"checks", 'Boolean'>
+    readonly deletedAt: FieldRef<"checks", 'DateTime'>
+    readonly updatedAt: FieldRef<"checks", 'DateTime'>
+    readonly createdAt: FieldRef<"checks", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * checks findUnique
+   */
+  export type checksFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the checks
+     */
+    select?: checksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the checks
+     */
+    omit?: checksOmit<ExtArgs> | null
+    /**
+     * Filter, which checks to fetch.
+     */
+    where: checksWhereUniqueInput
+  }
+
+  /**
+   * checks findUniqueOrThrow
+   */
+  export type checksFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the checks
+     */
+    select?: checksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the checks
+     */
+    omit?: checksOmit<ExtArgs> | null
+    /**
+     * Filter, which checks to fetch.
+     */
+    where: checksWhereUniqueInput
+  }
+
+  /**
+   * checks findFirst
+   */
+  export type checksFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the checks
+     */
+    select?: checksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the checks
+     */
+    omit?: checksOmit<ExtArgs> | null
+    /**
+     * Filter, which checks to fetch.
+     */
+    where?: checksWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of checks to fetch.
+     */
+    orderBy?: checksOrderByWithRelationInput | checksOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for checks.
+     */
+    cursor?: checksWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` checks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` checks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of checks.
+     */
+    distinct?: ChecksScalarFieldEnum | ChecksScalarFieldEnum[]
+  }
+
+  /**
+   * checks findFirstOrThrow
+   */
+  export type checksFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the checks
+     */
+    select?: checksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the checks
+     */
+    omit?: checksOmit<ExtArgs> | null
+    /**
+     * Filter, which checks to fetch.
+     */
+    where?: checksWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of checks to fetch.
+     */
+    orderBy?: checksOrderByWithRelationInput | checksOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for checks.
+     */
+    cursor?: checksWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` checks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` checks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of checks.
+     */
+    distinct?: ChecksScalarFieldEnum | ChecksScalarFieldEnum[]
+  }
+
+  /**
+   * checks findMany
+   */
+  export type checksFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the checks
+     */
+    select?: checksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the checks
+     */
+    omit?: checksOmit<ExtArgs> | null
+    /**
+     * Filter, which checks to fetch.
+     */
+    where?: checksWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of checks to fetch.
+     */
+    orderBy?: checksOrderByWithRelationInput | checksOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing checks.
+     */
+    cursor?: checksWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` checks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` checks.
+     */
+    skip?: number
+    distinct?: ChecksScalarFieldEnum | ChecksScalarFieldEnum[]
+  }
+
+  /**
+   * checks create
+   */
+  export type checksCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the checks
+     */
+    select?: checksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the checks
+     */
+    omit?: checksOmit<ExtArgs> | null
+    /**
+     * The data needed to create a checks.
+     */
+    data?: XOR<checksCreateInput, checksUncheckedCreateInput>
+  }
+
+  /**
+   * checks createMany
+   */
+  export type checksCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many checks.
+     */
+    data: checksCreateManyInput | checksCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * checks update
+   */
+  export type checksUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the checks
+     */
+    select?: checksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the checks
+     */
+    omit?: checksOmit<ExtArgs> | null
+    /**
+     * The data needed to update a checks.
+     */
+    data: XOR<checksUpdateInput, checksUncheckedUpdateInput>
+    /**
+     * Choose, which checks to update.
+     */
+    where: checksWhereUniqueInput
+  }
+
+  /**
+   * checks updateMany
+   */
+  export type checksUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update checks.
+     */
+    data: XOR<checksUpdateManyMutationInput, checksUncheckedUpdateManyInput>
+    /**
+     * Filter which checks to update
+     */
+    where?: checksWhereInput
+    /**
+     * Limit how many checks to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * checks upsert
+   */
+  export type checksUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the checks
+     */
+    select?: checksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the checks
+     */
+    omit?: checksOmit<ExtArgs> | null
+    /**
+     * The filter to search for the checks to update in case it exists.
+     */
+    where: checksWhereUniqueInput
+    /**
+     * In case the checks found by the `where` argument doesn't exist, create a new checks with this data.
+     */
+    create: XOR<checksCreateInput, checksUncheckedCreateInput>
+    /**
+     * In case the checks was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<checksUpdateInput, checksUncheckedUpdateInput>
+  }
+
+  /**
+   * checks delete
+   */
+  export type checksDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the checks
+     */
+    select?: checksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the checks
+     */
+    omit?: checksOmit<ExtArgs> | null
+    /**
+     * Filter which checks to delete.
+     */
+    where: checksWhereUniqueInput
+  }
+
+  /**
+   * checks deleteMany
+   */
+  export type checksDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which checks to delete
+     */
+    where?: checksWhereInput
+    /**
+     * Limit how many checks to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * checks without action
+   */
+  export type checksDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the checks
+     */
+    select?: checksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the checks
+     */
+    omit?: checksOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -33517,6 +34619,24 @@ export namespace Prisma {
   export type SettingsScalarFieldEnum = (typeof SettingsScalarFieldEnum)[keyof typeof SettingsScalarFieldEnum]
 
 
+  export const ChecksScalarFieldEnum: {
+    id: 'id',
+    username: 'username',
+    bankname: 'bankname',
+    type: 'type',
+    amount: 'amount',
+    recordeddate: 'recordeddate',
+    memo: 'memo',
+    status: 'status',
+    is_deleted: 'is_deleted',
+    deletedAt: 'deletedAt',
+    updatedAt: 'updatedAt',
+    createdAt: 'createdAt'
+  };
+
+  export type ChecksScalarFieldEnum = (typeof ChecksScalarFieldEnum)[keyof typeof ChecksScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -33769,6 +34889,16 @@ export namespace Prisma {
   export type settingsOrderByRelevanceFieldEnum = (typeof settingsOrderByRelevanceFieldEnum)[keyof typeof settingsOrderByRelevanceFieldEnum]
 
 
+  export const checksOrderByRelevanceFieldEnum: {
+    username: 'username',
+    bankname: 'bankname',
+    amount: 'amount',
+    memo: 'memo'
+  };
+
+  export type checksOrderByRelevanceFieldEnum = (typeof checksOrderByRelevanceFieldEnum)[keyof typeof checksOrderByRelevanceFieldEnum]
+
+
   /**
    * Field references
    */
@@ -33848,6 +34978,20 @@ export namespace Prisma {
    * Reference to a field of type 'notification_to'
    */
   export type Enumnotification_toFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'notification_to'>
+    
+
+
+  /**
+   * Reference to a field of type 'check_types'
+   */
+  export type Enumcheck_typesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'check_types'>
+    
+
+
+  /**
+   * Reference to a field of type 'check_status'
+   */
+  export type Enumcheck_statusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'check_status'>
     
   /**
    * Deep Input Types
@@ -36346,6 +37490,96 @@ export namespace Prisma {
     primaryColor?: StringWithAggregatesFilter<"settings"> | string
     updatedAt?: DateTimeWithAggregatesFilter<"settings"> | Date | string
     createdAt?: DateTimeWithAggregatesFilter<"settings"> | Date | string
+  }
+
+  export type checksWhereInput = {
+    AND?: checksWhereInput | checksWhereInput[]
+    OR?: checksWhereInput[]
+    NOT?: checksWhereInput | checksWhereInput[]
+    id?: IntFilter<"checks"> | number
+    username?: StringNullableFilter<"checks"> | string | null
+    bankname?: StringNullableFilter<"checks"> | string | null
+    type?: Enumcheck_typesNullableFilter<"checks"> | $Enums.check_types | null
+    amount?: StringNullableFilter<"checks"> | string | null
+    recordeddate?: DateTimeNullableFilter<"checks"> | Date | string | null
+    memo?: StringNullableFilter<"checks"> | string | null
+    status?: Enumcheck_statusFilter<"checks"> | $Enums.check_status
+    is_deleted?: BoolFilter<"checks"> | boolean
+    deletedAt?: DateTimeFilter<"checks"> | Date | string
+    updatedAt?: DateTimeFilter<"checks"> | Date | string
+    createdAt?: DateTimeFilter<"checks"> | Date | string
+  }
+
+  export type checksOrderByWithRelationInput = {
+    id?: SortOrder
+    username?: SortOrderInput | SortOrder
+    bankname?: SortOrderInput | SortOrder
+    type?: SortOrderInput | SortOrder
+    amount?: SortOrderInput | SortOrder
+    recordeddate?: SortOrderInput | SortOrder
+    memo?: SortOrderInput | SortOrder
+    status?: SortOrder
+    is_deleted?: SortOrder
+    deletedAt?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+    _relevance?: checksOrderByRelevanceInput
+  }
+
+  export type checksWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: checksWhereInput | checksWhereInput[]
+    OR?: checksWhereInput[]
+    NOT?: checksWhereInput | checksWhereInput[]
+    username?: StringNullableFilter<"checks"> | string | null
+    bankname?: StringNullableFilter<"checks"> | string | null
+    type?: Enumcheck_typesNullableFilter<"checks"> | $Enums.check_types | null
+    amount?: StringNullableFilter<"checks"> | string | null
+    recordeddate?: DateTimeNullableFilter<"checks"> | Date | string | null
+    memo?: StringNullableFilter<"checks"> | string | null
+    status?: Enumcheck_statusFilter<"checks"> | $Enums.check_status
+    is_deleted?: BoolFilter<"checks"> | boolean
+    deletedAt?: DateTimeFilter<"checks"> | Date | string
+    updatedAt?: DateTimeFilter<"checks"> | Date | string
+    createdAt?: DateTimeFilter<"checks"> | Date | string
+  }, "id">
+
+  export type checksOrderByWithAggregationInput = {
+    id?: SortOrder
+    username?: SortOrderInput | SortOrder
+    bankname?: SortOrderInput | SortOrder
+    type?: SortOrderInput | SortOrder
+    amount?: SortOrderInput | SortOrder
+    recordeddate?: SortOrderInput | SortOrder
+    memo?: SortOrderInput | SortOrder
+    status?: SortOrder
+    is_deleted?: SortOrder
+    deletedAt?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+    _count?: checksCountOrderByAggregateInput
+    _avg?: checksAvgOrderByAggregateInput
+    _max?: checksMaxOrderByAggregateInput
+    _min?: checksMinOrderByAggregateInput
+    _sum?: checksSumOrderByAggregateInput
+  }
+
+  export type checksScalarWhereWithAggregatesInput = {
+    AND?: checksScalarWhereWithAggregatesInput | checksScalarWhereWithAggregatesInput[]
+    OR?: checksScalarWhereWithAggregatesInput[]
+    NOT?: checksScalarWhereWithAggregatesInput | checksScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"checks"> | number
+    username?: StringNullableWithAggregatesFilter<"checks"> | string | null
+    bankname?: StringNullableWithAggregatesFilter<"checks"> | string | null
+    type?: Enumcheck_typesNullableWithAggregatesFilter<"checks"> | $Enums.check_types | null
+    amount?: StringNullableWithAggregatesFilter<"checks"> | string | null
+    recordeddate?: DateTimeNullableWithAggregatesFilter<"checks"> | Date | string | null
+    memo?: StringNullableWithAggregatesFilter<"checks"> | string | null
+    status?: Enumcheck_statusWithAggregatesFilter<"checks"> | $Enums.check_status
+    is_deleted?: BoolWithAggregatesFilter<"checks"> | boolean
+    deletedAt?: DateTimeWithAggregatesFilter<"checks"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"checks"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"checks"> | Date | string
   }
 
   export type accountsCreateInput = {
@@ -39045,6 +40279,108 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type checksCreateInput = {
+    username?: string | null
+    bankname?: string | null
+    type?: $Enums.check_types | null
+    amount?: string | null
+    recordeddate?: Date | string | null
+    memo?: string | null
+    status?: $Enums.check_status
+    is_deleted?: boolean
+    deletedAt?: Date | string
+    updatedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type checksUncheckedCreateInput = {
+    id?: number
+    username?: string | null
+    bankname?: string | null
+    type?: $Enums.check_types | null
+    amount?: string | null
+    recordeddate?: Date | string | null
+    memo?: string | null
+    status?: $Enums.check_status
+    is_deleted?: boolean
+    deletedAt?: Date | string
+    updatedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type checksUpdateInput = {
+    username?: NullableStringFieldUpdateOperationsInput | string | null
+    bankname?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: NullableEnumcheck_typesFieldUpdateOperationsInput | $Enums.check_types | null
+    amount?: NullableStringFieldUpdateOperationsInput | string | null
+    recordeddate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: Enumcheck_statusFieldUpdateOperationsInput | $Enums.check_status
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type checksUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    username?: NullableStringFieldUpdateOperationsInput | string | null
+    bankname?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: NullableEnumcheck_typesFieldUpdateOperationsInput | $Enums.check_types | null
+    amount?: NullableStringFieldUpdateOperationsInput | string | null
+    recordeddate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: Enumcheck_statusFieldUpdateOperationsInput | $Enums.check_status
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type checksCreateManyInput = {
+    id?: number
+    username?: string | null
+    bankname?: string | null
+    type?: $Enums.check_types | null
+    amount?: string | null
+    recordeddate?: Date | string | null
+    memo?: string | null
+    status?: $Enums.check_status
+    is_deleted?: boolean
+    deletedAt?: Date | string
+    updatedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type checksUpdateManyMutationInput = {
+    username?: NullableStringFieldUpdateOperationsInput | string | null
+    bankname?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: NullableEnumcheck_typesFieldUpdateOperationsInput | $Enums.check_types | null
+    amount?: NullableStringFieldUpdateOperationsInput | string | null
+    recordeddate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: Enumcheck_statusFieldUpdateOperationsInput | $Enums.check_status
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type checksUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    username?: NullableStringFieldUpdateOperationsInput | string | null
+    bankname?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: NullableEnumcheck_typesFieldUpdateOperationsInput | $Enums.check_types | null
+    amount?: NullableStringFieldUpdateOperationsInput | string | null
+    recordeddate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: Enumcheck_statusFieldUpdateOperationsInput | $Enums.check_status
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[]
@@ -41242,6 +42578,99 @@ export namespace Prisma {
     id?: SortOrder
   }
 
+  export type Enumcheck_typesNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.check_types | Enumcheck_typesFieldRefInput<$PrismaModel> | null
+    in?: $Enums.check_types[] | null
+    notIn?: $Enums.check_types[] | null
+    not?: NestedEnumcheck_typesNullableFilter<$PrismaModel> | $Enums.check_types | null
+  }
+
+  export type Enumcheck_statusFilter<$PrismaModel = never> = {
+    equals?: $Enums.check_status | Enumcheck_statusFieldRefInput<$PrismaModel>
+    in?: $Enums.check_status[]
+    notIn?: $Enums.check_status[]
+    not?: NestedEnumcheck_statusFilter<$PrismaModel> | $Enums.check_status
+  }
+
+  export type checksOrderByRelevanceInput = {
+    fields: checksOrderByRelevanceFieldEnum | checksOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type checksCountOrderByAggregateInput = {
+    id?: SortOrder
+    username?: SortOrder
+    bankname?: SortOrder
+    type?: SortOrder
+    amount?: SortOrder
+    recordeddate?: SortOrder
+    memo?: SortOrder
+    status?: SortOrder
+    is_deleted?: SortOrder
+    deletedAt?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type checksAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type checksMaxOrderByAggregateInput = {
+    id?: SortOrder
+    username?: SortOrder
+    bankname?: SortOrder
+    type?: SortOrder
+    amount?: SortOrder
+    recordeddate?: SortOrder
+    memo?: SortOrder
+    status?: SortOrder
+    is_deleted?: SortOrder
+    deletedAt?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type checksMinOrderByAggregateInput = {
+    id?: SortOrder
+    username?: SortOrder
+    bankname?: SortOrder
+    type?: SortOrder
+    amount?: SortOrder
+    recordeddate?: SortOrder
+    memo?: SortOrder
+    status?: SortOrder
+    is_deleted?: SortOrder
+    deletedAt?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type checksSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type Enumcheck_typesNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.check_types | Enumcheck_typesFieldRefInput<$PrismaModel> | null
+    in?: $Enums.check_types[] | null
+    notIn?: $Enums.check_types[] | null
+    not?: NestedEnumcheck_typesNullableWithAggregatesFilter<$PrismaModel> | $Enums.check_types | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumcheck_typesNullableFilter<$PrismaModel>
+    _max?: NestedEnumcheck_typesNullableFilter<$PrismaModel>
+  }
+
+  export type Enumcheck_statusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.check_status | Enumcheck_statusFieldRefInput<$PrismaModel>
+    in?: $Enums.check_status[]
+    notIn?: $Enums.check_status[]
+    not?: NestedEnumcheck_statusWithAggregatesFilter<$PrismaModel> | $Enums.check_status
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumcheck_statusFilter<$PrismaModel>
+    _max?: NestedEnumcheck_statusFilter<$PrismaModel>
+  }
+
   export type activityLogsCreateNestedManyWithoutAccountInput = {
     create?: XOR<activityLogsCreateWithoutAccountInput, activityLogsUncheckedCreateWithoutAccountInput> | activityLogsCreateWithoutAccountInput[] | activityLogsUncheckedCreateWithoutAccountInput[]
     connectOrCreate?: activityLogsCreateOrConnectWithoutAccountInput | activityLogsCreateOrConnectWithoutAccountInput[]
@@ -42672,6 +44101,14 @@ export namespace Prisma {
     update?: XOR<XOR<accountsUpdateToOneWithWhereWithoutNotesInput, accountsUpdateWithoutNotesInput>, accountsUncheckedUpdateWithoutNotesInput>
   }
 
+  export type NullableEnumcheck_typesFieldUpdateOperationsInput = {
+    set?: $Enums.check_types | null
+  }
+
+  export type Enumcheck_statusFieldUpdateOperationsInput = {
+    set?: $Enums.check_status
+  }
+
   export type NestedIntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[]
@@ -43009,6 +44446,40 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumnotification_toFilter<$PrismaModel>
     _max?: NestedEnumnotification_toFilter<$PrismaModel>
+  }
+
+  export type NestedEnumcheck_typesNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.check_types | Enumcheck_typesFieldRefInput<$PrismaModel> | null
+    in?: $Enums.check_types[] | null
+    notIn?: $Enums.check_types[] | null
+    not?: NestedEnumcheck_typesNullableFilter<$PrismaModel> | $Enums.check_types | null
+  }
+
+  export type NestedEnumcheck_statusFilter<$PrismaModel = never> = {
+    equals?: $Enums.check_status | Enumcheck_statusFieldRefInput<$PrismaModel>
+    in?: $Enums.check_status[]
+    notIn?: $Enums.check_status[]
+    not?: NestedEnumcheck_statusFilter<$PrismaModel> | $Enums.check_status
+  }
+
+  export type NestedEnumcheck_typesNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.check_types | Enumcheck_typesFieldRefInput<$PrismaModel> | null
+    in?: $Enums.check_types[] | null
+    notIn?: $Enums.check_types[] | null
+    not?: NestedEnumcheck_typesNullableWithAggregatesFilter<$PrismaModel> | $Enums.check_types | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumcheck_typesNullableFilter<$PrismaModel>
+    _max?: NestedEnumcheck_typesNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumcheck_statusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.check_status | Enumcheck_statusFieldRefInput<$PrismaModel>
+    in?: $Enums.check_status[]
+    notIn?: $Enums.check_status[]
+    not?: NestedEnumcheck_statusWithAggregatesFilter<$PrismaModel> | $Enums.check_status
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumcheck_statusFilter<$PrismaModel>
+    _max?: NestedEnumcheck_statusFilter<$PrismaModel>
   }
 
   export type activityLogsCreateWithoutAccountInput = {

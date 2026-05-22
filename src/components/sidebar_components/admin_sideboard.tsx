@@ -83,6 +83,11 @@ const menuItems = [
   },
   { title: "Statistics", icon: BarChart3, url: "/admin_dashboard/statistics" },
   {
+    title: "Manage Checks",
+    icon: FileCheck,
+    url: "/admin_dashboard/checks",
+  },
+  {
     title: "Activity Log",
     icon: History,
     url: "/admin_dashboard/activity_log",
