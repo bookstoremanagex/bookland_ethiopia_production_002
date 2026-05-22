@@ -3,12 +3,18 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Save, User, Mail, Shield, Activity, X, Edit2, Lock, Key, RefreshCcw } from 'lucide-react';
+import { ArrowLeft, Save, User, Mail, Shield, Activity, X, Edit2, Lock, Key, RefreshCcw, ToggleLeft, ToggleRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
-import { updateAccountAction, deleteAccountAction, resetPasswordAction } from './actions';
+import { updateAccountAction, deleteAccountAction, resetPasswordAction, toggleRoleAction } from './actions';
 import DeleteAccountModal from '@/components/admin_dashboard_components/DeleteAccountModal';
+
+interface RoleData {
+  id: number;
+  role_name: string;
+  role_status: boolean;
+}
 
 interface AccountData {
   id: number;
@@ -16,7 +22,16 @@ interface AccountData {
   account_email: string;
   account_type: string;
   account_status: boolean;
+  roles?: RoleData[];
 }
+
+const AVAILABLE_ROLES = [
+  { id: "adding_book_store", label: "Adding Book Store" },
+  { id: "adding_edition", label: "Adding Edition to Book Shop" },
+  { id: "adding_stores", label: "Adding Stock to Stores" },
+  { id: "adding_damaged_books", label: "Adding Damaged Books" },
+  { id: "adding_checks", label: "Adding Checks" },
+];
 
 export default function AccountDetailClient({ account }: { account: AccountData }) {
   const router = useRouter();
@@ -25,6 +40,29 @@ export default function AccountDetailClient({ account }: { account: AccountData 
   const [isResetting, setIsResetting] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [showResetForm, setShowResetForm] = useState(false);
+  const [roles, setRoles] = useState<Record<string, boolean>>(() => {
+    const initial: Record<string, boolean> = {};
+    for (const r of AVAILABLE_ROLES) {
+      const existing = account.roles?.find((role) => role.role_name === r.id);
+      initial[r.id] = existing?.role_status ?? false;
+    }
+    return initial;
+  });
+  const [togglingRole, setTogglingRole] = useState<string | null>(null);
+
+  const handleToggleRole = async (roleId: string) => {
+    const newValue = !roles[roleId];
+    setTogglingRole(roleId);
+    setRoles((prev) => ({ ...prev, [roleId]: newValue }));
+    const res = await toggleRoleAction(account.id, roleId, newValue);
+    setTogglingRole(null);
+    if (res.success) {
+      toast.success(`${AVAILABLE_ROLES.find((r) => r.id === roleId)?.label} ${newValue ? "enabled" : "disabled"}`);
+    } else {
+      setRoles((prev) => ({ ...prev, [roleId]: !newValue }));
+      toast.error(res.error || "Failed to update role");
+    }
+  };
   
   const [formData, setFormData] = useState({
     name: account.name,
@@ -264,6 +302,48 @@ export default function AccountDetailClient({ account }: { account: AccountData 
             </div>
           </div>
         )}
+      </div>
+
+      {/* Roles & Permissions Section */}
+      <div className="bg-white rounded-[1.5rem] sm:rounded-[2.5rem] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.08)] border border-primarycolor/5 overflow-hidden">
+        <div className="p-6 sm:p-12 space-y-6">
+          <div className="space-y-1">
+            <h2 className="text-2xl font-black text-gray-800 flex items-center gap-2">
+              <Shield className="size-6 text-primarycolor" />
+              Roles &amp; Permissions
+            </h2>
+            <p className="text-sm text-gray-500 font-medium">Manage granular permissions for this account.</p>
+          </div>
+          <div className="pt-6 border-t border-gray-100 space-y-4">
+            {AVAILABLE_ROLES.map((role) => (
+              <div
+                key={role.id}
+                className="flex items-center justify-between p-4 sm:p-6 rounded-2xl border-2 border-gray-100 hover:border-primarycolor/20 transition-colors"
+              >
+                <div className="space-y-0.5">
+                  <p className="font-bold text-gray-800">{role.label}</p>
+                  <p className="text-xs text-gray-500 font-medium">
+                    {roles[role.id] ? "Permission granted" : "Permission denied"}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleToggleRole(role.id)}
+                  disabled={togglingRole === role.id}
+                  className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primarycolor/20 ${
+                    roles[role.id] ? "bg-primarycolor" : "bg-gray-200"
+                  }`}
+                >
+                  <span
+                    className={`inline-block size-5 rounded-full bg-white shadow-md border transition-transform ${
+                      roles[role.id] ? "translate-x-6" : "translate-x-1"
+                    }`}
+                  />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* Security Section */}

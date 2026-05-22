@@ -16,6 +16,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from 'sonner'
 import { createDamagedBookReport } from '@/app/actions/damaged-book-actions'
+import { checkCurrentUserRole } from '@/app/actions/book-shop-actions'
 import { cn } from '@/lib/utils'
 import {
     Command,
@@ -54,6 +55,15 @@ export default function ReportDamageButton({ books, editions, stores }: ReportDa
 
     const filteredEditions = editions.filter(ed => ed.bookId === parseInt(formData.book_id))
 
+    const handleOpen = async () => {
+        const roleCheck = await checkCurrentUserRole("adding_damaged_books");
+        if (!roleCheck.enabled) {
+            toast.error("You do not have permission to report damaged books.");
+            return;
+        }
+        setIsOpen(true);
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         if (!formData.book_id || !formData.edition_id || !formData.count) {
@@ -88,7 +98,7 @@ export default function ReportDamageButton({ books, editions, stores }: ReportDa
     return (
         <>
             <Button 
-                onClick={() => setIsOpen(true)}
+                onClick={handleOpen}
                 className="h-14 px-8 rounded-2xl bg-rose-500 hover:bg-rose-600 font-black uppercase tracking-widest text-xs gap-3 shadow-xl shadow-rose-500/20 transition-all active:scale-95"
             >
                 <Plus className="size-5" /> Report Damaged Book

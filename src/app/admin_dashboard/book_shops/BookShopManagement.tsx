@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { createBookShop, updateBookShop, deleteBookShop } from '../../actions/book-shop-actions';
+import { createBookShop, updateBookShop, deleteBookShop, checkCurrentUserRole } from '../../actions/book-shop-actions';
 import { toast } from 'sonner';
 import { BookShopsTable } from '@/components/admin_dashboard_components/BookShopsTable';
 
@@ -38,6 +38,17 @@ export default function BookShopManagement({ initialShops }: BookShopManagementP
     phone: "",
     email: ""
   });
+
+  const handleAddClick = async () => {
+    const res = await checkCurrentUserRole("adding_book_store");
+    if (!res.enabled) {
+      toast.error("You do not have permission to add a book store.");
+      return;
+    }
+    setEditingShop(null);
+    setFormData({ name: "", location: "", branch: "", phone: "", email: "" });
+    setIsAdding(true);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -108,11 +119,7 @@ export default function BookShopManagement({ initialShops }: BookShopManagementP
             setShopToDelete(shop);
             setShowDeleteConfirm(true);
         }}
-        onAdd={() => {
-            setIsAdding(true);
-            setEditingShop(null);
-            setFormData({ name: "", location: "", branch: "", phone: "", email: "" });
-        }}
+        onAdd={handleAddClick}
       />
 
       {/* Add/Edit Modal Overlay */}

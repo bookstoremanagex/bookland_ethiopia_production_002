@@ -53,6 +53,7 @@ export const ALL_DASHBOARD_MENUS: MenuItem[] = [
     { id: "shop", title: "Book Shop", icon: ShoppingBag, path: "book_shops" },
     { id: "statistics", title: "Statistics", icon: BarChart3, path: "statistics" },
     { id: "checks", title: "Manage Checks", icon: FileCheck, path: "checks" },
+    { id: "manage_payment", title: "Manage Payment", icon: BadgeDollarSign, path: "manage_payment" },
     { id: "activity_log", title: "Activity Log", icon: History, path: "activity_log" },
     { 
         id: "production", 

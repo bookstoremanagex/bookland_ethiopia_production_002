@@ -81,6 +81,11 @@ const menuItems = [
     icon: ClipboardList,
     url: "/admin_dashboard/manage_orders",
   },
+  {
+    title: "Manage Payment",
+    icon: BadgeDollarSign,
+    url: "/admin_dashboard/manage_payment",
+  },
   { title: "Statistics", icon: BarChart3, url: "/admin_dashboard/statistics" },
   {
     title: "Manage Checks",
@@ -207,7 +212,7 @@ export function AdminAppSidebar() {
                           </div>
                           {showBadge && (
                             <div className="ml-auto flex items-center gap-2 shrink-0">
-                              <div className="size-6 rounded-full bg-rose-500 text-white text-[10px] font-black flex items-center justify-center">
+                              <div className="size-6 rounded-full bg-emerald-600 text-white text-[10px] font-black flex items-center justify-center">
                                 {badgeCount}
                               </div>
                             </div>

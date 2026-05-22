@@ -46,4 +46,7 @@ export const MODULE_MAP: Record<string, any> = {
     "production/translators/add": dynamic(() => import("@/app/admin_dashboard/production/translators/add/page")),
     "production/translation_work/new": dynamic(() => import("@/app/admin_dashboard/production/translation_work/new/page")),
     "books/add_book": dynamic(() => import("@/app/admin_dashboard/books/add_book/page")),
+    "stores/add_stores": dynamic(() => import("@/app/admin_dashboard/stores/add_stores/page")),
+    "manage_payment": dynamic(() => import("@/app/admin_dashboard/manage_payment/page")),
+    "manage_payment/detail": dynamic(() => import("@/app/admin_dashboard/manage_payment/[id]/page")),
 }

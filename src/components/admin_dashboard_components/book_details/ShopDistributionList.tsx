@@ -19,6 +19,7 @@ import {
 import { Button } from '../../ui/button';
 import { Input } from '../../ui/input';
 import { addEditionToBookShop, deleteBookShopEdition, updateBookShopEdition } from '../../../app/actions/book-shop-edition-actions';
+import { checkCurrentUserRole } from '../../../app/actions/book-shop-actions';
 import { toast } from 'sonner';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -145,7 +146,12 @@ export default function ShopDistributionList({ book, bookShops }: ShopDistributi
             </div>
           </div>
           <Button
-            onClick={() => {
+            onClick={async () => {
+              const roleCheck = await checkCurrentUserRole("adding_edition");
+              if (!roleCheck.enabled) {
+                toast.error("You do not have permission to add edition to shop.");
+                return;
+              }
               setIsAdding(true);
               setEditingItem(null);
               setFormData({ bookShopId: "", bookEditionId: "", quantity: "0", price_per_peice: "0", already_paid: "0", memo: "" });

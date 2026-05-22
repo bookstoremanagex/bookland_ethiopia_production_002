@@ -523,6 +523,19 @@ exports.Prisma.ChecksScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.PaymentsScalarFieldEnum = {
+  id: 'id',
+  shopId: 'shopId',
+  amount: 'amount',
+  payment_type: 'payment_type',
+  checkId: 'checkId',
+  status: 'status',
+  is_deleted: 'is_deleted',
+  updatedAt: 'updatedAt',
+  createdAt: 'createdAt',
+  deletedAt: 'deletedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -706,6 +719,11 @@ exports.Prisma.checksOrderByRelevanceFieldEnum = {
   amount: 'amount',
   memo: 'memo'
 };
+
+exports.Prisma.paymentsOrderByRelevanceFieldEnum = {
+  payment_type: 'payment_type',
+  status: 'status'
+};
 exports.books_productionstatus = exports.$Enums.books_productionstatus = {
   ON_PRODUCTION: 'ON_PRODUCTION',
   TRANSLATION: 'TRANSLATION',
@@ -803,7 +821,8 @@ exports.Prisma.ModelName = {
   invoices: 'invoices',
   approval_documents: 'approval_documents',
   settings: 'settings',
-  checks: 'checks'
+  checks: 'checks',
+  payments: 'payments'
 };
 
 /**

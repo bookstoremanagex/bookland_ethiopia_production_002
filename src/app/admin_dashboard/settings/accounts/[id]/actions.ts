@@ -73,3 +73,43 @@ export async function deleteAccountAction(id: number) {
     return { success: false, error: "Failed to delete account." };
   }
 }
+
+export async function toggleRoleAction(accountId: number, roleName: string, enabled: boolean) {
+  try {
+    const existing = await (prisma as any).roles.findFirst({
+      where: { accountId, role_name: roleName, is_deleted: false },
+    });
+
+    if (existing) {
+      await (prisma as any).roles.update({
+        where: { id: existing.id },
+        data: { role_status: enabled, updatedAt: new Date() },
+      });
+    } else {
+      await (prisma as any).roles.create({
+        data: {
+          accountId,
+          role_name: roleName,
+          role_status: enabled,
+          updatedAt: new Date(),
+        },
+      });
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error toggling role:", error);
+    return { success: false, error: "Failed to update role." };
+  }
+}
+
+export async function checkRoleAction(accountId: number, roleName: string) {
+  try {
+    const role = await (prisma as any).roles.findFirst({
+      where: { accountId, role_name: roleName, is_deleted: false },
+    });
+    return { success: true, enabled: role?.role_status === true };
+  } catch (error) {
+    return { success: false, enabled: false, error: "Failed to check role." };
+  }
+}

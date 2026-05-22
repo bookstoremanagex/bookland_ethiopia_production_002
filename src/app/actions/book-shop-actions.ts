@@ -2,6 +2,20 @@
 
 import prisma from "../../lib/prisma";
 import { revalidatePath } from "next/cache";
+import { getCurrentSession } from "./auth-actions";
+
+export async function checkCurrentUserRole(roleName: string) {
+  try {
+    const session = await getCurrentSession();
+    if (!session?.id) return { success: true, enabled: false };
+    const role = await (prisma as any).roles.findFirst({
+      where: { accountId: session.id, role_name: roleName, is_deleted: false },
+    });
+    return { success: true, enabled: role?.role_status === true };
+  } catch (error) {
+    return { success: false, enabled: false, error: "Failed to check role." };
+  }
+}
 
 export async function getBookShops() {
     try {

@@ -7,24 +7,22 @@ export async function getShopsFinanceData() {
         const shops = await (prisma as any).bookshopes.findMany({
             where: { is_deleted: false },
             include: {
-                bookshopeditions: {
+                orders: {
                     where: { is_deleted: false }
                 }
             }
         });
 
         const formattedShops = shops.map((shop: any) => {
-            const totalRemaining = shop.bookshopeditions.reduce((sum: number, edition: any) => {
-                return sum + (edition.remaining_amount || 0);
+            const totalDebt = shop.orders.reduce((sum: number, order: any) => {
+                return sum + (order.total_amount || 0);
             }, 0);
 
-            const totalDebt = shop.bookshopeditions.reduce((sum: number, edition: any) => {
-                return sum + (edition.total_price || 0);
+            const totalPaid = shop.orders.reduce((sum: number, order: any) => {
+                return sum + (order.amount_paid || 0);
             }, 0);
 
-            const totalPaid = shop.bookshopeditions.reduce((sum: number, edition: any) => {
-                return sum + (edition.already_paid || 0);
-            }, 0);
+            const totalRemaining = totalDebt - totalPaid;
 
             return {
                 id: shop.id,

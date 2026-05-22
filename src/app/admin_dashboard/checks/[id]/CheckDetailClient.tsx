@@ -1,6 +1,6 @@
 "use client"
 
-import React from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import {
@@ -14,9 +14,13 @@ import {
     FileText,
     Clock,
     AlertCircle,
+    CheckCircle2,
+    Loader2,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { toast } from 'sonner'
+import { updateCheckStatus } from '@/app/actions/check-actions'
 
 const statusStyles: Record<string, string> = {
     PENDING: "bg-amber-100 text-amber-700 border-amber-200",
@@ -27,10 +31,29 @@ const statusStyles: Record<string, string> = {
 
 interface CheckDetailClientProps {
     check: any
+    isAdmin: boolean
 }
 
-export default function CheckDetailClient({ check }: CheckDetailClientProps) {
+export default function CheckDetailClient({ check, isAdmin }: CheckDetailClientProps) {
     const router = useRouter()
+    const [isClearing, setIsClearing] = useState(false)
+
+    const handleClearCheck = async () => {
+        setIsClearing(true)
+        try {
+            const res = await updateCheckStatus(check.id, "CLEARED")
+            if (res.success) {
+                toast.success("Check approved and cleared")
+                router.refresh()
+            } else {
+                toast.error(res.error)
+            }
+        } catch {
+            toast.error("Failed to clear check")
+        } finally {
+            setIsClearing(false)
+        }
+    }
 
     return (
         <div className="min-h-screen bg-[#F8FAFC] p-4 md:p-8 lg:p-12 animate-in fade-in duration-700">
@@ -51,6 +74,16 @@ export default function CheckDetailClient({ check }: CheckDetailClientProps) {
                         )}>
                             {check.status || "PENDING"}
                         </span>
+                        {check.status === "PENDING" && isAdmin && (
+                            <Button
+                                onClick={handleClearCheck}
+                                disabled={isClearing}
+                                className="h-10 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[10px] uppercase tracking-widest shadow-lg shadow-emerald-600/20 gap-2"
+                            >
+                                {isClearing ? <Loader2 className="size-4 animate-spin" /> : <CheckCircle2 className="size-4" />}
+                                {isClearing ? "Clearing..." : "Approve & Clear"}
+                            </Button>
+                        )}
                     </div>
                 </div>
 

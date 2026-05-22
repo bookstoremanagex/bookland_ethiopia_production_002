@@ -293,26 +293,26 @@ export default function AddOrderModal({ isOpen, onClose, shopId, shopName }: Add
                                                             </div>
                                                         </div>
 
-                                                        <div className="flex items-center gap-6">
-                                                            <div className="w-32">
-                                                                <label className="text-[9px] font-black uppercase tracking-widest text-primarycolor/60 block mb-1">Quantity</label>
+                                                        <div className="flex flex-wrap items-center gap-4">
+                                                            <div className="flex-1 min-w-[100px] md:w-32 md:flex-none">
+                                                                <label className="text-[9px] font-black uppercase tracking-widest text-primarycolor/60 block mb-1">Qty</label>
                                                                 <Input
                                                                     type="number"
                                                                     value={item.quantity}
                                                                     onChange={(e) => updateQuantity(item.id, parseInt(e.target.value) || 0)}
-                                                                    className="h-12 text-center rounded-xl border-2 border-white shadow-inner font-bold text-lg focus:border-primarycolor"
+                                                                    className="h-12 text-center rounded-xl border-2 border-white shadow-inner font-bold text-sm md:text-lg focus:border-primarycolor"
                                                                 />
                                                             </div>
-                                                            <div className="text-right min-w-[120px]">
+                                                            <div className="text-right flex-1 min-w-[100px]">
                                                                 <p className="text-[9px] font-black uppercase tracking-widest text-primarycolor/60 block mb-1">Subtotal</p>
-                                                                <p className="text-xl font-black text-primarycolor">{totalVal.toLocaleString()} <span className="text-[10px] opacity-40">ETB</span></p>
+                                                                <p className="text-lg md:text-xl font-black text-primarycolor">{totalVal.toLocaleString()} <span className="text-[10px] opacity-40">ETB</span></p>
                                                             </div>
                                                             <Button 
                                                                 variant="ghost" 
                                                                 onClick={() => removeFromCart(item.id)}
-                                                                className="size-12 rounded-xl text-rose-500 hover:bg-rose-50 p-0"
+                                                                className="size-10 md:size-12 rounded-xl text-rose-500 hover:bg-rose-50 p-0 shrink-0"
                                                             >
-                                                                <Trash2 className="size-5" />
+                                                                <Trash2 className="size-4 md:size-5" />
                                                             </Button>
                                                         </div>
                                                     </div>

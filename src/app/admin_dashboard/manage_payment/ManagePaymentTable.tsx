@@ -11,56 +11,52 @@ import {
   getFilteredRowModel,
   SortingState,
 } from "@tanstack/react-table";
-import { 
-    Table, 
-    TableBody, 
-    TableCell, 
-    TableHead, 
-    TableHeader, 
-    TableRow 
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { 
-    ChevronLeft, 
-    ChevronRight, 
-    Store, 
-    Phone, 
-    MapPin, 
+import {
+    ChevronLeft,
+    ChevronRight,
+    Store,
+    MapPin,
     BadgeDollarSign,
     ArrowUpDown,
-    ArrowRight,
     Search,
-    X
+    X,
+    Eye
 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-export type ShopFinance = {
+export type ShopDebt = {
   id: number;
   name: string;
   location: string;
-  phone: string;
-  totalRemaining: number;
   totalDebt: number;
   totalPaid: number;
+  totalRemaining: number;
 };
 
-const columns: ColumnDef<ShopFinance>[] = [
+const columns: ColumnDef<ShopDebt>[] = [
   {
     accessorKey: "name",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="hover:bg-transparent p-0 font-black"
-        >
-          SHOP NAME
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
-    },
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="hover:bg-transparent p-0 font-black"
+      >
+        SHOP NAME
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
     cell: ({ row }) => (
       <div className="flex items-center gap-3">
         <div className="size-10 rounded-xl bg-primarycolor/10 flex items-center justify-center text-primarycolor font-black shadow-inner">
@@ -81,43 +77,62 @@ const columns: ColumnDef<ShopFinance>[] = [
     ),
   },
   {
-    accessorKey: "totalRemaining",
-    header: ({ column }) => {
-      return (
+    accessorKey: "totalDebt",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="hover:bg-transparent p-0 font-black text-right w-full justify-end"
+      >
+        TOTAL DEBT
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => (
+      <div className="text-right font-bold text-gray-800">
+        {row.original.totalDebt.toLocaleString()} <span className="text-[10px] text-muted-foreground">ETB</span>
+      </div>
+    ),
+  },
+  {
+    accessorKey: "totalPaid",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="hover:bg-transparent p-0 font-black text-right w-full justify-end"
+      >
+        PAID
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => (
+      <div className="text-right font-bold text-emerald-600">
+        {row.original.totalPaid.toLocaleString()} <span className="text-[10px]">ETB</span>
+      </div>
+    ),
+  },
+  {
+    id: "actions",
+    header: "",
+    cell: ({ row }) => (
+      <Link href={`/admin_dashboard/manage_payment/${row.original.id}`}>
         <Button
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="hover:bg-transparent p-0 font-black text-right w-full justify-end"
+          className="rounded-xl hover:bg-primarycolor hover:text-white font-black uppercase text-[10px] tracking-widest gap-1.5"
         >
-          REMAINING MONEY
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <Eye className="size-3.5" /> Detail
         </Button>
-      )
-    },
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("totalRemaining"));
-      return (
-        <div className="text-right">
-          <span className={cn(
-            "inline-flex items-center gap-2 px-4 py-1.5 rounded-xl font-black text-sm border-2",
-            amount > 0 
-                ? "bg-red-50 text-red-600 border-red-100" 
-                : "bg-emerald-50 text-emerald-600 border-emerald-100"
-          )}>
-            <BadgeDollarSign className="size-4" />
-            {amount.toLocaleString()} ETB
-          </span>
-        </div>
-      );
-    },
+      </Link>
+    ),
   },
 ];
 
-interface ShopsFinanceTableProps {
-  data: ShopFinance[];
+interface ManagePaymentTableProps {
+  data: ShopDebt[];
 }
 
-export default function ShopsFinanceTable({ data }: ShopsFinanceTableProps) {
+export default function ManagePaymentTable({ data }: ManagePaymentTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = React.useState("");
 
@@ -146,7 +161,6 @@ export default function ShopsFinanceTable({ data }: ShopsFinanceTableProps) {
 
   return (
     <div className="space-y-6">
-      {/* Search / Filter */}
       <div className="relative w-full sm:w-80">
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-muted-foreground/50" />
         <Input
@@ -165,7 +179,6 @@ export default function ShopsFinanceTable({ data }: ShopsFinanceTableProps) {
         )}
       </div>
 
-      {/* Desktop Table View */}
       <div className="hidden md:block rounded-[2rem] border-2 border-primarycolor/5 bg-white shadow-2xl overflow-hidden">
         <Table>
           <TableHeader className="bg-primarycolor/[0.02]">
@@ -209,7 +222,6 @@ export default function ShopsFinanceTable({ data }: ShopsFinanceTableProps) {
         </Table>
       </div>
 
-      {/* Mobile Card View */}
       <div className="grid grid-cols-1 gap-4 md:hidden">
         {table.getRowModel().rows?.length ? (
           table.getRowModel().rows.map((row) => {
@@ -234,18 +246,36 @@ export default function ShopsFinanceTable({ data }: ShopsFinanceTableProps) {
                   </div>
                 </div>
 
-                <div className="pt-4 border-t border-primarycolor/5 flex items-center justify-between">
-                    <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Remaining</span>
-                    <span className={cn(
-                        "inline-flex items-center gap-1.5 px-3 py-1 rounded-lg font-black text-xs border",
-                        shop.totalRemaining > 0 
-                            ? "bg-red-50 text-red-600 border-red-100" 
-                            : "bg-emerald-50 text-emerald-600 border-emerald-100"
-                    )}>
-                        <BadgeDollarSign className="size-3" />
-                        {shop.totalRemaining.toLocaleString()} ETB
-                    </span>
+                <div className="grid grid-cols-2 gap-3 pt-4 border-t border-primarycolor/5">
+                  <div>
+                    <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Debt</p>
+                    <p className="font-bold text-sm">{shop.totalDebt.toLocaleString()} ETB</p>
+                  </div>
+                  <div>
+                    <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Paid</p>
+                    <p className="font-bold text-sm text-emerald-600">{shop.totalPaid.toLocaleString()} ETB</p>
+                  </div>
                 </div>
+
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Remaining</span>
+                  <span className={cn(
+                    "inline-flex items-center gap-1.5 px-3 py-1 rounded-lg font-black text-xs border",
+                    shop.totalRemaining > 0
+                        ? "bg-red-50 text-red-600 border-red-100"
+                        : "bg-emerald-50 text-emerald-600 border-emerald-100"
+                  )}>
+                    <BadgeDollarSign className="size-3" />
+                    {shop.totalRemaining.toLocaleString()} ETB
+                  </span>
+                </div>
+
+                <Link
+                  href={`/admin_dashboard/manage_payment/${shop.id}`}
+                  className="flex items-center justify-center gap-2 w-full h-11 rounded-xl bg-primarycolor/10 hover:bg-primarycolor text-primarycolor hover:text-white font-black uppercase tracking-widest text-[10px] transition-all"
+                >
+                  <Eye className="size-3.5" /> View Details
+                </Link>
               </div>
             );
           })
@@ -256,16 +286,6 @@ export default function ShopsFinanceTable({ data }: ShopsFinanceTableProps) {
         )}
       </div>
 
-      <Link
-        href="/delivery_and_sales_dashboard/book_shops"
-        className="flex items-center justify-center gap-2 w-full h-14 rounded-2xl border-2 border-primarycolor/10 bg-primarycolor/5 hover:bg-primarycolor/10 text-primarycolor font-black uppercase tracking-widest text-xs transition-all hover:shadow-lg"
-      >
-        <Store className="size-4" />
-        Book Stores
-        <ArrowRight className="size-4" />
-      </Link>
-
-      {/* Pagination */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-2 sm:px-4">
         <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-muted-foreground/50">
           <span>

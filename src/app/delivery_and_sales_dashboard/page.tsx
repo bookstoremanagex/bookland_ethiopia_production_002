@@ -31,31 +31,24 @@ export default async function DeliverySalesHomePage() {
 
     return (
         <div className="p-4 md:p-10 space-y-8 md:space-y-10 bg-[#F8FAFC] min-h-screen">
-            {/* Hero Section */}
-            <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 md:gap-8">
-                <div className="space-y-2 w-full lg:w-auto">
-                    <div className="flex items-center gap-3 text-secondarycolor">
-                        <Truck className="size-6 md:size-8" />
-                        <span className="text-[10px] md:text-sm font-black uppercase tracking-[0.3em] opacity-50">Logistics & Sales</span>
+            {/* Financial Overview Section — TOP */}
+            <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                        <div className="flex items-center gap-2 text-primarycolor">
+                            <BadgeDollarSign className="size-5" />
+                            <h2 className="text-2xl font-black uppercase tracking-tighter italic">Financial <span className="text-secondarycolor not-italic">Overview</span></h2>
+                        </div>
+                        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] opacity-50">Shop Debt & Collections Tracking</p>
                     </div>
-                    <h1 className="text-3xl md:text-6xl font-black tracking-tight text-primarycolor uppercase italic leading-none">
-                        Delivery & <span className="text-secondarycolor not-italic">Sales</span>
-                    </h1>
-                    <p className="text-muted-foreground font-bold tracking-tight text-sm md:text-lg max-w-xl">
-                        Welcome to your Command Center. Manage distributions and monitor sales performance.
-                    </p>
+
+                    <Link href="/delivery_and_sales_dashboard/book_shops" className="group flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primarycolor hover:text-secondarycolor transition-colors">
+                        Manage All Shops
+                        <ArrowRight className="size-3 group-hover:translate-x-1 transition-transform" />
+                    </Link>
                 </div>
 
-                <div className="w-full lg:w-auto flex flex-row items-center gap-4 bg-white p-4 md:p-6 rounded-[2rem] border-2 border-primarycolor/5 shadow-xl">
-                    <div className="flex-1 lg:flex-none flex flex-col items-center px-4 md:px-6 border-r-2 border-primarycolor/5">
-                        <span className="text-[8px] md:text-[10px] font-black uppercase tracking-widest text-muted-foreground text-center">Total Receivable</span>
-                        <span className="text-lg md:text-2xl font-black text-red-500">{totalRemainingAll.toLocaleString()} ETB</span>
-                    </div>
-                    <div className="flex-1 lg:flex-none flex flex-col items-center px-4 md:px-6">
-                        <Activity className="size-5 md:size-6 text-secondarycolor animate-pulse mb-1" />
-                        <span className="text-[8px] md:text-[10px] font-black uppercase tracking-widest text-muted-foreground text-center">Live Tracking</span>
-                    </div>
-                </div>
+                <ShopsFinanceTable data={shopsData} />
             </div>
 
             {/* Stats Grid */}
@@ -105,24 +98,31 @@ export default async function DeliverySalesHomePage() {
                 </Card>
             </div>
 
-            {/* Financial Overview Section */}
-            <div className="space-y-6">
-                <div className="flex items-center justify-between">
-                    <div className="space-y-1">
-                        <div className="flex items-center gap-2 text-primarycolor">
-                            <BadgeDollarSign className="size-5" />
-                            <h2 className="text-2xl font-black uppercase tracking-tighter italic">Financial <span className="text-secondarycolor not-italic">Overview</span></h2>
-                        </div>
-                        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] opacity-50">Shop Debt & Collections Tracking</p>
+            {/* Hero Section */}
+            <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 md:gap-8">
+                <div className="space-y-2 w-full lg:w-auto">
+                    <div className="flex items-center gap-3 text-secondarycolor">
+                        <Truck className="size-5 md:size-6" />
+                        <span className="text-[9px] md:text-xs font-normal uppercase tracking-[0.3em] opacity-50">Logistics & Sales</span>
                     </div>
-
-                    <Link href="/delivery_and_sales_dashboard/book_shops" className="group flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primarycolor hover:text-secondarycolor transition-colors">
-                        Manage All Shops
-                        <ArrowRight className="size-3 group-hover:translate-x-1 transition-transform" />
-                    </Link>
+                    <h1 className="text-3xl md:text-6xl font-black tracking-tight text-primarycolor uppercase italic leading-none">
+                        Delivery & <span className="text-secondarycolor not-italic">Sales</span>
+                    </h1>
+                    <p className="text-muted-foreground font-bold tracking-tight text-sm md:text-lg max-w-xl">
+                        Welcome to your Command Center. Manage distributions and monitor sales performance.
+                    </p>
                 </div>
 
-                <ShopsFinanceTable data={shopsData} />
+                <div className="w-full lg:w-auto flex flex-row items-center gap-4 bg-white p-4 md:p-6 rounded-[2rem] border-2 border-primarycolor/5 shadow-xl">
+                    <div className="flex-1 lg:flex-none flex flex-col items-center px-4 md:px-6 border-r-2 border-primarycolor/5">
+                        <span className="text-[8px] md:text-[10px] font-black uppercase tracking-widest text-muted-foreground text-center">Total Receivable</span>
+                        <span className="text-lg md:text-2xl font-black text-red-500">{totalRemainingAll.toLocaleString()} ETB</span>
+                    </div>
+                    <div className="flex-1 lg:flex-none flex flex-col items-center px-4 md:px-6">
+                        <Activity className="size-5 md:size-6 text-secondarycolor animate-pulse mb-1" />
+                        <span className="text-[8px] md:text-[10px] font-black uppercase tracking-widest text-muted-foreground text-center">Live Tracking</span>
+                    </div>
+                </div>
             </div>
         </div>
     )

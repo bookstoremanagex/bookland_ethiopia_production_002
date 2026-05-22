@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/select"
 import { toast } from 'sonner'
 import { createCheck } from '@/app/actions/check-actions'
+import { checkCurrentUserRole } from '@/app/actions/book-shop-actions'
 import { useRouter } from 'next/navigation'
 
 export default function CreateCheckButton() {
@@ -27,6 +28,15 @@ export default function CreateCheckButton() {
         recordeddate: "",
         memo: ""
     })
+
+    const handleOpen = async () => {
+        const roleCheck = await checkCurrentUserRole("adding_checks");
+        if (!roleCheck.enabled) {
+            toast.error("You do not have permission to add checks.");
+            return;
+        }
+        setIsOpen(true);
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -56,7 +66,7 @@ export default function CreateCheckButton() {
     return (
         <>
             <Button
-                onClick={() => setIsOpen(true)}
+                onClick={handleOpen}
                 className="h-14 px-8 rounded-2xl bg-primarycolor hover:bg-secondarycolor font-black uppercase tracking-widest text-xs gap-3 shadow-xl shadow-primarycolor/20 transition-all active:scale-95"
             >
                 <Plus className="size-5" /> New Check

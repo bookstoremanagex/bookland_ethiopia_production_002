@@ -164,6 +164,7 @@ model bookshopes {
   deletedAt        DateTime           @default(now())
   bookshopeditions bookshopeditions[]
   orders           orders[]
+  payments         payments[]
 }
 
 model orders {
@@ -500,6 +501,23 @@ model checks {
   deletedAt   DateTime     @default(now())
   updatedAt   DateTime     @default(now())
   createdAt   DateTime     @default(now())
+  payments    payments[]
+}
+
+model payments {
+  id            Int       @id @default(autoincrement())
+  shopId        Int
+  amount        Float
+  payment_type  String    // "DIRECT" | "CHECK"
+  checkId       Int?
+  status        String    @default("PENDING") // "PENDING" | "APPROVED"
+  is_deleted    Boolean   @default(false)
+  updatedAt     DateTime  @default(now())
+  createdAt     DateTime  @default(now())
+  deletedAt     DateTime  @default(now())
+
+  shop          bookshopes @relation(fields: [shopId], references: [id])
+  check         checks?    @relation(fields: [checkId], references: [id])
 }
 
 enum check_types {

@@ -95,6 +95,7 @@ const AVAILABLE_MENUS = [
     { id: "shop", label: "Book Shop", icon: ShoppingBag },
     { id: "statistics", label: "Statistics", icon: BarChart3 },
     { id: "checks", label: "Manage Checks", icon: FileCheck },
+    { id: "manage_payment", label: "Manage Payment", icon: BadgeDollarSign },
     { id: "activity_log", label: "Activity Log", icon: History },
     { id: "production", label: "Production", icon: Package },
     { id: "translations", label: "Translations", icon: Languages },

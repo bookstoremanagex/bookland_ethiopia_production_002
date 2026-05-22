@@ -23,6 +23,7 @@ import {
   deleteStoreInventory
 } from '../../../../actions/store-inventory-actions';
 import { getEditionById } from '../../../../actions/edition-actions';
+import { checkCurrentUserRole } from '../../../../actions/book-shop-actions';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 
@@ -78,6 +79,11 @@ export default function StoreInventoryTable({
   };
 
   const handleAdd = async () => {
+    const roleCheck = await checkCurrentUserRole("adding_stores");
+    if (!roleCheck.enabled) {
+      toast.error("You do not have permission to add stock to stores.");
+      return;
+    }
     if (!newAssignment.storeId) return toast.error("Please select a store");
     const qty = Number(newAssignment.quantity);
     if (qty < 0) return toast.error("Quantity cannot be negative");
