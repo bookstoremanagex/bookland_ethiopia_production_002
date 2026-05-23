@@ -99,12 +99,17 @@ const menuItems = [
   },
 ];
 
-export function AdminAppSidebar() {
+export function AdminAppSidebar({ accountId }: { accountId?: number }) {
   const pathname = usePathname();
   const { isMounted, setMounted, activePath, setActivePath } =
     useSidebarStore();
   const [pendingOrdersCount, setPendingOrdersCount] = React.useState(0);
   const [unreadNotifCount, setUnreadNotifCount] = React.useState(0);
+  const accountRef = React.useRef(accountId);
+
+  React.useEffect(() => {
+    accountRef.current = accountId;
+  }, [accountId]);
 
   React.useEffect(() => {
     setMounted(true);
@@ -122,7 +127,7 @@ export function AdminAppSidebar() {
           ]);
         const [ordersRes, notifRes] = await Promise.all([
           getPendingOrdersCount(),
-          getUnreadCount(),
+          getUnreadCount(accountRef.current),
         ]);
         if (ordersRes.success) setPendingOrdersCount(ordersRes.count || 0);
         if (notifRes.success) setUnreadNotifCount(notifRes.count || 0);
@@ -890,6 +895,38 @@ export function AdminAppSidebar() {
                                 )}
                               />
                               <span>Edition Table</span>
+                            </Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                        <SidebarMenuSubItem>
+                          <SidebarMenuSubButton
+                            asChild
+                            isActive={
+                              isMounted &&
+                              (activePath ===
+                                "/admin_dashboard/finance/costs" ||
+                                activePath.startsWith(
+                                  "/admin_dashboard/finance/costs/",
+                                ))
+                            }
+                            className={cn(
+                              "transition-all duration-300 rounded-lg h-9 px-4",
+                              "data-[active=true]:bg-primarycolor data-[active=true]:text-white data-[active=true]:font-black data-[active=true]:shadow-md data-[active=true]:shadow-primarycolor/20",
+                              "hover:bg-primarycolor/10 hover:text-primarycolor",
+                            )}
+                          >
+                            <Link href="/admin_dashboard/finance/costs">
+                              <FileText
+                                className={cn(
+                                  "w-4 h-4",
+                                  isMounted &&
+                                    activePath ===
+                                      "/admin_dashboard/finance/costs"
+                                    ? "text-white"
+                                    : "text-primarycolor/70",
+                                )}
+                              />
+                              <span>Costs</span>
                             </Link>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>

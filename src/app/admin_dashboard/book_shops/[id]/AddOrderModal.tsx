@@ -75,7 +75,7 @@ export default function AddOrderModal({ isOpen, onClose, shopId, shopName }: Add
         if (isOpen && shopId) {
             setIsLoadingBalance(true);
             getShopRemainingBalance(shopId).then(res => {
-                if (res.success) setShopBalance(res.remaining);
+                if (res.success) setShopBalance(res.remaining ?? null);
                 setIsLoadingBalance(false);
             });
         }

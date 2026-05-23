@@ -386,11 +386,14 @@ model notification {
   type              String?
   notification_to   notification_to @default(ADMIN)
   notification_from String?
+  accountId         Int?            @map("account_id")
   is_read           Boolean         @default(false)
   is_deleted        Boolean         @default(false)
   updatedAt         DateTime
   createdAt         DateTime        @default(now())
   deletedAt         DateTime        @default(now())
+
+  @@index([accountId])
 }
 
 model activityLogs {

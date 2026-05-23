@@ -2,24 +2,35 @@
 
 import prisma from "../../lib/prisma";
 import { revalidatePath } from "next/cache";
+import { getCurrentSession } from "./auth-actions";
 
-export async function getUnreadCount() {
+export async function getUnreadCount(accountId?: number) {
   try {
-    const count = await (prisma as any).notification.count({
-      where: { is_deleted: false, is_read: false }
-    })
+    const where: any = { is_deleted: false, is_read: false };
+    if (accountId) {
+      where.OR = [
+        { accountId },
+        { accountId: null }
+      ];
+    }
+    const count = await (prisma as any).notification.count({ where })
     return { success: true, count }
   } catch (error: any) {
     return { success: false, count: 0 }
   }
 }
 
-export async function getNotifications() {
+export async function getNotifications(accountId?: number) {
   try {
+    const where: any = { is_deleted: false };
+    if (accountId) {
+      where.OR = [
+        { accountId },
+        { accountId: null }
+      ];
+    }
     const notifications = await (prisma as any).notification.findMany({
-      where: {
-        is_deleted: false,
-      },
+      where,
       orderBy: {
         createdAt: "desc",
       },
@@ -38,6 +49,7 @@ export async function createNotification(data: {
   type?: string
   notification_to?: string
   notification_from?: string
+  accountId?: number
 }) {
   try {
     const notification = await (prisma as any).notification.create({
@@ -48,15 +60,37 @@ export async function createNotification(data: {
         type: data.type || "INFO",
         notification_to: data.notification_to || "ADMIN",
         notification_from: data.notification_from || null,
+        accountId: data.accountId || undefined,
         updatedAt: new Date(),
       }
     })
     revalidatePath("/admin_dashboard/notifications")
+    revalidatePath("/delivery_and_sales_dashboard/notifications")
+    revalidatePath("/finance_officer_dashboard/notifications")
+    revalidatePath("/inventory_manager_dashboard/notifications")
+    revalidatePath("/operation_manager_dashboard/notifications")
+    revalidatePath("/retail_manager_dashboard/notifications")
+    revalidatePath("/sales_staff_dashboard/notifications")
+    revalidatePath("/viewer_dashboard/notifications")
     return { success: true, data: notification }
   } catch (error: any) {
     console.error("Error creating notification:", error)
     return { success: false, error: error.message || "Failed to create notification" }
   }
+}
+
+function revalidateAllNotificationPaths() {
+  const paths = [
+    "/admin_dashboard/notifications",
+    "/delivery_and_sales_dashboard/notifications",
+    "/finance_officer_dashboard/notifications",
+    "/inventory_manager_dashboard/notifications",
+    "/operation_manager_dashboard/notifications",
+    "/retail_manager_dashboard/notifications",
+    "/sales_staff_dashboard/notifications",
+    "/viewer_dashboard/notifications",
+  ];
+  paths.forEach(p => revalidatePath(p));
 }
 
 export async function markAsRead(id: number) {
@@ -68,7 +102,7 @@ export async function markAsRead(id: number) {
         updatedAt: new Date(),
       },
     });
-    revalidatePath("/admin_dashboard/notifications");
+    revalidateAllNotificationPaths();
     return { success: true, data: updated };
   } catch (error: any) {
     console.error("Error marking notification as read:", error);
@@ -85,7 +119,7 @@ export async function deleteNotification(id: number) {
         updatedAt: new Date(),
       },
     });
-    revalidatePath("/admin_dashboard/notifications");
+    revalidateAllNotificationPaths();
     return { success: true, data: deleted };
   } catch (error: any) {
     console.error("Error deleting notification:", error);

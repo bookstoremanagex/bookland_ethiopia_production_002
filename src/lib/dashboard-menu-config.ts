@@ -105,7 +105,8 @@ export const ALL_DASHBOARD_MENUS: MenuItem[] = [
         subItems: [
             { title: "Books", icon: BookOpen, path: "finance/books" },
             { title: "Shop Table", icon: TableProperties, path: "finance/shop_table" },
-            { title: "Edition Table", icon: BookCopy, path: "finance/edition_table" }
+            { title: "Edition Table", icon: BookCopy, path: "finance/edition_table" },
+            { title: "Costs", icon: FileText, path: "finance/costs" }
         ]
     },
     { 

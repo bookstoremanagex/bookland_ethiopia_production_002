@@ -1,12 +1,15 @@
 import React from 'react'
 import { getNotifications } from '../../actions/notification-actions'
+import { getCurrentSession } from '../../actions/auth-actions'
 import { NotificationsTable } from '../../../components/admin_dashboard_components/NotificationsTable'
 import { Bell } from 'lucide-react'
 
 export const dynamic = "force-dynamic";
 
 export default async function NotificationsPage() {
-    const response = await getNotifications()
+    const session = await getCurrentSession()
+    const accountId = session?.id || undefined
+    const response = await getNotifications(accountId)
     const notifications = response.success ? response.data : []
 
     return (

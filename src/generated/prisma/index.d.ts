@@ -24664,10 +24664,12 @@ export namespace Prisma {
 
   export type NotificationAvgAggregateOutputType = {
     id: number | null
+    accountId: number | null
   }
 
   export type NotificationSumAggregateOutputType = {
     id: number | null
+    accountId: number | null
   }
 
   export type NotificationMinAggregateOutputType = {
@@ -24678,6 +24680,7 @@ export namespace Prisma {
     type: string | null
     notification_to: $Enums.notification_to | null
     notification_from: string | null
+    accountId: number | null
     is_read: boolean | null
     is_deleted: boolean | null
     updatedAt: Date | null
@@ -24693,6 +24696,7 @@ export namespace Prisma {
     type: string | null
     notification_to: $Enums.notification_to | null
     notification_from: string | null
+    accountId: number | null
     is_read: boolean | null
     is_deleted: boolean | null
     updatedAt: Date | null
@@ -24708,6 +24712,7 @@ export namespace Prisma {
     type: number
     notification_to: number
     notification_from: number
+    accountId: number
     is_read: number
     is_deleted: number
     updatedAt: number
@@ -24719,10 +24724,12 @@ export namespace Prisma {
 
   export type NotificationAvgAggregateInputType = {
     id?: true
+    accountId?: true
   }
 
   export type NotificationSumAggregateInputType = {
     id?: true
+    accountId?: true
   }
 
   export type NotificationMinAggregateInputType = {
@@ -24733,6 +24740,7 @@ export namespace Prisma {
     type?: true
     notification_to?: true
     notification_from?: true
+    accountId?: true
     is_read?: true
     is_deleted?: true
     updatedAt?: true
@@ -24748,6 +24756,7 @@ export namespace Prisma {
     type?: true
     notification_to?: true
     notification_from?: true
+    accountId?: true
     is_read?: true
     is_deleted?: true
     updatedAt?: true
@@ -24763,6 +24772,7 @@ export namespace Prisma {
     type?: true
     notification_to?: true
     notification_from?: true
+    accountId?: true
     is_read?: true
     is_deleted?: true
     updatedAt?: true
@@ -24865,6 +24875,7 @@ export namespace Prisma {
     type: string | null
     notification_to: $Enums.notification_to
     notification_from: string | null
+    accountId: number | null
     is_read: boolean
     is_deleted: boolean
     updatedAt: Date
@@ -24899,6 +24910,7 @@ export namespace Prisma {
     type?: boolean
     notification_to?: boolean
     notification_from?: boolean
+    accountId?: boolean
     is_read?: boolean
     is_deleted?: boolean
     updatedAt?: boolean
@@ -24916,6 +24928,7 @@ export namespace Prisma {
     type?: boolean
     notification_to?: boolean
     notification_from?: boolean
+    accountId?: boolean
     is_read?: boolean
     is_deleted?: boolean
     updatedAt?: boolean
@@ -24923,7 +24936,7 @@ export namespace Prisma {
     deletedAt?: boolean
   }
 
-  export type notificationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "message" | "details" | "type" | "notification_to" | "notification_from" | "is_read" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt", ExtArgs["result"]["notification"]>
+  export type notificationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "message" | "details" | "type" | "notification_to" | "notification_from" | "accountId" | "is_read" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt", ExtArgs["result"]["notification"]>
 
   export type $notificationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "notification"
@@ -24936,6 +24949,7 @@ export namespace Prisma {
       type: string | null
       notification_to: $Enums.notification_to
       notification_from: string | null
+      accountId: number | null
       is_read: boolean
       is_deleted: boolean
       updatedAt: Date
@@ -25317,6 +25331,7 @@ export namespace Prisma {
     readonly type: FieldRef<"notification", 'String'>
     readonly notification_to: FieldRef<"notification", 'notification_to'>
     readonly notification_from: FieldRef<"notification", 'String'>
+    readonly accountId: FieldRef<"notification", 'Int'>
     readonly is_read: FieldRef<"notification", 'Boolean'>
     readonly is_deleted: FieldRef<"notification", 'Boolean'>
     readonly updatedAt: FieldRef<"notification", 'DateTime'>
@@ -36043,6 +36058,7 @@ export namespace Prisma {
     type: 'type',
     notification_to: 'notification_to',
     notification_from: 'notification_from',
+    accountId: 'accountId',
     is_read: 'is_read',
     is_deleted: 'is_deleted',
     updatedAt: 'updatedAt',
@@ -38434,6 +38450,7 @@ export namespace Prisma {
     type?: StringNullableFilter<"notification"> | string | null
     notification_to?: Enumnotification_toFilter<"notification"> | $Enums.notification_to
     notification_from?: StringNullableFilter<"notification"> | string | null
+    accountId?: IntNullableFilter<"notification"> | number | null
     is_read?: BoolFilter<"notification"> | boolean
     is_deleted?: BoolFilter<"notification"> | boolean
     updatedAt?: DateTimeFilter<"notification"> | Date | string
@@ -38449,6 +38466,7 @@ export namespace Prisma {
     type?: SortOrderInput | SortOrder
     notification_to?: SortOrder
     notification_from?: SortOrderInput | SortOrder
+    accountId?: SortOrderInput | SortOrder
     is_read?: SortOrder
     is_deleted?: SortOrder
     updatedAt?: SortOrder
@@ -38468,6 +38486,7 @@ export namespace Prisma {
     type?: StringNullableFilter<"notification"> | string | null
     notification_to?: Enumnotification_toFilter<"notification"> | $Enums.notification_to
     notification_from?: StringNullableFilter<"notification"> | string | null
+    accountId?: IntNullableFilter<"notification"> | number | null
     is_read?: BoolFilter<"notification"> | boolean
     is_deleted?: BoolFilter<"notification"> | boolean
     updatedAt?: DateTimeFilter<"notification"> | Date | string
@@ -38483,6 +38502,7 @@ export namespace Prisma {
     type?: SortOrderInput | SortOrder
     notification_to?: SortOrder
     notification_from?: SortOrderInput | SortOrder
+    accountId?: SortOrderInput | SortOrder
     is_read?: SortOrder
     is_deleted?: SortOrder
     updatedAt?: SortOrder
@@ -38506,6 +38526,7 @@ export namespace Prisma {
     type?: StringNullableWithAggregatesFilter<"notification"> | string | null
     notification_to?: Enumnotification_toWithAggregatesFilter<"notification"> | $Enums.notification_to
     notification_from?: StringNullableWithAggregatesFilter<"notification"> | string | null
+    accountId?: IntNullableWithAggregatesFilter<"notification"> | number | null
     is_read?: BoolWithAggregatesFilter<"notification"> | boolean
     is_deleted?: BoolWithAggregatesFilter<"notification"> | boolean
     updatedAt?: DateTimeWithAggregatesFilter<"notification"> | Date | string
@@ -41362,6 +41383,7 @@ export namespace Prisma {
     type?: string | null
     notification_to?: $Enums.notification_to
     notification_from?: string | null
+    accountId?: number | null
     is_read?: boolean
     is_deleted?: boolean
     updatedAt: Date | string
@@ -41377,6 +41399,7 @@ export namespace Prisma {
     type?: string | null
     notification_to?: $Enums.notification_to
     notification_from?: string | null
+    accountId?: number | null
     is_read?: boolean
     is_deleted?: boolean
     updatedAt: Date | string
@@ -41391,6 +41414,7 @@ export namespace Prisma {
     type?: NullableStringFieldUpdateOperationsInput | string | null
     notification_to?: Enumnotification_toFieldUpdateOperationsInput | $Enums.notification_to
     notification_from?: NullableStringFieldUpdateOperationsInput | string | null
+    accountId?: NullableIntFieldUpdateOperationsInput | number | null
     is_read?: BoolFieldUpdateOperationsInput | boolean
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -41406,6 +41430,7 @@ export namespace Prisma {
     type?: NullableStringFieldUpdateOperationsInput | string | null
     notification_to?: Enumnotification_toFieldUpdateOperationsInput | $Enums.notification_to
     notification_from?: NullableStringFieldUpdateOperationsInput | string | null
+    accountId?: NullableIntFieldUpdateOperationsInput | number | null
     is_read?: BoolFieldUpdateOperationsInput | boolean
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -41421,6 +41446,7 @@ export namespace Prisma {
     type?: string | null
     notification_to?: $Enums.notification_to
     notification_from?: string | null
+    accountId?: number | null
     is_read?: boolean
     is_deleted?: boolean
     updatedAt: Date | string
@@ -41435,6 +41461,7 @@ export namespace Prisma {
     type?: NullableStringFieldUpdateOperationsInput | string | null
     notification_to?: Enumnotification_toFieldUpdateOperationsInput | $Enums.notification_to
     notification_from?: NullableStringFieldUpdateOperationsInput | string | null
+    accountId?: NullableIntFieldUpdateOperationsInput | number | null
     is_read?: BoolFieldUpdateOperationsInput | boolean
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -41450,6 +41477,7 @@ export namespace Prisma {
     type?: NullableStringFieldUpdateOperationsInput | string | null
     notification_to?: Enumnotification_toFieldUpdateOperationsInput | $Enums.notification_to
     notification_from?: NullableStringFieldUpdateOperationsInput | string | null
+    accountId?: NullableIntFieldUpdateOperationsInput | number | null
     is_read?: BoolFieldUpdateOperationsInput | boolean
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -44169,6 +44197,7 @@ export namespace Prisma {
     type?: SortOrder
     notification_to?: SortOrder
     notification_from?: SortOrder
+    accountId?: SortOrder
     is_read?: SortOrder
     is_deleted?: SortOrder
     updatedAt?: SortOrder
@@ -44178,6 +44207,7 @@ export namespace Prisma {
 
   export type notificationAvgOrderByAggregateInput = {
     id?: SortOrder
+    accountId?: SortOrder
   }
 
   export type notificationMaxOrderByAggregateInput = {
@@ -44188,6 +44218,7 @@ export namespace Prisma {
     type?: SortOrder
     notification_to?: SortOrder
     notification_from?: SortOrder
+    accountId?: SortOrder
     is_read?: SortOrder
     is_deleted?: SortOrder
     updatedAt?: SortOrder
@@ -44203,6 +44234,7 @@ export namespace Prisma {
     type?: SortOrder
     notification_to?: SortOrder
     notification_from?: SortOrder
+    accountId?: SortOrder
     is_read?: SortOrder
     is_deleted?: SortOrder
     updatedAt?: SortOrder
@@ -44212,6 +44244,7 @@ export namespace Prisma {
 
   export type notificationSumOrderByAggregateInput = {
     id?: SortOrder
+    accountId?: SortOrder
   }
 
   export type Enumnotification_toWithAggregatesFilter<$PrismaModel = never> = {
