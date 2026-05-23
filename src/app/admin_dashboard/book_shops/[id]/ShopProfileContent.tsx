@@ -35,10 +35,12 @@ import OrderDetailsModal from "./OrderDetailsModal";
 
 interface ShopProfileContentProps {
   shop: any;
+  userRole: string | null;
 }
 
 export default function ShopProfileContent({
   shop: initialShop,
+  userRole,
 }: ShopProfileContentProps) {
   const [shop, setShop] = useState(initialShop);
   const [isAddOrderOpen, setIsAddOrderOpen] = useState(false);
@@ -113,24 +115,28 @@ export default function ShopProfileContent({
           </Button>
         </Link>
         <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3">
-          <Button
-            variant="destructive"
-            onClick={handleDelete}
-            className="rounded-xl h-10 md:h-12 md:w-12 px-4 md:px-0 shadow-lg shadow-rose-500/20 flex items-center justify-center gap-2"
-          >
-            <Trash2 className="size-4 md:size-5" />
-            <span className="md:hidden text-[9px] font-black uppercase tracking-widest">
-              Delete Shop
-            </span>
-          </Button>
-          <Button
-            onClick={handleSave}
-            disabled={isUpdating}
-            className="rounded-xl md:rounded-2xl bg-primarycolor h-10 md:h-12 px-4 md:px-8 font-black uppercase tracking-widest text-[9px] md:text-[10px] shadow-xl shadow-primarycolor/20 gap-2 md:gap-3 flex items-center justify-center"
-          >
-            <Save className="size-4 md:size-5" />{" "}
-            {isUpdating ? "Saving..." : "Save Changes"}
-          </Button>
+          {userRole === "Admin" && (
+            <>
+              <Button
+                variant="destructive"
+                onClick={handleDelete}
+                className="rounded-xl h-10 md:h-12 md:w-12 px-4 md:px-0 shadow-lg shadow-rose-500/20 flex items-center justify-center gap-2"
+              >
+                <Trash2 className="size-4 md:size-5" />
+                <span className="md:hidden text-[9px] font-black uppercase tracking-widest">
+                  Delete Shop
+                </span>
+              </Button>
+              <Button
+                onClick={handleSave}
+                disabled={isUpdating}
+                className="rounded-xl md:rounded-2xl bg-primarycolor h-10 md:h-12 px-4 md:px-8 font-black uppercase tracking-widest text-[9px] md:text-[10px] shadow-xl shadow-primarycolor/20 gap-2 md:gap-3 flex items-center justify-center"
+              >
+                <Save className="size-4 md:size-5" />{" "}
+                {isUpdating ? "Saving..." : "Save Changes"}
+              </Button>
+            </>
+          )}
         </div>
       </div>
 

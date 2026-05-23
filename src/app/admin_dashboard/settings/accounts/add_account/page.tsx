@@ -134,6 +134,7 @@ export default function AddAccountPage() {
                   <option value="Sales Staff">Sales Staff</option>
                   <option value="Retail Manager">Retail Manager</option>
                   <option value="Delivery and Sales Management">Delivery and Sales Management</option>
+                  <option value="Printer">Printer</option>
                   <option value="Viewer">Viewer</option>
                 </select>
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">

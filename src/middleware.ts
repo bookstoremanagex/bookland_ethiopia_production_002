@@ -26,6 +26,7 @@ export function middleware(request: NextRequest) {
         'Sales Staff': '/sales_staff_dashboard',
         'Retail Manager': '/retail_manager_dashboard',
         'Delivery and Sales Management': '/delivery_and_sales_dashboard',
+        'Printer': '/printer_dashboard',
         'Viewer': '/viewer_dashboard'
       };
 
@@ -69,6 +70,7 @@ export function middleware(request: NextRequest) {
         'Sales Staff': '/sales_staff_dashboard',
         'Retail Manager': '/retail_manager_dashboard',
         'Delivery and Sales Management': '/delivery_and_sales_dashboard',
+        'Printer': '/printer_dashboard',
         'Viewer': '/viewer_dashboard'
       };
       

@@ -35,6 +35,7 @@ export async function updateDashboardMenu(role: string, enabledMenus: string[]) 
     revalidatePath("/operation_manager_dashboard", "layout");
     revalidatePath("/retail_manager_dashboard", "layout");
     revalidatePath("/sales_staff_dashboard", "layout");
+    revalidatePath("/printer_dashboard", "layout");
     revalidatePath("/viewer_dashboard", "layout");
     return { success: true };
   } catch (error) {

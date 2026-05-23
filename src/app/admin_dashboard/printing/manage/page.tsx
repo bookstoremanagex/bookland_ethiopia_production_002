@@ -7,7 +7,8 @@ export default async function ManagePrintingPage() {
         (prisma as any).printorder.findMany({
             where: { is_deleted: false },
             include: {
-                printer: true
+                printer: true,
+                printorder_items: true
             },
             orderBy: { createdAt: 'desc' }
         }),

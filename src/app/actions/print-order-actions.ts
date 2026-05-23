@@ -56,9 +56,9 @@ export async function createPrintOrder(formData: any) {
         printorder_items: {
           create:
             formData.items?.map((item: any) => ({
-              bookEditionId: parseInt(item.bookEditionId),
+              bookedition: { connect: { id: parseInt(item.bookEditionId) } },
               quantity: parseInt(item.quantity),
-              price_per_book: parseFloat(item.price_per_book),
+              price_per_book: parseFloat(item.price_per_book) || 0,
               status: item.status || "NOT_STARTED",
             })) || [],
         },

@@ -1,9 +1,11 @@
 import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
+import { getCurrentSession } from "@/app/actions/auth-actions";
 import ShopProfileContent from "./ShopProfileContent";
 
 export default async function ShopDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const session = await getCurrentSession();
   const shop = await (prisma as any).bookshopes.findUnique({
     where: { id: Number(id) },
     include: {
@@ -40,5 +42,5 @@ export default async function ShopDetailsPage({ params }: { params: Promise<{ id
     return notFound();
   }
 
-  return <ShopProfileContent shop={shop} />;
+  return <ShopProfileContent shop={shop} userRole={session?.role ?? null} />;
 }

@@ -39,6 +39,7 @@ const ROLES = [
     { id: "retail_manager", label: "Retail Manager", icon: ShoppingBag },
     { id: "sales_staff", label: "Sales Staff", icon: TagIcon },
     { id: "delivery_sales", label: "Delivery and Sales", icon: TruckIcon },
+    { id: "printer", label: "Printer", icon: Printer },
     { id: "viewer", label: "Data Viewer", icon: Layout },
 ]
 
