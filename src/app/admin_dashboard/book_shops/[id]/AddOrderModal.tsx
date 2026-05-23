@@ -41,7 +41,7 @@ import {
 } from "@/components/ui/command";
 import { Search, Loader2, Plus, Trash2, ShoppingCart, ShoppingBag, Info, AlertCircle, CheckCircle2, ChevronsUpDown, ChevronLeft } from 'lucide-react';
 import { searchBooks } from '@/app/actions/transfer-actions';
-import { getBookStockData, createOrder } from '@/app/actions/order-actions';
+import { getBookStockData, createOrder, getShopRemainingBalance } from '@/app/actions/order-actions';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 
@@ -62,10 +62,24 @@ export default function AddOrderModal({ isOpen, onClose, shopId, shopName }: Add
     // Cart state: items the user is adding
     const [cart, setCart] = useState<any[]>([]);
     
+    const [shopBalance, setShopBalance] = useState<number | null>(null);
+    const [isLoadingBalance, setIsLoadingBalance] = useState(false);
+
     const [orderType, setOrderType] = useState("requested");
     const [memo, setMemo] = useState("");
     const [amountPaid, setAmountPaid] = useState(0);
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    // Fetch shop's unpaid balance when modal opens
+    useEffect(() => {
+        if (isOpen && shopId) {
+            setIsLoadingBalance(true);
+            getShopRemainingBalance(shopId).then(res => {
+                if (res.success) setShopBalance(res.remaining);
+                setIsLoadingBalance(false);
+            });
+        }
+    }, [isOpen, shopId]);
 
     // Search effect
     useEffect(() => {
@@ -210,6 +224,47 @@ export default function AddOrderModal({ isOpen, onClose, shopId, shopName }: Add
                 <div className="flex-1 overflow-y-auto p-8 pt-6 space-y-8 custom-scrollbar">
                     {step === 1 ? (
                         <div className="space-y-8">
+                            {/* Unpaid Balance Banner */}
+                            <div className={cn(
+                                "p-4 rounded-2xl border-2 flex items-center gap-3",
+                                shopBalance && shopBalance > 0
+                                    ? "bg-amber-50 border-amber-200"
+                                    : "bg-emerald-50 border-emerald-200"
+                            )}>
+                                <div className={cn(
+                                    "size-10 rounded-xl flex items-center justify-center shrink-0",
+                                    shopBalance && shopBalance > 0
+                                        ? "bg-amber-100 text-amber-600"
+                                        : "bg-emerald-100 text-emerald-600"
+                                )}>
+                                    {isLoadingBalance ? (
+                                        <Loader2 className="size-4 animate-spin" />
+                                    ) : shopBalance && shopBalance > 0 ? (
+                                        <AlertCircle className="size-5" />
+                                    ) : (
+                                        <CheckCircle2 className="size-5" />
+                                    )}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60">Outstanding Balance</p>
+                                    <p className={cn(
+                                        "font-black text-lg truncate",
+                                        shopBalance && shopBalance > 0
+                                            ? "text-amber-700"
+                                            : "text-emerald-700"
+                                    )}>
+                                        {isLoadingBalance
+                                            ? "Loading..."
+                                            : shopBalance !== null
+                                                ? `${shopBalance.toLocaleString()} ETB`
+                                                : "—"}
+                                    </p>
+                                </div>
+                                {shopBalance !== null && shopBalance > 0 && (
+                                    <span className="px-3 py-1 bg-amber-100 text-amber-700 rounded-lg text-[8px] font-black uppercase tracking-widest shrink-0">Unpaid</span>
+                                )}
+                            </div>
+
                             {/* Book Search */}
                             <div className="space-y-4">
                                 <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-2">Select Book</label>

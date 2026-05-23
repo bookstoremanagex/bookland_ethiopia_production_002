@@ -13,6 +13,8 @@ import {
     Clock,
     Banknote,
     Calendar,
+    ChevronLeft,
+    ChevronRight,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -67,6 +69,8 @@ export default function ManagePaymentDetailClient({ shop, payments, totals }: Pr
     const [isAdmin, setIsAdmin] = useState(false);
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
     const [approvingId, setApprovingId] = useState<number | null>(null);
+    const [paymentPage, setPaymentPage] = useState(1);
+    const perPage = 15;
 
     useEffect(() => {
         checkIsAdminUser().then(res => setIsAdmin(res.isAdmin));
@@ -187,7 +191,9 @@ export default function ManagePaymentDetailClient({ shop, payments, totals }: Pr
 
                 {payments.length > 0 ? (
                     <div className="space-y-3">
-                        {payments.map((payment) => (
+                        {payments
+                            .slice((paymentPage - 1) * perPage, paymentPage * perPage)
+                            .map((payment) => (
                             <div
                                 key={payment.id}
                                 className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl border-2 border-slate-100 bg-slate-50/50 hover:bg-white hover:border-primarycolor/20 transition-all"
@@ -259,6 +265,36 @@ export default function ManagePaymentDetailClient({ shop, payments, totals }: Pr
                                 </div>
                             </div>
                         ))}
+                    {payments.length > perPage && (
+                        <div className="flex items-center justify-between pt-4">
+                            <span className="text-[10px] font-black text-muted-foreground/50 uppercase tracking-widest">
+                                {payments.length} total
+                            </span>
+                            <div className="flex items-center gap-2">
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => setPaymentPage(p => Math.max(1, p - 1))}
+                                    disabled={paymentPage === 1}
+                                    className="h-8 px-3 rounded-lg border-2 border-slate-100 font-black text-[9px] uppercase tracking-widest"
+                                >
+                                    <ChevronLeft className="size-3 mr-1" /> Prev
+                                </Button>
+                                <span className="text-[10px] font-black text-muted-foreground/50 px-2">
+                                    {paymentPage} / {Math.ceil(payments.length / perPage)}
+                                </span>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => setPaymentPage(p => Math.min(Math.ceil(payments.length / perPage), p + 1))}
+                                    disabled={paymentPage >= Math.ceil(payments.length / perPage)}
+                                    className="h-8 px-3 rounded-lg border-2 border-slate-100 font-black text-[9px] uppercase tracking-widest"
+                                >
+                                    Next <ChevronRight className="size-3 ml-1" />
+                                </Button>
+                            </div>
+                        </div>
+                    )}
                     </div>
                 ) : (
                     <div className="py-16 text-center border-2 border-dashed border-slate-100 rounded-[2rem] bg-slate-50/50">

@@ -46,6 +46,15 @@ export default function EditionsInfo({ book }: EditionsInfoProps) {
     other_expenses: "",
     transportation_cost: "",
     translation_cost: "",
+    translator_cost: "",
+    cover_design_cost: "",
+    text_design_cost: "",
+    editor_cost: "",
+    typewriting_cost: "",
+    store_cost: "",
+    distribution_cost: "",
+    advertisement_cost: "",
+    purchasing_right_cost: "",
     memo: "",
     book_image_url: "",
     total_print_count: "",
@@ -75,6 +84,15 @@ export default function EditionsInfo({ book }: EditionsInfoProps) {
           other_expenses: "",
           transportation_cost: "",
           translation_cost: "",
+          translator_cost: "",
+          cover_design_cost: "",
+          text_design_cost: "",
+          editor_cost: "",
+          typewriting_cost: "",
+          store_cost: "",
+          distribution_cost: "",
+          advertisement_cost: "",
+          purchasing_right_cost: "",
           memo: "",
           book_image_url: "",
           total_print_count: "",
@@ -368,123 +386,79 @@ export default function EditionsInfo({ book }: EditionsInfoProps) {
                     </p>
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-1.5">
-                        <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">
-                          Printing
-                        </label>
-                        <Input
-                          type="number"
-                          step="0.01"
-                          value={formData.printing_cost}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              printing_cost: e.target.value,
-                            })
-                          }
-                          className="h-11 px-4 rounded-xl border-2 font-bold text-sm"
-                        />
+                        <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Printing</label>
+                        <Input type="number" step="0.01" value={formData.printing_cost} onChange={(e) => setFormData({ ...formData, printing_cost: e.target.value })} className="h-11 px-4 rounded-xl border-2 font-bold text-sm" />
                       </div>
                       <div className="space-y-1.5">
-                        <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">
-                          Binding
-                        </label>
-                        <Input
-                          type="number"
-                          step="0.01"
-                          value={formData.binding_cost}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              binding_cost: e.target.value,
-                            })
-                          }
-                          className="h-11 px-4 rounded-xl border-2 font-bold text-sm"
-                        />
+                        <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Binding</label>
+                        <Input type="number" step="0.01" value={formData.binding_cost} onChange={(e) => setFormData({ ...formData, binding_cost: e.target.value })} className="h-11 px-4 rounded-xl border-2 font-bold text-sm" />
                       </div>
                       <div className="space-y-1.5">
-                        <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">
-                          Design
-                        </label>
-                        <Input
-                          type="number"
-                          step="0.01"
-                          value={formData.design_cost}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              design_cost: e.target.value,
-                            })
-                          }
-                          className="h-11 px-4 rounded-xl border-2 font-bold text-sm"
-                        />
+                        <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Design</label>
+                        <Input type="number" step="0.01" value={formData.design_cost} onChange={(e) => setFormData({ ...formData, design_cost: e.target.value })} className="h-11 px-4 rounded-xl border-2 font-bold text-sm" />
                       </div>
                       <div className="space-y-1.5">
-                        <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">
-                          Editing
-                        </label>
-                        <Input
-                          type="number"
-                          step="0.01"
-                          value={formData.editing_cost}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              editing_cost: e.target.value,
-                            })
-                          }
-                          className="h-11 px-4 rounded-xl border-2 font-bold text-sm"
-                        />
+                        <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Editing</label>
+                        <Input type="number" step="0.01" value={formData.editing_cost} onChange={(e) => setFormData({ ...formData, editing_cost: e.target.value })} className="h-11 px-4 rounded-xl border-2 font-bold text-sm" />
                       </div>
                       <div className="space-y-1.5">
-                        <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">
-                          Transport
-                        </label>
-                        <Input
-                          type="number"
-                          step="0.01"
-                          value={formData.transportation_cost}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              transportation_cost: e.target.value,
-                            })
-                          }
-                          className="h-11 px-4 rounded-xl border-2 font-bold text-sm"
-                        />
+                        <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Transport</label>
+                        <Input type="number" step="0.01" value={formData.transportation_cost} onChange={(e) => setFormData({ ...formData, transportation_cost: e.target.value })} className="h-11 px-4 rounded-xl border-2 font-bold text-sm" />
                       </div>
                       <div className="space-y-1.5">
-                        <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">
-                          Translation
-                        </label>
-                        <Input
-                          type="number"
-                          step="0.01"
-                          value={formData.translation_cost}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              translation_cost: e.target.value,
-                            })
-                          }
-                          className="h-11 px-4 rounded-xl border-2 font-bold text-sm"
-                        />
+                        <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Translation</label>
+                        <Input type="number" step="0.01" value={formData.translation_cost} onChange={(e) => setFormData({ ...formData, translation_cost: e.target.value })} className="h-11 px-4 rounded-xl border-2 font-bold text-sm" />
                       </div>
                       <div className="space-y-1.5 col-span-2">
-                        <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">
-                          Other Expenses
-                        </label>
-                        <Input
-                          type="number"
-                          step="0.01"
-                          value={formData.other_expenses}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              other_expenses: e.target.value,
-                            })
-                          }
-                          className="h-11 px-4 rounded-xl border-2 font-bold text-sm"
-                        />
+                        <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Other Expenses</label>
+                        <Input type="number" step="0.01" value={formData.other_expenses} onChange={(e) => setFormData({ ...formData, other_expenses: e.target.value })} className="h-11 px-4 rounded-xl border-2 font-bold text-sm" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-emerald-50/80 p-6 rounded-[2rem] border-2 border-emerald-200/50 space-y-4">
+                    <p className="text-[10px] font-black text-emerald-700 uppercase tracking-[0.2em] mb-2">
+                      Additional Production Costs
+                    </p>
+                    <p className="text-[8px] font-bold text-emerald-600/60 -mt-2 mb-2">
+                      Leave blank to use book-level defaults, or override per-edition.
+                    </p>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-1.5">
+                        <label className="text-[8px] font-black uppercase tracking-widest text-emerald-700/60 ml-1">Translator</label>
+                        <Input type="number" step="0.01" value={formData.translator_cost} onChange={(e) => setFormData({ ...formData, translator_cost: e.target.value })} className="h-11 px-4 rounded-xl border-2 border-emerald-200 font-bold text-sm bg-white" />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[8px] font-black uppercase tracking-widest text-emerald-700/60 ml-1">Cover Design</label>
+                        <Input type="number" step="0.01" value={formData.cover_design_cost} onChange={(e) => setFormData({ ...formData, cover_design_cost: e.target.value })} className="h-11 px-4 rounded-xl border-2 border-emerald-200 font-bold text-sm bg-white" />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[8px] font-black uppercase tracking-widest text-emerald-700/60 ml-1">Text Design</label>
+                        <Input type="number" step="0.01" value={formData.text_design_cost} onChange={(e) => setFormData({ ...formData, text_design_cost: e.target.value })} className="h-11 px-4 rounded-xl border-2 border-emerald-200 font-bold text-sm bg-white" />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[8px] font-black uppercase tracking-widest text-emerald-700/60 ml-1">Editor</label>
+                        <Input type="number" step="0.01" value={formData.editor_cost} onChange={(e) => setFormData({ ...formData, editor_cost: e.target.value })} className="h-11 px-4 rounded-xl border-2 border-emerald-200 font-bold text-sm bg-white" />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[8px] font-black uppercase tracking-widest text-emerald-700/60 ml-1">Typewriting</label>
+                        <Input type="number" step="0.01" value={formData.typewriting_cost} onChange={(e) => setFormData({ ...formData, typewriting_cost: e.target.value })} className="h-11 px-4 rounded-xl border-2 border-emerald-200 font-bold text-sm bg-white" />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[8px] font-black uppercase tracking-widest text-emerald-700/60 ml-1">Store Cost</label>
+                        <Input type="number" step="0.01" value={formData.store_cost} onChange={(e) => setFormData({ ...formData, store_cost: e.target.value })} className="h-11 px-4 rounded-xl border-2 border-emerald-200 font-bold text-sm bg-white" />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[8px] font-black uppercase tracking-widest text-emerald-700/60 ml-1">Distribution</label>
+                        <Input type="number" step="0.01" value={formData.distribution_cost} onChange={(e) => setFormData({ ...formData, distribution_cost: e.target.value })} className="h-11 px-4 rounded-xl border-2 border-emerald-200 font-bold text-sm bg-white" />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[8px] font-black uppercase tracking-widest text-emerald-700/60 ml-1">Advertisement</label>
+                        <Input type="number" step="0.01" value={formData.advertisement_cost} onChange={(e) => setFormData({ ...formData, advertisement_cost: e.target.value })} className="h-11 px-4 rounded-xl border-2 border-emerald-200 font-bold text-sm bg-white" />
+                      </div>
+                      <div className="space-y-1.5 col-span-2">
+                        <label className="text-[8px] font-black uppercase tracking-widest text-emerald-700/60 ml-1">Purchasing Right</label>
+                        <Input type="number" step="0.01" value={formData.purchasing_right_cost} onChange={(e) => setFormData({ ...formData, purchasing_right_cost: e.target.value })} className="h-11 px-4 rounded-xl border-2 border-emerald-200 font-bold text-sm bg-white" />
                       </div>
                     </div>
                   </div>

@@ -59,6 +59,15 @@ export default function EditionDetailsClient({ initialEdition, stores }: Edition
         other_expenses: edition.other_expenses?.toString() || "",
         transportation_cost: edition.transportation_cost?.toString() || "",
         translation_cost: edition.translation_cost?.toString() || "",
+        translator_cost: edition.translator_cost?.toString() || "",
+        cover_design_cost: edition.cover_design_cost?.toString() || "",
+        text_design_cost: edition.text_design_cost?.toString() || "",
+        editor_cost: edition.editor_cost?.toString() || "",
+        typewriting_cost: edition.typewriting_cost?.toString() || "",
+        store_cost: edition.store_cost?.toString() || "",
+        distribution_cost: edition.distribution_cost?.toString() || "",
+        advertisement_cost: edition.advertisement_cost?.toString() || "",
+        purchasing_right_cost: edition.purchasing_right_cost?.toString() || "",
         memo: edition.memo || "",
         book_image_url: edition.book_image_url || "",
         total_print_count: edition.total_print_count?.toString() || "",
@@ -78,6 +87,15 @@ export default function EditionDetailsClient({ initialEdition, stores }: Edition
             other_expenses: edition.other_expenses?.toString() || "",
             transportation_cost: edition.transportation_cost?.toString() || "",
             translation_cost: edition.translation_cost?.toString() || "",
+            translator_cost: edition.translator_cost?.toString() || "",
+            cover_design_cost: edition.cover_design_cost?.toString() || "",
+            text_design_cost: edition.text_design_cost?.toString() || "",
+            editor_cost: edition.editor_cost?.toString() || "",
+            typewriting_cost: edition.typewriting_cost?.toString() || "",
+            store_cost: edition.store_cost?.toString() || "",
+            distribution_cost: edition.distribution_cost?.toString() || "",
+            advertisement_cost: edition.advertisement_cost?.toString() || "",
+            purchasing_right_cost: edition.purchasing_right_cost?.toString() || "",
             memo: edition.memo || "",
             book_image_url: edition.book_image_url || "",
             total_print_count: edition.total_print_count?.toString() || "",
@@ -413,7 +431,16 @@ export default function EditionDetailsClient({ initialEdition, stores }: Edition
                                         (parseFloat(formData.editing_cost) || 0) +
                                         (parseFloat(formData.transportation_cost) || 0) +
                                         (parseFloat(formData.translation_cost) || 0) +
-                                        (parseFloat(formData.other_expenses) || 0)
+                                        (parseFloat(formData.other_expenses) || 0) +
+                                        (parseFloat(formData.translator_cost) || 0) +
+                                        (parseFloat(formData.cover_design_cost) || 0) +
+                                        (parseFloat(formData.text_design_cost) || 0) +
+                                        (parseFloat(formData.editor_cost) || 0) +
+                                        (parseFloat(formData.typewriting_cost) || 0) +
+                                        (parseFloat(formData.store_cost) || 0) +
+                                        (parseFloat(formData.distribution_cost) || 0) +
+                                        (parseFloat(formData.advertisement_cost) || 0) +
+                                        (parseFloat(formData.purchasing_right_cost) || 0)
                                     ).toLocaleString()} ETB
                                 </div>
                             </div>
@@ -426,6 +453,25 @@ export default function EditionDetailsClient({ initialEdition, stores }: Edition
                                 <CostCard label="Transport" field="transportation_cost" value={edition.transportation_cost} icon={Truck} />
                                 <CostCard label="Translation" field="translation_cost" value={edition.translation_cost} icon={Languages} />
                                 <CostCard label="Other" field="other_expenses" value={edition.other_expenses} icon={PlusCircle} />
+                            </div>
+
+                            {/* Additional Costs Section */}
+                            <div className="pt-4 border-t-2 border-primarycolor/5">
+                                <div className="flex items-center gap-2 mb-6">
+                                    <div className="size-2 rounded-full bg-emerald-500" />
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-emerald-600">Additional Production Costs</p>
+                                </div>
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                    <CostCard label="Translator" field="translator_cost" value={edition.translator_cost} icon={Languages} />
+                                    <CostCard label="Cover Design" field="cover_design_cost" value={edition.cover_design_cost} icon={Palette} />
+                                    <CostCard label="Text Design" field="text_design_cost" value={edition.text_design_cost} icon={PenTool} />
+                                    <CostCard label="Editor" field="editor_cost" value={edition.editor_cost} icon={Edit2} />
+                                    <CostCard label="Typewriting" field="typewriting_cost" value={edition.typewriting_cost} icon={FileText} />
+                                    <CostCard label="Store Cost" field="store_cost" value={edition.store_cost} icon={Store} />
+                                    <CostCard label="Distribution" field="distribution_cost" value={edition.distribution_cost} icon={Truck} />
+                                    <CostCard label="Advertisement" field="advertisement_cost" value={edition.advertisement_cost} icon={TrendingUp} />
+                                    <CostCard label="Purchasing Right" field="purchasing_right_cost" value={edition.purchasing_right_cost} icon={ShieldAlert} />
+                                </div>
                             </div>
                         </div>
 
@@ -468,10 +514,19 @@ export default function EditionDetailsClient({ initialEdition, stores }: Edition
                                                 (parseFloat(formData.binding_cost) || 0) +
                                                 (parseFloat(formData.design_cost) || 0) +
                                                 (parseFloat(formData.editing_cost) || 0) +
-                                                (parseFloat(formData.transportation_cost) || 0) +
-                                                (parseFloat(formData.translation_cost) || 0) +
-                                                (parseFloat(formData.other_expenses) || 0)
-                                            )
+                                        (parseFloat(formData.transportation_cost) || 0) +
+                                        (parseFloat(formData.translation_cost) || 0) +
+                                        (parseFloat(formData.other_expenses) || 0) +
+                                        (parseFloat(formData.translator_cost) || 0) +
+                                        (parseFloat(formData.cover_design_cost) || 0) +
+                                        (parseFloat(formData.text_design_cost) || 0) +
+                                        (parseFloat(formData.editor_cost) || 0) +
+                                        (parseFloat(formData.typewriting_cost) || 0) +
+                                        (parseFloat(formData.store_cost) || 0) +
+                                        (parseFloat(formData.distribution_cost) || 0) +
+                                        (parseFloat(formData.advertisement_cost) || 0) +
+                                        (parseFloat(formData.purchasing_right_cost) || 0)
+                                    )
                                         ).toLocaleString()}
                                         <span className="text-[10px] md:text-sm font-bold text-muted-foreground">/ unit</span>
                                     </div>

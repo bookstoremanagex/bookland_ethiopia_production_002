@@ -16,6 +16,7 @@ import {
   Trash2,
   Info,
   Layers,
+  DollarSign,
   Store,
   ShoppingBag,
   ArrowLeft
@@ -35,6 +36,7 @@ import TranslationInfo from '../../../../components/admin_dashboard_components/b
 import EditionsInfo from '../../../../components/admin_dashboard_components/book_details/EditionsInfo';
 import StoresList from '../../../../components/admin_dashboard_components/book_details/StoresList';
 import ShopDistributionList from '../../../../components/admin_dashboard_components/book_details/ShopDistributionList';
+import CostsInfo from '../../../../components/admin_dashboard_components/book_details/CostsInfo';
 import DeleteBook from '../../../../components/admin_dashboard_components/book_details/DeleteBook';
 
 interface EditableBookContentProps {
@@ -92,7 +94,11 @@ export default function EditableBookContent({ book: initialBook, bookShops }: Ed
   const handleSaveEdit = async (field: string) => {
     setIsUpdating(true);
     try {
-      const response = await updateBook(book.unique_identification_code, { [field]: editValue });
+      const costFields = ['translator_cost','cover_design_cost','text_design_cost','editor_cost','typewriting_cost','store_cost','distribution_cost','advertisement_cost','purchasing_right_cost'];
+      const value = costFields.includes(field)
+        ? (editValue === '' || editValue === null || editValue === undefined ? null : parseFloat(editValue))
+        : editValue;
+      const response = await updateBook(book.unique_identification_code, { [field]: value });
       if (response.success) {
         setBook(response.data);
         toast.success(`Updated ${field.replace(/_/g, ' ')} successfully`);
@@ -241,6 +247,7 @@ export default function EditableBookContent({ book: initialBook, bookShops }: Ed
               {[
                 { value: 'basic', icon: Info, label: 'Info' },
                 { value: 'editions', icon: Layers, label: 'Editions' },
+                { value: 'costs', icon: DollarSign, label: 'Costs' },
                 { value: 'stores', icon: Store, label: 'Stores' },
                 { value: 'shop', icon: ShoppingBag, label: 'Shop' },
                 { value: 'design', icon: PenTool, label: 'Design' },
@@ -287,6 +294,19 @@ export default function EditableBookContent({ book: initialBook, bookShops }: Ed
 
             <TabsContent value="shop" className="focus-visible:outline-none">
               <ShopDistributionList book={book} bookShops={bookShops} />
+            </TabsContent>
+
+            <TabsContent value="costs" className="focus-visible:outline-none">
+              <CostsInfo
+                book={book}
+                editingField={editingField}
+                editValue={editValue}
+                isUpdating={isUpdating}
+                onStartEdit={handleStartEdit}
+                onCancelEdit={handleCancelEdit}
+                onSaveEdit={handleSaveEdit}
+                onValueChange={setEditValue}
+              />
             </TabsContent>
 
             <TabsContent value="design" className="focus-visible:outline-none">

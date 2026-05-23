@@ -15,6 +15,15 @@ export const bookSchema = z.object({
   number_of_pages: z.coerce.number().optional().nullable(),
   info: z.string().optional().nullable(),
   book_image_url: z.string().optional().nullable(),
+  translator_cost: z.coerce.number().optional().nullable(),
+  cover_design_cost: z.coerce.number().optional().nullable(),
+  text_design_cost: z.coerce.number().optional().nullable(),
+  editor_cost: z.coerce.number().optional().nullable(),
+  typewriting_cost: z.coerce.number().optional().nullable(),
+  store_cost: z.coerce.number().optional().nullable(),
+  distribution_cost: z.coerce.number().optional().nullable(),
+  advertisement_cost: z.coerce.number().optional().nullable(),
+  purchasing_right_cost: z.coerce.number().optional().nullable(),
   status: z.string().min(1, "Status is required"),
   productionstatus: z
     .enum([

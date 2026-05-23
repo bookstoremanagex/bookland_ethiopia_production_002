@@ -66,9 +66,18 @@ export function AddBookForm({ className }: AddBookFormProps) {
       category: "",
       publication_year: "",
       print_batch_id: "",
-      number_of_pages: 0,
+      number_of_pages: null,
       info: "",
       book_image_url: "",
+      translator_cost: null,
+      cover_design_cost: null,
+      text_design_cost: null,
+      editor_cost: null,
+      typewriting_cost: null,
+      store_cost: null,
+      distribution_cost: null,
+      advertisement_cost: null,
+      purchasing_right_cost: null,
       status: "available",
       productionstatus: "ON_PRODUCTION",
     },
@@ -493,6 +502,51 @@ export function AddBookForm({ className }: AddBookFormProps) {
                 />
               </div>
             )}
+          </div>
+
+          {/* Production Costs */}
+          <div className="space-y-6 border-2 border-primarycolor/10 rounded-2xl p-6 bg-primarycolor/5">
+            <label className="text-sm font-semibold text-secondarycolor block">
+              Production Costs
+            </label>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-4">
+              <div className="space-y-1.5 group">
+                <label htmlFor="translator_cost" className="text-[10px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Translator</label>
+                <Input id="translator_cost" type="number" step="0.01" placeholder="0.00" {...register("translator_cost", { valueAsNumber: true })} className="border-primarycolor/20 focus:border-primarycolor h-11 px-4 rounded-xl font-bold text-sm" />
+              </div>
+              <div className="space-y-1.5 group">
+                <label htmlFor="cover_design_cost" className="text-[10px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Cover Design</label>
+                <Input id="cover_design_cost" type="number" step="0.01" placeholder="0.00" {...register("cover_design_cost", { valueAsNumber: true })} className="border-primarycolor/20 focus:border-primarycolor h-11 px-4 rounded-xl font-bold text-sm" />
+              </div>
+              <div className="space-y-1.5 group">
+                <label htmlFor="text_design_cost" className="text-[10px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Text Design</label>
+                <Input id="text_design_cost" type="number" step="0.01" placeholder="0.00" {...register("text_design_cost", { valueAsNumber: true })} className="border-primarycolor/20 focus:border-primarycolor h-11 px-4 rounded-xl font-bold text-sm" />
+              </div>
+              <div className="space-y-1.5 group">
+                <label htmlFor="editor_cost" className="text-[10px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Editor</label>
+                <Input id="editor_cost" type="number" step="0.01" placeholder="0.00" {...register("editor_cost", { valueAsNumber: true })} className="border-primarycolor/20 focus:border-primarycolor h-11 px-4 rounded-xl font-bold text-sm" />
+              </div>
+              <div className="space-y-1.5 group">
+                <label htmlFor="typewriting_cost" className="text-[10px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Typewriting</label>
+                <Input id="typewriting_cost" type="number" step="0.01" placeholder="0.00" {...register("typewriting_cost", { valueAsNumber: true })} className="border-primarycolor/20 focus:border-primarycolor h-11 px-4 rounded-xl font-bold text-sm" />
+              </div>
+              <div className="space-y-1.5 group">
+                <label htmlFor="store_cost" className="text-[10px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Store Cost</label>
+                <Input id="store_cost" type="number" step="0.01" placeholder="0.00" {...register("store_cost", { valueAsNumber: true })} className="border-primarycolor/20 focus:border-primarycolor h-11 px-4 rounded-xl font-bold text-sm" />
+              </div>
+              <div className="space-y-1.5 group">
+                <label htmlFor="distribution_cost" className="text-[10px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Distribution</label>
+                <Input id="distribution_cost" type="number" step="0.01" placeholder="0.00" {...register("distribution_cost", { valueAsNumber: true })} className="border-primarycolor/20 focus:border-primarycolor h-11 px-4 rounded-xl font-bold text-sm" />
+              </div>
+              <div className="space-y-1.5 group">
+                <label htmlFor="advertisement_cost" className="text-[10px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Advertisement</label>
+                <Input id="advertisement_cost" type="number" step="0.01" placeholder="0.00" {...register("advertisement_cost", { valueAsNumber: true })} className="border-primarycolor/20 focus:border-primarycolor h-11 px-4 rounded-xl font-bold text-sm" />
+              </div>
+              <div className="space-y-1.5 group">
+                <label htmlFor="purchasing_right_cost" className="text-[10px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Purchasing Right</label>
+                <Input id="purchasing_right_cost" type="number" step="0.01" placeholder="0.00" {...register("purchasing_right_cost", { valueAsNumber: true })} className="border-primarycolor/20 focus:border-primarycolor h-11 px-4 rounded-xl font-bold text-sm" />
+              </div>
+            </div>
           </div>
 
           {/* Info / Description */}

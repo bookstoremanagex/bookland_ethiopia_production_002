@@ -156,7 +156,16 @@ exports.Prisma.BookeditionScalarFieldEnum = {
   editing_cost: 'editing_cost',
   other_expenses: 'other_expenses',
   transportation_cost: 'transportation_cost',
-  count_remening_for_transfer: 'count_remening_for_transfer'
+  count_remening_for_transfer: 'count_remening_for_transfer',
+  translator_cost: 'translator_cost',
+  cover_design_cost: 'cover_design_cost',
+  text_design_cost: 'text_design_cost',
+  editor_cost: 'editor_cost',
+  typewriting_cost: 'typewriting_cost',
+  store_cost: 'store_cost',
+  distribution_cost: 'distribution_cost',
+  advertisement_cost: 'advertisement_cost',
+  purchasing_right_cost: 'purchasing_right_cost'
 };
 
 exports.Prisma.BookeditionstoresScalarFieldEnum = {
@@ -205,7 +214,16 @@ exports.Prisma.BooksScalarFieldEnum = {
   deletedAt: 'deletedAt',
   productionstatus: 'productionstatus',
   default_edition_id: 'default_edition_id',
-  pen_name: 'pen_name'
+  pen_name: 'pen_name',
+  translator_cost: 'translator_cost',
+  cover_design_cost: 'cover_design_cost',
+  text_design_cost: 'text_design_cost',
+  editor_cost: 'editor_cost',
+  typewriting_cost: 'typewriting_cost',
+  store_cost: 'store_cost',
+  distribution_cost: 'distribution_cost',
+  advertisement_cost: 'advertisement_cost',
+  purchasing_right_cost: 'purchasing_right_cost'
 };
 
 exports.Prisma.BookshopeditionsScalarFieldEnum = {

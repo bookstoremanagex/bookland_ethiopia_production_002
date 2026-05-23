@@ -4998,6 +4998,15 @@ export namespace Prisma {
     other_expenses: number | null
     transportation_cost: number | null
     count_remening_for_transfer: number | null
+    translator_cost: number | null
+    cover_design_cost: number | null
+    text_design_cost: number | null
+    editor_cost: number | null
+    typewriting_cost: number | null
+    store_cost: number | null
+    distribution_cost: number | null
+    advertisement_cost: number | null
+    purchasing_right_cost: number | null
   }
 
   export type BookeditionSumAggregateOutputType = {
@@ -5016,6 +5025,15 @@ export namespace Prisma {
     other_expenses: number | null
     transportation_cost: number | null
     count_remening_for_transfer: number | null
+    translator_cost: number | null
+    cover_design_cost: number | null
+    text_design_cost: number | null
+    editor_cost: number | null
+    typewriting_cost: number | null
+    store_cost: number | null
+    distribution_cost: number | null
+    advertisement_cost: number | null
+    purchasing_right_cost: number | null
   }
 
   export type BookeditionMinAggregateOutputType = {
@@ -5041,6 +5059,15 @@ export namespace Prisma {
     other_expenses: number | null
     transportation_cost: number | null
     count_remening_for_transfer: number | null
+    translator_cost: number | null
+    cover_design_cost: number | null
+    text_design_cost: number | null
+    editor_cost: number | null
+    typewriting_cost: number | null
+    store_cost: number | null
+    distribution_cost: number | null
+    advertisement_cost: number | null
+    purchasing_right_cost: number | null
   }
 
   export type BookeditionMaxAggregateOutputType = {
@@ -5066,6 +5093,15 @@ export namespace Prisma {
     other_expenses: number | null
     transportation_cost: number | null
     count_remening_for_transfer: number | null
+    translator_cost: number | null
+    cover_design_cost: number | null
+    text_design_cost: number | null
+    editor_cost: number | null
+    typewriting_cost: number | null
+    store_cost: number | null
+    distribution_cost: number | null
+    advertisement_cost: number | null
+    purchasing_right_cost: number | null
   }
 
   export type BookeditionCountAggregateOutputType = {
@@ -5091,6 +5127,15 @@ export namespace Prisma {
     other_expenses: number
     transportation_cost: number
     count_remening_for_transfer: number
+    translator_cost: number
+    cover_design_cost: number
+    text_design_cost: number
+    editor_cost: number
+    typewriting_cost: number
+    store_cost: number
+    distribution_cost: number
+    advertisement_cost: number
+    purchasing_right_cost: number
     _all: number
   }
 
@@ -5111,6 +5156,15 @@ export namespace Prisma {
     other_expenses?: true
     transportation_cost?: true
     count_remening_for_transfer?: true
+    translator_cost?: true
+    cover_design_cost?: true
+    text_design_cost?: true
+    editor_cost?: true
+    typewriting_cost?: true
+    store_cost?: true
+    distribution_cost?: true
+    advertisement_cost?: true
+    purchasing_right_cost?: true
   }
 
   export type BookeditionSumAggregateInputType = {
@@ -5129,6 +5183,15 @@ export namespace Prisma {
     other_expenses?: true
     transportation_cost?: true
     count_remening_for_transfer?: true
+    translator_cost?: true
+    cover_design_cost?: true
+    text_design_cost?: true
+    editor_cost?: true
+    typewriting_cost?: true
+    store_cost?: true
+    distribution_cost?: true
+    advertisement_cost?: true
+    purchasing_right_cost?: true
   }
 
   export type BookeditionMinAggregateInputType = {
@@ -5154,6 +5217,15 @@ export namespace Prisma {
     other_expenses?: true
     transportation_cost?: true
     count_remening_for_transfer?: true
+    translator_cost?: true
+    cover_design_cost?: true
+    text_design_cost?: true
+    editor_cost?: true
+    typewriting_cost?: true
+    store_cost?: true
+    distribution_cost?: true
+    advertisement_cost?: true
+    purchasing_right_cost?: true
   }
 
   export type BookeditionMaxAggregateInputType = {
@@ -5179,6 +5251,15 @@ export namespace Prisma {
     other_expenses?: true
     transportation_cost?: true
     count_remening_for_transfer?: true
+    translator_cost?: true
+    cover_design_cost?: true
+    text_design_cost?: true
+    editor_cost?: true
+    typewriting_cost?: true
+    store_cost?: true
+    distribution_cost?: true
+    advertisement_cost?: true
+    purchasing_right_cost?: true
   }
 
   export type BookeditionCountAggregateInputType = {
@@ -5204,6 +5285,15 @@ export namespace Prisma {
     other_expenses?: true
     transportation_cost?: true
     count_remening_for_transfer?: true
+    translator_cost?: true
+    cover_design_cost?: true
+    text_design_cost?: true
+    editor_cost?: true
+    typewriting_cost?: true
+    store_cost?: true
+    distribution_cost?: true
+    advertisement_cost?: true
+    purchasing_right_cost?: true
     _all?: true
   }
 
@@ -5316,6 +5406,15 @@ export namespace Prisma {
     other_expenses: number | null
     transportation_cost: number | null
     count_remening_for_transfer: number | null
+    translator_cost: number | null
+    cover_design_cost: number | null
+    text_design_cost: number | null
+    editor_cost: number | null
+    typewriting_cost: number | null
+    store_cost: number | null
+    distribution_cost: number | null
+    advertisement_cost: number | null
+    purchasing_right_cost: number | null
     _count: BookeditionCountAggregateOutputType | null
     _avg: BookeditionAvgAggregateOutputType | null
     _sum: BookeditionSumAggregateOutputType | null
@@ -5360,6 +5459,15 @@ export namespace Prisma {
     other_expenses?: boolean
     transportation_cost?: boolean
     count_remening_for_transfer?: boolean
+    translator_cost?: boolean
+    cover_design_cost?: boolean
+    text_design_cost?: boolean
+    editor_cost?: boolean
+    typewriting_cost?: boolean
+    store_cost?: boolean
+    distribution_cost?: boolean
+    advertisement_cost?: boolean
+    purchasing_right_cost?: boolean
     books?: boolean | booksDefaultArgs<ExtArgs>
     bookeditionstores?: boolean | bookedition$bookeditionstoresArgs<ExtArgs>
     bookeditionprinters?: boolean | bookedition$bookeditionprintersArgs<ExtArgs>
@@ -5395,9 +5503,18 @@ export namespace Prisma {
     other_expenses?: boolean
     transportation_cost?: boolean
     count_remening_for_transfer?: boolean
+    translator_cost?: boolean
+    cover_design_cost?: boolean
+    text_design_cost?: boolean
+    editor_cost?: boolean
+    typewriting_cost?: boolean
+    store_cost?: boolean
+    distribution_cost?: boolean
+    advertisement_cost?: boolean
+    purchasing_right_cost?: boolean
   }
 
-  export type bookeditionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "edition_name" | "selling_price" | "production_price" | "printing_cost" | "binding_cost" | "design_cost" | "translation_cost" | "memo" | "book_image_url" | "total_print_count" | "book_id" | "number_of_pages" | "bookId" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt" | "editing_cost" | "other_expenses" | "transportation_cost" | "count_remening_for_transfer", ExtArgs["result"]["bookedition"]>
+  export type bookeditionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "edition_name" | "selling_price" | "production_price" | "printing_cost" | "binding_cost" | "design_cost" | "translation_cost" | "memo" | "book_image_url" | "total_print_count" | "book_id" | "number_of_pages" | "bookId" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt" | "editing_cost" | "other_expenses" | "transportation_cost" | "count_remening_for_transfer" | "translator_cost" | "cover_design_cost" | "text_design_cost" | "editor_cost" | "typewriting_cost" | "store_cost" | "distribution_cost" | "advertisement_cost" | "purchasing_right_cost", ExtArgs["result"]["bookedition"]>
   export type bookeditionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     books?: boolean | booksDefaultArgs<ExtArgs>
     bookeditionstores?: boolean | bookedition$bookeditionstoresArgs<ExtArgs>
@@ -5443,6 +5560,15 @@ export namespace Prisma {
       other_expenses: number | null
       transportation_cost: number | null
       count_remening_for_transfer: number | null
+      translator_cost: number | null
+      cover_design_cost: number | null
+      text_design_cost: number | null
+      editor_cost: number | null
+      typewriting_cost: number | null
+      store_cost: number | null
+      distribution_cost: number | null
+      advertisement_cost: number | null
+      purchasing_right_cost: number | null
     }, ExtArgs["result"]["bookedition"]>
     composites: {}
   }
@@ -5841,6 +5967,15 @@ export namespace Prisma {
     readonly other_expenses: FieldRef<"bookedition", 'Float'>
     readonly transportation_cost: FieldRef<"bookedition", 'Float'>
     readonly count_remening_for_transfer: FieldRef<"bookedition", 'Int'>
+    readonly translator_cost: FieldRef<"bookedition", 'Float'>
+    readonly cover_design_cost: FieldRef<"bookedition", 'Float'>
+    readonly text_design_cost: FieldRef<"bookedition", 'Float'>
+    readonly editor_cost: FieldRef<"bookedition", 'Float'>
+    readonly typewriting_cost: FieldRef<"bookedition", 'Float'>
+    readonly store_cost: FieldRef<"bookedition", 'Float'>
+    readonly distribution_cost: FieldRef<"bookedition", 'Float'>
+    readonly advertisement_cost: FieldRef<"bookedition", 'Float'>
+    readonly purchasing_right_cost: FieldRef<"bookedition", 'Float'>
   }
     
 
@@ -8385,11 +8520,29 @@ export namespace Prisma {
   export type BooksAvgAggregateOutputType = {
     id: number | null
     number_of_pages: number | null
+    translator_cost: number | null
+    cover_design_cost: number | null
+    text_design_cost: number | null
+    editor_cost: number | null
+    typewriting_cost: number | null
+    store_cost: number | null
+    distribution_cost: number | null
+    advertisement_cost: number | null
+    purchasing_right_cost: number | null
   }
 
   export type BooksSumAggregateOutputType = {
     id: number | null
     number_of_pages: number | null
+    translator_cost: number | null
+    cover_design_cost: number | null
+    text_design_cost: number | null
+    editor_cost: number | null
+    typewriting_cost: number | null
+    store_cost: number | null
+    distribution_cost: number | null
+    advertisement_cost: number | null
+    purchasing_right_cost: number | null
   }
 
   export type BooksMinAggregateOutputType = {
@@ -8417,6 +8570,15 @@ export namespace Prisma {
     productionstatus: $Enums.books_productionstatus | null
     default_edition_id: string | null
     pen_name: string | null
+    translator_cost: number | null
+    cover_design_cost: number | null
+    text_design_cost: number | null
+    editor_cost: number | null
+    typewriting_cost: number | null
+    store_cost: number | null
+    distribution_cost: number | null
+    advertisement_cost: number | null
+    purchasing_right_cost: number | null
   }
 
   export type BooksMaxAggregateOutputType = {
@@ -8444,6 +8606,15 @@ export namespace Prisma {
     productionstatus: $Enums.books_productionstatus | null
     default_edition_id: string | null
     pen_name: string | null
+    translator_cost: number | null
+    cover_design_cost: number | null
+    text_design_cost: number | null
+    editor_cost: number | null
+    typewriting_cost: number | null
+    store_cost: number | null
+    distribution_cost: number | null
+    advertisement_cost: number | null
+    purchasing_right_cost: number | null
   }
 
   export type BooksCountAggregateOutputType = {
@@ -8471,6 +8642,15 @@ export namespace Prisma {
     productionstatus: number
     default_edition_id: number
     pen_name: number
+    translator_cost: number
+    cover_design_cost: number
+    text_design_cost: number
+    editor_cost: number
+    typewriting_cost: number
+    store_cost: number
+    distribution_cost: number
+    advertisement_cost: number
+    purchasing_right_cost: number
     _all: number
   }
 
@@ -8478,11 +8658,29 @@ export namespace Prisma {
   export type BooksAvgAggregateInputType = {
     id?: true
     number_of_pages?: true
+    translator_cost?: true
+    cover_design_cost?: true
+    text_design_cost?: true
+    editor_cost?: true
+    typewriting_cost?: true
+    store_cost?: true
+    distribution_cost?: true
+    advertisement_cost?: true
+    purchasing_right_cost?: true
   }
 
   export type BooksSumAggregateInputType = {
     id?: true
     number_of_pages?: true
+    translator_cost?: true
+    cover_design_cost?: true
+    text_design_cost?: true
+    editor_cost?: true
+    typewriting_cost?: true
+    store_cost?: true
+    distribution_cost?: true
+    advertisement_cost?: true
+    purchasing_right_cost?: true
   }
 
   export type BooksMinAggregateInputType = {
@@ -8510,6 +8708,15 @@ export namespace Prisma {
     productionstatus?: true
     default_edition_id?: true
     pen_name?: true
+    translator_cost?: true
+    cover_design_cost?: true
+    text_design_cost?: true
+    editor_cost?: true
+    typewriting_cost?: true
+    store_cost?: true
+    distribution_cost?: true
+    advertisement_cost?: true
+    purchasing_right_cost?: true
   }
 
   export type BooksMaxAggregateInputType = {
@@ -8537,6 +8744,15 @@ export namespace Prisma {
     productionstatus?: true
     default_edition_id?: true
     pen_name?: true
+    translator_cost?: true
+    cover_design_cost?: true
+    text_design_cost?: true
+    editor_cost?: true
+    typewriting_cost?: true
+    store_cost?: true
+    distribution_cost?: true
+    advertisement_cost?: true
+    purchasing_right_cost?: true
   }
 
   export type BooksCountAggregateInputType = {
@@ -8564,6 +8780,15 @@ export namespace Prisma {
     productionstatus?: true
     default_edition_id?: true
     pen_name?: true
+    translator_cost?: true
+    cover_design_cost?: true
+    text_design_cost?: true
+    editor_cost?: true
+    typewriting_cost?: true
+    store_cost?: true
+    distribution_cost?: true
+    advertisement_cost?: true
+    purchasing_right_cost?: true
     _all?: true
   }
 
@@ -8678,6 +8903,15 @@ export namespace Prisma {
     productionstatus: $Enums.books_productionstatus | null
     default_edition_id: string | null
     pen_name: string | null
+    translator_cost: number | null
+    cover_design_cost: number | null
+    text_design_cost: number | null
+    editor_cost: number | null
+    typewriting_cost: number | null
+    store_cost: number | null
+    distribution_cost: number | null
+    advertisement_cost: number | null
+    purchasing_right_cost: number | null
     _count: BooksCountAggregateOutputType | null
     _avg: BooksAvgAggregateOutputType | null
     _sum: BooksSumAggregateOutputType | null
@@ -8724,6 +8958,15 @@ export namespace Prisma {
     productionstatus?: boolean
     default_edition_id?: boolean
     pen_name?: boolean
+    translator_cost?: boolean
+    cover_design_cost?: boolean
+    text_design_cost?: boolean
+    editor_cost?: boolean
+    typewriting_cost?: boolean
+    store_cost?: boolean
+    distribution_cost?: boolean
+    advertisement_cost?: boolean
+    purchasing_right_cost?: boolean
     bookedition?: boolean | books$bookeditionArgs<ExtArgs>
     damagedbooks?: boolean | books$damagedbooksArgs<ExtArgs>
     translatorbook?: boolean | books$translatorbookArgs<ExtArgs>
@@ -8757,9 +9000,18 @@ export namespace Prisma {
     productionstatus?: boolean
     default_edition_id?: boolean
     pen_name?: boolean
+    translator_cost?: boolean
+    cover_design_cost?: boolean
+    text_design_cost?: boolean
+    editor_cost?: boolean
+    typewriting_cost?: boolean
+    store_cost?: boolean
+    distribution_cost?: boolean
+    advertisement_cost?: boolean
+    purchasing_right_cost?: boolean
   }
 
-  export type booksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "unique_identification_code" | "isbn" | "title" | "author" | "translator" | "designer" | "language" | "edition" | "category" | "publication_year" | "print_batch_id" | "book_sku" | "number_of_pages" | "info" | "book_image_url" | "status" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt" | "productionstatus" | "default_edition_id" | "pen_name", ExtArgs["result"]["books"]>
+  export type booksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "unique_identification_code" | "isbn" | "title" | "author" | "translator" | "designer" | "language" | "edition" | "category" | "publication_year" | "print_batch_id" | "book_sku" | "number_of_pages" | "info" | "book_image_url" | "status" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt" | "productionstatus" | "default_edition_id" | "pen_name" | "translator_cost" | "cover_design_cost" | "text_design_cost" | "editor_cost" | "typewriting_cost" | "store_cost" | "distribution_cost" | "advertisement_cost" | "purchasing_right_cost", ExtArgs["result"]["books"]>
   export type booksInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     bookedition?: boolean | books$bookeditionArgs<ExtArgs>
     damagedbooks?: boolean | books$damagedbooksArgs<ExtArgs>
@@ -8799,6 +9051,15 @@ export namespace Prisma {
       productionstatus: $Enums.books_productionstatus | null
       default_edition_id: string | null
       pen_name: string | null
+      translator_cost: number | null
+      cover_design_cost: number | null
+      text_design_cost: number | null
+      editor_cost: number | null
+      typewriting_cost: number | null
+      store_cost: number | null
+      distribution_cost: number | null
+      advertisement_cost: number | null
+      purchasing_right_cost: number | null
     }, ExtArgs["result"]["books"]>
     composites: {}
   }
@@ -9195,6 +9456,15 @@ export namespace Prisma {
     readonly productionstatus: FieldRef<"books", 'books_productionstatus'>
     readonly default_edition_id: FieldRef<"books", 'String'>
     readonly pen_name: FieldRef<"books", 'String'>
+    readonly translator_cost: FieldRef<"books", 'Float'>
+    readonly cover_design_cost: FieldRef<"books", 'Float'>
+    readonly text_design_cost: FieldRef<"books", 'Float'>
+    readonly editor_cost: FieldRef<"books", 'Float'>
+    readonly typewriting_cost: FieldRef<"books", 'Float'>
+    readonly store_cost: FieldRef<"books", 'Float'>
+    readonly distribution_cost: FieldRef<"books", 'Float'>
+    readonly advertisement_cost: FieldRef<"books", 'Float'>
+    readonly purchasing_right_cost: FieldRef<"books", 'Float'>
   }
     
 
@@ -35463,7 +35733,16 @@ export namespace Prisma {
     editing_cost: 'editing_cost',
     other_expenses: 'other_expenses',
     transportation_cost: 'transportation_cost',
-    count_remening_for_transfer: 'count_remening_for_transfer'
+    count_remening_for_transfer: 'count_remening_for_transfer',
+    translator_cost: 'translator_cost',
+    cover_design_cost: 'cover_design_cost',
+    text_design_cost: 'text_design_cost',
+    editor_cost: 'editor_cost',
+    typewriting_cost: 'typewriting_cost',
+    store_cost: 'store_cost',
+    distribution_cost: 'distribution_cost',
+    advertisement_cost: 'advertisement_cost',
+    purchasing_right_cost: 'purchasing_right_cost'
   };
 
   export type BookeditionScalarFieldEnum = (typeof BookeditionScalarFieldEnum)[keyof typeof BookeditionScalarFieldEnum]
@@ -35521,7 +35800,16 @@ export namespace Prisma {
     deletedAt: 'deletedAt',
     productionstatus: 'productionstatus',
     default_edition_id: 'default_edition_id',
-    pen_name: 'pen_name'
+    pen_name: 'pen_name',
+    translator_cost: 'translator_cost',
+    cover_design_cost: 'cover_design_cost',
+    text_design_cost: 'text_design_cost',
+    editor_cost: 'editor_cost',
+    typewriting_cost: 'typewriting_cost',
+    store_cost: 'store_cost',
+    distribution_cost: 'distribution_cost',
+    advertisement_cost: 'advertisement_cost',
+    purchasing_right_cost: 'purchasing_right_cost'
   };
 
   export type BooksScalarFieldEnum = (typeof BooksScalarFieldEnum)[keyof typeof BooksScalarFieldEnum]
@@ -36417,6 +36705,15 @@ export namespace Prisma {
     other_expenses?: FloatNullableFilter<"bookedition"> | number | null
     transportation_cost?: FloatNullableFilter<"bookedition"> | number | null
     count_remening_for_transfer?: IntNullableFilter<"bookedition"> | number | null
+    translator_cost?: FloatNullableFilter<"bookedition"> | number | null
+    cover_design_cost?: FloatNullableFilter<"bookedition"> | number | null
+    text_design_cost?: FloatNullableFilter<"bookedition"> | number | null
+    editor_cost?: FloatNullableFilter<"bookedition"> | number | null
+    typewriting_cost?: FloatNullableFilter<"bookedition"> | number | null
+    store_cost?: FloatNullableFilter<"bookedition"> | number | null
+    distribution_cost?: FloatNullableFilter<"bookedition"> | number | null
+    advertisement_cost?: FloatNullableFilter<"bookedition"> | number | null
+    purchasing_right_cost?: FloatNullableFilter<"bookedition"> | number | null
     books?: XOR<BooksScalarRelationFilter, booksWhereInput>
     bookeditionstores?: BookeditionstoresListRelationFilter
     bookeditionprinters?: BookeditionprintersListRelationFilter
@@ -36449,6 +36746,15 @@ export namespace Prisma {
     other_expenses?: SortOrderInput | SortOrder
     transportation_cost?: SortOrderInput | SortOrder
     count_remening_for_transfer?: SortOrderInput | SortOrder
+    translator_cost?: SortOrderInput | SortOrder
+    cover_design_cost?: SortOrderInput | SortOrder
+    text_design_cost?: SortOrderInput | SortOrder
+    editor_cost?: SortOrderInput | SortOrder
+    typewriting_cost?: SortOrderInput | SortOrder
+    store_cost?: SortOrderInput | SortOrder
+    distribution_cost?: SortOrderInput | SortOrder
+    advertisement_cost?: SortOrderInput | SortOrder
+    purchasing_right_cost?: SortOrderInput | SortOrder
     books?: booksOrderByWithRelationInput
     bookeditionstores?: bookeditionstoresOrderByRelationAggregateInput
     bookeditionprinters?: bookeditionprintersOrderByRelationAggregateInput
@@ -36485,6 +36791,15 @@ export namespace Prisma {
     other_expenses?: FloatNullableFilter<"bookedition"> | number | null
     transportation_cost?: FloatNullableFilter<"bookedition"> | number | null
     count_remening_for_transfer?: IntNullableFilter<"bookedition"> | number | null
+    translator_cost?: FloatNullableFilter<"bookedition"> | number | null
+    cover_design_cost?: FloatNullableFilter<"bookedition"> | number | null
+    text_design_cost?: FloatNullableFilter<"bookedition"> | number | null
+    editor_cost?: FloatNullableFilter<"bookedition"> | number | null
+    typewriting_cost?: FloatNullableFilter<"bookedition"> | number | null
+    store_cost?: FloatNullableFilter<"bookedition"> | number | null
+    distribution_cost?: FloatNullableFilter<"bookedition"> | number | null
+    advertisement_cost?: FloatNullableFilter<"bookedition"> | number | null
+    purchasing_right_cost?: FloatNullableFilter<"bookedition"> | number | null
     books?: XOR<BooksScalarRelationFilter, booksWhereInput>
     bookeditionstores?: BookeditionstoresListRelationFilter
     bookeditionprinters?: BookeditionprintersListRelationFilter
@@ -36517,6 +36832,15 @@ export namespace Prisma {
     other_expenses?: SortOrderInput | SortOrder
     transportation_cost?: SortOrderInput | SortOrder
     count_remening_for_transfer?: SortOrderInput | SortOrder
+    translator_cost?: SortOrderInput | SortOrder
+    cover_design_cost?: SortOrderInput | SortOrder
+    text_design_cost?: SortOrderInput | SortOrder
+    editor_cost?: SortOrderInput | SortOrder
+    typewriting_cost?: SortOrderInput | SortOrder
+    store_cost?: SortOrderInput | SortOrder
+    distribution_cost?: SortOrderInput | SortOrder
+    advertisement_cost?: SortOrderInput | SortOrder
+    purchasing_right_cost?: SortOrderInput | SortOrder
     _count?: bookeditionCountOrderByAggregateInput
     _avg?: bookeditionAvgOrderByAggregateInput
     _max?: bookeditionMaxOrderByAggregateInput
@@ -36550,6 +36874,15 @@ export namespace Prisma {
     other_expenses?: FloatNullableWithAggregatesFilter<"bookedition"> | number | null
     transportation_cost?: FloatNullableWithAggregatesFilter<"bookedition"> | number | null
     count_remening_for_transfer?: IntNullableWithAggregatesFilter<"bookedition"> | number | null
+    translator_cost?: FloatNullableWithAggregatesFilter<"bookedition"> | number | null
+    cover_design_cost?: FloatNullableWithAggregatesFilter<"bookedition"> | number | null
+    text_design_cost?: FloatNullableWithAggregatesFilter<"bookedition"> | number | null
+    editor_cost?: FloatNullableWithAggregatesFilter<"bookedition"> | number | null
+    typewriting_cost?: FloatNullableWithAggregatesFilter<"bookedition"> | number | null
+    store_cost?: FloatNullableWithAggregatesFilter<"bookedition"> | number | null
+    distribution_cost?: FloatNullableWithAggregatesFilter<"bookedition"> | number | null
+    advertisement_cost?: FloatNullableWithAggregatesFilter<"bookedition"> | number | null
+    purchasing_right_cost?: FloatNullableWithAggregatesFilter<"bookedition"> | number | null
   }
 
   export type bookeditionstoresWhereInput = {
@@ -36730,6 +37063,15 @@ export namespace Prisma {
     productionstatus?: Enumbooks_productionstatusNullableFilter<"books"> | $Enums.books_productionstatus | null
     default_edition_id?: StringNullableFilter<"books"> | string | null
     pen_name?: StringNullableFilter<"books"> | string | null
+    translator_cost?: FloatNullableFilter<"books"> | number | null
+    cover_design_cost?: FloatNullableFilter<"books"> | number | null
+    text_design_cost?: FloatNullableFilter<"books"> | number | null
+    editor_cost?: FloatNullableFilter<"books"> | number | null
+    typewriting_cost?: FloatNullableFilter<"books"> | number | null
+    store_cost?: FloatNullableFilter<"books"> | number | null
+    distribution_cost?: FloatNullableFilter<"books"> | number | null
+    advertisement_cost?: FloatNullableFilter<"books"> | number | null
+    purchasing_right_cost?: FloatNullableFilter<"books"> | number | null
     bookedition?: BookeditionListRelationFilter
     damagedbooks?: DamagedbooksListRelationFilter
     translatorbook?: TranslatorbookListRelationFilter
@@ -36760,6 +37102,15 @@ export namespace Prisma {
     productionstatus?: SortOrderInput | SortOrder
     default_edition_id?: SortOrderInput | SortOrder
     pen_name?: SortOrderInput | SortOrder
+    translator_cost?: SortOrderInput | SortOrder
+    cover_design_cost?: SortOrderInput | SortOrder
+    text_design_cost?: SortOrderInput | SortOrder
+    editor_cost?: SortOrderInput | SortOrder
+    typewriting_cost?: SortOrderInput | SortOrder
+    store_cost?: SortOrderInput | SortOrder
+    distribution_cost?: SortOrderInput | SortOrder
+    advertisement_cost?: SortOrderInput | SortOrder
+    purchasing_right_cost?: SortOrderInput | SortOrder
     bookedition?: bookeditionOrderByRelationAggregateInput
     damagedbooks?: damagedbooksOrderByRelationAggregateInput
     translatorbook?: translatorbookOrderByRelationAggregateInput
@@ -36794,6 +37145,15 @@ export namespace Prisma {
     productionstatus?: Enumbooks_productionstatusNullableFilter<"books"> | $Enums.books_productionstatus | null
     default_edition_id?: StringNullableFilter<"books"> | string | null
     pen_name?: StringNullableFilter<"books"> | string | null
+    translator_cost?: FloatNullableFilter<"books"> | number | null
+    cover_design_cost?: FloatNullableFilter<"books"> | number | null
+    text_design_cost?: FloatNullableFilter<"books"> | number | null
+    editor_cost?: FloatNullableFilter<"books"> | number | null
+    typewriting_cost?: FloatNullableFilter<"books"> | number | null
+    store_cost?: FloatNullableFilter<"books"> | number | null
+    distribution_cost?: FloatNullableFilter<"books"> | number | null
+    advertisement_cost?: FloatNullableFilter<"books"> | number | null
+    purchasing_right_cost?: FloatNullableFilter<"books"> | number | null
     bookedition?: BookeditionListRelationFilter
     damagedbooks?: DamagedbooksListRelationFilter
     translatorbook?: TranslatorbookListRelationFilter
@@ -36824,6 +37184,15 @@ export namespace Prisma {
     productionstatus?: SortOrderInput | SortOrder
     default_edition_id?: SortOrderInput | SortOrder
     pen_name?: SortOrderInput | SortOrder
+    translator_cost?: SortOrderInput | SortOrder
+    cover_design_cost?: SortOrderInput | SortOrder
+    text_design_cost?: SortOrderInput | SortOrder
+    editor_cost?: SortOrderInput | SortOrder
+    typewriting_cost?: SortOrderInput | SortOrder
+    store_cost?: SortOrderInput | SortOrder
+    distribution_cost?: SortOrderInput | SortOrder
+    advertisement_cost?: SortOrderInput | SortOrder
+    purchasing_right_cost?: SortOrderInput | SortOrder
     _count?: booksCountOrderByAggregateInput
     _avg?: booksAvgOrderByAggregateInput
     _max?: booksMaxOrderByAggregateInput
@@ -36859,6 +37228,15 @@ export namespace Prisma {
     productionstatus?: Enumbooks_productionstatusNullableWithAggregatesFilter<"books"> | $Enums.books_productionstatus | null
     default_edition_id?: StringNullableWithAggregatesFilter<"books"> | string | null
     pen_name?: StringNullableWithAggregatesFilter<"books"> | string | null
+    translator_cost?: FloatNullableWithAggregatesFilter<"books"> | number | null
+    cover_design_cost?: FloatNullableWithAggregatesFilter<"books"> | number | null
+    text_design_cost?: FloatNullableWithAggregatesFilter<"books"> | number | null
+    editor_cost?: FloatNullableWithAggregatesFilter<"books"> | number | null
+    typewriting_cost?: FloatNullableWithAggregatesFilter<"books"> | number | null
+    store_cost?: FloatNullableWithAggregatesFilter<"books"> | number | null
+    distribution_cost?: FloatNullableWithAggregatesFilter<"books"> | number | null
+    advertisement_cost?: FloatNullableWithAggregatesFilter<"books"> | number | null
+    purchasing_right_cost?: FloatNullableWithAggregatesFilter<"books"> | number | null
   }
 
   export type bookshopeditionsWhereInput = {
@@ -39100,6 +39478,15 @@ export namespace Prisma {
     other_expenses?: number | null
     transportation_cost?: number | null
     count_remening_for_transfer?: number | null
+    translator_cost?: number | null
+    cover_design_cost?: number | null
+    text_design_cost?: number | null
+    editor_cost?: number | null
+    typewriting_cost?: number | null
+    store_cost?: number | null
+    distribution_cost?: number | null
+    advertisement_cost?: number | null
+    purchasing_right_cost?: number | null
     books: booksCreateNestedOneWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersCreateNestedManyWithoutBookeditionInput
@@ -39132,6 +39519,15 @@ export namespace Prisma {
     other_expenses?: number | null
     transportation_cost?: number | null
     count_remening_for_transfer?: number | null
+    translator_cost?: number | null
+    cover_design_cost?: number | null
+    text_design_cost?: number | null
+    editor_cost?: number | null
+    typewriting_cost?: number | null
+    store_cost?: number | null
+    distribution_cost?: number | null
+    advertisement_cost?: number | null
+    purchasing_right_cost?: number | null
     bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookeditionInput
@@ -39161,6 +39557,15 @@ export namespace Prisma {
     other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
+    translator_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    text_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    editor_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    typewriting_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    store_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     books?: booksUpdateOneRequiredWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUpdateManyWithoutBookeditionNestedInput
@@ -39193,6 +39598,15 @@ export namespace Prisma {
     other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
+    translator_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    text_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    editor_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    typewriting_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    store_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookeditionNestedInput
@@ -39224,6 +39638,15 @@ export namespace Prisma {
     other_expenses?: number | null
     transportation_cost?: number | null
     count_remening_for_transfer?: number | null
+    translator_cost?: number | null
+    cover_design_cost?: number | null
+    text_design_cost?: number | null
+    editor_cost?: number | null
+    typewriting_cost?: number | null
+    store_cost?: number | null
+    distribution_cost?: number | null
+    advertisement_cost?: number | null
+    purchasing_right_cost?: number | null
   }
 
   export type bookeditionUpdateManyMutationInput = {
@@ -39247,6 +39670,15 @@ export namespace Prisma {
     other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
+    translator_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    text_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    editor_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    typewriting_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    store_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type bookeditionUncheckedUpdateManyInput = {
@@ -39272,6 +39704,15 @@ export namespace Prisma {
     other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
+    translator_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    text_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    editor_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    typewriting_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    store_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type bookeditionstoresCreateInput = {
@@ -39442,6 +39883,15 @@ export namespace Prisma {
     productionstatus?: $Enums.books_productionstatus | null
     default_edition_id?: string | null
     pen_name?: string | null
+    translator_cost?: number | null
+    cover_design_cost?: number | null
+    text_design_cost?: number | null
+    editor_cost?: number | null
+    typewriting_cost?: number | null
+    store_cost?: number | null
+    distribution_cost?: number | null
+    advertisement_cost?: number | null
+    purchasing_right_cost?: number | null
     bookedition?: bookeditionCreateNestedManyWithoutBooksInput
     damagedbooks?: damagedbooksCreateNestedManyWithoutBooksInput
     translatorbook?: translatorbookCreateNestedManyWithoutBooksInput
@@ -39472,6 +39922,15 @@ export namespace Prisma {
     productionstatus?: $Enums.books_productionstatus | null
     default_edition_id?: string | null
     pen_name?: string | null
+    translator_cost?: number | null
+    cover_design_cost?: number | null
+    text_design_cost?: number | null
+    editor_cost?: number | null
+    typewriting_cost?: number | null
+    store_cost?: number | null
+    distribution_cost?: number | null
+    advertisement_cost?: number | null
+    purchasing_right_cost?: number | null
     bookedition?: bookeditionUncheckedCreateNestedManyWithoutBooksInput
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutBooksInput
     translatorbook?: translatorbookUncheckedCreateNestedManyWithoutBooksInput
@@ -39501,6 +39960,15 @@ export namespace Prisma {
     productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     default_edition_id?: NullableStringFieldUpdateOperationsInput | string | null
     pen_name?: NullableStringFieldUpdateOperationsInput | string | null
+    translator_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    text_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    editor_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    typewriting_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    store_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     bookedition?: bookeditionUpdateManyWithoutBooksNestedInput
     damagedbooks?: damagedbooksUpdateManyWithoutBooksNestedInput
     translatorbook?: translatorbookUpdateManyWithoutBooksNestedInput
@@ -39531,6 +39999,15 @@ export namespace Prisma {
     productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     default_edition_id?: NullableStringFieldUpdateOperationsInput | string | null
     pen_name?: NullableStringFieldUpdateOperationsInput | string | null
+    translator_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    text_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    editor_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    typewriting_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    store_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     bookedition?: bookeditionUncheckedUpdateManyWithoutBooksNestedInput
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutBooksNestedInput
     translatorbook?: translatorbookUncheckedUpdateManyWithoutBooksNestedInput
@@ -39561,6 +40038,15 @@ export namespace Prisma {
     productionstatus?: $Enums.books_productionstatus | null
     default_edition_id?: string | null
     pen_name?: string | null
+    translator_cost?: number | null
+    cover_design_cost?: number | null
+    text_design_cost?: number | null
+    editor_cost?: number | null
+    typewriting_cost?: number | null
+    store_cost?: number | null
+    distribution_cost?: number | null
+    advertisement_cost?: number | null
+    purchasing_right_cost?: number | null
   }
 
   export type booksUpdateManyMutationInput = {
@@ -39587,6 +40073,15 @@ export namespace Prisma {
     productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     default_edition_id?: NullableStringFieldUpdateOperationsInput | string | null
     pen_name?: NullableStringFieldUpdateOperationsInput | string | null
+    translator_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    text_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    editor_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    typewriting_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    store_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type booksUncheckedUpdateManyInput = {
@@ -39614,6 +40109,15 @@ export namespace Prisma {
     productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     default_edition_id?: NullableStringFieldUpdateOperationsInput | string | null
     pen_name?: NullableStringFieldUpdateOperationsInput | string | null
+    translator_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    text_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    editor_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    typewriting_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    store_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type bookshopeditionsCreateInput = {
@@ -42185,6 +42689,15 @@ export namespace Prisma {
     other_expenses?: SortOrder
     transportation_cost?: SortOrder
     count_remening_for_transfer?: SortOrder
+    translator_cost?: SortOrder
+    cover_design_cost?: SortOrder
+    text_design_cost?: SortOrder
+    editor_cost?: SortOrder
+    typewriting_cost?: SortOrder
+    store_cost?: SortOrder
+    distribution_cost?: SortOrder
+    advertisement_cost?: SortOrder
+    purchasing_right_cost?: SortOrder
   }
 
   export type bookeditionAvgOrderByAggregateInput = {
@@ -42203,6 +42716,15 @@ export namespace Prisma {
     other_expenses?: SortOrder
     transportation_cost?: SortOrder
     count_remening_for_transfer?: SortOrder
+    translator_cost?: SortOrder
+    cover_design_cost?: SortOrder
+    text_design_cost?: SortOrder
+    editor_cost?: SortOrder
+    typewriting_cost?: SortOrder
+    store_cost?: SortOrder
+    distribution_cost?: SortOrder
+    advertisement_cost?: SortOrder
+    purchasing_right_cost?: SortOrder
   }
 
   export type bookeditionMaxOrderByAggregateInput = {
@@ -42228,6 +42750,15 @@ export namespace Prisma {
     other_expenses?: SortOrder
     transportation_cost?: SortOrder
     count_remening_for_transfer?: SortOrder
+    translator_cost?: SortOrder
+    cover_design_cost?: SortOrder
+    text_design_cost?: SortOrder
+    editor_cost?: SortOrder
+    typewriting_cost?: SortOrder
+    store_cost?: SortOrder
+    distribution_cost?: SortOrder
+    advertisement_cost?: SortOrder
+    purchasing_right_cost?: SortOrder
   }
 
   export type bookeditionMinOrderByAggregateInput = {
@@ -42253,6 +42784,15 @@ export namespace Prisma {
     other_expenses?: SortOrder
     transportation_cost?: SortOrder
     count_remening_for_transfer?: SortOrder
+    translator_cost?: SortOrder
+    cover_design_cost?: SortOrder
+    text_design_cost?: SortOrder
+    editor_cost?: SortOrder
+    typewriting_cost?: SortOrder
+    store_cost?: SortOrder
+    distribution_cost?: SortOrder
+    advertisement_cost?: SortOrder
+    purchasing_right_cost?: SortOrder
   }
 
   export type bookeditionSumOrderByAggregateInput = {
@@ -42271,6 +42811,15 @@ export namespace Prisma {
     other_expenses?: SortOrder
     transportation_cost?: SortOrder
     count_remening_for_transfer?: SortOrder
+    translator_cost?: SortOrder
+    cover_design_cost?: SortOrder
+    text_design_cost?: SortOrder
+    editor_cost?: SortOrder
+    typewriting_cost?: SortOrder
+    store_cost?: SortOrder
+    distribution_cost?: SortOrder
+    advertisement_cost?: SortOrder
+    purchasing_right_cost?: SortOrder
   }
 
   export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -42490,11 +43039,29 @@ export namespace Prisma {
     productionstatus?: SortOrder
     default_edition_id?: SortOrder
     pen_name?: SortOrder
+    translator_cost?: SortOrder
+    cover_design_cost?: SortOrder
+    text_design_cost?: SortOrder
+    editor_cost?: SortOrder
+    typewriting_cost?: SortOrder
+    store_cost?: SortOrder
+    distribution_cost?: SortOrder
+    advertisement_cost?: SortOrder
+    purchasing_right_cost?: SortOrder
   }
 
   export type booksAvgOrderByAggregateInput = {
     id?: SortOrder
     number_of_pages?: SortOrder
+    translator_cost?: SortOrder
+    cover_design_cost?: SortOrder
+    text_design_cost?: SortOrder
+    editor_cost?: SortOrder
+    typewriting_cost?: SortOrder
+    store_cost?: SortOrder
+    distribution_cost?: SortOrder
+    advertisement_cost?: SortOrder
+    purchasing_right_cost?: SortOrder
   }
 
   export type booksMaxOrderByAggregateInput = {
@@ -42522,6 +43089,15 @@ export namespace Prisma {
     productionstatus?: SortOrder
     default_edition_id?: SortOrder
     pen_name?: SortOrder
+    translator_cost?: SortOrder
+    cover_design_cost?: SortOrder
+    text_design_cost?: SortOrder
+    editor_cost?: SortOrder
+    typewriting_cost?: SortOrder
+    store_cost?: SortOrder
+    distribution_cost?: SortOrder
+    advertisement_cost?: SortOrder
+    purchasing_right_cost?: SortOrder
   }
 
   export type booksMinOrderByAggregateInput = {
@@ -42549,11 +43125,29 @@ export namespace Prisma {
     productionstatus?: SortOrder
     default_edition_id?: SortOrder
     pen_name?: SortOrder
+    translator_cost?: SortOrder
+    cover_design_cost?: SortOrder
+    text_design_cost?: SortOrder
+    editor_cost?: SortOrder
+    typewriting_cost?: SortOrder
+    store_cost?: SortOrder
+    distribution_cost?: SortOrder
+    advertisement_cost?: SortOrder
+    purchasing_right_cost?: SortOrder
   }
 
   export type booksSumOrderByAggregateInput = {
     id?: SortOrder
     number_of_pages?: SortOrder
+    translator_cost?: SortOrder
+    cover_design_cost?: SortOrder
+    text_design_cost?: SortOrder
+    editor_cost?: SortOrder
+    typewriting_cost?: SortOrder
+    store_cost?: SortOrder
+    distribution_cost?: SortOrder
+    advertisement_cost?: SortOrder
+    purchasing_right_cost?: SortOrder
   }
 
   export type Enumbooks_productionstatusNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -46435,6 +47029,15 @@ export namespace Prisma {
     productionstatus?: $Enums.books_productionstatus | null
     default_edition_id?: string | null
     pen_name?: string | null
+    translator_cost?: number | null
+    cover_design_cost?: number | null
+    text_design_cost?: number | null
+    editor_cost?: number | null
+    typewriting_cost?: number | null
+    store_cost?: number | null
+    distribution_cost?: number | null
+    advertisement_cost?: number | null
+    purchasing_right_cost?: number | null
     damagedbooks?: damagedbooksCreateNestedManyWithoutBooksInput
     translatorbook?: translatorbookCreateNestedManyWithoutBooksInput
   }
@@ -46464,6 +47067,15 @@ export namespace Prisma {
     productionstatus?: $Enums.books_productionstatus | null
     default_edition_id?: string | null
     pen_name?: string | null
+    translator_cost?: number | null
+    cover_design_cost?: number | null
+    text_design_cost?: number | null
+    editor_cost?: number | null
+    typewriting_cost?: number | null
+    store_cost?: number | null
+    distribution_cost?: number | null
+    advertisement_cost?: number | null
+    purchasing_right_cost?: number | null
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutBooksInput
     translatorbook?: translatorbookUncheckedCreateNestedManyWithoutBooksInput
   }
@@ -46698,6 +47310,15 @@ export namespace Prisma {
     productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     default_edition_id?: NullableStringFieldUpdateOperationsInput | string | null
     pen_name?: NullableStringFieldUpdateOperationsInput | string | null
+    translator_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    text_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    editor_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    typewriting_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    store_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     damagedbooks?: damagedbooksUpdateManyWithoutBooksNestedInput
     translatorbook?: translatorbookUpdateManyWithoutBooksNestedInput
   }
@@ -46727,6 +47348,15 @@ export namespace Prisma {
     productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     default_edition_id?: NullableStringFieldUpdateOperationsInput | string | null
     pen_name?: NullableStringFieldUpdateOperationsInput | string | null
+    translator_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    text_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    editor_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    typewriting_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    store_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutBooksNestedInput
     translatorbook?: translatorbookUncheckedUpdateManyWithoutBooksNestedInput
   }
@@ -46921,6 +47551,15 @@ export namespace Prisma {
     other_expenses?: number | null
     transportation_cost?: number | null
     count_remening_for_transfer?: number | null
+    translator_cost?: number | null
+    cover_design_cost?: number | null
+    text_design_cost?: number | null
+    editor_cost?: number | null
+    typewriting_cost?: number | null
+    store_cost?: number | null
+    distribution_cost?: number | null
+    advertisement_cost?: number | null
+    purchasing_right_cost?: number | null
     books: booksCreateNestedOneWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsCreateNestedManyWithoutBookeditionInput
@@ -46952,6 +47591,15 @@ export namespace Prisma {
     other_expenses?: number | null
     transportation_cost?: number | null
     count_remening_for_transfer?: number | null
+    translator_cost?: number | null
+    cover_design_cost?: number | null
+    text_design_cost?: number | null
+    editor_cost?: number | null
+    typewriting_cost?: number | null
+    store_cost?: number | null
+    distribution_cost?: number | null
+    advertisement_cost?: number | null
+    purchasing_right_cost?: number | null
     bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookeditionInput
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutBookeditionInput
@@ -47028,6 +47676,15 @@ export namespace Prisma {
     other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
+    translator_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    text_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    editor_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    typewriting_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    store_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     books?: booksUpdateOneRequiredWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUpdateManyWithoutBookeditionNestedInput
@@ -47059,6 +47716,15 @@ export namespace Prisma {
     other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
+    translator_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    text_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    editor_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    typewriting_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    store_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookeditionNestedInput
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutBookeditionNestedInput
@@ -47125,6 +47791,15 @@ export namespace Prisma {
     other_expenses?: number | null
     transportation_cost?: number | null
     count_remening_for_transfer?: number | null
+    translator_cost?: number | null
+    cover_design_cost?: number | null
+    text_design_cost?: number | null
+    editor_cost?: number | null
+    typewriting_cost?: number | null
+    store_cost?: number | null
+    distribution_cost?: number | null
+    advertisement_cost?: number | null
+    purchasing_right_cost?: number | null
     books: booksCreateNestedOneWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsCreateNestedManyWithoutBookeditionInput
@@ -47156,6 +47831,15 @@ export namespace Prisma {
     other_expenses?: number | null
     transportation_cost?: number | null
     count_remening_for_transfer?: number | null
+    translator_cost?: number | null
+    cover_design_cost?: number | null
+    text_design_cost?: number | null
+    editor_cost?: number | null
+    typewriting_cost?: number | null
+    store_cost?: number | null
+    distribution_cost?: number | null
+    advertisement_cost?: number | null
+    purchasing_right_cost?: number | null
     bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookeditionInput
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutBookeditionInput
@@ -47234,6 +47918,15 @@ export namespace Prisma {
     other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
+    translator_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    text_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    editor_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    typewriting_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    store_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     books?: booksUpdateOneRequiredWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUpdateManyWithoutBookeditionNestedInput
@@ -47265,6 +47958,15 @@ export namespace Prisma {
     other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
+    translator_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    text_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    editor_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    typewriting_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    store_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookeditionNestedInput
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutBookeditionNestedInput
@@ -47333,6 +48035,15 @@ export namespace Prisma {
     other_expenses?: number | null
     transportation_cost?: number | null
     count_remening_for_transfer?: number | null
+    translator_cost?: number | null
+    cover_design_cost?: number | null
+    text_design_cost?: number | null
+    editor_cost?: number | null
+    typewriting_cost?: number | null
+    store_cost?: number | null
+    distribution_cost?: number | null
+    advertisement_cost?: number | null
+    purchasing_right_cost?: number | null
     bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsCreateNestedManyWithoutBookeditionInput
@@ -47363,6 +48074,15 @@ export namespace Prisma {
     other_expenses?: number | null
     transportation_cost?: number | null
     count_remening_for_transfer?: number | null
+    translator_cost?: number | null
+    cover_design_cost?: number | null
+    text_design_cost?: number | null
+    editor_cost?: number | null
+    typewriting_cost?: number | null
+    store_cost?: number | null
+    distribution_cost?: number | null
+    advertisement_cost?: number | null
+    purchasing_right_cost?: number | null
     bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookeditionInput
@@ -47497,6 +48217,15 @@ export namespace Prisma {
     other_expenses?: FloatNullableFilter<"bookedition"> | number | null
     transportation_cost?: FloatNullableFilter<"bookedition"> | number | null
     count_remening_for_transfer?: IntNullableFilter<"bookedition"> | number | null
+    translator_cost?: FloatNullableFilter<"bookedition"> | number | null
+    cover_design_cost?: FloatNullableFilter<"bookedition"> | number | null
+    text_design_cost?: FloatNullableFilter<"bookedition"> | number | null
+    editor_cost?: FloatNullableFilter<"bookedition"> | number | null
+    typewriting_cost?: FloatNullableFilter<"bookedition"> | number | null
+    store_cost?: FloatNullableFilter<"bookedition"> | number | null
+    distribution_cost?: FloatNullableFilter<"bookedition"> | number | null
+    advertisement_cost?: FloatNullableFilter<"bookedition"> | number | null
+    purchasing_right_cost?: FloatNullableFilter<"bookedition"> | number | null
   }
 
   export type damagedbooksUpsertWithWhereUniqueWithoutBooksInput = {
@@ -47569,6 +48298,15 @@ export namespace Prisma {
     other_expenses?: number | null
     transportation_cost?: number | null
     count_remening_for_transfer?: number | null
+    translator_cost?: number | null
+    cover_design_cost?: number | null
+    text_design_cost?: number | null
+    editor_cost?: number | null
+    typewriting_cost?: number | null
+    store_cost?: number | null
+    distribution_cost?: number | null
+    advertisement_cost?: number | null
+    purchasing_right_cost?: number | null
     books: booksCreateNestedOneWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersCreateNestedManyWithoutBookeditionInput
@@ -47600,6 +48338,15 @@ export namespace Prisma {
     other_expenses?: number | null
     transportation_cost?: number | null
     count_remening_for_transfer?: number | null
+    translator_cost?: number | null
+    cover_design_cost?: number | null
+    text_design_cost?: number | null
+    editor_cost?: number | null
+    typewriting_cost?: number | null
+    store_cost?: number | null
+    distribution_cost?: number | null
+    advertisement_cost?: number | null
+    purchasing_right_cost?: number | null
     bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutBookeditionInput
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutBookeditionInput
@@ -47678,6 +48425,15 @@ export namespace Prisma {
     other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
+    translator_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    text_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    editor_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    typewriting_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    store_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     books?: booksUpdateOneRequiredWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUpdateManyWithoutBookeditionNestedInput
@@ -47709,6 +48465,15 @@ export namespace Prisma {
     other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
+    translator_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    text_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    editor_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    typewriting_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    store_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutBookeditionNestedInput
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutBookeditionNestedInput
@@ -48112,6 +48877,15 @@ export namespace Prisma {
     other_expenses?: number | null
     transportation_cost?: number | null
     count_remening_for_transfer?: number | null
+    translator_cost?: number | null
+    cover_design_cost?: number | null
+    text_design_cost?: number | null
+    editor_cost?: number | null
+    typewriting_cost?: number | null
+    store_cost?: number | null
+    distribution_cost?: number | null
+    advertisement_cost?: number | null
+    purchasing_right_cost?: number | null
     books: booksCreateNestedOneWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersCreateNestedManyWithoutBookeditionInput
@@ -48143,6 +48917,15 @@ export namespace Prisma {
     other_expenses?: number | null
     transportation_cost?: number | null
     count_remening_for_transfer?: number | null
+    translator_cost?: number | null
+    cover_design_cost?: number | null
+    text_design_cost?: number | null
+    editor_cost?: number | null
+    typewriting_cost?: number | null
+    store_cost?: number | null
+    distribution_cost?: number | null
+    advertisement_cost?: number | null
+    purchasing_right_cost?: number | null
     bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookeditionInput
@@ -48225,6 +49008,15 @@ export namespace Prisma {
     other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
+    translator_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    text_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    editor_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    typewriting_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    store_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     books?: booksUpdateOneRequiredWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUpdateManyWithoutBookeditionNestedInput
@@ -48256,6 +49048,15 @@ export namespace Prisma {
     other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
+    translator_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    text_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    editor_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    typewriting_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    store_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookeditionNestedInput
@@ -48323,6 +49124,15 @@ export namespace Prisma {
     productionstatus?: $Enums.books_productionstatus | null
     default_edition_id?: string | null
     pen_name?: string | null
+    translator_cost?: number | null
+    cover_design_cost?: number | null
+    text_design_cost?: number | null
+    editor_cost?: number | null
+    typewriting_cost?: number | null
+    store_cost?: number | null
+    distribution_cost?: number | null
+    advertisement_cost?: number | null
+    purchasing_right_cost?: number | null
     bookedition?: bookeditionCreateNestedManyWithoutBooksInput
     translatorbook?: translatorbookCreateNestedManyWithoutBooksInput
   }
@@ -48352,6 +49162,15 @@ export namespace Prisma {
     productionstatus?: $Enums.books_productionstatus | null
     default_edition_id?: string | null
     pen_name?: string | null
+    translator_cost?: number | null
+    cover_design_cost?: number | null
+    text_design_cost?: number | null
+    editor_cost?: number | null
+    typewriting_cost?: number | null
+    store_cost?: number | null
+    distribution_cost?: number | null
+    advertisement_cost?: number | null
+    purchasing_right_cost?: number | null
     bookedition?: bookeditionUncheckedCreateNestedManyWithoutBooksInput
     translatorbook?: translatorbookUncheckedCreateNestedManyWithoutBooksInput
   }
@@ -48382,6 +49201,15 @@ export namespace Prisma {
     other_expenses?: number | null
     transportation_cost?: number | null
     count_remening_for_transfer?: number | null
+    translator_cost?: number | null
+    cover_design_cost?: number | null
+    text_design_cost?: number | null
+    editor_cost?: number | null
+    typewriting_cost?: number | null
+    store_cost?: number | null
+    distribution_cost?: number | null
+    advertisement_cost?: number | null
+    purchasing_right_cost?: number | null
     books: booksCreateNestedOneWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersCreateNestedManyWithoutBookeditionInput
@@ -48413,6 +49241,15 @@ export namespace Prisma {
     other_expenses?: number | null
     transportation_cost?: number | null
     count_remening_for_transfer?: number | null
+    translator_cost?: number | null
+    cover_design_cost?: number | null
+    text_design_cost?: number | null
+    editor_cost?: number | null
+    typewriting_cost?: number | null
+    store_cost?: number | null
+    distribution_cost?: number | null
+    advertisement_cost?: number | null
+    purchasing_right_cost?: number | null
     bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookeditionInput
@@ -48568,6 +49405,15 @@ export namespace Prisma {
     productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     default_edition_id?: NullableStringFieldUpdateOperationsInput | string | null
     pen_name?: NullableStringFieldUpdateOperationsInput | string | null
+    translator_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    text_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    editor_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    typewriting_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    store_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     bookedition?: bookeditionUpdateManyWithoutBooksNestedInput
     translatorbook?: translatorbookUpdateManyWithoutBooksNestedInput
   }
@@ -48597,6 +49443,15 @@ export namespace Prisma {
     productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     default_edition_id?: NullableStringFieldUpdateOperationsInput | string | null
     pen_name?: NullableStringFieldUpdateOperationsInput | string | null
+    translator_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    text_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    editor_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    typewriting_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    store_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     bookedition?: bookeditionUncheckedUpdateManyWithoutBooksNestedInput
     translatorbook?: translatorbookUncheckedUpdateManyWithoutBooksNestedInput
   }
@@ -48633,6 +49488,15 @@ export namespace Prisma {
     other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
+    translator_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    text_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    editor_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    typewriting_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    store_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     books?: booksUpdateOneRequiredWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUpdateManyWithoutBookeditionNestedInput
@@ -48664,6 +49528,15 @@ export namespace Prisma {
     other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
+    translator_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    text_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    editor_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    typewriting_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    store_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookeditionNestedInput
@@ -49269,6 +50142,15 @@ export namespace Prisma {
     other_expenses?: number | null
     transportation_cost?: number | null
     count_remening_for_transfer?: number | null
+    translator_cost?: number | null
+    cover_design_cost?: number | null
+    text_design_cost?: number | null
+    editor_cost?: number | null
+    typewriting_cost?: number | null
+    store_cost?: number | null
+    distribution_cost?: number | null
+    advertisement_cost?: number | null
+    purchasing_right_cost?: number | null
     books: booksCreateNestedOneWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersCreateNestedManyWithoutBookeditionInput
@@ -49300,6 +50182,15 @@ export namespace Prisma {
     other_expenses?: number | null
     transportation_cost?: number | null
     count_remening_for_transfer?: number | null
+    translator_cost?: number | null
+    cover_design_cost?: number | null
+    text_design_cost?: number | null
+    editor_cost?: number | null
+    typewriting_cost?: number | null
+    store_cost?: number | null
+    distribution_cost?: number | null
+    advertisement_cost?: number | null
+    purchasing_right_cost?: number | null
     bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookeditionInput
@@ -49394,6 +50285,15 @@ export namespace Prisma {
     other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
+    translator_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    text_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    editor_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    typewriting_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    store_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     books?: booksUpdateOneRequiredWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUpdateManyWithoutBookeditionNestedInput
@@ -49425,6 +50325,15 @@ export namespace Prisma {
     other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
+    translator_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    text_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    editor_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    typewriting_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    store_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookeditionNestedInput
@@ -49685,6 +50594,15 @@ export namespace Prisma {
     productionstatus?: $Enums.books_productionstatus | null
     default_edition_id?: string | null
     pen_name?: string | null
+    translator_cost?: number | null
+    cover_design_cost?: number | null
+    text_design_cost?: number | null
+    editor_cost?: number | null
+    typewriting_cost?: number | null
+    store_cost?: number | null
+    distribution_cost?: number | null
+    advertisement_cost?: number | null
+    purchasing_right_cost?: number | null
     bookedition?: bookeditionCreateNestedManyWithoutBooksInput
     damagedbooks?: damagedbooksCreateNestedManyWithoutBooksInput
   }
@@ -49714,6 +50632,15 @@ export namespace Prisma {
     productionstatus?: $Enums.books_productionstatus | null
     default_edition_id?: string | null
     pen_name?: string | null
+    translator_cost?: number | null
+    cover_design_cost?: number | null
+    text_design_cost?: number | null
+    editor_cost?: number | null
+    typewriting_cost?: number | null
+    store_cost?: number | null
+    distribution_cost?: number | null
+    advertisement_cost?: number | null
+    purchasing_right_cost?: number | null
     bookedition?: bookeditionUncheckedCreateNestedManyWithoutBooksInput
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutBooksInput
   }
@@ -49786,6 +50713,15 @@ export namespace Prisma {
     productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     default_edition_id?: NullableStringFieldUpdateOperationsInput | string | null
     pen_name?: NullableStringFieldUpdateOperationsInput | string | null
+    translator_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    text_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    editor_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    typewriting_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    store_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     bookedition?: bookeditionUpdateManyWithoutBooksNestedInput
     damagedbooks?: damagedbooksUpdateManyWithoutBooksNestedInput
   }
@@ -49815,6 +50751,15 @@ export namespace Prisma {
     productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     default_edition_id?: NullableStringFieldUpdateOperationsInput | string | null
     pen_name?: NullableStringFieldUpdateOperationsInput | string | null
+    translator_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    text_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    editor_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    typewriting_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    store_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     bookedition?: bookeditionUncheckedUpdateManyWithoutBooksNestedInput
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutBooksNestedInput
   }
@@ -50674,6 +51619,15 @@ export namespace Prisma {
     other_expenses?: number | null
     transportation_cost?: number | null
     count_remening_for_transfer?: number | null
+    translator_cost?: number | null
+    cover_design_cost?: number | null
+    text_design_cost?: number | null
+    editor_cost?: number | null
+    typewriting_cost?: number | null
+    store_cost?: number | null
+    distribution_cost?: number | null
+    advertisement_cost?: number | null
+    purchasing_right_cost?: number | null
   }
 
   export type damagedbooksCreateManyBooksInput = {
@@ -50725,6 +51679,15 @@ export namespace Prisma {
     other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
+    translator_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    text_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    editor_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    typewriting_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    store_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUpdateManyWithoutBookeditionNestedInput
@@ -50755,6 +51718,15 @@ export namespace Prisma {
     other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
+    translator_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    text_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    editor_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    typewriting_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    store_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookeditionNestedInput
@@ -50785,6 +51757,15 @@ export namespace Prisma {
     other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
     transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
+    translator_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    text_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    editor_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    typewriting_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    store_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type damagedbooksUpdateWithoutBooksInput = {

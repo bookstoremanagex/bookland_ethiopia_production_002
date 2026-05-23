@@ -5,6 +5,33 @@ import { revalidatePath } from "next/cache";
 import { getCurrentSession } from "./auth-actions";
 import { createNotification } from "./notification-actions";
 
+export async function getShopRemainingBalance(shopId: number) {
+    try {
+        const shop = await (prisma as any).bookshopes.findUnique({
+            where: { id: shopId },
+            include: {
+                orders: {
+                    where: { is_deleted: false }
+                },
+                payments: {
+                    where: { is_deleted: false, status: "APPROVED" }
+                }
+            }
+        });
+        if (!shop) return { success: false, error: "Shop not found" };
+
+        const totalDebt = shop.orders.reduce((sum: number, o: any) => sum + (o.total_amount || 0), 0);
+        const orderPaid = shop.orders.reduce((sum: number, o: any) => sum + (o.amount_paid || 0), 0);
+        const paymentPaid = shop.payments.reduce((sum: number, p: any) => sum + (p.amount || 0), 0);
+        const remaining = totalDebt - orderPaid - paymentPaid;
+
+        return { success: true, remaining };
+    } catch (error) {
+        console.error("Error fetching shop balance:", error);
+        return { success: false, error: "Failed to fetch balance" };
+    }
+}
+
 export async function getOrdersByShopId(shopId: number) {
   try {
     const orders = await (prisma as any).orders.findMany({

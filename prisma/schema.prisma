@@ -54,6 +54,15 @@ model bookedition {
   other_expenses              Float?
   transportation_cost         Float?
   count_remening_for_transfer Int?                @default(0)
+  translator_cost             Float?
+  cover_design_cost           Float?
+  text_design_cost            Float?
+  editor_cost                 Float?
+  typewriting_cost            Float?
+  store_cost                  Float?
+  distribution_cost           Float?
+  advertisement_cost          Float?
+  purchasing_right_cost       Float?
   books                       books               @relation(fields: [bookId], references: [id], map: "BookEdition_bookId_fkey")
   bookeditionstores           bookeditionstores[]
   bookeditionprinters         bookeditionprinters[]
@@ -122,6 +131,15 @@ model books {
   productionstatus           books_productionstatus? @default(ON_PRODUCTION)
   default_edition_id         String?
   pen_name                   String?
+  translator_cost            Float?
+  cover_design_cost          Float?
+  text_design_cost           Float?
+  editor_cost                Float?
+  typewriting_cost           Float?
+  store_cost                 Float?
+  distribution_cost          Float?
+  advertisement_cost         Float?
+  purchasing_right_cost      Float?
   bookedition                bookedition[]
   damagedbooks               damagedbooks[]
   translatorbook             translatorbook[]
