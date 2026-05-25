@@ -503,11 +503,13 @@ model approval_documents {
 }
 
 model settings {
-  id           Int      @id @default(autoincrement())
-  primaryColor String   @default("#408A71")
-  badgeColor   String   @default("#059669")
-  updatedAt    DateTime @default(now())
-  createdAt    DateTime @default(now())
+  id            Int      @id @default(autoincrement())
+  primaryColor  String   @default("#408A71")
+  badgeColor    String   @default("#059669")
+  toastBgColor  String   @default("#FFFFFF")
+  toastTextColor String  @default("#1E293B")
+  updatedAt     DateTime @default(now())
+  createdAt     DateTime @default(now())
 }
 
 model checks {

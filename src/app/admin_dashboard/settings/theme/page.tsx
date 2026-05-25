@@ -11,7 +11,8 @@ import {
     Sliders,
     Eye,
     Bell,
-    ClipboardList
+    ClipboardList,
+    MessageSquare
 } from "lucide-react";
 import { getSettings, updateSettings } from "@/app/actions/settings-actions";
 import { Button } from "@/components/ui/button";
@@ -49,6 +50,8 @@ function getDarkerShade(hex: string, amount = 30): string {
 export default function ThemeSettingsPage() {
     const [primaryColor, setPrimaryColor] = useState("#408A71");
     const [badgeColor, setBadgeColor] = useState("#059669");
+    const [toastBgColor, setToastBgColor] = useState("#FFFFFF");
+    const [toastTextColor, setToastTextColor] = useState("#1E293B");
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
 
@@ -65,6 +68,14 @@ export default function ThemeSettingsPage() {
             const localBadge = localStorage.getItem("badgecolor");
             if (localBadge) {
                 setBadgeColor(localBadge);
+            }
+            const localToastBg = localStorage.getItem("toastbgcolor");
+            if (localToastBg) {
+                setToastBgColor(localToastBg);
+            }
+            const localToastText = localStorage.getItem("toasttextcolor");
+            if (localToastText) {
+                setToastTextColor(localToastText);
             }
             
             // Sync with DB
@@ -86,6 +97,20 @@ export default function ThemeSettingsPage() {
                 if (localBadge !== dbBadge) {
                     localStorage.setItem("badgecolor", dbBadge);
                     document.documentElement.style.setProperty("--badgecolor", dbBadge);
+                }
+
+                const dbToastBg = res.data.toastBgColor || "#FFFFFF";
+                setToastBgColor(dbToastBg);
+                if (localToastBg !== dbToastBg) {
+                    localStorage.setItem("toastbgcolor", dbToastBg);
+                    document.documentElement.style.setProperty("--toastbg", dbToastBg);
+                }
+
+                const dbToastText = res.data.toastTextColor || "#1E293B";
+                setToastTextColor(dbToastText);
+                if (localToastText !== dbToastText) {
+                    localStorage.setItem("toasttextcolor", dbToastText);
+                    document.documentElement.style.setProperty("--toasttext", dbToastText);
                 }
             }
             setLoading(false);
@@ -113,10 +138,23 @@ export default function ThemeSettingsPage() {
         document.documentElement.style.setProperty("--badgecolor", hex);
     };
 
+    // Handle toast color changes
+    const handleToastBgColorChange = (hex: string) => {
+        setToastBgColor(hex);
+        localStorage.setItem("toastbgcolor", hex);
+        document.documentElement.style.setProperty("--toastbg", hex);
+    };
+
+    const handleToastTextColorChange = (hex: string) => {
+        setToastTextColor(hex);
+        localStorage.setItem("toasttextcolor", hex);
+        document.documentElement.style.setProperty("--toasttext", hex);
+    };
+
     // Save customized theme to the database
     const handleSaveSettings = async () => {
         setSaving(true);
-        const res = await updateSettings(primaryColor, badgeColor);
+        const res = await updateSettings(primaryColor, badgeColor, toastBgColor, toastTextColor);
         if (res.success) {
             toast.success("Theme settings persisted successfully!");
         } else {
@@ -129,6 +167,8 @@ export default function ThemeSettingsPage() {
     const handleResetToDefault = () => {
         handleColorChange("#408A71");
         handleBadgeColorChange("#059669");
+        handleToastBgColorChange("#FFFFFF");
+        handleToastTextColorChange("#1E293B");
         toast.info("Theme color reset to default Emerald Mint.");
     };
 
@@ -326,6 +366,87 @@ export default function ThemeSettingsPage() {
                                         5
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Toast Color Selector */}
+                    <div className="bg-white rounded-[2rem] border-2 border-primarycolor/10 p-6 md:p-8 space-y-6 shadow-sm">
+                        <div className="flex items-center gap-2 border-b border-primarycolor/5 pb-4">
+                            <MessageSquare className="size-5 text-primarycolor" />
+                            <h3 className="text-sm font-black text-secondarycolor uppercase tracking-wider">
+                                Toast Notification Colors
+                            </h3>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            {/* Toast Background */}
+                            <div className="flex flex-col sm:flex-row items-center gap-4 p-5 rounded-2xl border-2 border-dashed border-primarycolor/10 bg-slate-50/30">
+                                <div className="relative size-20 shrink-0 rounded-xl overflow-hidden shadow-inner border border-slate-200 bg-white flex items-center justify-center cursor-pointer group">
+                                    <input 
+                                        type="color"
+                                        value={toastBgColor}
+                                        onChange={(e) => handleToastBgColorChange(e.target.value)}
+                                        className="absolute inset-0 size-full cursor-pointer opacity-0"
+                                    />
+                                    <div 
+                                        className="size-12 rounded-lg border border-black/15 shadow-sm group-hover:scale-105 transition-transform"
+                                        style={{ backgroundColor: toastBgColor }}
+                                    />
+                                </div>
+                                <div className="flex-1 text-center sm:text-left space-y-1.5">
+                                    <h4 className="font-black text-secondarycolor text-xs uppercase tracking-wide">Background</h4>
+                                    <div className="flex items-center gap-2 max-w-[140px] mx-auto sm:mx-0">
+                                        <span className="text-xs font-black text-muted-foreground">#</span>
+                                        <input 
+                                            type="text"
+                                            maxLength={6}
+                                            value={toastBgColor.replace("#", "")}
+                                            onChange={(e) => handleToastBgColorChange("#" + e.target.value)}
+                                            className="h-8 px-2 w-full rounded-lg border-2 border-slate-200 font-mono text-xs font-black uppercase text-secondarycolor focus:border-primarycolor outline-none"
+                                            placeholder="FFFFFF"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Toast Text */}
+                            <div className="flex flex-col sm:flex-row items-center gap-4 p-5 rounded-2xl border-2 border-dashed border-primarycolor/10 bg-slate-50/30">
+                                <div className="relative size-20 shrink-0 rounded-xl overflow-hidden shadow-inner border border-slate-200 bg-white flex items-center justify-center cursor-pointer group">
+                                    <input 
+                                        type="color"
+                                        value={toastTextColor}
+                                        onChange={(e) => handleToastTextColorChange(e.target.value)}
+                                        className="absolute inset-0 size-full cursor-pointer opacity-0"
+                                    />
+                                    <div 
+                                        className="size-12 rounded-lg border border-black/15 shadow-sm group-hover:scale-105 transition-transform"
+                                        style={{ backgroundColor: toastTextColor }}
+                                    />
+                                </div>
+                                <div className="flex-1 text-center sm:text-left space-y-1.5">
+                                    <h4 className="font-black text-secondarycolor text-xs uppercase tracking-wide">Text Color</h4>
+                                    <div className="flex items-center gap-2 max-w-[140px] mx-auto sm:mx-0">
+                                        <span className="text-xs font-black text-muted-foreground">#</span>
+                                        <input 
+                                            type="text"
+                                            maxLength={6}
+                                            value={toastTextColor.replace("#", "")}
+                                            onChange={(e) => handleToastTextColorChange("#" + e.target.value)}
+                                            className="h-8 px-2 w-full rounded-lg border-2 border-slate-200 font-mono text-xs font-black uppercase text-secondarycolor focus:border-primarycolor outline-none"
+                                            placeholder="1E293B"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Toast Preview */}
+                        <div className="p-4 rounded-2xl border-2 border-primarycolor/5 bg-slate-50/50">
+                            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest block mb-3">Toast Preview</span>
+                            <div className="flex items-center gap-3 px-4 py-3 rounded-xl shadow-md border" style={{ backgroundColor: toastBgColor, color: toastTextColor, borderColor: toastBgColor === "#FFFFFF" ? "#E2E8F0" : toastBgColor }}>
+                                <MessageSquare className="size-4 shrink-0" style={{ color: toastTextColor }} />
+                                <span className="text-sm font-bold flex-1">Toast notification preview</span>
                             </div>
                         </div>
                     </div>

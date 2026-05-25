@@ -2,39 +2,59 @@
 
 import React, { useState, useEffect } from 'react';
 import { User, Mail, Shield, Calendar, Save, Loader2, KeyRound, LogOut } from "lucide-react";
-import { updateAdminProfile } from './actions';
+import { getProfileData, updateAdminProfile } from './actions';
 import { logoutAction } from '@/app/actions/auth-actions';
 import { useRouter } from 'next/navigation';
 
-interface ProfileClientProps {
-  user: {
+export default function ProfileClient() {
+  const router = useRouter();
+  const [mounted, setMounted] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [user, setUser] = useState<{
     id: number;
     name: string;
     email: string;
     role: string;
     status: boolean;
     createdAt: Date;
-  }
-}
-
-export default function ProfileClient({ user }: ProfileClientProps) {
-  const router = useRouter();
-  const [mounted, setMounted] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  } | null>(null);
   const [formData, setFormData] = useState({
-    name: user.name,
-    email: user.email,
+    name: '',
+    email: '',
     password: ''
   });
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+  const [fetchError, setFetchError] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  useEffect(() => {
+    const fetchProfile = async () => {
+      setLoading(true);
+      const result = await getProfileData();
+      if (result.success && result.user) {
+        setUser(result.user);
+        setFormData({
+          name: result.user.name,
+          email: result.user.email,
+          password: ''
+        });
+        setFetchError(false);
+      } else {
+        setFetchError(true);
+      }
+      setLoading(false);
+    };
+    fetchProfile();
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) return;
     setIsSaving(true);
     setMessage(null);
 
@@ -55,6 +75,31 @@ export default function ProfileClient({ user }: ProfileClientProps) {
     router.push('/');
     router.refresh();
   };
+
+  if (loading) {
+    return (
+      <div className="p-20 text-center flex flex-col items-center justify-center gap-3 min-h-screen">
+        <Loader2 className="size-8 text-primarycolor animate-spin" />
+        <span className="font-bold text-secondarycolor">Loading profile...</span>
+      </div>
+    );
+  }
+
+  if (fetchError || !user) {
+    return (
+      <div className="p-20 text-center flex flex-col items-center justify-center gap-4 min-h-screen">
+        <Shield className="size-12 text-rose-400" />
+        <h2 className="text-xl font-black text-secondarycolor uppercase tracking-tight">Could not load profile</h2>
+        <p className="text-sm text-muted-foreground max-w-md">You need to be signed in to view your profile.</p>
+        <button
+          onClick={() => router.push('/')}
+          className="mt-2 h-11 px-6 rounded-xl bg-primarycolor hover:bg-secondarycolor text-white font-black text-xs uppercase tracking-widest transition-all"
+        >
+          Go to Sign In
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 md:p-10 space-y-12 bg-[#F8FAFC] min-h-screen">

@@ -19,13 +19,13 @@ export async function getSettings() {
     }
 }
 
-export async function updateSettings(primaryColor: string, badgeColor?: string) {
+export async function updateSettings(primaryColor: string, badgeColor?: string, toastBgColor?: string, toastTextColor?: string) {
     try {
         let currentSettings = await (prisma as any).settings.findFirst();
         const data: any = { primaryColor };
-        if (badgeColor !== undefined) {
-            data.badgeColor = badgeColor;
-        }
+        if (badgeColor !== undefined) data.badgeColor = badgeColor;
+        if (toastBgColor !== undefined) data.toastBgColor = toastBgColor;
+        if (toastTextColor !== undefined) data.toastTextColor = toastTextColor;
         if (!currentSettings) {
             currentSettings = await (prisma as any).settings.create({ data });
         } else {

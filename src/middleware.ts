@@ -19,7 +19,7 @@ export function middleware(request: NextRequest) {
       const role = sessionData.role;
       
       const rolePathMap: Record<string, string> = {
-        'Admin': '/admin_dashboard',
+        'ADMIN': '/admin_dashboard',
         'Operations Manager': '/operation_manager_dashboard',
         'Inventory Manager': '/inventory_manager_dashboard',
         'Finance Officer': '/finance_officer_dashboard',
@@ -63,7 +63,7 @@ export function middleware(request: NextRequest) {
       const role = sessionData.role;
       
       const rolePathMap: Record<string, string> = {
-        'Admin': '/admin_dashboard',
+        'ADMIN': '/admin_dashboard',
         'Operations Manager': '/operation_manager_dashboard',
         'Inventory Manager': '/inventory_manager_dashboard',
         'Finance Officer': '/finance_officer_dashboard',

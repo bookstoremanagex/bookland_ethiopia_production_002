@@ -32696,6 +32696,8 @@ export namespace Prisma {
     id: number | null
     primaryColor: string | null
     badgeColor: string | null
+    toastBgColor: string | null
+    toastTextColor: string | null
     updatedAt: Date | null
     createdAt: Date | null
   }
@@ -32704,6 +32706,8 @@ export namespace Prisma {
     id: number | null
     primaryColor: string | null
     badgeColor: string | null
+    toastBgColor: string | null
+    toastTextColor: string | null
     updatedAt: Date | null
     createdAt: Date | null
   }
@@ -32712,6 +32716,8 @@ export namespace Prisma {
     id: number
     primaryColor: number
     badgeColor: number
+    toastBgColor: number
+    toastTextColor: number
     updatedAt: number
     createdAt: number
     _all: number
@@ -32730,6 +32736,8 @@ export namespace Prisma {
     id?: true
     primaryColor?: true
     badgeColor?: true
+    toastBgColor?: true
+    toastTextColor?: true
     updatedAt?: true
     createdAt?: true
   }
@@ -32738,6 +32746,8 @@ export namespace Prisma {
     id?: true
     primaryColor?: true
     badgeColor?: true
+    toastBgColor?: true
+    toastTextColor?: true
     updatedAt?: true
     createdAt?: true
   }
@@ -32746,6 +32756,8 @@ export namespace Prisma {
     id?: true
     primaryColor?: true
     badgeColor?: true
+    toastBgColor?: true
+    toastTextColor?: true
     updatedAt?: true
     createdAt?: true
     _all?: true
@@ -32841,6 +32853,8 @@ export namespace Prisma {
     id: number
     primaryColor: string
     badgeColor: string
+    toastBgColor: string
+    toastTextColor: string
     updatedAt: Date
     createdAt: Date
     _count: SettingsCountAggregateOutputType | null
@@ -32868,6 +32882,8 @@ export namespace Prisma {
     id?: boolean
     primaryColor?: boolean
     badgeColor?: boolean
+    toastBgColor?: boolean
+    toastTextColor?: boolean
     updatedAt?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["settings"]>
@@ -32878,11 +32894,13 @@ export namespace Prisma {
     id?: boolean
     primaryColor?: boolean
     badgeColor?: boolean
+    toastBgColor?: boolean
+    toastTextColor?: boolean
     updatedAt?: boolean
     createdAt?: boolean
   }
 
-  export type settingsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "primaryColor" | "badgeColor" | "updatedAt" | "createdAt", ExtArgs["result"]["settings"]>
+  export type settingsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "primaryColor" | "badgeColor" | "toastBgColor" | "toastTextColor" | "updatedAt" | "createdAt", ExtArgs["result"]["settings"]>
 
   export type $settingsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "settings"
@@ -32891,6 +32909,8 @@ export namespace Prisma {
       id: number
       primaryColor: string
       badgeColor: string
+      toastBgColor: string
+      toastTextColor: string
       updatedAt: Date
       createdAt: Date
     }, ExtArgs["result"]["settings"]>
@@ -33265,6 +33285,8 @@ export namespace Prisma {
     readonly id: FieldRef<"settings", 'Int'>
     readonly primaryColor: FieldRef<"settings", 'String'>
     readonly badgeColor: FieldRef<"settings", 'String'>
+    readonly toastBgColor: FieldRef<"settings", 'String'>
+    readonly toastTextColor: FieldRef<"settings", 'String'>
     readonly updatedAt: FieldRef<"settings", 'DateTime'>
     readonly createdAt: FieldRef<"settings", 'DateTime'>
   }
@@ -36205,6 +36227,8 @@ export namespace Prisma {
     id: 'id',
     primaryColor: 'primaryColor',
     badgeColor: 'badgeColor',
+    toastBgColor: 'toastBgColor',
+    toastTextColor: 'toastTextColor',
     updatedAt: 'updatedAt',
     createdAt: 'createdAt'
   };
@@ -36493,7 +36517,9 @@ export namespace Prisma {
 
   export const settingsOrderByRelevanceFieldEnum: {
     primaryColor: 'primaryColor',
-    badgeColor: 'badgeColor'
+    badgeColor: 'badgeColor',
+    toastBgColor: 'toastBgColor',
+    toastTextColor: 'toastTextColor'
   };
 
   export type settingsOrderByRelevanceFieldEnum = (typeof settingsOrderByRelevanceFieldEnum)[keyof typeof settingsOrderByRelevanceFieldEnum]
@@ -39165,6 +39191,8 @@ export namespace Prisma {
     id?: IntFilter<"settings"> | number
     primaryColor?: StringFilter<"settings"> | string
     badgeColor?: StringFilter<"settings"> | string
+    toastBgColor?: StringFilter<"settings"> | string
+    toastTextColor?: StringFilter<"settings"> | string
     updatedAt?: DateTimeFilter<"settings"> | Date | string
     createdAt?: DateTimeFilter<"settings"> | Date | string
   }
@@ -39173,6 +39201,8 @@ export namespace Prisma {
     id?: SortOrder
     primaryColor?: SortOrder
     badgeColor?: SortOrder
+    toastBgColor?: SortOrder
+    toastTextColor?: SortOrder
     updatedAt?: SortOrder
     createdAt?: SortOrder
     _relevance?: settingsOrderByRelevanceInput
@@ -39185,6 +39215,8 @@ export namespace Prisma {
     NOT?: settingsWhereInput | settingsWhereInput[]
     primaryColor?: StringFilter<"settings"> | string
     badgeColor?: StringFilter<"settings"> | string
+    toastBgColor?: StringFilter<"settings"> | string
+    toastTextColor?: StringFilter<"settings"> | string
     updatedAt?: DateTimeFilter<"settings"> | Date | string
     createdAt?: DateTimeFilter<"settings"> | Date | string
   }, "id">
@@ -39193,6 +39225,8 @@ export namespace Prisma {
     id?: SortOrder
     primaryColor?: SortOrder
     badgeColor?: SortOrder
+    toastBgColor?: SortOrder
+    toastTextColor?: SortOrder
     updatedAt?: SortOrder
     createdAt?: SortOrder
     _count?: settingsCountOrderByAggregateInput
@@ -39209,6 +39243,8 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"settings"> | number
     primaryColor?: StringWithAggregatesFilter<"settings"> | string
     badgeColor?: StringWithAggregatesFilter<"settings"> | string
+    toastBgColor?: StringWithAggregatesFilter<"settings"> | string
+    toastTextColor?: StringWithAggregatesFilter<"settings"> | string
     updatedAt?: DateTimeWithAggregatesFilter<"settings"> | Date | string
     createdAt?: DateTimeWithAggregatesFilter<"settings"> | Date | string
   }
@@ -42183,6 +42219,8 @@ export namespace Prisma {
   export type settingsCreateInput = {
     primaryColor?: string
     badgeColor?: string
+    toastBgColor?: string
+    toastTextColor?: string
     updatedAt?: Date | string
     createdAt?: Date | string
   }
@@ -42191,6 +42229,8 @@ export namespace Prisma {
     id?: number
     primaryColor?: string
     badgeColor?: string
+    toastBgColor?: string
+    toastTextColor?: string
     updatedAt?: Date | string
     createdAt?: Date | string
   }
@@ -42198,6 +42238,8 @@ export namespace Prisma {
   export type settingsUpdateInput = {
     primaryColor?: StringFieldUpdateOperationsInput | string
     badgeColor?: StringFieldUpdateOperationsInput | string
+    toastBgColor?: StringFieldUpdateOperationsInput | string
+    toastTextColor?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -42206,6 +42248,8 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     primaryColor?: StringFieldUpdateOperationsInput | string
     badgeColor?: StringFieldUpdateOperationsInput | string
+    toastBgColor?: StringFieldUpdateOperationsInput | string
+    toastTextColor?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -42214,6 +42258,8 @@ export namespace Prisma {
     id?: number
     primaryColor?: string
     badgeColor?: string
+    toastBgColor?: string
+    toastTextColor?: string
     updatedAt?: Date | string
     createdAt?: Date | string
   }
@@ -42221,6 +42267,8 @@ export namespace Prisma {
   export type settingsUpdateManyMutationInput = {
     primaryColor?: StringFieldUpdateOperationsInput | string
     badgeColor?: StringFieldUpdateOperationsInput | string
+    toastBgColor?: StringFieldUpdateOperationsInput | string
+    toastTextColor?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -42229,6 +42277,8 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     primaryColor?: StringFieldUpdateOperationsInput | string
     badgeColor?: StringFieldUpdateOperationsInput | string
+    toastBgColor?: StringFieldUpdateOperationsInput | string
+    toastTextColor?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -44702,6 +44752,8 @@ export namespace Prisma {
     id?: SortOrder
     primaryColor?: SortOrder
     badgeColor?: SortOrder
+    toastBgColor?: SortOrder
+    toastTextColor?: SortOrder
     updatedAt?: SortOrder
     createdAt?: SortOrder
   }
@@ -44714,6 +44766,8 @@ export namespace Prisma {
     id?: SortOrder
     primaryColor?: SortOrder
     badgeColor?: SortOrder
+    toastBgColor?: SortOrder
+    toastTextColor?: SortOrder
     updatedAt?: SortOrder
     createdAt?: SortOrder
   }
@@ -44722,6 +44776,8 @@ export namespace Prisma {
     id?: SortOrder
     primaryColor?: SortOrder
     badgeColor?: SortOrder
+    toastBgColor?: SortOrder
+    toastTextColor?: SortOrder
     updatedAt?: SortOrder
     createdAt?: SortOrder
   }

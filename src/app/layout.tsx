@@ -50,6 +50,16 @@ export default function RootLayout({
             if (badge) {
               document.documentElement.style.setProperty('--badgecolor', badge);
             }
+
+            const toastBg = localStorage.getItem('toastbgcolor');
+            if (toastBg) {
+              document.documentElement.style.setProperty('--toastbg', toastBg);
+            }
+
+            const toastText = localStorage.getItem('toasttextcolor');
+            if (toastText) {
+              document.documentElement.style.setProperty('--toasttext', toastText);
+            }
           } catch (e) {}
         ` }} />
       </head>

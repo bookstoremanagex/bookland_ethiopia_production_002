@@ -8,6 +8,8 @@
   --color-primarycolor: var(--primarycolor, #408A71);
   --color-secondarycolor: var(--secondarycolor, #285A48);
   --color-badgecolor: var(--badgecolor, #059669);
+  --color-toastbg: var(--toastbg, #FFFFFF);
+  --color-toasttext: var(--toasttext, #1E293B);
   --color-tertiarycolor: #B0E4CC;
   --color-quaternarycolor: #091413;
 
