@@ -217,7 +217,7 @@ export function AdminAppSidebar({ accountId }: { accountId?: number }) {
                           </div>
                           {showBadge && (
                             <div className="ml-auto flex items-center gap-2 shrink-0">
-                              <div className="size-6 rounded-full bg-emerald-600 text-white text-[10px] font-black flex items-center justify-center">
+                              <div className="size-6 rounded-full bg-badgecolor text-white text-[10px] font-black flex items-center justify-center">
                                 {badgeCount}
                               </div>
                             </div>

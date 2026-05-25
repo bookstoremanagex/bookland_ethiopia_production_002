@@ -32695,6 +32695,7 @@ export namespace Prisma {
   export type SettingsMinAggregateOutputType = {
     id: number | null
     primaryColor: string | null
+    badgeColor: string | null
     updatedAt: Date | null
     createdAt: Date | null
   }
@@ -32702,6 +32703,7 @@ export namespace Prisma {
   export type SettingsMaxAggregateOutputType = {
     id: number | null
     primaryColor: string | null
+    badgeColor: string | null
     updatedAt: Date | null
     createdAt: Date | null
   }
@@ -32709,6 +32711,7 @@ export namespace Prisma {
   export type SettingsCountAggregateOutputType = {
     id: number
     primaryColor: number
+    badgeColor: number
     updatedAt: number
     createdAt: number
     _all: number
@@ -32726,6 +32729,7 @@ export namespace Prisma {
   export type SettingsMinAggregateInputType = {
     id?: true
     primaryColor?: true
+    badgeColor?: true
     updatedAt?: true
     createdAt?: true
   }
@@ -32733,6 +32737,7 @@ export namespace Prisma {
   export type SettingsMaxAggregateInputType = {
     id?: true
     primaryColor?: true
+    badgeColor?: true
     updatedAt?: true
     createdAt?: true
   }
@@ -32740,6 +32745,7 @@ export namespace Prisma {
   export type SettingsCountAggregateInputType = {
     id?: true
     primaryColor?: true
+    badgeColor?: true
     updatedAt?: true
     createdAt?: true
     _all?: true
@@ -32834,6 +32840,7 @@ export namespace Prisma {
   export type SettingsGroupByOutputType = {
     id: number
     primaryColor: string
+    badgeColor: string
     updatedAt: Date
     createdAt: Date
     _count: SettingsCountAggregateOutputType | null
@@ -32860,6 +32867,7 @@ export namespace Prisma {
   export type settingsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     primaryColor?: boolean
+    badgeColor?: boolean
     updatedAt?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["settings"]>
@@ -32869,11 +32877,12 @@ export namespace Prisma {
   export type settingsSelectScalar = {
     id?: boolean
     primaryColor?: boolean
+    badgeColor?: boolean
     updatedAt?: boolean
     createdAt?: boolean
   }
 
-  export type settingsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "primaryColor" | "updatedAt" | "createdAt", ExtArgs["result"]["settings"]>
+  export type settingsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "primaryColor" | "badgeColor" | "updatedAt" | "createdAt", ExtArgs["result"]["settings"]>
 
   export type $settingsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "settings"
@@ -32881,6 +32890,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: number
       primaryColor: string
+      badgeColor: string
       updatedAt: Date
       createdAt: Date
     }, ExtArgs["result"]["settings"]>
@@ -33254,6 +33264,7 @@ export namespace Prisma {
   interface settingsFieldRefs {
     readonly id: FieldRef<"settings", 'Int'>
     readonly primaryColor: FieldRef<"settings", 'String'>
+    readonly badgeColor: FieldRef<"settings", 'String'>
     readonly updatedAt: FieldRef<"settings", 'DateTime'>
     readonly createdAt: FieldRef<"settings", 'DateTime'>
   }
@@ -36193,6 +36204,7 @@ export namespace Prisma {
   export const SettingsScalarFieldEnum: {
     id: 'id',
     primaryColor: 'primaryColor',
+    badgeColor: 'badgeColor',
     updatedAt: 'updatedAt',
     createdAt: 'createdAt'
   };
@@ -36480,7 +36492,8 @@ export namespace Prisma {
 
 
   export const settingsOrderByRelevanceFieldEnum: {
-    primaryColor: 'primaryColor'
+    primaryColor: 'primaryColor',
+    badgeColor: 'badgeColor'
   };
 
   export type settingsOrderByRelevanceFieldEnum = (typeof settingsOrderByRelevanceFieldEnum)[keyof typeof settingsOrderByRelevanceFieldEnum]
@@ -39151,6 +39164,7 @@ export namespace Prisma {
     NOT?: settingsWhereInput | settingsWhereInput[]
     id?: IntFilter<"settings"> | number
     primaryColor?: StringFilter<"settings"> | string
+    badgeColor?: StringFilter<"settings"> | string
     updatedAt?: DateTimeFilter<"settings"> | Date | string
     createdAt?: DateTimeFilter<"settings"> | Date | string
   }
@@ -39158,6 +39172,7 @@ export namespace Prisma {
   export type settingsOrderByWithRelationInput = {
     id?: SortOrder
     primaryColor?: SortOrder
+    badgeColor?: SortOrder
     updatedAt?: SortOrder
     createdAt?: SortOrder
     _relevance?: settingsOrderByRelevanceInput
@@ -39169,6 +39184,7 @@ export namespace Prisma {
     OR?: settingsWhereInput[]
     NOT?: settingsWhereInput | settingsWhereInput[]
     primaryColor?: StringFilter<"settings"> | string
+    badgeColor?: StringFilter<"settings"> | string
     updatedAt?: DateTimeFilter<"settings"> | Date | string
     createdAt?: DateTimeFilter<"settings"> | Date | string
   }, "id">
@@ -39176,6 +39192,7 @@ export namespace Prisma {
   export type settingsOrderByWithAggregationInput = {
     id?: SortOrder
     primaryColor?: SortOrder
+    badgeColor?: SortOrder
     updatedAt?: SortOrder
     createdAt?: SortOrder
     _count?: settingsCountOrderByAggregateInput
@@ -39191,6 +39208,7 @@ export namespace Prisma {
     NOT?: settingsScalarWhereWithAggregatesInput | settingsScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"settings"> | number
     primaryColor?: StringWithAggregatesFilter<"settings"> | string
+    badgeColor?: StringWithAggregatesFilter<"settings"> | string
     updatedAt?: DateTimeWithAggregatesFilter<"settings"> | Date | string
     createdAt?: DateTimeWithAggregatesFilter<"settings"> | Date | string
   }
@@ -42164,6 +42182,7 @@ export namespace Prisma {
 
   export type settingsCreateInput = {
     primaryColor?: string
+    badgeColor?: string
     updatedAt?: Date | string
     createdAt?: Date | string
   }
@@ -42171,12 +42190,14 @@ export namespace Prisma {
   export type settingsUncheckedCreateInput = {
     id?: number
     primaryColor?: string
+    badgeColor?: string
     updatedAt?: Date | string
     createdAt?: Date | string
   }
 
   export type settingsUpdateInput = {
     primaryColor?: StringFieldUpdateOperationsInput | string
+    badgeColor?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -42184,6 +42205,7 @@ export namespace Prisma {
   export type settingsUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     primaryColor?: StringFieldUpdateOperationsInput | string
+    badgeColor?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -42191,12 +42213,14 @@ export namespace Prisma {
   export type settingsCreateManyInput = {
     id?: number
     primaryColor?: string
+    badgeColor?: string
     updatedAt?: Date | string
     createdAt?: Date | string
   }
 
   export type settingsUpdateManyMutationInput = {
     primaryColor?: StringFieldUpdateOperationsInput | string
+    badgeColor?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -42204,6 +42228,7 @@ export namespace Prisma {
   export type settingsUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     primaryColor?: StringFieldUpdateOperationsInput | string
+    badgeColor?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -44676,6 +44701,7 @@ export namespace Prisma {
   export type settingsCountOrderByAggregateInput = {
     id?: SortOrder
     primaryColor?: SortOrder
+    badgeColor?: SortOrder
     updatedAt?: SortOrder
     createdAt?: SortOrder
   }
@@ -44687,6 +44713,7 @@ export namespace Prisma {
   export type settingsMaxOrderByAggregateInput = {
     id?: SortOrder
     primaryColor?: SortOrder
+    badgeColor?: SortOrder
     updatedAt?: SortOrder
     createdAt?: SortOrder
   }
@@ -44694,6 +44721,7 @@ export namespace Prisma {
   export type settingsMinOrderByAggregateInput = {
     id?: SortOrder
     primaryColor?: SortOrder
+    badgeColor?: SortOrder
     updatedAt?: SortOrder
     createdAt?: SortOrder
   }

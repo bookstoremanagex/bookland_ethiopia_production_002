@@ -523,6 +523,7 @@ exports.Prisma.Approval_documentsScalarFieldEnum = {
 exports.Prisma.SettingsScalarFieldEnum = {
   id: 'id',
   primaryColor: 'primaryColor',
+  badgeColor: 'badgeColor',
   updatedAt: 'updatedAt',
   createdAt: 'createdAt'
 };
@@ -729,7 +730,8 @@ exports.Prisma.approval_documentsOrderByRelevanceFieldEnum = {
 };
 
 exports.Prisma.settingsOrderByRelevanceFieldEnum = {
-  primaryColor: 'primaryColor'
+  primaryColor: 'primaryColor',
+  badgeColor: 'badgeColor'
 };
 
 exports.Prisma.checksOrderByRelevanceFieldEnum = {

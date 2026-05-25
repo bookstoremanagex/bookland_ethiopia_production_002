@@ -9,7 +9,9 @@ import {
     CheckCircle2, 
     Sparkles,
     Sliders,
-    Eye
+    Eye,
+    Bell,
+    ClipboardList
 } from "lucide-react";
 import { getSettings, updateSettings } from "@/app/actions/settings-actions";
 import { Button } from "@/components/ui/button";
@@ -46,6 +48,7 @@ function getDarkerShade(hex: string, amount = 30): string {
 
 export default function ThemeSettingsPage() {
     const [primaryColor, setPrimaryColor] = useState("#408A71");
+    const [badgeColor, setBadgeColor] = useState("#059669");
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
 
@@ -58,6 +61,10 @@ export default function ThemeSettingsPage() {
             const localColor = localStorage.getItem("primarycolor");
             if (localColor) {
                 setPrimaryColor(localColor);
+            }
+            const localBadge = localStorage.getItem("badgecolor");
+            if (localBadge) {
+                setBadgeColor(localBadge);
             }
             
             // Sync with DB
@@ -72,6 +79,13 @@ export default function ThemeSettingsPage() {
                     localStorage.setItem("secondarycolor", secondary);
                     document.documentElement.style.setProperty("--primarycolor", dbColor);
                     document.documentElement.style.setProperty("--secondarycolor", secondary);
+                }
+
+                const dbBadge = res.data.badgeColor || "#059669";
+                setBadgeColor(dbBadge);
+                if (localBadge !== dbBadge) {
+                    localStorage.setItem("badgecolor", dbBadge);
+                    document.documentElement.style.setProperty("--badgecolor", dbBadge);
                 }
             }
             setLoading(false);
@@ -92,10 +106,17 @@ export default function ThemeSettingsPage() {
         document.documentElement.style.setProperty("--secondarycolor", secondary);
     };
 
+    // Handle badge color changes
+    const handleBadgeColorChange = (hex: string) => {
+        setBadgeColor(hex);
+        localStorage.setItem("badgecolor", hex);
+        document.documentElement.style.setProperty("--badgecolor", hex);
+    };
+
     // Save customized theme to the database
     const handleSaveSettings = async () => {
         setSaving(true);
-        const res = await updateSettings(primaryColor);
+        const res = await updateSettings(primaryColor, badgeColor);
         if (res.success) {
             toast.success("Theme settings persisted successfully!");
         } else {
@@ -107,6 +128,7 @@ export default function ThemeSettingsPage() {
     // Reset to initial system default
     const handleResetToDefault = () => {
         handleColorChange("#408A71");
+        handleBadgeColorChange("#059669");
         toast.info("Theme color reset to default Emerald Mint.");
     };
 
@@ -237,6 +259,72 @@ export default function ThemeSettingsPage() {
                                         className="h-10 px-3 w-full rounded-lg border-2 border-slate-200 font-mono text-sm font-black uppercase text-secondarycolor focus:border-primarycolor outline-none"
                                         placeholder="408A71"
                                     />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Badge Count Color Selector */}
+                    <div className="bg-white rounded-[2rem] border-2 border-primarycolor/10 p-6 md:p-8 space-y-6 shadow-sm">
+                        <div className="flex items-center gap-2 border-b border-primarycolor/5 pb-4">
+                            <Bell className="size-5 text-primarycolor" />
+                            <h3 className="text-sm font-black text-secondarycolor uppercase tracking-wider">
+                                Badge Count Color
+                            </h3>
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row items-center gap-6 p-6 rounded-2xl border-2 border-dashed border-primarycolor/10 bg-slate-50/30">
+                            {/* Visual Picker */}
+                            <div className="relative size-24 shrink-0 rounded-2xl overflow-hidden shadow-inner border border-slate-200 bg-white flex items-center justify-center cursor-pointer group">
+                                <input 
+                                    type="color"
+                                    value={badgeColor}
+                                    onChange={(e) => handleBadgeColorChange(e.target.value)}
+                                    className="absolute inset-0 size-full cursor-pointer opacity-0"
+                                />
+                                <div 
+                                    className="size-16 rounded-xl border border-black/15 shadow-sm group-hover:scale-105 transition-transform"
+                                    style={{ backgroundColor: badgeColor }}
+                                />
+                            </div>
+
+                            {/* Hex Input Details */}
+                            <div className="flex-1 text-center sm:text-left space-y-2">
+                                <h4 className="font-black text-secondarycolor text-sm uppercase tracking-wide">Badge Notification Hue</h4>
+                                <p className="text-xs text-muted-foreground font-medium">
+                                    Choose the color for the numeric badge counts displayed next to Notifications and Manage Orders in the sidebar.
+                                </p>
+                                <div className="flex items-center gap-2 max-w-[200px] mx-auto sm:mx-0">
+                                    <span className="text-base font-black text-muted-foreground">#</span>
+                                    <input 
+                                        type="text"
+                                        maxLength={6}
+                                        value={badgeColor.replace("#", "")}
+                                        onChange={(e) => handleBadgeColorChange("#" + e.target.value)}
+                                        className="h-10 px-3 w-full rounded-lg border-2 border-slate-200 font-mono text-sm font-black uppercase text-secondarycolor focus:border-primarycolor outline-none"
+                                        placeholder="059669"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Badge Preview */}
+                        <div className="p-4 rounded-2xl border-2 border-primarycolor/5 bg-slate-50/50">
+                            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest block mb-3">Sidebar Preview</span>
+                            <div className="flex items-center gap-4">
+                                <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white border border-slate-200 shadow-sm">
+                                    <Bell className="size-4 text-primarycolor" />
+                                    <span className="text-sm font-bold text-foreground">Notifications</span>
+                                    <div className="size-6 rounded-full text-white text-[10px] font-black flex items-center justify-center" style={{ backgroundColor: badgeColor }}>
+                                        3
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white border border-slate-200 shadow-sm">
+                                    <ClipboardList className="size-4 text-primarycolor" />
+                                    <span className="text-sm font-bold text-foreground">Manage Orders</span>
+                                    <div className="size-6 rounded-full text-white text-[10px] font-black flex items-center justify-center" style={{ backgroundColor: badgeColor }}>
+                                        5
+                                    </div>
                                 </div>
                             </div>
                         </div>

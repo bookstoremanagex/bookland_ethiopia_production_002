@@ -19,17 +19,19 @@ export async function getSettings() {
     }
 }
 
-export async function updateSettings(primaryColor: string) {
+export async function updateSettings(primaryColor: string, badgeColor?: string) {
     try {
         let currentSettings = await (prisma as any).settings.findFirst();
+        const data: any = { primaryColor };
+        if (badgeColor !== undefined) {
+            data.badgeColor = badgeColor;
+        }
         if (!currentSettings) {
-            currentSettings = await (prisma as any).settings.create({
-                data: { primaryColor }
-            });
+            currentSettings = await (prisma as any).settings.create({ data });
         } else {
             currentSettings = await (prisma as any).settings.update({
                 where: { id: currentSettings.id },
-                data: { primaryColor }
+                data
             });
         }
         return { success: true, data: currentSettings };

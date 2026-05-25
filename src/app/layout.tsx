@@ -45,6 +45,11 @@ export default function RootLayout({
               const secondary = "#" + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1);
               document.documentElement.style.setProperty('--secondarycolor', secondary);
             }
+
+            const badge = localStorage.getItem('badgecolor');
+            if (badge) {
+              document.documentElement.style.setProperty('--badgecolor', badge);
+            }
           } catch (e) {}
         ` }} />
       </head>

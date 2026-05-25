@@ -7,6 +7,7 @@
 @theme inline {
   --color-primarycolor: var(--primarycolor, #408A71);
   --color-secondarycolor: var(--secondarycolor, #285A48);
+  --color-badgecolor: var(--badgecolor, #059669);
   --color-tertiarycolor: #B0E4CC;
   --color-quaternarycolor: #091413;
 
