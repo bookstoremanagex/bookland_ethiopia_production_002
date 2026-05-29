@@ -532,7 +532,7 @@ export function AddBookForm({ className }: AddBookFormProps) {
           {/* Production Costs */}
           <div className="space-y-6 border-2 border-primarycolor/10 rounded-2xl p-6 bg-primarycolor/5">
             <label className="text-sm font-semibold text-secondarycolor block">
-              Production Costs
+              Production Costs <span className="text-[10px] font-normal text-muted-foreground">(Optional)</span>
             </label>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-4">
               <div className="space-y-1.5 group">
