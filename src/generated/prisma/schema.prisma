@@ -415,19 +415,22 @@ model translator {
 }
 
 model translatorbook {
-  id            Int                   @id @default(autoincrement())
-  book_id       Int?
-  bookId        Int
-  translator_id Int
-  Status        translatorbook_Status @default(NOT_STARTED)
-  startDate     DateTime?
-  endDate       DateTime?
-  is_deleted    Boolean               @default(false)
-  updatedAt     DateTime
-  createdAt     DateTime              @default(now())
-  deletedAt     DateTime              @default(now())
-  books         books                 @relation(fields: [bookId], references: [id], map: "TranslatorBook_bookId_fkey")
-  translator    translator            @relation(fields: [translator_id], references: [id], map: "TranslatorBook_translator_id_fkey")
+  id             Int                           @id @default(autoincrement())
+  book_id        Int?
+  bookId         Int
+  translator_id  Int
+  Status         translatorbook_Status         @default(NOT_STARTED)
+  cost           Float?
+  payment_status translatorbook_payment_status @default(PENDING)
+  currently_paid Float                         @default(0)
+  startDate      DateTime?
+  endDate        DateTime?
+  is_deleted     Boolean                       @default(false)
+  updatedAt      DateTime
+  createdAt      DateTime                      @default(now())
+  deletedAt      DateTime                      @default(now())
+  books          books                         @relation(fields: [bookId], references: [id], map: "TranslatorBook_bookId_fkey")
+  translator     translator                    @relation(fields: [translator_id], references: [id], map: "TranslatorBook_translator_id_fkey")
 
   @@index([bookId], map: "TranslatorBook_bookId_fkey")
   @@index([translator_id], map: "TranslatorBook_translator_id_fkey")
@@ -687,6 +690,12 @@ enum translatorbook_Status {
   STARTED
   ONPROGRESS
   COMPLETED
+}
+
+enum translatorbook_payment_status {
+  PENDING
+  CURRENTLY_PAID
+  SUCCEEDED
 }
 
 enum printorder_tracking {
