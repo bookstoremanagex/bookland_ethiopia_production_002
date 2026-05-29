@@ -16,8 +16,12 @@ import {
 import { Card } from "@/components/ui/card"
 import prisma from "@/lib/prisma"
 import { getCurrentSession } from "@/app/actions/auth-actions"
+import PrintTrackingSection from '@/components/printer_dashboard_components/PrintTrackingSection'
+import { getServerCalendarPref } from "@/lib/server-calendar"
+import { formatDate } from "@/lib/calendar-utils"
 
 export default async function PrinterHomePage() {
+  const calendarPref = await getServerCalendarPref()
     const session = await getCurrentSession()
     if (!session?.email) return notFound()
 
@@ -71,7 +75,7 @@ export default async function PrinterHomePage() {
                         <Printer className="size-6 md:size-8" />
                         <span className="text-[10px] md:text-sm font-black uppercase tracking-[0.3em] opacity-50">Printing Dashboard</span>
                     </div>
-                    <h1 className="text-3xl md:text-6xl font-black tracking-tight text-primarycolor uppercase italic leading-none">
+                    <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
                         {printer.name}
                     </h1>
                     <p className="text-muted-foreground font-bold tracking-tight text-sm md:text-lg max-w-xl flex items-center gap-2">
@@ -154,106 +158,8 @@ export default async function PrinterHomePage() {
                 </Card>
             </div>
 
-            {/* Printing Projects Table */}
-            <div className="bg-white rounded-[2.5rem] border-2 border-primarycolor/5 shadow-xl p-8 space-y-6">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <ClipboardList className="size-6 text-secondarycolor" />
-                        <h2 className="text-2xl font-black text-primarycolor uppercase tracking-tighter italic">
-                            Printing <span className="text-secondarycolor not-italic">Projects</span>
-                        </h2>
-                    </div>
-                    <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
-                        {printer.printorder.length} Projects
-                    </span>
-                </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left">
-                        <thead>
-                            <tr className="border-b border-primarycolor/5 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
-                                <th className="pb-4 pr-4">Project</th>
-                                <th className="pb-4 pr-4">Books</th>
-                                <th className="pb-4 pr-4">Status</th>
-                                <th className="pb-4 pr-4">Count</th>
-                                <th className="pb-4 pr-4">Total Price</th>
-                                <th className="pb-4 pr-4">Quality</th>
-                                <th className="pb-4 pr-4">Start Date</th>
-                                <th className="pb-4 pr-4">End Date</th>
-                                <th className="pb-4">Tracking</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {printer.printorder.map((order: any) => {
-                                const booksList = order.printorder_items
-                                    ?.map((item: any) => item.bookedition?.books?.title)
-                                    .filter(Boolean)
-                                    .join(", ") || "—"
-                                return (
-                                    <tr key={order.id} className="border-b border-primarycolor/5 last:border-0 hover:bg-primarycolor/[0.02] transition-colors">
-                                        <td className="py-4 pr-4">
-                                            <div className="font-black text-primarycolor text-sm leading-tight">
-                                                {order.project_name || `Project #${order.id}`}
-                                            </div>
-                                            {order.memo && (
-                                                <div className="text-[10px] text-muted-foreground font-bold mt-0.5 max-w-[200px] truncate">
-                                                    {order.memo}
-                                                </div>
-                                            )}
-                                        </td>
-                                        <td className="py-4 pr-4">
-                                            <span className="text-xs font-bold text-muted-foreground max-w-[200px] block truncate" title={booksList}>
-                                                {booksList}
-                                            </span>
-                                        </td>
-                                        <td className="py-4 pr-4">
-                                            <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full whitespace-nowrap ${
-                                                order.status === "COMPLETED"
-                                                    ? "bg-emerald-50 text-emerald-600"
-                                                    : order.status === "CANCELLED"
-                                                    ? "bg-rose-50 text-rose-600"
-                                                    : order.status === "STARTED" || order.status === "IN_PROGRESS"
-                                                    ? "bg-blue-50 text-blue-600"
-                                                    : "bg-amber-50 text-amber-600"
-                                            }`}>
-                                                {order.status?.replace(/_/g, " ")}
-                                            </span>
-                                        </td>
-                                        <td className="py-4 pr-4 font-black text-primarycolor">
-                                            {order.count?.toLocaleString() || "—"}
-                                        </td>
-                                        <td className="py-4 pr-4 font-black text-primarycolor whitespace-nowrap">
-                                            {order.total_price ? `${order.total_price.toLocaleString()} ETB` : "—"}
-                                        </td>
-                                        <td className="py-4 pr-4 text-xs font-bold text-muted-foreground uppercase">
-                                            {order.quality || "—"}
-                                        </td>
-                                        <td className="py-4 pr-4 text-xs font-bold text-muted-foreground whitespace-nowrap">
-                                            {order.startDate ? new Date(order.startDate).toLocaleDateString() : "—"}
-                                        </td>
-                                        <td className="py-4 pr-4 text-xs font-bold text-muted-foreground whitespace-nowrap">
-                                            {order.endDate ? new Date(order.endDate).toLocaleDateString() : "—"}
-                                        </td>
-                                        <td className="py-4">
-                                            <span className={`text-[10px] font-black uppercase tracking-widest ${
-                                                order.tracking === "SET" ? "text-emerald-500" : "text-amber-500"
-                                            }`}>
-                                                {order.tracking?.replace(/_/g, " ") || "—"}
-                                            </span>
-                                        </td>
-                                    </tr>
-                                )
-                            })}
-                            {printer.printorder.length === 0 && (
-                                <tr>
-                                    <td colSpan={9} className="py-12 text-center text-muted-foreground font-bold text-sm">
-                                        No printing projects yet
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            {/* Print Tracking Section */}
+            <PrintTrackingSection orders={printer.printorder} />
 
             {/* Inventory Table */}
             <div className="bg-white rounded-[2.5rem] border-2 border-primarycolor/5 shadow-xl p-8 space-y-6">
@@ -288,10 +194,10 @@ export default async function PrinterHomePage() {
                                             {book?.title || "Unknown Book"}
                                         </td>
                                         <td className="py-4 pr-4 text-muted-foreground font-bold text-sm">
-                                            {edition?.edition || "—"}
+                                            {edition?.edition || "Ã¢â‚¬â€"}
                                         </td>
                                         <td className="py-4 pr-4 text-muted-foreground font-bold text-sm font-mono">
-                                            {edition?.isbn || "—"}
+                                            {edition?.isbn || "Ã¢â‚¬â€"}
                                         </td>
                                         <td className="py-4">
                                             <span className="font-black text-primarycolor text-lg">
@@ -333,7 +239,7 @@ export default async function PrinterHomePage() {
                                             {order.project_name || `Project #${order.id}`}
                                         </h3>
                                         <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-0.5">
-                                            {order.printorder_items?.length || 0} items · {order.count?.toLocaleString() || 0} units
+                                            {order.printorder_items?.length || 0} items Ã‚Â· {order.count?.toLocaleString() || 0} units
                                         </p>
                                     </div>
                                     <div className="flex items-center gap-6">
@@ -367,13 +273,13 @@ export default async function PrinterHomePage() {
                                                 {order.printorder_payments.map((payment: any) => (
                                                     <tr key={payment.id} className="border-b border-primarycolor/5 last:border-0">
                                                         <td className="py-3 pr-4 text-sm font-bold text-primarycolor whitespace-nowrap">
-                                                            {new Date(payment.payment_date).toLocaleDateString()}
+                                                            {formatDate(new Date(payment.payment_date), calendarPref)}
                                                         </td>
                                                         <td className="py-3 pr-4 text-sm font-black text-emerald-600">
                                                             {payment.amount.toLocaleString()} ETB
                                                         </td>
                                                         <td className="py-3 text-sm font-bold text-muted-foreground">
-                                                            {payment.reference || "—"}
+                                                            {payment.reference || "Ã¢â‚¬â€"}
                                                         </td>
                                                     </tr>
                                                 ))}

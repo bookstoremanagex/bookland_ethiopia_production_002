@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { Plus, X, Banknote, User, Building2, Tag, DollarSign, Calendar, FileText } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { DateInput } from '@/components/ui/date-input'
 import {
     Select,
     SelectContent,
@@ -157,8 +158,7 @@ export default function CreateCheckButton() {
                                 <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">Recorded Date</label>
                                 <div className="relative">
                                     <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-                                    <Input
-                                        type="date"
+                                    <DateInput
                                         value={formData.recordeddate}
                                         onChange={(e) => setFormData({...formData, recordeddate: e.target.value})}
                                         className="h-12 md:h-14 pl-10 rounded-xl md:rounded-2xl border-2 font-bold text-xs"

@@ -176,36 +176,34 @@ export default function EditableBookContent({ book: initialBook, bookShops }: Ed
     <div className="min-h-screen bg-[#FDFDFD] pb-20">
       {/* Top Navigation Bar */}
       <div className="bg-white/80 backdrop-blur-xl border-b border-primarycolor/5 sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 h-20 md:h-28 flex items-center justify-between gap-4">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 h-16 md:h-24 flex items-center justify-between gap-3">
           <div className="flex items-center gap-4 md:gap-6">
-            <div className="size-12 md:size-16 rounded-xl md:rounded-2xl bg-primarycolor/10 flex items-center justify-center text-primarycolor border-2 border-primarycolor/20 shrink-0">
-              <BookOpen className="size-6 md:size-8" />
+            <div className="size-10 md:size-16 rounded-xl md:rounded-2xl bg-primarycolor/10 flex items-center justify-center text-primarycolor border-2 border-primarycolor/20 shrink-0">
+              <BookOpen className="size-5 md:size-8" />
             </div>
             <div className="min-w-0">
-              <div className="flex flex-wrap items-center gap-2 md:gap-3 mb-1">
-                <span className="text-[8px] md:text-[10px] font-black uppercase tracking-widest text-secondarycolor/60 truncate">SKU: {book.book_sku}</span>
-              </div>
-              <h1 className="text-xl md:text-3xl font-black text-primarycolor uppercase tracking-tighter leading-tight truncate">{book.title}</h1>
+              <span className="text-[8px] md:text-[10px] font-black uppercase tracking-widest text-secondarycolor/60 truncate block mb-0.5">SKU: {book.book_sku}</span>
+              <h1 className="text-lg md:text-3xl font-black text-primarycolor uppercase tracking-tighter leading-tight truncate">{book.title}</h1>
             </div>
           </div>
 
           <div className="flex items-center gap-3 md:gap-6">
-            <Button asChild variant="ghost" className="h-12 md:h-14 px-4 md:px-8 rounded-xl md:rounded-2xl border-2 border-primarycolor/5 hover:bg-primarycolor hover:text-white transition-all font-black uppercase tracking-widest text-[10px] md:text-xs gap-3">
+            <Button asChild variant="ghost" className="h-10 md:h-14 px-3 md:px-8 rounded-xl md:rounded-2xl border-2 border-primarycolor/5 hover:bg-primarycolor hover:text-white transition-all font-black uppercase tracking-widest text-[10px] md:text-xs gap-2">
               <Link href={`${dashboardRoot}/books`}>
                 <ArrowLeft className="size-4 md:size-5" />
-                <span className="hidden sm:inline">Back to</span> Books
+                <span className="hidden sm:inline">Back</span>
               </Link>
             </Button>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-12 md:py-20 space-y-12 md:space-y-20">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-6 md:py-16 space-y-8 md:space-y-16">
         {/* Status Section */}
-        <div className="flex items-center justify-between gap-6 bg-white p-6 md:p-8 rounded-[2rem] md:rounded-[2.5rem] border-2 border-primarycolor/10 shadow-2xl shadow-primarycolor/5">
+        <div className="flex items-center justify-between gap-4 bg-white p-4 md:p-8 rounded-2xl md:rounded-[2.5rem] border-2 border-primarycolor/10 shadow-2xl shadow-primarycolor/5">
           <div>
-            <h2 className="text-lg md:text-xl font-black text-primarycolor uppercase tracking-tight">Publication <span className="text-secondarycolor">Status</span></h2>
-            <p className="text-muted-foreground font-bold text-xs md:text-sm">Current availability and distribution phase.</p>
+            <h2 className="text-sm md:text-xl font-black text-primarycolor uppercase tracking-tight">Publication <span className="text-secondarycolor">Status</span></h2>
+            <p className="text-muted-foreground font-bold text-[10px] md:text-sm hidden md:block">Current availability and distribution phase.</p>
           </div>
           <div className="flex items-center gap-4">
             {editingField === 'status' ? (
@@ -225,7 +223,7 @@ export default function EditableBookContent({ book: initialBook, bookShops }: Ed
             ) : (
               <div
                 className={cn(
-                  "px-6 md:px-8 py-3 rounded-2xl text-[10px] md:text-xs font-black uppercase tracking-widest border-2 shadow-lg cursor-pointer hover:scale-105 transition-all flex items-center gap-3",
+                  "px-4 md:px-8 py-2 md:py-3 rounded-xl md:rounded-2xl text-[9px] md:text-xs font-black uppercase tracking-widest border-2 shadow-lg cursor-pointer hover:scale-105 transition-all flex items-center gap-2 md:gap-3",
                   book.status === "available"
                     ? "bg-emerald-50 text-emerald-600 border-emerald-100"
                     : "bg-rose-50 text-rose-600 border-rose-100"
@@ -242,8 +240,8 @@ export default function EditableBookContent({ book: initialBook, bookShops }: Ed
 
         {/* Spacious Tile-Based Tabs Navigation - Wrapping on mobile */}
         <Tabs defaultValue="basic" className="w-full">
-          <div className="mb-20">
-            <TabsList className="w-full h-auto p-0 bg-transparent flex flex-wrap gap-2 md:gap-4 justify-center">
+          <div className="mb-8 md:mb-16">
+            <TabsList className="w-full h-auto p-0 bg-transparent flex flex-wrap gap-2 md:gap-3 justify-center">
               {[
                 { value: 'basic', icon: Info, label: 'Info' },
                 { value: 'editions', icon: Layers, label: 'Editions' },
@@ -258,13 +256,14 @@ export default function EditableBookContent({ book: initialBook, bookShops }: Ed
                   key={tab.value}
                   value={tab.value}
                   className={cn(
-                    "flex-1 md:flex-none min-w-[90px] sm:min-w-[120px] md:min-w-[200px] rounded-xl md:rounded-[2rem] px-3 md:px-10 py-3 md:py-6 font-black uppercase tracking-[0.15em] text-[8px] md:text-[11px] bg-white border-2 transition-all gap-2 md:gap-4 hover:bg-primarycolor/5 group shadow-sm",
+                    "min-w-0 sm:min-w-[120px] md:min-w-[180px] rounded-xl md:rounded-[2rem] px-3 md:px-8 py-2.5 md:py-5 font-black uppercase tracking-[0.15em] text-[10px] md:text-[11px] bg-white border-2 transition-all gap-2 md:gap-3 hover:bg-primarycolor/5 group shadow-sm",
                     tab.danger
                       ? "border-rose-100 text-rose-500 data-[state=active]:bg-rose-600 data-[state=active]:text-white data-[state=active]:border-rose-600 data-[state=active]:shadow-2xl hover:bg-rose-50"
                       : "border-primarycolor/5 text-primarycolor/60 data-[state=active]:bg-primarycolor data-[state=active]:text-white data-[state=active]:border-primarycolor data-[state=active]:shadow-2xl"
                   )}
                 >
-                  <tab.icon className="size-3 md:size-5 opacity-40 group-data-[state=active]:opacity-100" /> {tab.label}
+                  <tab.icon className="size-3.5 md:size-5 opacity-40 group-data-[state=active]:opacity-100 shrink-0" />
+                  <span className="truncate">{tab.label}</span>
                 </TabsTrigger>
               ))}
             </TabsList>

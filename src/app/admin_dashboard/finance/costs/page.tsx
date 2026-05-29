@@ -37,7 +37,7 @@ export default async function FinanceCostsPage() {
     return (
         <div className="p-4 md:p-10 space-y-8 bg-[#F8FAFC] min-h-screen">
             <div className="space-y-2">
-                <h1 className="text-4xl font-black text-primarycolor uppercase tracking-tighter italic">
+                <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
                     Production <span className="text-secondarycolor not-italic">Costs</span>
                 </h1>
                 <p className="text-muted-foreground font-bold uppercase tracking-widest text-[10px]">

@@ -11,6 +11,7 @@ export const bookSchema = z.object({
   edition: z.string().optional().nullable(),
   category: z.string().min(1, "Category is required"),
   publication_year: z.string().min(1, "Publication year is required"),
+  copyright_registration_number: z.string().optional().nullable(),
   print_batch_id: z.string().optional().nullable(),
   number_of_pages: z.coerce.number().optional().nullable(),
   info: z.string().optional().nullable(),

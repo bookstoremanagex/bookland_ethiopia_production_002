@@ -3,12 +3,16 @@
 import prisma from "../../lib/prisma";
 import { revalidatePath } from "next/cache";
 
-export async function getNotes() {
+export async function getNotes(accountId?: number) {
   try {
+    const where: any = {
+      is_deleted: false,
+    };
+    if (accountId !== undefined) {
+      where.accountId = accountId;
+    }
     const notes = await (prisma as any).notes.findMany({
-      where: {
-        is_deleted: false,
-      },
+      where,
       include: {
         accounts: {
           select: {

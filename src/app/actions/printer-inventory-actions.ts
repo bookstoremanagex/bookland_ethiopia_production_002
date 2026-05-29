@@ -60,7 +60,7 @@ export async function transferToPrinter(printerId: number, transfers: { editionI
             }
 
             return transferResults
-        })
+        }, { timeout: 15000 })
 
         revalidatePath(`/admin_dashboard/printing/printers/${printerId}`)
         return { success: true, data: result }
@@ -99,7 +99,7 @@ export async function updatePrinterInventory(id: number, quantity: number, editi
                 where: { id: editionId },
                 data: { count_remening_for_transfer: remaining - diff }
             })
-        ])
+        ], { timeout: 15000 })
 
         const newRemaining = remaining - diff
         revalidatePath(`/admin_dashboard/printing/printers`)
@@ -130,7 +130,7 @@ export async function deletePrinterInventory(id: number, editionId: number) {
                 where: { id: editionId },
                 data: { count_remening_for_transfer: remaining + quantityToReturn }
             })
-        ])
+        ], { timeout: 15000 })
 
         const newRemaining = remaining + quantityToReturn
         revalidatePath(`/admin_dashboard/printing/printers`)

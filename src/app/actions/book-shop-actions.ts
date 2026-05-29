@@ -8,8 +8,13 @@ export async function checkCurrentUserRole(roleName: string) {
   try {
     const session = await getCurrentSession();
     if (!session?.id) return { success: true, enabled: false };
+    if (session.role === "ADMIN") return { success: true, enabled: true };
+    const roleType = await (prisma as any).roletypes.findFirst({
+      where: { rolename: roleName, is_deleted: false },
+    });
+    if (!roleType) return { success: true, enabled: false };
     const role = await (prisma as any).roles.findFirst({
-      where: { accountId: session.id, role_name: roleName, is_deleted: false },
+      where: { accountId: session.id, roletypeId: roleType.id, is_deleted: false },
     });
     return { success: true, enabled: role?.role_status === true };
   } catch (error) {
@@ -30,6 +35,11 @@ export async function getBookShops() {
 }
 
 export async function createBookShop(data: { name: string, location: string, branch?: string, phone?: string, email?: string }) {
+    const permission = await checkCurrentUserRole("Adding BookShop");
+    if (!permission.enabled) {
+        return { success: false, error: "You do not have the privilege to add book shops." };
+    }
+
     try {
         const shop = await (prisma as any).bookshopes.create({
             data: {
@@ -49,6 +59,11 @@ export async function createBookShop(data: { name: string, location: string, bra
 }
 
 export async function updateBookShop(id: number, data: any) {
+    const permission = await checkCurrentUserRole("Editing BookShops");
+    if (!permission.enabled) {
+        return { success: false, error: "You do not have the privilege to edit book shops." };
+    }
+
     try {
         const updated = await (prisma as any).bookshopes.update({
             where: { id },
@@ -69,6 +84,11 @@ export async function updateBookShop(id: number, data: any) {
 }
 
 export async function deleteBookShop(id: number) {
+    const permission = await checkCurrentUserRole("Deleting BookShops");
+    if (!permission.enabled) {
+        return { success: false, error: "You do not have the privilege to delete book shops." };
+    }
+
     try {
         await (prisma as any).bookshopes.update({
             where: { id },

@@ -1,10 +1,12 @@
 import { getAllOrders } from "@/app/actions/order-actions";
+import { getCurrentSession } from "@/app/actions/auth-actions";
 import ManageOrdersPageContent from "./ManageOrdersPageContent";
 import { ShoppingBag } from "lucide-react";
 
 export default async function ManageOrdersPage() {
     const res = await getAllOrders();
     const orders = res.success ? res.data || [] : [];
+    const session = await getCurrentSession();
 
     return (
         <>
@@ -14,7 +16,7 @@ export default async function ManageOrdersPage() {
                     <p className="text-muted-foreground font-bold">{(res as any).error}</p>
                 </div>
             )}
-            <ManageOrdersPageContent orders={orders as any} />
+            <ManageOrdersPageContent orders={orders as any} userRole={session?.role} />
         </>
     );
 }

@@ -57,7 +57,7 @@ export default function AddAccountPage() {
             <ArrowLeft className="size-4 mr-2" />
             Back to Accounts
           </Link>
-          <h1 className="text-3xl sm:text-4xl font-black text-gray-800 tracking-tight">Add New Account</h1>
+          <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Add New Account</h1>
           <p className="text-sm sm:text-base text-gray-500 font-medium">Create a new system user and assign their role.</p>
         </div>
       </div>
@@ -134,6 +134,7 @@ export default function AddAccountPage() {
                   <option value="Sales Staff">Sales Staff</option>
                   <option value="Retail Manager">Retail Manager</option>
                   <option value="Delivery and Sales Management">Delivery and Sales Management</option>
+                  <option value="Delivery Sample">Delivery Sample</option>
                   <option value="Printer">Printer</option>
                   <option value="Viewer">Viewer</option>
                 </select>

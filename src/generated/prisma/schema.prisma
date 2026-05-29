@@ -32,7 +32,7 @@ model accounts {
 }
 
 model bookedition {
-  id                          Int                   @id @default(autoincrement())
+  id                          Int                     @id @default(autoincrement())
   edition_name                String
   selling_price               Float?
   production_price            Float?
@@ -46,14 +46,14 @@ model bookedition {
   book_id                     Int?
   number_of_pages             Int?
   bookId                      Int
-  is_deleted                  Boolean               @default(false)
+  is_deleted                  Boolean                 @default(false)
   updatedAt                   DateTime
-  createdAt                   DateTime              @default(now())
-  deletedAt                   DateTime              @default(now())
+  createdAt                   DateTime                @default(now())
+  deletedAt                   DateTime                @default(now())
   editing_cost                Float?
   other_expenses              Float?
   transportation_cost         Float?
-  count_remening_for_transfer Int?                  @default(0)
+  count_remening_for_transfer Int?                    @default(0)
   translator_cost             Float?
   cover_design_cost           Float?
   text_design_cost            Float?
@@ -63,12 +63,13 @@ model bookedition {
   distribution_cost           Float?
   advertisement_cost          Float?
   purchasing_right_cost       Float?
-  books                       books                 @relation(fields: [bookId], references: [id], map: "BookEdition_bookId_fkey")
+  books                       books                   @relation(fields: [bookId], references: [id], map: "BookEdition_bookId_fkey")
   bookeditionstores           bookeditionstores[]
   bookeditionprinters         bookeditionprinters[]
   bookshopeditions            bookshopeditions[]
   damagedbooks                damagedbooks[]
   order_items                 order_items[]
+  retail_purchase_items       retail_purchase_items[]
   printorder_items            printorder_items[]
 
   @@index([bookId], map: "BookEdition_bookId_fkey")
@@ -107,42 +108,43 @@ model bookeditionprinters {
 }
 
 model books {
-  id                         Int                     @id @default(autoincrement())
-  unique_identification_code String                  @unique(map: "Books_unique_identification_code_key")
-  isbn                       String?
-  title                      String
-  author                     String?
-  translator                 String?
-  designer                   String?
-  language                   String?
-  edition                    String?
-  category                   String?
-  publication_year           String
-  print_batch_id             String?
-  book_sku                   String                  @unique(map: "Books_book_sku_key")
-  number_of_pages            Int?
-  info                       String?
-  book_image_url             String?
-  status                     String                  @default("available")
-  is_deleted                 Boolean                 @default(false)
-  updatedAt                  DateTime
-  createdAt                  DateTime                @default(now())
-  deletedAt                  DateTime                @default(now())
-  productionstatus           books_productionstatus? @default(ON_PRODUCTION)
-  default_edition_id         String?
-  pen_name                   String?
-  translator_cost            Float?
-  cover_design_cost          Float?
-  text_design_cost           Float?
-  editor_cost                Float?
-  typewriting_cost           Float?
-  store_cost                 Float?
-  distribution_cost          Float?
-  advertisement_cost         Float?
-  purchasing_right_cost      Float?
-  bookedition                bookedition[]
-  damagedbooks               damagedbooks[]
-  translatorbook             translatorbook[]
+  id                            Int                     @id @default(autoincrement())
+  unique_identification_code    String                  @unique(map: "Books_unique_identification_code_key")
+  isbn                          String?
+  title                         String
+  author                        String?
+  translator                    String?
+  designer                      String?
+  language                      String?
+  edition                       String?
+  category                      String?
+  publication_year              String
+  copyright_registration_number String?
+  print_batch_id                String?
+  book_sku                      String                  @unique(map: "Books_book_sku_key")
+  number_of_pages               Int?
+  info                          String?
+  book_image_url                String?
+  status                        String                  @default("available")
+  is_deleted                    Boolean                 @default(false)
+  updatedAt                     DateTime
+  createdAt                     DateTime                @default(now())
+  deletedAt                     DateTime                @default(now())
+  productionstatus              books_productionstatus? @default(ON_PRODUCTION)
+  default_edition_id            String?
+  pen_name                      String?
+  translator_cost               Float?
+  cover_design_cost             Float?
+  text_design_cost              Float?
+  editor_cost                   Float?
+  typewriting_cost              Float?
+  store_cost                    Float?
+  distribution_cost             Float?
+  advertisement_cost            Float?
+  purchasing_right_cost         Float?
+  bookedition                   bookedition[]
+  damagedbooks                  damagedbooks[]
+  translatorbook                translatorbook[]
 
   @@index([book_sku], map: "Books_book_sku_idx")
   @@index([unique_identification_code], map: "Books_unique_identification_code_idx")
@@ -186,19 +188,25 @@ model bookshopes {
 }
 
 model orders {
-  id           Int           @id @default(autoincrement())
-  bookShopId   Int
-  order_type   String // "requested" or "on round"
-  memo         String?       @db.Text
-  is_approved  Boolean       @default(false)
-  total_amount Float         @default(0)
-  amount_paid  Float         @default(0)
-  status       String        @default("Pending")
-  is_deleted   Boolean       @default(false)
-  updatedAt    DateTime      @updatedAt
-  createdAt    DateTime      @default(now())
-  bookshopes   bookshopes    @relation(fields: [bookShopId], references: [id], onDelete: Cascade)
-  order_items  order_items[]
+  id                 Int           @id @default(autoincrement())
+  bookShopId         Int
+  order_type         String // "requested" or "on round"
+  memo               String?       @db.Text
+  is_approved        Boolean       @default(false)
+  total_amount       Float         @default(0)
+  amount_paid        Float         @default(0)
+  payment_type       String?       @default("DIRECT") // "DIRECT" | "CHECK"
+  check_id           Int?
+  status             String        @default("Pending")
+  is_deleted         Boolean       @default(false)
+  allocation_summary String?       @db.Text
+  delivery           Boolean       @default(false)
+  delivered_by       Int?
+  updatedAt          DateTime      @updatedAt
+  createdAt          DateTime      @default(now())
+  bookshopes         bookshopes    @relation(fields: [bookShopId], references: [id], onDelete: Cascade)
+  checks             checks?       @relation(fields: [check_id], references: [id])
+  order_items        order_items[]
 }
 
 model order_items {
@@ -244,6 +252,38 @@ model dashboardmenu {
   menus     String   @db.LongText
   updatedAt DateTime
   createdAt DateTime @default(now())
+}
+
+model menus {
+  id         Int      @id @default(autoincrement())
+  name       String   @unique
+  parentId   Int?
+  order      Int      @default(0)
+  is_deleted Boolean  @default(false)
+  updatedAt  DateTime
+  createdAt  DateTime @default(now())
+  deletedAt  DateTime @default(now())
+
+  parent          menus?            @relation("MenuHierarchy", fields: [parentId], references: [id])
+  children        menus[]           @relation("MenuHierarchy")
+  menu_management menu_management[]
+
+  @@index([parentId])
+}
+
+model menu_management {
+  id           Int      @id @default(autoincrement())
+  account_type String
+  menuId       Int
+  is_deleted   Boolean  @default(false)
+  updatedAt    DateTime
+  createdAt    DateTime @default(now())
+  deletedAt    DateTime @default(now())
+
+  menus menus @relation(fields: [menuId], references: [id], onDelete: Cascade)
+
+  @@unique([account_type, menuId])
+  @@index([account_type])
 }
 
 model printer {
@@ -317,18 +357,33 @@ model printorder_items {
   @@index([bookEditionId])
 }
 
-model roles {
+model roletypes {
   id          Int      @id @default(autoincrement())
-  role_status Boolean  @default(false)
-  role_name   String
-  accountId   Int
+  rolename    String   @unique
+  role_detail String?
   is_deleted  Boolean  @default(false)
   updatedAt   DateTime
   createdAt   DateTime @default(now())
   deletedAt   DateTime @default(now())
-  accounts    accounts @relation(fields: [accountId], references: [id], onDelete: Cascade, map: "Roles_accountId_fkey")
+  roles       roles[]
+
+  @@index([rolename])
+}
+
+model roles {
+  id          Int       @id @default(autoincrement())
+  role_status Boolean   @default(false)
+  accountId   Int
+  roletypeId  Int
+  is_deleted  Boolean   @default(false)
+  updatedAt   DateTime
+  createdAt   DateTime  @default(now())
+  deletedAt   DateTime  @default(now())
+  accounts    accounts  @relation(fields: [accountId], references: [id], onDelete: Cascade, map: "Roles_accountId_fkey")
+  roletypes   roletypes @relation(fields: [roletypeId], references: [id], onDelete: Cascade, map: "Roles_roletypeId_fkey")
 
   @@index([accountId], map: "Roles_accountId_fkey")
+  @@index([roletypeId], map: "Roles_roletypeId_fkey")
 }
 
 model stores {
@@ -503,10 +558,13 @@ model approval_documents {
 }
 
 model settings {
-  id           Int      @id @default(autoincrement())
-  primaryColor String   @default("#408A71")
-  updatedAt    DateTime @default(now())
-  createdAt    DateTime @default(now())
+  id             Int      @id @default(autoincrement())
+  primaryColor   String   @default("#408A71")
+  badgeColor     String   @default("#059669")
+  toastBgColor   String   @default("#FFFFFF")
+  toastTextColor String   @default("#1E293B")
+  updatedAt      DateTime @default(now())
+  createdAt      DateTime @default(now())
 }
 
 model checks {
@@ -517,12 +575,14 @@ model checks {
   amount       String?
   recordeddate DateTime?
   memo         String?
+  imageUrl     String?      @db.Text
   status       check_status @default(PENDING)
   is_deleted   Boolean      @default(false)
   deletedAt    DateTime     @default(now())
   updatedAt    DateTime     @default(now())
   createdAt    DateTime     @default(now())
   payments     payments[]
+  orders       orders[]
 }
 
 model payments {
@@ -539,6 +599,45 @@ model payments {
 
   shop  bookshopes @relation(fields: [shopId], references: [id])
   check checks?    @relation(fields: [checkId], references: [id])
+}
+
+enum retail_purchase_status {
+  PENDING
+  APPROVED
+  PARTIALLY_PAID
+  PAID
+}
+
+model retail_purchases {
+  id           Int                    @id @default(autoincrement())
+  name         String?
+  date         DateTime?
+  total_amount Float?
+  amount_paid  Float?                 @default(0)
+  status       retail_purchase_status @default(PENDING)
+  memo         String?                @db.Text
+  created_by   Int?
+  is_deleted   Boolean                @default(false)
+  updatedAt    DateTime               @default(now())
+  createdAt    DateTime               @default(now())
+  deletedAt    DateTime               @default(now())
+
+  items retail_purchase_items[]
+}
+
+model retail_purchase_items {
+  id          Int     @id @default(autoincrement())
+  purchase_id Int
+  edition_id  Int
+  quantity    Int?
+  unit_price  Float?
+  is_deleted  Boolean @default(false)
+
+  purchase retail_purchases @relation(fields: [purchase_id], references: [id], onDelete: Cascade)
+  edition  bookedition      @relation(fields: [edition_id], references: [id])
+
+  @@index([purchase_id])
+  @@index([edition_id])
 }
 
 enum check_types {

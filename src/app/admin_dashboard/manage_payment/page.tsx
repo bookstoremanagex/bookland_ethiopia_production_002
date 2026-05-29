@@ -36,7 +36,7 @@ export default async function ManagePaymentPage() {
             <div className="space-y-2">
                 <div className="flex items-center gap-3 text-primarycolor">
                     <BadgeDollarSign className="size-6" />
-                    <h1 className="text-2xl md:text-3xl font-black uppercase tracking-tighter italic">
+                    <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
                         Manage <span className="text-secondarycolor not-italic">Payment</span>
                     </h1>
                 </div>

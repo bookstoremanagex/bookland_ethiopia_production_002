@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { translationProjectSchema, type TranslationProjectFormValues } from "../../lib/validation/translation-project-schema";
 import { createTranslationProject } from "../../app/actions/translation-project-actions";
 import { Button } from "../ui/button";
-import { Input } from "../ui/input";
+import { DateInput } from "../ui/date-input";
 import { cn } from "../../lib/utils";
 import { toast } from "sonner";
 import Link from "next/link";
@@ -25,7 +25,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "../../components/ui/popover";
-import { ArrowLeft, BookOpen, Calendar, Check, ChevronsUpDown, Clock, PenTool, Plus, User } from "lucide-react";
+import { ArrowLeft, Banknote, BookOpen, Calendar, Check, ChevronsUpDown, Clock, PenTool, Plus, User } from "lucide-react";
 
 interface NewTranslationProjectFormProps {
   books: { id: number; title: string; unique_identification_code: string }[];
@@ -55,6 +55,9 @@ export function NewTranslationProjectForm({ books, translators }: NewTranslation
       bookId: prefillBookId ? Number(books.find(b => b.unique_identification_code === prefillBookId)?.id) : undefined,
       translator_id: prefillTranslatorId ? Number(prefillTranslatorId) : undefined,
       Status: "NOT_STARTED",
+      cost: undefined,
+      payment_status: "PENDING",
+      currently_paid: 0,
       startDate: "",
       endDate: "",
     },
@@ -254,6 +257,56 @@ export function NewTranslationProjectForm({ books, translators }: NewTranslation
             </select>
           </div>
 
+          {/* Cost */}
+          <div className="space-y-3">
+            <label className="text-sm font-black text-secondarycolor uppercase tracking-widest ml-1 flex items-center gap-2">
+              <Banknote className="size-4 text-primarycolor" />
+              Cost (ETB)
+            </label>
+            <input
+              type="number"
+              step="0.01"
+              min="0"
+              {...register("cost")}
+              placeholder="0.00"
+              className="w-full h-14 px-6 bg-background/50 border-2 border-primarycolor/10 focus:border-primarycolor rounded-2xl outline-none transition-all font-bold"
+            />
+            {errors.cost && <p className="text-xs font-bold text-destructive ml-1">{errors.cost.message}</p>}
+          </div>
+
+          {/* Payment Status */}
+          <div className="space-y-3">
+            <label className="text-sm font-black text-secondarycolor uppercase tracking-widest ml-1 flex items-center gap-2">
+              <Clock className="size-4 text-primarycolor" />
+              Payment Status
+            </label>
+            <select
+              {...register("payment_status")}
+              className="w-full h-14 px-6 bg-background/50 border-2 border-primarycolor/10 focus:border-primarycolor rounded-2xl outline-none transition-all font-bold appearance-none cursor-pointer hover:bg-background"
+            >
+              <option value="PENDING">Pending</option>
+              <option value="CURRENTLY_PAID">Currently Paid</option>
+              <option value="SUCCEEDED">Succeeded</option>
+            </select>
+          </div>
+
+          {/* Currently Paid */}
+          <div className="space-y-3">
+            <label className="text-sm font-black text-secondarycolor uppercase tracking-widest ml-1 flex items-center gap-2">
+              <Banknote className="size-4 text-primarycolor" />
+              Amount Paid (ETB)
+            </label>
+            <input
+              type="number"
+              step="0.01"
+              min="0"
+              {...register("currently_paid")}
+              placeholder="0.00"
+              className="w-full h-14 px-6 bg-background/50 border-2 border-primarycolor/10 focus:border-primarycolor rounded-2xl outline-none transition-all font-bold"
+            />
+            {errors.currently_paid && <p className="text-xs font-bold text-destructive ml-1">{errors.currently_paid.message}</p>}
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 col-span-1 md:col-span-2 pt-4 border-t-2 border-primarycolor/5">
             {/* Start Date */}
             <div className="space-y-3">
@@ -261,9 +314,9 @@ export function NewTranslationProjectForm({ books, translators }: NewTranslation
                 <Calendar className="size-4 text-primarycolor" />
                 Start Date
               </label>
-              <Input
-                type="date"
+              <DateInput
                 {...register("startDate")}
+                value={watch("startDate") ?? ""}
                 className="h-14 px-6 bg-background/50 border-primarycolor/10 focus:border-primarycolor rounded-2xl font-bold"
               />
             </div>
@@ -274,9 +327,9 @@ export function NewTranslationProjectForm({ books, translators }: NewTranslation
                 <Calendar className="size-4 text-secondarycolor" />
                 Target Deadline
               </label>
-              <Input
-                type="date"
+              <DateInput
                 {...register("endDate")}
+                value={watch("endDate") ?? ""}
                 className="h-14 px-6 bg-background/50 border-primarycolor/10 focus:border-primarycolor rounded-2xl font-bold"
               />
             </div>

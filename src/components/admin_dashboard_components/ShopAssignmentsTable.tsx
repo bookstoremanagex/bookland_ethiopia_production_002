@@ -12,7 +12,6 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-  RowData,
 } from "@tanstack/react-table";
 import {
   Search,
@@ -42,7 +41,7 @@ import {
   TableRow,
 } from "../ui/table";
 import { cn } from "../../lib/utils";
-import { format } from "date-fns";
+import { useCalendar } from "@/lib/calendar-context";
 
 declare module "@tanstack/react-table" {
   interface TableMeta<TData> {
@@ -87,7 +86,7 @@ const DetailsCell = ({ id }: { id: number }) => {
   );
 };
 
-export const columns: ColumnDef<ShopAssignment>[] = [
+const useColumns = (formatDate: (date: Date) => string): ColumnDef<ShopAssignment>[] => [
   {
     accessorKey: "bookedition.books.title",
     header: ({ column }) => {
@@ -211,7 +210,7 @@ export const columns: ColumnDef<ShopAssignment>[] = [
       <div className="flex items-center gap-2 text-muted-foreground">
         <Calendar className="size-3.5" />
         <span className="font-bold text-[10px]">
-          {format(new Date(row.getValue("createdAt")), "MMM dd, yyyy")}
+          {formatDate(new Date(row.getValue("createdAt")))}
         </span>
       </div>
     ),
@@ -232,6 +231,8 @@ export function ShopAssignmentsTable({ data }: ShopAssignmentsTableProps) {
   const router = useRouter();
   const dashboardRoot = pathname.split("/").slice(0, 2).join("/");
   const [sorting, setSorting] = React.useState<SortingState>([]);
+  const { formatDate } = useCalendar();
+  const columns = React.useMemo(() => useColumns(formatDate), [formatDate]);
   const [assignmentEdits, setAssignmentEdits] = React.useState<
     Record<number, string>
   >({});
@@ -459,7 +460,7 @@ export function ShopAssignmentsTable({ data }: ShopAssignmentsTableProps) {
                 <div className="flex items-center gap-2 text-[9px] font-bold text-muted-foreground pt-2">
                   <Calendar className="size-3" />
                   Assigned{" "}
-                  {format(new Date(assignment.createdAt), "MMM dd, yyyy")}
+                  {formatDate(new Date(assignment.createdAt))}
                 </div>
               </div>
             );

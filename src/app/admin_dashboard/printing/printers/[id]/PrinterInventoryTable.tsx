@@ -258,7 +258,8 @@ export function PrinterInventoryTable({ data }: { data: InventoryItem[] }) {
         />
       </div>
 
-      <div className="bg-white rounded-[2rem] border-2 border-slate-100 shadow-xl overflow-hidden transition-all hover:border-primarycolor/10">
+      {/* Desktop Table */}
+      <div className="hidden md:block bg-white rounded-[2rem] border-2 border-slate-100 shadow-xl overflow-hidden transition-all hover:border-primarycolor/10">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader className="bg-slate-50/50">
@@ -322,6 +323,77 @@ export function PrinterInventoryTable({ data }: { data: InventoryItem[] }) {
             </Button>
           </div>
         </div>
+      </div>
+
+      {/* Mobile Cards */}
+      <div className="grid grid-cols-1 gap-4 md:hidden">
+        {table.getRowModel().rows?.length ? (
+          table.getRowModel().rows.map((row) => {
+            const item = row.original
+            const quantity = item.quantity
+            return (
+              <div
+                key={item.id}
+                className="bg-white rounded-2xl border-2 border-slate-100 p-5 space-y-4 hover:shadow-md transition-all"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="size-10 rounded-xl bg-primarycolor/10 flex items-center justify-center text-primarycolor shrink-0">
+                      <BookOpen className="size-5" />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="font-black text-primarycolor text-sm leading-tight truncate">
+                        {item.bookedition.books.title}
+                      </div>
+                      <div className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest truncate">
+                        {item.bookedition.edition_name}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleEditClick(item)}
+                      className="h-8 w-8 p-0 text-primarycolor hover:bg-primarycolor/10 rounded-lg"
+                    >
+                      <Edit2 className="size-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleDeleteClick(item)}
+                      className="h-8 w-8 p-0 text-rose-500 hover:bg-rose-50 rounded-lg"
+                    >
+                      <Trash2 className="size-4" />
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <div
+                    className={cn(
+                      "px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-2",
+                      quantity > 10
+                        ? "bg-emerald-100 text-emerald-700"
+                        : quantity > 0
+                          ? "bg-amber-100 text-amber-700"
+                          : "bg-rose-100 text-rose-700",
+                    )}
+                  >
+                    <Package className="size-3" />
+                    {quantity.toLocaleString()} Units
+                  </div>
+                </div>
+              </div>
+            )
+          })
+        ) : (
+          <div className="py-16 text-center space-y-4 opacity-30">
+            <Package className="size-12 mx-auto" />
+            <p className="text-sm font-black uppercase tracking-widest">No inventory records</p>
+          </div>
+        )}
       </div>
 
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditModalOpen}>

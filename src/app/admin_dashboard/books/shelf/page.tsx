@@ -9,7 +9,7 @@ export default async function BookShelfPage() {
     return (
         <div className="w-full py-10 px-4 md:px-8 max-w-[1600px] mx-auto">
             <div className="mb-10 space-y-2 text-center md:text-left">
-                <h1 className="text-4xl md:text-5xl font-black tracking-tight text-primarycolor uppercase italic">Book <span className="text-secondarycolor not-italic">Shelf</span></h1>
+                <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Book <span className="text-secondarycolor not-italic">Shelf</span></h1>
                 <p className="text-muted-foreground font-bold tracking-tight">Browse your collection visually with high-resolution covers and quick access.</p>
             </div>
 

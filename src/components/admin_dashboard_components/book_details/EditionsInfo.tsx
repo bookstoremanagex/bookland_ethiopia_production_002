@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { useEditionsStore } from "../../../store/use-editions-store";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -21,9 +22,17 @@ import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
 import { cn } from "../../../lib/utils";
 import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "../../ui/sheet";
+import {
   createEdition,
   deleteEdition,
 } from "../../../app/actions/edition-actions";
+import { getAllStores, batchAssignEditionToStores } from "../../../app/actions/store-inventory-actions";
 import { toast } from "sonner";
 
 interface EditionsInfoProps {
@@ -33,8 +42,29 @@ interface EditionsInfoProps {
 export default function EditionsInfo({ book }: EditionsInfoProps) {
   const pathname = usePathname();
   const dashboardRoot = pathname.split("/").slice(0, 2).join("/");
+  const editions = useEditionsStore((s) => s.editions);
+  const setEditions = useEditionsStore((s) => s.setEditions);
+  const addEdition = useEditionsStore((s) => s.addEdition);
+  const removeEdition = useEditionsStore((s) => s.removeEdition);
+
+  const initialized = useRef(false);
+  if (!initialized.current && book.bookedition) {
+    setEditions(book.bookedition);
+    initialized.current = true;
+  }
+
+  useEffect(() => {
+    if (book.bookedition) setEditions(book.bookedition);
+  }, [book.bookedition]);
+
   const [isAdding, setIsAdding] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [sheetEdition, setSheetEdition] = useState<any | null>(null);
+  const [sheetStep, setSheetStep] = useState(1);
+  const [allStores, setAllStores] = useState<any[]>([]);
+  const [selectedStoreIds, setSelectedStoreIds] = useState<number[]>([]);
+  const [storeQuantities, setStoreQuantities] = useState<Record<number, string>>({});
+  const [isSheetLoading, setIsSheetLoading] = useState(false);
   const [formData, setFormData] = useState({
     edition_name: "",
     selling_price: "",
@@ -72,6 +102,7 @@ export default function EditionsInfo({ book }: EditionsInfoProps) {
       });
       if (response.success) {
         toast.success("Edition added successfully");
+        addEdition(response.data);
         setIsAdding(false);
         setFormData({
           edition_name: "",
@@ -115,6 +146,7 @@ export default function EditionsInfo({ book }: EditionsInfoProps) {
       const response = await deleteEdition(id, book.unique_identification_code);
       if (response.success) {
         toast.success("Edition deleted");
+        removeEdition(id);
       } else {
         toast.error(response.error || "Failed to delete");
       }
@@ -171,8 +203,8 @@ export default function EditionsInfo({ book }: EditionsInfoProps) {
               </tr>
             </thead>
             <tbody className="divide-y divide-primarycolor/5">
-              {book.bookedition && book.bookedition.length > 0 ? (
-                book.bookedition.map((edition: any) => (
+              {editions.length > 0 ? (
+                editions.map((edition: any) => (
                   <tr
                     key={edition.id}
                     className="group hover:bg-primarycolor/2 transition-colors"
@@ -240,17 +272,37 @@ export default function EditionsInfo({ book }: EditionsInfoProps) {
                       </div>
                     </td>
                     <td className="p-6 text-right">
-                      <Button
-                        asChild
-                        variant="outline"
-                        className="h-12 px-6 border-2 rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-primarycolor hover:text-white transition-all shadow-sm"
-                      >
-                        <Link
-                          href={`${dashboardRoot}/books/editions/${edition.id}`}
+                      <div className="flex flex-col items-end gap-2">
+                        <Button
+                          asChild
+                          variant="outline"
+                          className="h-10 px-5 border-2 rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-primarycolor hover:text-white transition-all shadow-sm"
                         >
-                          View Details
-                        </Link>
-                      </Button>
+                          <Link
+                            href={`${dashboardRoot}/books/editions/${edition.id}`}
+                          >
+                            View Details
+                          </Link>
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          onClick={async () => {
+                            setSheetEdition(edition);
+                            setSheetStep(1);
+                            setSelectedStoreIds([]);
+                            setStoreQuantities({});
+                            setIsSheetLoading(true);
+                            const res = await getAllStores();
+                            if (res.success) {
+                              setAllStores(res.data);
+                            }
+                            setIsSheetLoading(false);
+                          }}
+                          className="h-9 px-4 rounded-xl font-black uppercase tracking-widest text-[9px] text-secondarycolor hover:bg-secondarycolor/10 border-2 border-secondarycolor/10 hover:border-secondarycolor/20 transition-all"
+                        >
+                          Add to
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -397,18 +449,7 @@ export default function EditionsInfo({ book }: EditionsInfoProps) {
                         <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Design</label>
                         <Input type="number" step="0.01" value={formData.design_cost} onChange={(e) => setFormData({ ...formData, design_cost: e.target.value })} className="h-11 px-4 rounded-xl border-2 font-bold text-sm" />
                       </div>
-                      <div className="space-y-1.5">
-                        <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Editing</label>
-                        <Input type="number" step="0.01" value={formData.editing_cost} onChange={(e) => setFormData({ ...formData, editing_cost: e.target.value })} className="h-11 px-4 rounded-xl border-2 font-bold text-sm" />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Transport</label>
-                        <Input type="number" step="0.01" value={formData.transportation_cost} onChange={(e) => setFormData({ ...formData, transportation_cost: e.target.value })} className="h-11 px-4 rounded-xl border-2 font-bold text-sm" />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Translation</label>
-                        <Input type="number" step="0.01" value={formData.translation_cost} onChange={(e) => setFormData({ ...formData, translation_cost: e.target.value })} className="h-11 px-4 rounded-xl border-2 font-bold text-sm" />
-                      </div>
+
                       <div className="space-y-1.5 col-span-2">
                         <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Other Expenses</label>
                         <Input type="number" step="0.01" value={formData.other_expenses} onChange={(e) => setFormData({ ...formData, other_expenses: e.target.value })} className="h-11 px-4 rounded-xl border-2 font-bold text-sm" />
@@ -465,24 +506,6 @@ export default function EditionsInfo({ book }: EditionsInfoProps) {
                 </div>
 
                 <div className="space-y-6">
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">
-                      Print Count <span className="text-destructive">*</span>
-                    </label>
-                    <Input
-                      required
-                      type="number"
-                      value={formData.total_print_count}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          total_print_count: e.target.value,
-                        })
-                      }
-                      className="h-14 px-6 rounded-2xl border-2 font-bold"
-                    />
-                  </div>
-
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">
@@ -561,6 +584,278 @@ export default function EditionsInfo({ book }: EditionsInfoProps) {
           </div>
         </div>
       )}
+
+      {/* Sheet for Add-to-store */}
+      <Sheet open={!!sheetEdition} onOpenChange={(open) => { if (!open) { setSheetEdition(null); setSheetStep(1); setSelectedStoreIds([]); setStoreQuantities({}); } }}>
+        <SheetContent side="right" className="w-full sm:max-w-lg border-l-2 border-primarycolor/10 p-0 flex flex-col">
+          <SheetHeader className="p-6 pb-4 border-b border-primarycolor/5 shrink-0">
+            <div className="flex items-center gap-4">
+              {sheetStep === 2 && (
+                <button
+                  onClick={() => { setSheetStep(1); setStoreQuantities({}); }}
+                  className="size-8 rounded-lg border-2 border-primarycolor/10 hover:bg-primarycolor/5 flex items-center justify-center text-primarycolor font-black text-lg transition-all cursor-pointer shrink-0"
+                >
+                  ←
+                </button>
+              )}
+              <div>
+                <SheetTitle className="text-lg font-black text-primarycolor uppercase tracking-tight">
+                  {sheetStep === 1 ? "Select" : "Assign to"}{" "}
+                  <span className="text-secondarycolor">Stores</span>
+                </SheetTitle>
+                <SheetDescription className="text-xs font-bold text-muted-foreground">
+                  {sheetEdition?.edition_name}
+                </SheetDescription>
+              </div>
+            </div>
+          </SheetHeader>
+
+          <div className="flex-1 overflow-y-auto p-6">
+            {isSheetLoading ? (
+              <div className="flex items-center justify-center py-20">
+                <div className="size-8 border-4 border-primarycolor/20 border-t-primarycolor rounded-full animate-spin" />
+              </div>
+            ) : sheetStep === 1 ? (
+              /* Step 1: Select stores */
+              <div className="space-y-3">
+                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-4">
+                  Choose stores to receive inventory
+                </p>
+                                  {allStores.map((store) => {
+                  const existing = sheetEdition?.bookeditionstores?.find(
+                    (bes: any) => bes.storeId === store.id && !bes.is_deleted
+                  );
+                  const alreadyAssigned = !!existing;
+                  const checked = selectedStoreIds.includes(store.id);
+                  return (
+                    <label
+                      key={store.id}
+                      className={cn(
+                        "flex items-center gap-4 p-4 rounded-2xl border-2 transition-all cursor-pointer",
+                        checked
+                          ? "border-primarycolor bg-primarycolor/5"
+                          : "border-primarycolor/10 hover:border-primarycolor/30"
+                      )}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        onChange={() => {
+                          setSelectedStoreIds((prev) => {
+                            if (checked) return prev.filter((id) => id !== store.id);
+                            return [...prev, store.id];
+                          });
+                          if (!checked && alreadyAssigned) {
+                            setStoreQuantities((prev) => ({
+                              ...prev,
+                              [store.id]: String(existing.quantity ?? 0),
+                            }));
+                          } else if (checked) {
+                            setStoreQuantities((prev) => {
+                              const next = { ...prev };
+                              delete next[store.id];
+                              return next;
+                            });
+                          }
+                        }}
+                        className="size-5 accent-primarycolor rounded-lg"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className="font-black text-sm text-primarycolor truncate">
+                          {store.name}
+                        </div>
+                        <div className="text-[10px] font-bold text-muted-foreground truncate">
+                          {store.location}
+                        </div>
+                      </div>
+                      {alreadyAssigned && (
+                        <span className="text-[8px] font-black uppercase tracking-widest text-secondarycolor/60 shrink-0 bg-secondarycolor/5 px-2 py-1 rounded-lg">
+                          Update ({existing.quantity ?? 0})
+                        </span>
+                      )}
+                    </label>
+                  );
+                })}
+                {allStores.length === 0 && (
+                  <p className="text-sm font-bold text-center text-muted-foreground py-12">
+                    No stores available
+                  </p>
+                )}
+              </div>
+            ) : (
+              /* Step 2: Enter quantities */
+              <div className="space-y-6">
+                <div className="bg-secondarycolor/5 p-4 rounded-2xl border-2 border-secondarycolor/10 space-y-1">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                    Remaining for Transfer
+                  </p>
+                  <p className="text-3xl font-black text-secondarycolor tabular-nums">
+                    {Number(sheetEdition?.count_remening_for_transfer || 0).toLocaleString()}{" "}
+                    <span className="text-sm font-bold text-muted-foreground">units</span>
+                  </p>
+                </div>
+
+                <div className="space-y-3">
+                  {selectedStoreIds.map((storeId) => {
+                    const store = allStores.find((s) => s.id === storeId);
+                    const existing = sheetEdition?.bookeditionstores?.find(
+                      (bes: any) => bes.storeId === storeId && !bes.is_deleted
+                    );
+                    const currentQty = existing ? Number(existing.quantity || 0) : 0;
+                    return (
+                      <div
+                        key={storeId}
+                        className="flex items-center gap-4 p-4 rounded-2xl border-2 border-primarycolor/10"
+                      >
+                        <div className="flex-1 min-w-0">
+                          <div className="font-black text-sm text-primarycolor truncate">
+                            {store?.name || `Store #${storeId}`}
+                          </div>
+                          <div className="text-[10px] font-bold text-muted-foreground truncate">
+                            {store?.location}
+                          </div>
+                          {existing && (
+                            <div className="text-[9px] font-bold text-secondarycolor/60 mt-1">
+                              Currently: {currentQty.toLocaleString()} units
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="number"
+                            min={0}
+                            placeholder="Qty"
+                            value={storeQuantities[storeId] ?? (existing ? String(currentQty) : "")}
+                            onChange={(e) =>
+                              setStoreQuantities((prev) => ({
+                                ...prev,
+                                [storeId]: e.target.value,
+                              }))
+                            }
+                            className="w-24 h-12 text-center rounded-xl border-2 border-primarycolor/10 font-black text-sm outline-none focus:border-primarycolor transition-all"
+                          />
+                          <span className="text-[10px] font-bold text-muted-foreground">
+                            units
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Footer */}
+          <div className="p-6 pt-4 border-t border-primarycolor/5 shrink-0">
+            {sheetStep === 1 ? (
+              <Button
+                onClick={() => {
+                  if (selectedStoreIds.length === 0) {
+                    toast.error("Select at least one store");
+                    return;
+                  }
+                  // Pre-fill quantities for already-assigned stores
+                  setStoreQuantities((prev) => {
+                    const next = { ...prev };
+                    for (const id of selectedStoreIds) {
+                      if (!next[id]) {
+                        const existing = sheetEdition?.bookeditionstores?.find(
+                          (bes: any) => bes.storeId === id && !bes.is_deleted
+                        );
+                        if (existing) {
+                          next[id] = String(existing.quantity ?? 0);
+                        }
+                      }
+                    }
+                    return next;
+                  });
+                  setSheetStep(2);
+                }}
+                disabled={selectedStoreIds.length === 0}
+                className="w-full h-14 rounded-2xl bg-primarycolor hover:bg-secondarycolor font-black uppercase tracking-widest text-xs shadow-xl shadow-primarycolor/20 transition-all"
+              >
+                Next ({selectedStoreIds.length} store{selectedStoreIds.length !== 1 ? "s" : ""})
+              </Button>
+            ) : (
+              <div className="flex flex-col gap-3">
+                {(() => {
+                  const remaining = Number(sheetEdition?.count_remening_for_transfer || 0);
+                  let netDelta = 0;
+                  let totalNew = 0;
+                  for (const id of selectedStoreIds) {
+                    const existing = sheetEdition?.bookeditionstores?.find(
+                      (bes: any) => bes.storeId === id && !bes.is_deleted
+                    );
+                    const oldQty = existing ? Number(existing.quantity || 0) : 0;
+                    const newQty = Number(storeQuantities[id]) || 0;
+                    netDelta += newQty - oldQty;
+                    totalNew += newQty;
+                  }
+                  const hasAny = selectedStoreIds.some((id) => Number(storeQuantities[id]) > 0);
+                  const exceeds = netDelta > remaining;
+                  return (
+                    <>
+                      {(totalNew > 0 || netDelta !== 0) && (
+                        <div className={cn(
+                          "text-center text-xs font-bold px-3 py-2 rounded-xl",
+                          exceeds
+                            ? "bg-rose-50 text-rose-600"
+                            : netDelta > 0
+                              ? "bg-amber-50 text-amber-600"
+                              : "bg-emerald-50 text-emerald-600"
+                        )}>
+                          {exceeds
+                            ? `Net increase (${netDelta.toLocaleString()}) exceeds remaining (${remaining.toLocaleString()})`
+                            : netDelta > 0
+                              ? `Taking ${netDelta.toLocaleString()} of ${remaining.toLocaleString()} remaining units`
+                              : netDelta < 0
+                                ? `Returning ${Math.abs(netDelta).toLocaleString()} units to remaining`
+                                : `${totalNew.toLocaleString()} units allocated`}
+                        </div>
+                      )}
+                      <Button
+                        onClick={async () => {
+                          if (!hasAny) {
+                            toast.error("Enter quantities for selected stores");
+                            return;
+                          }
+                          if (exceeds) {
+                            toast.error("Net increase exceeds remaining for transfer");
+                            return;
+                          }
+                          setIsSheetLoading(true);
+                          const res = await batchAssignEditionToStores({
+                            editionId: sheetEdition.id,
+                            stores: selectedStoreIds.map((storeId) => ({
+                              storeId,
+                              quantity: Number(storeQuantities[storeId]) || 0,
+                            })),
+                          });
+                          setIsSheetLoading(false);
+                          if (res.success) {
+                            toast.success(`Updated ${selectedStoreIds.length} store(s) successfully`);
+                            setSheetEdition(null);
+                            setSheetStep(1);
+                            setSelectedStoreIds([]);
+                            setStoreQuantities({});
+                          } else {
+                            toast.error(res.error || "Failed to assign");
+                          }
+                        }}
+                        disabled={isSheetLoading || !hasAny}
+                        className="w-full h-14 rounded-2xl bg-primarycolor hover:bg-secondarycolor font-black uppercase tracking-widest text-xs shadow-xl shadow-primarycolor/20 transition-all disabled:opacity-40"
+                      >
+                        {isSheetLoading ? "Assigning..." : "Confirm Assignment"}
+                      </Button>
+                    </>
+                  );
+                })()}
+              </div>
+            )}
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }

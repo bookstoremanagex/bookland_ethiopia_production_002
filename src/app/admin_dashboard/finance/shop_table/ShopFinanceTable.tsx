@@ -200,7 +200,8 @@ export default function ShopFinanceTable({ data }: { data: ShopFinanceData[] }) 
         </div>
       </div>
 
-      <div className="bg-white rounded-[2.5rem] border-2 border-primarycolor/5 shadow-2xl overflow-hidden">
+      {/* Desktop Table */}
+      <div className="hidden md:block bg-white rounded-[2.5rem] border-2 border-primarycolor/5 shadow-2xl overflow-hidden">
         <Table>
           <TableHeader className="bg-slate-50/50">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -250,6 +251,72 @@ export default function ShopFinanceTable({ data }: { data: ShopFinanceData[] }) 
             )}
           </TableBody>
         </Table>
+      </div>
+
+      {/* Mobile Cards */}
+      <div className="grid grid-cols-1 gap-4 md:hidden">
+        {table.getRowModel().rows?.length ? (
+          table.getRowModel().rows.map((row) => {
+            const item = row.original
+            const rate = item.collectionRate
+            return (
+              <div key={item.id} className="bg-white rounded-2xl border-2 border-primarycolor/5 p-5 space-y-4 hover:shadow-md transition-all">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                    <div className="size-10 rounded-xl bg-primarycolor/5 flex items-center justify-center shrink-0">
+                      <Building2 className="size-5 text-primarycolor" />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="font-black text-primarycolor uppercase text-sm truncate">{item.name}</div>
+                      <div className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">{item.branch}</div>
+                    </div>
+                  </div>
+                  <Link href={`/admin_dashboard/book_shops/${item.id}`}>
+                    <Button variant="ghost" size="icon" className="rounded-full hover:bg-primarycolor hover:text-white transition-all shrink-0">
+                      <ExternalLink className="size-4" />
+                    </Button>
+                  </Link>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-slate-50 rounded-xl p-3 space-y-0.5">
+                    <p className="text-[8px] font-black uppercase tracking-widest text-muted-foreground">Books</p>
+                    <p className="font-bold text-slate-600">{item.totalBooks.toLocaleString()}</p>
+                  </div>
+                  <div className="bg-slate-50 rounded-xl p-3 space-y-0.5">
+                    <p className="text-[8px] font-black uppercase tracking-widest text-muted-foreground">Gross Value</p>
+                    <p className="font-bold text-slate-900">{item.totalValue.toLocaleString()} <span className="text-[7px] opacity-40">ETB</span></p>
+                  </div>
+                  <div className="bg-emerald-50 rounded-xl p-3 space-y-0.5">
+                    <p className="text-[8px] font-black uppercase tracking-widest text-emerald-600/60">Paid</p>
+                    <p className="font-black text-emerald-600">{item.totalPaid.toLocaleString()} <span className="text-[7px] opacity-50">ETB</span></p>
+                  </div>
+                  <div className="bg-rose-50 rounded-xl p-3 space-y-0.5">
+                    <p className="text-[8px] font-black uppercase tracking-widest text-rose-600/60">Debt</p>
+                    <p className="font-black text-rose-600">{item.totalDebt.toLocaleString()} <span className="text-[7px] opacity-50">ETB</span></p>
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground">Collection Health</span>
+                    <span className={`text-[10px] font-black ${rate > 70 ? 'text-emerald-600' : rate > 30 ? 'text-amber-600' : 'text-rose-600'}`}>{Math.round(rate)}%</span>
+                  </div>
+                  <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
+                    <div
+                      className={`h-full transition-all duration-1000 ${rate > 70 ? 'bg-emerald-500' : rate > 30 ? 'bg-amber-500' : 'bg-rose-500'}`}
+                      style={{ width: `${rate}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
+            )
+          })
+        ) : (
+          <div className="p-16 text-center text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+            No shops found matching your criteria.
+          </div>
+        )}
       </div>
 
       <div className="flex items-center justify-between px-2">

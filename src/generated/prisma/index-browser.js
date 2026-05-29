@@ -202,6 +202,7 @@ exports.Prisma.BooksScalarFieldEnum = {
   edition: 'edition',
   category: 'category',
   publication_year: 'publication_year',
+  copyright_registration_number: 'copyright_registration_number',
   print_batch_id: 'print_batch_id',
   book_sku: 'book_sku',
   number_of_pages: 'number_of_pages',
@@ -263,8 +264,13 @@ exports.Prisma.OrdersScalarFieldEnum = {
   is_approved: 'is_approved',
   total_amount: 'total_amount',
   amount_paid: 'amount_paid',
+  payment_type: 'payment_type',
+  check_id: 'check_id',
   status: 'status',
   is_deleted: 'is_deleted',
+  allocation_summary: 'allocation_summary',
+  delivery: 'delivery',
+  delivered_by: 'delivered_by',
   updatedAt: 'updatedAt',
   createdAt: 'createdAt'
 };
@@ -299,6 +305,27 @@ exports.Prisma.DashboardmenuScalarFieldEnum = {
   menus: 'menus',
   updatedAt: 'updatedAt',
   createdAt: 'createdAt'
+};
+
+exports.Prisma.MenusScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  parentId: 'parentId',
+  order: 'order',
+  is_deleted: 'is_deleted',
+  updatedAt: 'updatedAt',
+  createdAt: 'createdAt',
+  deletedAt: 'deletedAt'
+};
+
+exports.Prisma.Menu_managementScalarFieldEnum = {
+  id: 'id',
+  account_type: 'account_type',
+  menuId: 'menuId',
+  is_deleted: 'is_deleted',
+  updatedAt: 'updatedAt',
+  createdAt: 'createdAt',
+  deletedAt: 'deletedAt'
 };
 
 exports.Prisma.PrinterScalarFieldEnum = {
@@ -354,11 +381,21 @@ exports.Prisma.Printorder_itemsScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.RoletypesScalarFieldEnum = {
+  id: 'id',
+  rolename: 'rolename',
+  role_detail: 'role_detail',
+  is_deleted: 'is_deleted',
+  updatedAt: 'updatedAt',
+  createdAt: 'createdAt',
+  deletedAt: 'deletedAt'
+};
+
 exports.Prisma.RolesScalarFieldEnum = {
   id: 'id',
   role_status: 'role_status',
-  role_name: 'role_name',
   accountId: 'accountId',
+  roletypeId: 'roletypeId',
   is_deleted: 'is_deleted',
   updatedAt: 'updatedAt',
   createdAt: 'createdAt',
@@ -396,6 +433,9 @@ exports.Prisma.TranslatorbookScalarFieldEnum = {
   bookId: 'bookId',
   translator_id: 'translator_id',
   Status: 'Status',
+  cost: 'cost',
+  payment_status: 'payment_status',
+  currently_paid: 'currently_paid',
   startDate: 'startDate',
   endDate: 'endDate',
   is_deleted: 'is_deleted',
@@ -538,6 +578,7 @@ exports.Prisma.ChecksScalarFieldEnum = {
   amount: 'amount',
   recordeddate: 'recordeddate',
   memo: 'memo',
+  imageUrl: 'imageUrl',
   status: 'status',
   is_deleted: 'is_deleted',
   deletedAt: 'deletedAt',
@@ -556,6 +597,30 @@ exports.Prisma.PaymentsScalarFieldEnum = {
   updatedAt: 'updatedAt',
   createdAt: 'createdAt',
   deletedAt: 'deletedAt'
+};
+
+exports.Prisma.Retail_purchasesScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  date: 'date',
+  total_amount: 'total_amount',
+  amount_paid: 'amount_paid',
+  status: 'status',
+  memo: 'memo',
+  created_by: 'created_by',
+  is_deleted: 'is_deleted',
+  updatedAt: 'updatedAt',
+  createdAt: 'createdAt',
+  deletedAt: 'deletedAt'
+};
+
+exports.Prisma.Retail_purchase_itemsScalarFieldEnum = {
+  id: 'id',
+  purchase_id: 'purchase_id',
+  edition_id: 'edition_id',
+  quantity: 'quantity',
+  unit_price: 'unit_price',
+  is_deleted: 'is_deleted'
 };
 
 exports.Prisma.SortOrder = {
@@ -592,6 +657,7 @@ exports.Prisma.booksOrderByRelevanceFieldEnum = {
   edition: 'edition',
   category: 'category',
   publication_year: 'publication_year',
+  copyright_registration_number: 'copyright_registration_number',
   print_batch_id: 'print_batch_id',
   book_sku: 'book_sku',
   info: 'info',
@@ -616,7 +682,9 @@ exports.Prisma.bookshopesOrderByRelevanceFieldEnum = {
 exports.Prisma.ordersOrderByRelevanceFieldEnum = {
   order_type: 'order_type',
   memo: 'memo',
-  status: 'status'
+  payment_type: 'payment_type',
+  status: 'status',
+  allocation_summary: 'allocation_summary'
 };
 
 exports.Prisma.damagedbooksOrderByRelevanceFieldEnum = {
@@ -626,6 +694,14 @@ exports.Prisma.damagedbooksOrderByRelevanceFieldEnum = {
 exports.Prisma.dashboardmenuOrderByRelevanceFieldEnum = {
   role: 'role',
   menus: 'menus'
+};
+
+exports.Prisma.menusOrderByRelevanceFieldEnum = {
+  name: 'name'
+};
+
+exports.Prisma.menu_managementOrderByRelevanceFieldEnum = {
+  account_type: 'account_type'
 };
 
 exports.Prisma.printerOrderByRelevanceFieldEnum = {
@@ -647,8 +723,9 @@ exports.Prisma.printorder_paymentsOrderByRelevanceFieldEnum = {
   reference: 'reference'
 };
 
-exports.Prisma.rolesOrderByRelevanceFieldEnum = {
-  role_name: 'role_name'
+exports.Prisma.roletypesOrderByRelevanceFieldEnum = {
+  rolename: 'rolename',
+  role_detail: 'role_detail'
 };
 
 exports.Prisma.storesOrderByRelevanceFieldEnum = {
@@ -742,12 +819,18 @@ exports.Prisma.checksOrderByRelevanceFieldEnum = {
   username: 'username',
   bankname: 'bankname',
   amount: 'amount',
-  memo: 'memo'
+  memo: 'memo',
+  imageUrl: 'imageUrl'
 };
 
 exports.Prisma.paymentsOrderByRelevanceFieldEnum = {
   payment_type: 'payment_type',
   status: 'status'
+};
+
+exports.Prisma.retail_purchasesOrderByRelevanceFieldEnum = {
+  name: 'name',
+  memo: 'memo'
 };
 exports.books_productionstatus = exports.$Enums.books_productionstatus = {
   ON_PRODUCTION: 'ON_PRODUCTION',
@@ -794,6 +877,12 @@ exports.translatorbook_Status = exports.$Enums.translatorbook_Status = {
   COMPLETED: 'COMPLETED'
 };
 
+exports.translatorbook_payment_status = exports.$Enums.translatorbook_payment_status = {
+  PENDING: 'PENDING',
+  CURRENTLY_PAID: 'CURRENTLY_PAID',
+  SUCCEEDED: 'SUCCEEDED'
+};
+
 exports.notification_to = exports.$Enums.notification_to = {
   ADMIN: 'ADMIN',
   FINANCE: 'FINANCE',
@@ -817,6 +906,13 @@ exports.check_status = exports.$Enums.check_status = {
   CANCELLED: 'CANCELLED'
 };
 
+exports.retail_purchase_status = exports.$Enums.retail_purchase_status = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  PARTIALLY_PAID: 'PARTIALLY_PAID',
+  PAID: 'PAID'
+};
+
 exports.Prisma.ModelName = {
   accounts: 'accounts',
   bookedition: 'bookedition',
@@ -829,10 +925,13 @@ exports.Prisma.ModelName = {
   order_items: 'order_items',
   damagedbooks: 'damagedbooks',
   dashboardmenu: 'dashboardmenu',
+  menus: 'menus',
+  menu_management: 'menu_management',
   printer: 'printer',
   printorder: 'printorder',
   printorder_payments: 'printorder_payments',
   printorder_items: 'printorder_items',
+  roletypes: 'roletypes',
   roles: 'roles',
   stores: 'stores',
   translator: 'translator',
@@ -847,7 +946,9 @@ exports.Prisma.ModelName = {
   approval_documents: 'approval_documents',
   settings: 'settings',
   checks: 'checks',
-  payments: 'payments'
+  payments: 'payments',
+  retail_purchases: 'retail_purchases',
+  retail_purchase_items: 'retail_purchase_items'
 };
 
 /**

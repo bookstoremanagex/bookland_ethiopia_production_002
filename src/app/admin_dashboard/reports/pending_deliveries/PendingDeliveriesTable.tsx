@@ -38,9 +38,9 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import Link from "next/link"
-import { format } from "date-fns"
+import { useCalendar } from "@/lib/calendar-context"
 
-export const columns: ColumnDef<any>[] = [
+const useColumns = (formatDate: (date: Date) => string): ColumnDef<any>[] => [
   {
     accessorKey: "bookshopes.name",
     header: "Destination Store",
@@ -114,7 +114,7 @@ export const columns: ColumnDef<any>[] = [
         <div className="flex items-center gap-2 text-muted-foreground">
             <Calendar className="size-3.5" />
             <span className="font-bold text-[10px]">
-                {format(new Date(row.getValue("updatedAt")), "MMM dd, yyyy")}
+                {formatDate(new Date(row.getValue("updatedAt")))}
             </span>
         </div>
     ),
@@ -132,6 +132,8 @@ export const columns: ColumnDef<any>[] = [
 ]
 
 export default function PendingDeliveriesTable({ data }: { data: any[] }) {
+  const { formatDate } = useCalendar()
+  const columns = React.useMemo(() => useColumns(formatDate), [formatDate])
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []

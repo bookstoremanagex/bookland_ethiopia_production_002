@@ -16,9 +16,11 @@ import {
     AlertCircle,
     CheckCircle2,
     Loader2,
+    ImageIcon,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { useCalendar } from "@/lib/calendar-context"
 import { toast } from 'sonner'
 import { updateCheckStatus } from '@/app/actions/check-actions'
 
@@ -35,6 +37,7 @@ interface CheckDetailClientProps {
 }
 
 export default function CheckDetailClient({ check, isAdmin }: CheckDetailClientProps) {
+    const { formatDate } = useCalendar()
     const router = useRouter()
     const [isClearing, setIsClearing] = useState(false)
 
@@ -167,7 +170,7 @@ export default function CheckDetailClient({ check, isAdmin }: CheckDetailClientP
                                                 <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Recorded Date</p>
                                                 <p className="font-black text-primarycolor">
                                                     {check.recordeddate
-                                                        ? new Date(check.recordeddate).toLocaleDateString()
+                                                        ? formatDate(new Date(check.recordeddate))
                                                         : "—"}
                                                 </p>
                                             </div>
@@ -182,7 +185,7 @@ export default function CheckDetailClient({ check, isAdmin }: CheckDetailClientP
                                             <div>
                                                 <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Created At</p>
                                                 <p className="font-black text-primarycolor">
-                                                    {new Date(check.createdAt).toLocaleDateString()}
+                                                    {formatDate(new Date(check.createdAt))}
                                                 </p>
                                             </div>
                                         </div>
@@ -196,6 +199,22 @@ export default function CheckDetailClient({ check, isAdmin }: CheckDetailClientP
                                             <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Memo</p>
                                         </div>
                                         <p className="font-bold text-primarycolor leading-relaxed">{check.memo}</p>
+                                    </div>
+                                )}
+
+                                {check.imageUrl && (
+                                    <div className="space-y-3">
+                                        <div className="flex items-center gap-2">
+                                            <ImageIcon className="size-4 text-primarycolor/40" />
+                                            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Check Image</p>
+                                        </div>
+                                        <a href={check.imageUrl} target="_blank" rel="noopener noreferrer">
+                                            <img
+                                                src={check.imageUrl}
+                                                alt="Check image"
+                                                className="w-full max-h-80 object-contain rounded-3xl border-2 border-slate-100 bg-slate-50 cursor-pointer hover:opacity-90 transition-opacity"
+                                            />
+                                        </a>
                                     </div>
                                 )}
                             </div>
@@ -214,7 +233,7 @@ export default function CheckDetailClient({ check, isAdmin }: CheckDetailClientP
                                     </div>
                                     <div>
                                         <p className="text-[10px] font-black uppercase tracking-widest opacity-60">System Registry</p>
-                                        <p className="text-lg font-black">{new Date(check.createdAt).toLocaleDateString()}</p>
+                                        <p className="text-lg font-black">{formatDate(new Date(check.createdAt))}</p>
                                     </div>
                                 </div>
 
@@ -224,7 +243,7 @@ export default function CheckDetailClient({ check, isAdmin }: CheckDetailClientP
                                     </div>
                                     <div>
                                         <p className="text-[10px] font-black uppercase tracking-widest opacity-60">Last Updated</p>
-                                        <p className="text-lg font-black">{new Date(check.updatedAt).toLocaleTimeString()}</p>
+                                        <p className="text-lg font-black">{formatDate(new Date(check.updatedAt), "hh:mm a")}</p>
                                     </div>
                                 </div>
 

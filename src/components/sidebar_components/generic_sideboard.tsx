@@ -31,10 +31,12 @@ import { TooltipProvider as ShadcnTooltipProvider } from "@/components/ui/toolti
 import { cn } from "@/lib/utils"
 
 import { useSidebarStore } from "@/store/use-sidebar-store"
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { ALL_DASHBOARD_MENUS } from "@/lib/dashboard-menu-config"
-import { getMenuConfigForRole } from "@/app/actions/menu-actions"
+import { getEnabledMenuNamesForRole } from "@/app/actions/menu-actions"
+import { getUnreadCount } from "@/app/actions/notification-actions"
+import { getCurrentSession } from "@/app/actions/auth-actions"
 
 interface GenericAppSidebarProps {
     title: string;
@@ -46,8 +48,50 @@ interface GenericAppSidebarProps {
 export function GenericAppSidebar({ title, rootPath, role, footerText }: GenericAppSidebarProps) {
     const pathname = usePathname()
     const { isMounted, setMounted, activePath, setActivePath } = useSidebarStore()
-    const [enabledMenuIds, setEnabledMenuIds] = useState<string[]>([])
+    const [enabledMenuNames, setEnabledMenuNames] = useState<string[]>([])
     const [isLoading, setIsLoading] = useState(true)
+    const [unreadNotifCount, setUnreadNotifCount] = useState(0)
+
+    const ROLE_TO_NOTIFICATION_TO: Record<string, string> = {
+        "ADMIN": "ADMIN",
+        "Operations Manager": "OPERATION_MANAGER",
+        "Inventory Manager": "INVENTORY_MANAGER",
+        "Finance Officer": "FINANCE",
+        "Sales Staff": "DELIVERY_AND_SALES",
+        "Retail Manager": "RETAIL_MANAGER",
+        "Delivery and Sales Management": "DELIVERY_AND_SALES",
+        "Delivery Sample": "DELIVERY_AND_SALES",
+        "Printer": "PRINTER",
+        "Viewer": "DATA_VIEWER",
+        // Sidebar role values (used as fallback)
+        "admin": "ADMIN",
+        "operation_manager": "OPERATION_MANAGER",
+        "inventory_manager": "INVENTORY_MANAGER",
+        "finance_officer": "FINANCE",
+        "sales_staff": "DELIVERY_AND_SALES",
+        "retail_manager": "RETAIL_MANAGER",
+        "delivery_and_sales": "DELIVERY_AND_SALES",
+        "delivery_sample": "DELIVERY_AND_SALES",
+        "printer": "PRINTER",
+        "viewer": "DATA_VIEWER",
+    };
+
+    // Fetch unread notification count
+    useEffect(() => {
+        const fetchUnreadCount = async () => {
+            try {
+                const session = await getCurrentSession();
+                const notificationTo = session?.role ? ROLE_TO_NOTIFICATION_TO[session.role] : undefined;
+                const res = await getUnreadCount(undefined, notificationTo);
+                if (res.success) setUnreadNotifCount(res.count || 0);
+            } catch (err) {
+                console.error("Failed to fetch unread count:", err);
+            }
+        };
+        fetchUnreadCount();
+        const interval = setInterval(fetchUnreadCount, 30000);
+        return () => clearInterval(interval);
+    }, []);
 
     React.useEffect(() => {
         setMounted(true)
@@ -56,9 +100,9 @@ export function GenericAppSidebar({ title, rootPath, role, footerText }: Generic
 
     useEffect(() => {
         const fetchConfig = async () => {
-            const result = await getMenuConfigForRole(role)
+            const result = await getEnabledMenuNamesForRole(role)
             if (result.success && result.data) {
-                setEnabledMenuIds(result.data as string[])
+                setEnabledMenuNames(result.data as string[])
             }
             setIsLoading(false)
         }
@@ -66,18 +110,36 @@ export function GenericAppSidebar({ title, rootPath, role, footerText }: Generic
     }, [role])
 
     const menuItems = React.useMemo(() => {
-        const filtered = ALL_DASHBOARD_MENUS.filter(item => 
-            item.id === 'home' || enabledMenuIds.includes(item.id)
-        )
-        return filtered.map(item => ({
-            ...item,
-            url: item.path === "" ? rootPath : `${rootPath}/${item.path}`,
-            subItems: item.subItems?.map(sub => ({
-                ...sub,
-                url: `${rootPath}/${sub.path}`
-            }))
-        }))
-    }, [enabledMenuIds, rootPath])
+        return ALL_DASHBOARD_MENUS
+            .map(item => {
+                const isGroup = item.subItems && item.subItems.length > 0
+
+                if (isGroup) {
+                    const enabledSubItems = item.subItems!.filter(sub =>
+                        sub.menuName && enabledMenuNames.includes(sub.menuName)
+                    )
+                    if (enabledSubItems.length === 0) return null
+
+                    return {
+                        ...item,
+                        url: item.path === "" ? rootPath : `${rootPath}/${item.path}`,
+                        subItems: enabledSubItems.map(sub => ({
+                            ...sub,
+                            url: `${rootPath}/${sub.path}`
+                        }))
+                    }
+                }
+
+                const enabled = item.menuName === 'Home' || (item.menuName && enabledMenuNames.includes(item.menuName))
+                if (!enabled) return null
+
+                return {
+                    ...item,
+                    url: item.path === "" ? rootPath : `${rootPath}/${item.path}`,
+                }
+            })
+            .filter((item): item is NonNullable<typeof item> => item !== null)
+    }, [enabledMenuNames, rootPath])
 
     const activeUrl = React.useMemo(() => {
         if (!isMounted) return ""
@@ -119,7 +181,7 @@ export function GenericAppSidebar({ title, rootPath, role, footerText }: Generic
                                     </div>
                                 ) : (
                                     menuItems.map((item) => {
-                                        if (item.subItems) {
+                                        if (item.subItems && item.subItems.length > 0) {
                                             const isActive = activePath?.includes(item.id)
                                             return (
                                                 <Collapsible key={item.id} asChild className="group/collapsible" defaultOpen={isActive}>
@@ -143,14 +205,14 @@ export function GenericAppSidebar({ title, rootPath, role, footerText }: Generic
                                                                     <SidebarMenuSubItem key={subItem.title}>
                                                                         <SidebarMenuSubButton
                                                                             asChild
-                                                                            isActive={isMounted && (activePath === subItem.url || activePath.startsWith(subItem.url + "/"))}
+                                                                            isActive={!!(isMounted && (subItem.url && (activePath === subItem.url || activePath.startsWith(subItem.url + "/"))))}
                                                                             className={cn(
                                                                                 "transition-all duration-300 rounded-lg h-9 px-4",
                                                                                 "data-[active=true]:bg-primarycolor data-[active=true]:text-white data-[active=true]:font-black",
                                                                                 "hover:bg-primarycolor/10 hover:text-primarycolor font-bold"
                                                                             )}
                                                                         >
-                                                                            <Link href={subItem.url} className="flex items-center gap-3">
+                                                                            <Link href={subItem.url as string} className="flex items-center gap-3">
                                                                                 <subItem.icon className="w-4 h-4" />
                                                                                 <span className="text-[10px] uppercase tracking-widest">{subItem.title}</span>
                                                                             </Link>
@@ -165,6 +227,7 @@ export function GenericAppSidebar({ title, rootPath, role, footerText }: Generic
                                         }
 
                                         const active = activeUrl === item.url
+                                        const showNotifBadge = item.title === "Notifications" && unreadNotifCount > 0;
                                         return (
                                             <SidebarMenuItem key={item.id} className="px-2">
                                                 <SidebarMenuButton
@@ -180,6 +243,11 @@ export function GenericAppSidebar({ title, rootPath, role, footerText }: Generic
                                                     <Link href={item.url as string} className="flex items-center gap-3">
                                                         <item.icon className={cn("w-5 h-5", active ? "text-white" : "text-primarycolor/70")} />
                                                         <span className="uppercase tracking-tight text-xs">{item.title}</span>
+                                                        {showNotifBadge && (
+                                                            <div className="ml-auto size-6 rounded-full bg-badgecolor text-white text-[10px] font-black flex items-center justify-center">
+                                                                {unreadNotifCount}
+                                                            </div>
+                                                        )}
                                                     </Link>
                                                 </SidebarMenuButton>
                                             </SidebarMenuItem>

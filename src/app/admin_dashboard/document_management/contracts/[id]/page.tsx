@@ -21,6 +21,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { useCalendar } from "@/lib/calendar-context";
 
 interface DbContract {
     id: number;
@@ -40,6 +41,7 @@ interface DbContract {
 export default function ContractDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const router = useRouter();
     const resolvedParams = use(params);
+    const { formatDate, formatShort, formatLong, formatDateTime } = useCalendar();
     const contractId = parseInt(resolvedParams.id);
 
     const [contract, setContract] = useState<DbContract | null>(null);
@@ -110,9 +112,9 @@ export default function ContractDetailPage({ params }: { params: Promise<{ id: s
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div>
                         <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-primarycolor/60 bg-primarycolor/5 border border-primarycolor/10 px-3 py-1 rounded-full w-fit">
-                            <FileSignature className="size-3.5 text-primarycolor" /> CON-{String(contract.id).padStart(4, "0")} • {contract.type}
+                            <FileSignature className="size-3.5 text-primarycolor" /> CON-{String(contract.id).padStart(4, "0")} â€¢ {contract.type}
                         </div>
-                        <h1 className="text-3xl font-black text-secondarycolor uppercase tracking-tight mt-2">
+                        <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
                             {contract.title}
                         </h1>
                     </div>
@@ -157,7 +159,7 @@ export default function ContractDetailPage({ params }: { params: Promise<{ id: s
                                 <p className="text-[10px] font-black uppercase tracking-widest text-secondarycolor/50">Contract Value</p>
                                 <span className="inline-flex items-center gap-1 text-sm font-black text-secondarycolor mt-1">
                                     <DollarSign className="size-4 text-primarycolor/70" />
-                                    {contract.value ? `$${contract.value.toLocaleString(undefined, { minimumFractionDigits: 2 })}` : "—"}
+                                    {contract.value ? `$${contract.value.toLocaleString(undefined, { minimumFractionDigits: 2 })}` : "â€”"}
                                 </span>
                             </div>
 
@@ -179,14 +181,14 @@ export default function ContractDetailPage({ params }: { params: Promise<{ id: s
                                     <p className="text-[10px] font-black uppercase tracking-widest text-secondarycolor/50">Date Signed</p>
                                     <span className="text-xs font-semibold text-secondarycolor mt-1 flex items-center gap-1">
                                         <Calendar className="size-3 text-primarycolor/60" />
-                                        {contract.dateSigned ? contract.dateSigned.toLocaleDateString() : "—"}
+                                        {contract.dateSigned ? formatDate(new Date(contract.dateSigned)) : "â€”"}
                                     </span>
                                 </div>
                                 <div>
                                     <p className="text-[10px] font-black uppercase tracking-widest text-secondarycolor/50">Start Date</p>
                                     <span className="text-xs font-semibold text-secondarycolor mt-1 flex items-center gap-1">
                                         <Calendar className="size-3 text-primarycolor/60" />
-                                        {contract.startDate ? contract.startDate.toLocaleDateString() : "—"}
+                                        {contract.startDate ? formatDate(new Date(contract.startDate)) : "â€”"}
                                     </span>
                                 </div>
                             </div>
@@ -195,7 +197,7 @@ export default function ContractDetailPage({ params }: { params: Promise<{ id: s
                                 <p className="text-[10px] font-black uppercase tracking-widest text-secondarycolor/50">End Date</p>
                                 <span className="text-xs font-semibold text-secondarycolor mt-1 flex items-center gap-1">
                                     <Calendar className="size-3 text-primarycolor/60" />
-                                    {contract.endDate ? contract.endDate.toLocaleDateString() : "—"}
+                                    {contract.endDate ? formatDate(new Date(contract.endDate)) : "â€”"}
                                 </span>
                             </div>
                         </div>

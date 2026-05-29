@@ -127,28 +127,6 @@ export function StoreInventoryTable({ data }: { data: InventoryItem[] }) {
 
     setIsProcessing(true);
     try {
-      // Fetch current edition state to get accurate remaining count
-      const editionRes = await getEditionById(selectedItem.bookedition.id);
-      if (!editionRes.success) throw new Error("Could not fetch edition data");
-
-      const currentEdition = editionRes.data;
-      const available = currentEdition.count_remening_for_transfer;
-
-      if (difference > available) {
-        toast.error(
-          `Not enough stock. Only ${available} units remaining for transfer.`,
-        );
-        setIsProcessing(false);
-        return;
-      }
-
-      // 1. Update edition remaining count
-      await updateEdition(selectedItem.bookedition.id, {
-        ...currentEdition,
-        count_remening_for_transfer: available - difference,
-      });
-
-      // 2. Update store inventory quantity
       const res = await updateStoreInventory(
         selectedItem.id,
         editQuantity,

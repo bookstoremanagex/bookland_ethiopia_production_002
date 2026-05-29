@@ -26,7 +26,7 @@ export default async function ViewerHomePage() {
                         <Eye className="size-6 md:size-8" />
                         <span className="text-[10px] md:text-sm font-black uppercase tracking-[0.3em] opacity-50">Public Data Portal</span>
                     </div>
-                    <h1 className="text-3xl md:text-6xl font-black tracking-tight text-primarycolor uppercase italic leading-none">
+                    <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
                         Data <span className="text-secondarycolor not-italic">Viewer</span>
                     </h1>
                     <p className="text-muted-foreground font-bold tracking-tight text-sm md:text-lg max-w-xl">

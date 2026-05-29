@@ -3,8 +3,21 @@ import { getStores } from '../../actions/get-stores'
 import { getPrinters } from '../../actions/printer-actions'
 import { StoresTable } from '../../../components/admin_dashboard_components/StoresTable'
 import PrintersTable from './PrintersTable'
+import { checkCurrentUserRole } from '../../actions/book-shop-actions'
 
 export default async function StoresPage() {
+    const permission = await checkCurrentUserRole("Viewing Stores")
+    if (!permission.enabled) {
+        return (
+            <div className="w-full py-10 px-4 md:px-8 max-w-none mx-auto">
+                <div className="p-8 border-2 border-destructive/20 bg-destructive/5 rounded-2xl text-center">
+                    <h2 className="text-2xl font-black text-destructive uppercase tracking-tight mb-2">Access Denied</h2>
+                    <p className="text-muted-foreground font-bold">You do not have the privilege to view stores.</p>
+                </div>
+            </div>
+        )
+    }
+
     const storesResponse = await getStores()
     const printersResponse = await getPrinters()
     const stores = storesResponse.success ? storesResponse.data : []
@@ -14,7 +27,7 @@ export default async function StoresPage() {
         <div className="w-full py-10 px-4 md:px-8 max-w-none mx-auto space-y-20">
             <div>
                 <div className="mb-10 space-y-2 text-center md:text-left">
-                    <h1 className="text-4xl md:text-5xl font-black tracking-tight text-primarycolor uppercase italic">Stores <span className="text-secondarycolor not-italic">Management</span></h1>
+                    <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Stores <span className="text-secondarycolor not-italic">Management</span></h1>
                     <p className="text-muted-foreground font-bold tracking-tight">Manage your physical locations and monitor operational status across the network.</p>
                 </div>
 

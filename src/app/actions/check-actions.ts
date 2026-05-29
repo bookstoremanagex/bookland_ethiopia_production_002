@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
 import { getCurrentSession } from "./auth-actions"
 import { createNotification } from "./notification-actions"
+import { put } from "@vercel/blob"
 
 export async function getChecks() {
     try {
@@ -24,6 +25,7 @@ export async function createCheck(formData: {
     amount: string
     recordeddate: string
     memo: string
+    imageUrl?: string
 }) {
     try {
         const check = await (prisma as any).checks.create({
@@ -34,6 +36,7 @@ export async function createCheck(formData: {
                 amount: formData.amount || null,
                 recordeddate: formData.recordeddate ? new Date(formData.recordeddate) : null,
                 memo: formData.memo || null,
+                imageUrl: formData.imageUrl || null,
                 updatedAt: new Date(),
             }
         })
@@ -45,10 +48,26 @@ export async function createCheck(formData: {
     }
 }
 
+export async function uploadCheckImageAction(formData: FormData) {
+    try {
+        const file = formData.get("file") as File;
+        if (!file) return { success: false, error: "No file provided" };
+        const arrayBuffer = await file.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+        const fileExtension = file.name.split(".").pop();
+        const cleanFileName = `checks/${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${fileExtension}`;
+        const blob = await put(cleanFileName, buffer, { access: "public" });
+        return { success: true, url: blob.url };
+    } catch (error) {
+        console.error("Upload check image error:", error);
+        return { success: false, error: "Failed to upload check image" };
+    }
+}
+
 export async function checkIsAdminUser() {
     try {
         const session = await getCurrentSession();
-        return { success: true, isAdmin: session?.role === "Admin" };
+        return { success: true, isAdmin: session?.role === "ADMIN" };
     } catch {
         return { success: true, isAdmin: false };
     }

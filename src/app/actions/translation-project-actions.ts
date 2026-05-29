@@ -38,6 +38,9 @@ export async function createTranslationProject(data: TranslationProjectFormValue
         bookId: result.data.bookId,
         translator_id: result.data.translator_id,
         Status: result.data.Status,
+        cost: result.data.cost ?? null,
+        payment_status: result.data.payment_status,
+        currently_paid: result.data.currently_paid,
         startDate: result.data.startDate ? new Date(result.data.startDate) : null,
         endDate: result.data.endDate ? new Date(result.data.endDate) : null,
         updatedAt: new Date()
@@ -93,20 +96,27 @@ export async function getTranslationProjectById(id: number) {
 
 export async function updateTranslationProject(id: number, data: Partial<TranslationProjectFormValues>) {
     try {
+        console.log("Update received data:", JSON.stringify(data));
+        const updateData: any = { updatedAt: new Date() };
+        
+        if (data.bookId) updateData.bookId = data.bookId;
+        if (data.translator_id) updateData.translator_id = data.translator_id;
+        if (data.Status) updateData.Status = data.Status;
+        if (data.cost !== undefined) updateData.cost = data.cost;
+        if (data.payment_status) updateData.payment_status = data.payment_status;
+        if (data.currently_paid !== undefined) updateData.currently_paid = data.currently_paid;
+        if (data.startDate) updateData.startDate = new Date(data.startDate);
+        if (data.endDate) updateData.endDate = new Date(data.endDate);
+
+console.log("Prisma update data:", JSON.stringify(updateData));
         const updated = await (prisma as any).translatorbook.update({
             where: { id },
-            data: {
-                ...(data.bookId && { bookId: data.bookId }),
-                ...(data.translator_id && { translator_id: data.translator_id }),
-                ...(data.Status && { Status: data.Status as any }),
-                ...(data.startDate && { startDate: new Date(data.startDate) }),
-                ...(data.endDate && { endDate: new Date(data.endDate) }),
-                updatedAt: new Date()
-            }
+            data: updateData
         });
         revalidatePath("/admin_dashboard/production/translation_work");
         return { success: true, data: updated };
     } catch (error) {
+        console.error("Failed to update translation project:", error);
         return { success: false, error: "Failed to update project" };
     }
 }

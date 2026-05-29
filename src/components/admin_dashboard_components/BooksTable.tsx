@@ -36,7 +36,7 @@ export type Book = {
   title: string;
   author: string;
   pen_name: string | null;
-  edition: string;
+  editionCount: number;
   category: string;
   status: string;
   book_image_url: string | null;
@@ -102,9 +102,19 @@ export function BooksTable({ data }: BooksTableProps) {
       },
     },
     {
-      accessorKey: "edition",
-      header: "Edition",
-      cell: ({ row }) => <div className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{row.getValue("edition")}</div>,
+      accessorKey: "editionCount",
+      header: "Editions",
+      cell: ({ row }) => {
+        const count = row.getValue("editionCount") as number;
+        return (
+          <div className="flex items-center gap-1.5">
+            <span className="text-sm font-black text-secondarycolor tabular-nums">{count}</span>
+            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+              {count === 1 ? "edition" : "editions"}
+            </span>
+          </div>
+        );
+      },
     },
     {
       accessorKey: "category",

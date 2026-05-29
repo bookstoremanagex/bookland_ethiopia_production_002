@@ -31,6 +31,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { cn } from '@/lib/utils';
+import { useCalendar } from "@/lib/calendar-context";
 import { toast } from 'sonner';
 import { updateStore, deleteStore } from '@/app/actions/store-actions';
 import { StoreInventoryTable } from './StoreInventoryTable';
@@ -41,6 +42,7 @@ interface StoreDetailsClientProps {
 }
 
 export default function StoreDetailsClient({ store: initialStore }: StoreDetailsClientProps) {
+    const { formatDate } = useCalendar();
     const [store, setStore] = useState(initialStore);
     const [isEditing, setIsEditing] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
@@ -274,7 +276,7 @@ export default function StoreDetailsClient({ store: initialStore }: StoreDetails
                                     </div>
                                     <div>
                                         <p className="text-[10px] font-black uppercase tracking-widest opacity-60">System Registry</p>
-                                        <p className="text-lg font-black">{new Date(store.createdAt).toLocaleDateString()}</p>
+                                        <p className="text-lg font-black">{formatDate(new Date(store.createdAt))}</p>
                                     </div>
                                 </div>
 

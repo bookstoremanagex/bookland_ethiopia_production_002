@@ -65,7 +65,7 @@ export default async function FinanceStatsPage(props: {
         <div className="p-4 md:p-10 space-y-12 bg-[#F8FAFC] min-h-screen">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
                 <div>
-                    <h1 className="text-4xl font-black text-primarycolor uppercase tracking-tighter italic">
+                    <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
                         Financial <span className="text-secondarycolor not-italic">Intelligence</span>
                     </h1>
                     <p className="text-muted-foreground font-bold uppercase tracking-widest text-[10px] mt-2">

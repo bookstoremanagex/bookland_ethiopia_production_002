@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { Button } from '../../ui/button';
 import { cn } from '../../../lib/utils';
+import { useCalendar } from "@/lib/calendar-context";
 
 interface TranslationInfoProps {
   book: any;
@@ -34,6 +35,7 @@ export default function TranslationInfo({
   onUpdateStatus,
   onValueChange
 }: TranslationInfoProps) {
+  const { formatDate } = useCalendar();
   return (
     <div className="space-y-6 md:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
         <div className="bg-card rounded-2xl md:rounded-3xl p-6 md:p-10 border-2 border-primarycolor/10 shadow-2xl space-y-6 md:space-y-10">
@@ -133,11 +135,11 @@ export default function TranslationInfo({
                                 <div className="flex flex-col gap-1">
                                     <div className="text-xs font-black text-secondarycolor uppercase tracking-widest flex items-center justify-end gap-2">
                                         <span className="text-muted-foreground opacity-50">Starts:</span>
-                                        {assignment.startDate ? new Date(assignment.startDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : "TBD"}
+                                        {assignment.startDate ? formatDate(new Date(assignment.startDate)) : "TBD"}
                                     </div>
                                     <div className="text-xs font-black text-primarycolor uppercase tracking-widest flex items-center justify-end gap-2">
                                         <span className="text-muted-foreground opacity-50">Ends:</span>
-                                        {assignment.endDate ? new Date(assignment.endDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : "TBD"}
+                                        {assignment.endDate ? formatDate(new Date(assignment.endDate)) : "TBD"}
                                     </div>
                                 </div>
                             </td>
@@ -236,11 +238,11 @@ export default function TranslationInfo({
                                     <div className="grid grid-cols-2 gap-2 pt-1">
                                         <div className="flex flex-col p-2 rounded-xl bg-primarycolor/5 border border-primarycolor/10">
                                             <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest mb-0.5 opacity-60">Start Date</span>
-                                            <span className="font-bold text-primarycolor text-[10px]">{assignment.startDate ? new Date(assignment.startDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : "TBD"}</span>
+                                            <span className="font-bold text-primarycolor text-[10px]">{assignment.startDate ? formatDate(new Date(assignment.startDate), "MMM dd") : "TBD"}</span>
                                         </div>
                                         <div className="flex flex-col p-2 rounded-xl bg-primarycolor/5 border border-primarycolor/10">
                                             <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest mb-0.5 opacity-60">End Date</span>
-                                            <span className="font-bold text-primarycolor text-[10px]">{assignment.endDate ? new Date(assignment.endDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : "TBD"}</span>
+                                            <span className="font-bold text-primarycolor text-[10px]">{assignment.endDate ? formatDate(new Date(assignment.endDate), "MMM dd") : "TBD"}</span>
                                         </div>
                                     </div>
                                 </div>

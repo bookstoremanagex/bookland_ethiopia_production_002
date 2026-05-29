@@ -44,6 +44,29 @@ interface ActivityLogsTableProps {
   data: ActivityLogItem[];
 }
 
+function formatDetails(details: string | null): string {
+  if (!details) return "";
+  try {
+    const parsed = JSON.parse(details);
+    if (typeof parsed !== "object" || parsed === null) return details;
+    if (parsed.stores && Array.isArray(parsed.stores)) {
+      const lines = parsed.stores.map((s: any) => `${s.storeName}: ${s.quantity} units`);
+      if (parsed.bookTitle) lines.unshift(`Book: ${parsed.bookTitle}`);
+      if (parsed.editionName) lines.unshift(`Edition: ${parsed.editionName}`);
+      return lines.join("\n");
+    }
+    return Object.entries(parsed)
+      .filter(([_, v]) => typeof v !== "object" || v === null || Array.isArray(v))
+      .map(([key, val]) => {
+        const label = key.replace(/([A-Z])/g, " $1").replace(/^./, (s) => s.toUpperCase());
+        return `${label}: ${Array.isArray(val) ? val.length : val}`;
+      })
+      .join("\n");
+  } catch {
+    return details;
+  }
+}
+
 export function ActivityLogsTable({ data = [] }: ActivityLogsTableProps) {
   const safeData = React.useMemo(() => Array.isArray(data) ? data : [], [data]);
   const [sorting, setSorting] = React.useState<SortingState>([
@@ -100,9 +123,10 @@ export function ActivityLogsTable({ data = [] }: ActivityLogsTableProps) {
       header: "Activity Details",
       cell: ({ row }) => {
         const details = row.getValue("details") as string;
+        const formatted = formatDetails(details);
         return (
-          <div className="max-w-[420px] text-xs font-semibold leading-relaxed text-secondarycolor/70 bg-slate-50 border border-slate-100 p-3 rounded-xl italic">
-            {details || "No supplementary details provided."}
+          <div className="max-w-[420px] text-xs font-semibold leading-relaxed text-secondarycolor/70 bg-slate-50 border border-slate-100 p-3 rounded-xl whitespace-pre-line">
+            {formatted || "No supplementary details provided."}
           </div>
         );
       },
@@ -269,12 +293,12 @@ export function ActivityLogsTable({ data = [] }: ActivityLogsTableProps) {
                     <p className="text-sm font-black text-secondarycolor">{item.action}</p>
                   </div>
 
-                  {item.details && (
+                  {item.details && formatDetails(item.details) && (
                     <div>
                       <h4 className="text-[10px] font-black text-secondarycolor/40 uppercase tracking-widest">Details</h4>
-                      <p className="text-xs font-semibold leading-relaxed text-secondarycolor/70 bg-slate-50 border border-slate-100 p-3 rounded-xl italic mt-1">
-                        {item.details}
-                      </p>
+                      <pre className="text-xs font-semibold leading-relaxed text-secondarycolor/70 bg-slate-50 border border-slate-100 p-3 rounded-xl whitespace-pre-wrap font-sans mt-1">
+                        {formatDetails(item.details)}
+                      </pre>
                     </div>
                   )}
 

@@ -20,6 +20,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { useCalendar } from "@/lib/calendar-context";
 
 interface DbApprovalDocument {
     id: number;
@@ -37,6 +38,7 @@ interface DbApprovalDocument {
 export default function ApprovalDocumentDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const router = useRouter();
     const resolvedParams = use(params);
+    const { formatDate, formatShort, formatLong, formatDateTime } = useCalendar();
     const docId = parseInt(resolvedParams.id);
 
     const [document, setDocument] = useState<DbApprovalDocument | null>(null);
@@ -105,9 +107,9 @@ export default function ApprovalDocumentDetailPage({ params }: { params: Promise
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div>
                         <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-primarycolor/60 bg-primarycolor/5 border border-primarycolor/10 px-3 py-1 rounded-full w-fit">
-                            <FileText className="size-3.5 text-primarycolor" /> {document.documentNumber} • Requisition Clearance
+                            <FileText className="size-3.5 text-primarycolor" /> {document.documentNumber} â€¢ Requisition Clearance
                         </div>
-                        <h1 className="text-3xl font-black text-secondarycolor uppercase tracking-tight mt-2">
+                        <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
                             {document.title}
                         </h1>
                     </div>
@@ -175,7 +177,7 @@ export default function ApprovalDocumentDetailPage({ params }: { params: Promise
                                 <p className="text-[10px] font-black uppercase tracking-widest text-secondarycolor/50">Clearance Date</p>
                                 <span className="text-xs font-semibold text-secondarycolor mt-1 flex items-center gap-1">
                                     <Calendar className="size-3.5 text-primarycolor/60" />
-                                    {document.approvalDate ? document.approvalDate.toLocaleDateString() : "—"}
+                                    {document.approvalDate ? formatDate(new Date(document.approvalDate)) : "â€”"}
                                 </span>
                             </div>
                         </div>

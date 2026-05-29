@@ -1,12 +1,14 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { useCalendar } from "@/lib/calendar-context";
 import { User, Mail, Shield, Calendar, Save, Loader2, KeyRound, LogOut } from "lucide-react";
 import { getProfileData, updateAdminProfile } from './actions';
 import { logoutAction } from '@/app/actions/auth-actions';
 import { useRouter } from 'next/navigation';
 
 export default function ProfileClient() {
+  const { formatDate } = useCalendar();
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -129,7 +131,7 @@ export default function ProfileClient() {
               </div>
               <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 w-fit">
                 <Calendar className="size-3" />
-                <span className="text-[9px] font-bold uppercase">Member since {mounted ? new Date(user.createdAt).toLocaleDateString() : '...'}</span>
+                <span className="text-[9px] font-bold uppercase">Member since {mounted ? formatDate(new Date(user.createdAt)) : '...'}</span>
               </div>
             </div>
           </div>

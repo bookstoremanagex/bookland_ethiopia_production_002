@@ -31,7 +31,7 @@ export default async function DeliverySalesHomePage() {
 
     return (
         <div className="p-4 md:p-10 space-y-8 md:space-y-10 bg-[#F8FAFC] min-h-screen">
-            {/* Financial Overview Section — TOP */}
+            {/* Financial Overview Section Ã¢â‚¬â€ TOP */}
             <div className="space-y-6">
                 <div className="flex items-center justify-between">
                     <div className="space-y-1">
@@ -105,7 +105,7 @@ export default async function DeliverySalesHomePage() {
                         <Truck className="size-5 md:size-6" />
                         <span className="text-[9px] md:text-xs font-normal uppercase tracking-[0.3em] opacity-50">Logistics & Sales</span>
                     </div>
-                    <h1 className="text-3xl md:text-6xl font-black tracking-tight text-primarycolor uppercase italic leading-none">
+                    <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
                         Delivery & <span className="text-secondarycolor not-italic">Sales</span>
                     </h1>
                     <p className="text-muted-foreground font-bold tracking-tight text-sm md:text-lg max-w-xl">

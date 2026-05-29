@@ -15,21 +15,45 @@ import {
     Calendar,
     ChevronLeft,
     ChevronRight,
+    FileText,
+    Eye,
+    Loader2,
+    X,
+    Upload,
+    User,
+    DollarSign,
+    ImageIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
+import { parseISO } from "date-fns";
+import { useCalendar } from "@/lib/calendar-context";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { approvePayment, checkIsAdminUser } from "@/app/actions/payment-actions";
+import { updateCheckStatus } from "@/app/actions/check-actions";
 import RecordPaymentModal from "./RecordPaymentModal";
+import {
+    Drawer,
+    DrawerContent,
+    DrawerHeader,
+    DrawerTitle,
+    DrawerDescription,
+    DrawerFooter,
+    DrawerClose,
+} from "@/components/ui/drawer";
 
 interface CheckInfo {
     id: number;
     bankname: string;
     username: string;
     status: string;
+    type?: string;
+    amount?: string;
+    recordeddate?: string | Date;
+    memo?: string;
+    imageUrl?: string;
 }
 
 interface Payment {
@@ -65,16 +89,39 @@ interface Props {
 }
 
 export default function ManagePaymentDetailClient({ shop, payments, totals }: Props) {
+    const { formatDate } = useCalendar();
     const router = useRouter();
     const [isAdmin, setIsAdmin] = useState(false);
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
     const [approvingId, setApprovingId] = useState<number | null>(null);
+    const [selectedCheck, setSelectedCheck] = useState<CheckInfo | null>(null);
+    const [isCheckDrawerOpen, setIsCheckDrawerOpen] = useState(false);
+    const [clearingCheckId, setClearingCheckId] = useState<number | null>(null);
     const [paymentPage, setPaymentPage] = useState(1);
     const perPage = 15;
 
     useEffect(() => {
         checkIsAdminUser().then(res => setIsAdmin(res.isAdmin));
     }, []);
+
+    const handleClearCheck = async (checkId: number) => {
+        setClearingCheckId(checkId);
+        try {
+            const res = await updateCheckStatus(checkId, "CLEARED");
+            if (res.success) {
+                toast.success("Check cleared successfully");
+                setIsCheckDrawerOpen(false);
+                setSelectedCheck(null);
+                router.refresh();
+            } else {
+                toast.error(res.error);
+            }
+        } catch {
+            toast.error("Failed to clear check");
+        } finally {
+            setClearingCheckId(null);
+        }
+    };
 
     const handleApprove = async (paymentId: number) => {
         const payment = payments.find(p => p.id === paymentId);
@@ -144,7 +191,7 @@ export default function ManagePaymentDetailClient({ shop, payments, totals }: Pr
                         )}
                         <div className="flex items-center gap-3 text-sm text-gray-600">
                             <Calendar className="size-4 text-primarycolor/40" />
-                            <span className="font-semibold">Partner since {format(new Date(shop.createdAt), "MMM yyyy")}</span>
+                            <span className="font-semibold">Partner since {formatDate(new Date(shop.createdAt), "MMM yyyy")}</span>
                         </div>
                     </div>
                 </div>
@@ -222,7 +269,7 @@ export default function ManagePaymentDetailClient({ shop, payments, totals }: Pr
                                             </span>
                                         </div>
                                         <div className="flex items-center gap-3 text-[10px] text-muted-foreground font-bold mt-0.5">
-                                            <span>{format(new Date(payment.createdAt), "MMM dd, yyyy")}</span>
+                                            <span>{formatDate(new Date(payment.createdAt))}</span>
                                             {payment.check && (
                                                 <span className="flex items-center gap-2">
                                                     <Store className="size-3" />
@@ -235,6 +282,15 @@ export default function ManagePaymentDetailClient({ shop, payments, totals }: Pr
                                                     )}>
                                                         {payment.check.status === "CLEARED" ? "Cleared" : "Pending"}
                                                     </span>
+                                                    <button
+                                                        onClick={() => {
+                                                            setSelectedCheck(payment.check!);
+                                                            setIsCheckDrawerOpen(true);
+                                                        }}
+                                                        className="p-1 rounded-lg hover:bg-slate-100 text-muted-foreground hover:text-primarycolor transition-all cursor-pointer"
+                                                    >
+                                                        <Eye className="size-3.5" />
+                                                    </button>
                                                 </span>
                                             )}
                                         </div>
@@ -310,6 +366,129 @@ export default function ManagePaymentDetailClient({ shop, payments, totals }: Pr
                 shopId={shop.id}
                 shopName={shop.name}
             />
+
+            {/* Check Detail Drawer */}
+            <Drawer open={isCheckDrawerOpen} onOpenChange={(o) => { if (!o) { setIsCheckDrawerOpen(false); setSelectedCheck(null); } }}>
+                <DrawerContent className="rounded-t-[2rem] border-t-4 border-primarycolor/5">
+                    <DrawerHeader className="text-left px-6 pt-6 pb-2">
+                        <DrawerTitle className="text-lg font-black text-primarycolor uppercase tracking-tight italic">
+                            Check <span className="text-secondarycolor not-italic">Details</span>
+                        </DrawerTitle>
+                        <DrawerDescription className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">
+                            {selectedCheck?.bankname} — {selectedCheck?.username}
+                        </DrawerDescription>
+                    </DrawerHeader>
+
+                    <div className="px-6 py-4 space-y-4 overflow-y-auto max-h-[60vh]">
+                        {selectedCheck?.imageUrl && (
+                            <div className="rounded-2xl overflow-hidden border-2 border-slate-100 bg-slate-50">
+                                <img
+                                    src={selectedCheck.imageUrl}
+                                    alt="Check image"
+                                    className="w-full h-48 object-contain bg-white"
+                                />
+                            </div>
+                        )}
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                                <div className="flex items-center gap-2">
+                                    <Building2 className="size-3.5 text-primarycolor/40" />
+                                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Bank</p>
+                                </div>
+                                <p className="font-black text-primarycolor text-sm">{selectedCheck?.bankname || "—"}</p>
+                            </div>
+                            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                                <div className="flex items-center gap-2">
+                                    <User className="size-3.5 text-primarycolor/40" />
+                                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Username</p>
+                                </div>
+                                <p className="font-black text-primarycolor text-sm">{selectedCheck?.username || "—"}</p>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                                <div className="flex items-center gap-2">
+                                    <FileText className="size-3.5 text-primarycolor/40" />
+                                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Type</p>
+                                </div>
+                                <p className="font-black text-primarycolor text-sm">{selectedCheck?.type || "—"}</p>
+                            </div>
+                            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                                <div className="flex items-center gap-2">
+                                    <DollarSign className="size-3.5 text-primarycolor/40" />
+                                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Amount</p>
+                                </div>
+                                <p className="font-black text-primarycolor text-sm">{selectedCheck?.amount ? `${selectedCheck.amount} ETB` : "—"}</p>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                                <div className="flex items-center gap-2">
+                                    <Calendar className="size-3.5 text-primarycolor/40" />
+                                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Date</p>
+                                </div>
+                                <p className="font-black text-primarycolor text-sm">
+                                    {selectedCheck?.recordeddate
+                                        ? formatDate(typeof selectedCheck.recordeddate === "string" ? parseISO(selectedCheck.recordeddate) : selectedCheck.recordeddate)
+                                        : "—"}
+                                </p>
+                            </div>
+                            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                                <div className="flex items-center gap-2">
+                                    <Clock className="size-3.5 text-primarycolor/40" />
+                                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Status</p>
+                                </div>
+                                <span className={cn(
+                                    "inline-block px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest",
+                                    selectedCheck?.status === "CLEARED"
+                                        ? "bg-emerald-100 text-emerald-700"
+                                        : selectedCheck?.status === "BOUNCED"
+                                        ? "bg-red-100 text-red-700"
+                                        : "bg-amber-100 text-amber-700"
+                                )}>
+                                    {selectedCheck?.status || "—"}
+                                </span>
+                            </div>
+                        </div>
+
+                        {selectedCheck?.memo && (
+                            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                                <div className="flex items-center gap-2">
+                                    <FileText className="size-3.5 text-primarycolor/40" />
+                                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Memo</p>
+                                </div>
+                                <p className="font-bold text-primarycolor text-sm">{selectedCheck.memo}</p>
+                            </div>
+                        )}
+                    </div>
+
+                    <DrawerFooter className="px-6 pb-8 pt-2 flex-row gap-3">
+                        <DrawerClose asChild>
+                            <Button variant="outline"
+                                className="flex-1 h-12 rounded-2xl border-2 font-black uppercase tracking-widest text-[10px]">
+                                Close
+                            </Button>
+                        </DrawerClose>
+                        {selectedCheck && selectedCheck.status !== "CLEARED" && isAdmin && (
+                            <Button
+                                onClick={() => handleClearCheck(selectedCheck.id)}
+                                disabled={clearingCheckId === selectedCheck.id}
+                                className="flex-[2] h-12 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black uppercase tracking-widest text-[10px] shadow-xl shadow-emerald-600/20 gap-2"
+                            >
+                                {clearingCheckId === selectedCheck.id ? (
+                                    <Loader2 className="size-4 animate-spin" />
+                                ) : (
+                                    <CheckCircle2 className="size-4" />
+                                )}
+                                {clearingCheckId === selectedCheck.id ? "Clearing..." : "Approve & Clear"}
+                            </Button>
+                        )}
+                    </DrawerFooter>
+                </DrawerContent>
+            </Drawer>
         </div>
     );
 }

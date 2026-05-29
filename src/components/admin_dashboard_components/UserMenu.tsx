@@ -30,9 +30,10 @@ import { logoutAction } from "@/app/actions/auth-actions"
 interface UserMenuProps {
   name?: string | null
   role?: string | null
+  basePath?: string
 }
 
-export default function UserMenu({ name, role }: UserMenuProps) {
+export default function UserMenu({ name, role, basePath = "/admin_dashboard" }: UserMenuProps) {
   const router = useRouter()
   const [loggingOut, setLoggingOut] = React.useState(false)
   const [alertOpen, setAlertOpen] = React.useState(false)
@@ -73,14 +74,14 @@ export default function UserMenu({ name, role }: UserMenuProps) {
           <DropdownMenuSeparator />
 
           <DropdownMenuItem asChild>
-            <Link href="/admin_dashboard/profile" className="cursor-pointer">
+            <Link href={`${basePath}/profile`} className="cursor-pointer">
               <User className="size-4" />
               Profile
             </Link>
           </DropdownMenuItem>
 
           <DropdownMenuItem asChild>
-            <Link href="/admin_dashboard/settings/theme" className="cursor-pointer">
+            <Link href={`${basePath}/settings/theme`} className="cursor-pointer">
               <Settings className="size-4" />
               Settings
             </Link>

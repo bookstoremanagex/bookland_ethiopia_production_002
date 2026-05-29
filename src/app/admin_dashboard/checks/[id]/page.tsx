@@ -22,5 +22,5 @@ export default async function CheckDetailPage({
         notFound()
     }
 
-    return <CheckDetailClient check={check} isAdmin={session?.role === "Admin"} />
+    return <CheckDetailClient check={check} isAdmin={session?.role === "ADMIN"} />
 }

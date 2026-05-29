@@ -51,6 +51,11 @@ export default async function ManagePaymentDetailPage({ params }: { params: Prom
                     bankname: p.check.bankname,
                     username: p.check.username,
                     status: p.check.status,
+                    type: p.check.type,
+                    amount: p.check.amount,
+                    recordeddate: p.check.recordeddate,
+                    memo: p.check.memo,
+                    imageUrl: p.check.imageUrl,
                 } : null,
                 createdAt: p.createdAt,
             }))}

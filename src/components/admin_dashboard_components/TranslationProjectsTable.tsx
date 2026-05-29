@@ -13,7 +13,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Search, ChevronLeft, ChevronRight, PenTool, Calendar, User, BookOpen, Plus, Clock } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight, PenTool, Calendar, User, BookOpen, Plus, Clock, Banknote } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 import Link from "next/link";
@@ -28,7 +28,7 @@ import {
   TableRow,
 } from "../ui/table";
 import { cn } from "../../lib/utils";
-import { format } from "date-fns";
+import { useCalendar } from "@/lib/calendar-context";
 
 export type TranslationProject = {
   id: number;
@@ -40,6 +40,9 @@ export type TranslationProject = {
     name: string;
   };
   Status: string;
+  cost: number | null;
+  payment_status: string;
+  currently_paid: number;
   startDate: string | Date | null;
   endDate: string | Date | null;
   createdAt: string | Date;
@@ -52,6 +55,12 @@ const statusConfig = {
   COMPLETED: { label: "Completed", color: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" },
 };
 
+const paymentConfig: Record<string, { label: string; color: string }> = {
+  PENDING: { label: "Pending", color: "text-amber-600" },
+  CURRENTLY_PAID: { label: "Partially Paid", color: "text-blue-600" },
+  SUCCEEDED: { label: "Paid", color: "text-emerald-600" },
+};
+
 interface TranslationProjectsTableProps {
   data: TranslationProject[];
 }
@@ -59,6 +68,7 @@ interface TranslationProjectsTableProps {
 export function TranslationProjectsTable({ data }: TranslationProjectsTableProps) {
   const pathname = usePathname();
   const dashboardRoot = pathname.split('/').slice(0, 2).join('/');
+  const { formatDate } = useCalendar();
 
   const columns = React.useMemo<ColumnDef<TranslationProject>[]>(() => [
     {
@@ -107,12 +117,32 @@ export function TranslationProjectsTable({ data }: TranslationProjectsTableProps
           <div className="flex flex-col text-[11px] font-bold text-muted-foreground">
             <div className="flex items-center gap-1">
               <Calendar className="size-3 text-primarycolor/40" />
-              S: {start ? format(new Date(start), "MMM dd, yyyy") : "N/A"}
+              S: {start ? formatDate(new Date(start)) : "N/A"}
             </div>
             <div className="flex items-center gap-1">
               <Calendar className="size-3 text-secondarycolor/40" />
-              E: {end ? format(new Date(end), "MMM dd, yyyy") : "N/A"}
+              E: {end ? formatDate(new Date(end)) : "N/A"}
             </div>
+          </div>
+        );
+      },
+    },
+    {
+      id: "budget",
+      header: "Budget",
+      cell: ({ row }) => {
+        const p = row.original;
+        const payCfg = paymentConfig[p.payment_status] || paymentConfig.PENDING;
+        const remaining = p.cost ? p.cost - p.currently_paid : 0;
+        return (
+          <div className="flex flex-col text-[11px] font-bold">
+            {p.cost != null && (
+              <span className="text-muted-foreground">{p.cost.toLocaleString()} ETB</span>
+            )}
+            <span className={cn(payCfg.color)}>
+              {payCfg.label}
+              {p.currently_paid > 0 && ` (${p.currently_paid.toLocaleString()} ETB)`}
+            </span>
           </div>
         );
       },
@@ -235,13 +265,26 @@ export function TranslationProjectsTable({ data }: TranslationProjectsTableProps
                 <div className="grid grid-cols-2 gap-4 pt-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground border-t-2 border-primarycolor/5">
                   <div className="space-y-1">
                     <span className="opacity-40">Start Date</span>
-                    <div className="text-primarycolor">{project.startDate ? format(new Date(project.startDate), "MMM dd, yyyy") : "TBD"}</div>
+                    <div className="text-primarycolor">{project.startDate ? formatDate(new Date(project.startDate)) : "TBD"}</div>
                   </div>
                   <div className="space-y-1">
                     <span className="opacity-40">Deadline</span>
-                    <div className="text-secondarycolor">{project.endDate ? format(new Date(project.endDate), "MMM dd, yyyy") : "TBD"}</div>
+                    <div className="text-secondarycolor">{project.endDate ? formatDate(new Date(project.endDate)) : "TBD"}</div>
                   </div>
                 </div>
+
+                {(project.cost != null || project.currently_paid > 0) && (
+                  <div className="flex items-center gap-4 pt-2 text-[10px] font-black uppercase tracking-widest border-t-2 border-primarycolor/5">
+                    <div className="flex items-center gap-1.5">
+                      <Banknote className="size-3 text-muted-foreground" />
+                      <span className="text-muted-foreground">{project.cost?.toLocaleString() || "—"} ETB</span>
+                    </div>
+                    <div className={cn(paymentConfig[project.payment_status]?.color || "text-muted-foreground")}>
+                      {paymentConfig[project.payment_status]?.label || "Pending"}
+                      {project.currently_paid > 0 && ` (${project.currently_paid.toLocaleString()} ETB)`}
+                    </div>
+                  </div>
+                )}
 
                 <Button asChild variant="ghost" className="w-full hover:bg-primarycolor/10 text-primarycolor font-black rounded-xl h-10 border border-primarycolor/10">
                   <Link href={`${dashboardRoot}/production/translation_work/${project.id}`}>

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   ColumnDef,
   SortingState,
@@ -36,7 +37,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
+import { useCalendar } from "@/lib/calendar-context";
 import ManageOrderDetailsModal from "./ManageOrderDetailsModal";
 
 export type AdminOrder = {
@@ -44,9 +45,14 @@ export type AdminOrder = {
   order_type: string;
   total_amount: number;
   amount_paid: number;
+  payment_type: string | null;
+  check_id: number | null;
   status: string;
   is_approved: boolean;
   memo: string | null;
+  allocation_summary: string | null;
+  delivery: boolean;
+  delivered_by: number | null;
   createdAt: string | Date;
   bookShopId: number;
   bookshopes: {
@@ -57,6 +63,15 @@ export type AdminOrder = {
     phone: string | null;
     email: string | null;
   };
+  checks: {
+    id: number;
+    bankname: string | null;
+    username: string | null;
+    amount: string | null;
+    type: string | null;
+    status: string | null;
+    imageUrl: string | null;
+  } | null;
   order_items: {
     id: number;
     quantity: number;
@@ -72,16 +87,32 @@ export type AdminOrder = {
 
 interface ManageOrdersPageContentProps {
   orders: AdminOrder[];
+  userRole?: string | null;
 }
 
 export default function ManageOrdersPageContent({
   orders,
+  userRole,
 }: ManageOrdersPageContentProps) {
+  const { formatDate } = useCalendar();
+  const searchParams = useSearchParams();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
   const [selectedOrder, setSelectedOrder] = useState<AdminOrder | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [orderList, setOrderList] = useState<AdminOrder[]>(orders);
+
+  // Auto-open order detail modal from notification link
+  useEffect(() => {
+    const orderId = searchParams.get("orderId");
+    if (orderId) {
+      const order = orderList.find((o) => o.id === Number(orderId));
+      if (order) {
+        setSelectedOrder(order);
+        setIsModalOpen(true);
+      }
+    }
+  }, [searchParams, orderList]);
 
   const pendingCount = useMemo(
     () => orderList.filter((o) => !o.is_approved).length,
@@ -199,7 +230,7 @@ export default function ManageOrdersPageContent({
       cell: ({ row }) => (
         <div className="flex items-center gap-1.5 text-muted-foreground text-[10px] font-bold">
           <Calendar className="size-3.5" />
-          {format(new Date(row.original.createdAt), "MMM dd, yyyy")}
+          {formatDate(new Date(row.original.createdAt))}
         </div>
       ),
     },
@@ -253,55 +284,57 @@ export default function ManageOrdersPageContent({
         )}
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-        {[
-          {
-            label: "Total Orders",
-            value: orderList.length,
-            color: "bg-primarycolor/10 text-primarycolor",
-            icon: ShoppingBag,
-          },
-          {
-            label: "Pending",
-            value: pendingCount,
-            color: "bg-amber-50 text-amber-700",
-            icon: Clock,
-          },
-          {
-            label: "Approved",
-            value: orderList.filter((o) => o.is_approved).length,
-            color: "bg-emerald-50 text-emerald-700",
-            icon: CheckCircle2,
-          },
-          {
-            label: "Total Value",
-            value:
-              orderList
-                .reduce((s, o) => s + o.total_amount, 0)
-                .toLocaleString() + " ETB",
-            color: "bg-blue-50 text-blue-700",
-            icon: Banknote,
-          },
-        ].map((stat) => (
-          <div
-            key={stat.label}
-            className={cn(
-              "rounded-2xl p-5 border flex items-center gap-4",
-              stat.color,
-              "bg-opacity-50 border-current border-opacity-20",
-            )}
-          >
-            <stat.icon className="size-6 shrink-0 opacity-60" />
-            <div>
-              <p className="text-[9px] font-black uppercase tracking-widest opacity-60">
-                {stat.label}
-              </p>
-              <p className="text-xl font-black">{stat.value}</p>
+      {/* Stats Cards — admin only */}
+      {userRole === "ADMIN" && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          {[
+            {
+              label: "Total Orders",
+              value: orderList.length,
+              color: "bg-primarycolor/10 text-primarycolor",
+              icon: ShoppingBag,
+            },
+            {
+              label: "Pending",
+              value: pendingCount,
+              color: "bg-amber-50 text-amber-700",
+              icon: Clock,
+            },
+            {
+              label: "Approved",
+              value: orderList.filter((o) => o.is_approved).length,
+              color: "bg-emerald-50 text-emerald-700",
+              icon: CheckCircle2,
+            },
+            {
+              label: "Total Value",
+              value:
+                orderList
+                  .reduce((s, o) => s + o.total_amount, 0)
+                  .toLocaleString() + " ETB",
+              color: "bg-blue-50 text-blue-700",
+              icon: Banknote,
+            },
+          ].map((stat) => (
+            <div
+              key={stat.label}
+              className={cn(
+                "rounded-2xl p-5 border flex items-center gap-4",
+                stat.color,
+                "bg-opacity-50 border-current border-opacity-20",
+              )}
+            >
+              <stat.icon className="size-6 shrink-0 opacity-60" />
+              <div>
+                <p className="text-[9px] font-black uppercase tracking-widest opacity-60">
+                  {stat.label}
+                </p>
+                <p className="text-xl font-black">{stat.value}</p>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* Table Container */}
       <div className="bg-white rounded-[2.5rem] border-2 border-primarycolor/5 shadow-xl overflow-hidden">
@@ -321,7 +354,8 @@ export default function ManageOrdersPageContent({
           </div>
         </div>
 
-        <div className="overflow-x-auto">
+        {/* Desktop table */}
+        <div className="hidden md:block overflow-x-auto">
           <Table className="min-w-[900px]">
             <TableHeader className="bg-slate-50/50">
               {table.getHeaderGroups().map((hg) => (
@@ -380,6 +414,82 @@ export default function ManageOrdersPageContent({
               )}
             </TableBody>
           </Table>
+        </div>
+
+        {/* Mobile card layout */}
+        <div className="block md:hidden space-y-3">
+          {table.getRowModel().rows?.length ? (
+            table.getRowModel().rows.map((row) => {
+              const o = row.original;
+              const items = o.order_items || [];
+              const firstTitle = items[0]?.bookedition?.books?.title || "Unknown";
+              const extraCount = items.length - 1;
+              return (
+                <div
+                  key={row.id}
+                  className={cn(
+                    "bg-white rounded-2xl p-4 border-2 shadow-sm cursor-pointer active:scale-[0.98] transition-transform",
+                    o.is_approved ? "border-emerald-100" : "border-amber-100"
+                  )}
+                  onClick={() => {
+                    setSelectedOrder(o);
+                    setIsModalOpen(true);
+                  }}
+                >
+                  {/* Row 1: Order # + Status */}
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-black text-primarycolor text-base">ORD-{o.id}</span>
+                    {o.is_approved ? (
+                      <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[8px] font-black uppercase tracking-widest">
+                        <CheckCircle2 className="size-3" /> Approved
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 text-[8px] font-black uppercase tracking-widest">
+                        <Clock className="size-3" /> Pending
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Row 2: Shop + Type */}
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2 min-w-0 flex-1">
+                      <Building2 className="size-3.5 text-primarycolor/60 shrink-0" />
+                      <span className="font-bold text-slate-700 text-xs truncate">{o.bookshopes?.name}</span>
+                    </div>
+                    <div className={cn(
+                      "px-2 py-0.5 rounded-full text-[7px] font-black uppercase tracking-widest shrink-0 ml-2",
+                      o.order_type === "requested" ? "bg-blue-100 text-blue-700" : "bg-purple-100 text-purple-700"
+                    )}>
+                      {o.order_type}
+                    </div>
+                  </div>
+
+                  {/* Row 3: Books + Amount */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5 min-w-0 flex-1">
+                      <span className="text-[9px] font-bold text-muted-foreground truncate">
+                        {firstTitle}
+                        {extraCount > 0 && <span className="text-primarycolor font-black"> +{extraCount} more</span>}
+                      </span>
+                    </div>
+                    <span className="font-black text-primarycolor text-xs shrink-0 ml-2">
+                      {o.total_amount.toLocaleString()} ETB
+                    </span>
+                  </div>
+
+                  {/* Row 4: Date */}
+                  <div className="flex items-center gap-1.5 mt-1.5 text-[8px] font-bold text-muted-foreground uppercase tracking-widest">
+                    <Calendar className="size-3" />
+                    {formatDate(new Date(o.createdAt))}
+                  </div>
+                </div>
+              );
+            })
+          ) : (
+            <div className="text-center py-16 text-muted-foreground italic font-bold text-sm">
+              No orders found
+            </div>
+          )}
         </div>
 
         {/* Pagination */}

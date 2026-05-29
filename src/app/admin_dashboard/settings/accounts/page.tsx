@@ -20,7 +20,7 @@ export default async function AccountsPage() {
         <div className="px-4 py-6 sm:p-8 mx-auto w-full min-w-0 max-w-full overflow-hidden sm:overflow-visible space-y-6 sm:space-y-8 animate-in fade-in duration-500">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-4xl font-black text-gray-800 tracking-tight">Accounts Management</h1>
+                    <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Accounts Management</h1>
                     <p className="text-gray-500 mt-2 font-medium">View and manage all system accounts</p>
                 </div>
                 <Link

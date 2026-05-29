@@ -40,6 +40,7 @@ export async function getOrdersByShopId(shopId: number) {
         is_deleted: false,
       },
       include: {
+        checks: true,
         order_items: {
           include: {
             bookedition: {
@@ -101,6 +102,8 @@ export async function createOrder(data: {
   order_type: string;
   memo?: string;
   amount_paid: number;
+  payment_type?: string;
+  check_id?: number | null;
   items: { bookId: number; quantity: number }[];
 }) {
   try {
@@ -155,8 +158,10 @@ export async function createOrder(data: {
         order_type: data.order_type,
         memo: data.memo,
         amount_paid: data.amount_paid,
+        payment_type: data.payment_type || "DIRECT",
+        check_id: data.check_id || null,
         total_amount: totalAmount,
-        is_approved: false, // Default as requested
+        is_approved: false,
         status: "Pending",
         updatedAt: new Date(),
         order_items: {
@@ -167,6 +172,24 @@ export async function createOrder(data: {
         order_items: true,
       },
     });
+
+    // 2b. If payment_type is CHECK, create a payment record
+    if (data.payment_type === "CHECK" && data.check_id && data.amount_paid > 0) {
+      try {
+        await (prisma as any).payments.create({
+          data: {
+            shopId: Number(data.bookShopId),
+            amount: data.amount_paid,
+            payment_type: "CHECK",
+            checkId: data.check_id,
+            status: "PENDING",
+            updatedAt: new Date(),
+          },
+        });
+      } catch (paymentErr) {
+        console.error("Failed to create payment record for check order:", paymentErr);
+      }
+    }
 
     revalidatePath(`/admin_dashboard/book_shops/${data.bookShopId}`);
 
@@ -252,6 +275,7 @@ export async function getAllOrders() {
       where: { is_deleted: false },
       include: {
         bookshopes: true,
+        checks: true,
         order_items: {
           include: {
             bookedition: {
@@ -292,7 +316,7 @@ export async function getBookStockBreakdown(bookId: number, editionIds?: number[
           include: { printer: true },
         },
       },
-      orderBy: { createdAt: "desc" },
+      orderBy: { createdAt: "asc" },
     });
 
     const result = editions
@@ -342,17 +366,29 @@ export async function approveOrder(
     price: number;
     type: "store" | "printer";
   }[],
+  allocationSummary?: string,
 ) {
   try {
+    const session = await getCurrentSession();
+    if (!session || session.role !== "ADMIN") {
+      return { success: false, error: "Only administrators can approve orders" };
+    }
+
     const id = Number(orderId);
     const order = await (prisma as any).orders.findUnique({
       where: { id },
-      include: { order_items: true, bookshopes: true },
+      include: { order_items: true, bookshopes: true, checks: true },
     });
 
     if (!order) return { success: false, error: "Order not found" };
     if (order.is_approved)
       return { success: false, error: "Order is already approved" };
+    if (order.payment_type === "CHECK" && order.check_id) {
+      const check = await (prisma as any).checks.findUnique({ where: { id: order.check_id } });
+      if (!check || check.status !== "CLEARED") {
+        return { success: false, error: "The associated check must be cleared before this order can be approved." };
+      }
+    }
 
     // Sanitize allocations - ensure all values are proper numbers
     const sanitized = allocations.map((a) => ({
@@ -374,8 +410,11 @@ export async function approveOrder(
       async (tx: any) => {
 
         // Proportional paid amount per item
+        // Collateral checks don't reduce debt
+        const isCollateral = order.checks?.type === "COLLATERAL";
+        const effectivePaid = isCollateral ? 0 : order.amount_paid;
         const paidRatio =
-          order.total_amount > 0 ? order.amount_paid / order.total_amount : 0;
+          order.total_amount > 0 ? effectivePaid / order.total_amount : 0;
 
         for (const alloc of sanitized) {
           // 1. Deduct from store or printer stock
@@ -475,6 +514,7 @@ export async function approveOrder(
             is_approved: true,
             status: "Approved",
             total_amount: newTotal,
+            allocation_summary: allocationSummary || null,
           },
         });
 
@@ -486,9 +526,8 @@ export async function approveOrder(
     revalidatePath("/admin_dashboard/manage_orders");
     revalidatePath(`/admin_dashboard/book_shops/${order.bookShopId}`);
 
-    // Record activity log (in a try-catch so it doesn't break the approval response)
+    // Record activity log with allocation details
     try {
-      const session = await getCurrentSession();
       if (session?.id) {
         const shopName = order.bookshopes?.name || `Shop #${order.bookShopId}`;
         await (prisma as any).activityLogs.create({
@@ -501,6 +540,7 @@ export async function approveOrder(
               shopName,
               totalAmount: newTotal,
               allocations: sanitized.length,
+              allocationSummary: allocationSummary || null,
             }),
             updatedAt: new Date(),
           },
@@ -508,6 +548,53 @@ export async function approveOrder(
       }
     } catch (logError) {
       console.error("Failed to record activity log for order approval:", logError);
+    }
+
+    // Create notifications for delivery and sales roles
+    try {
+      const shopName = order.bookshopes?.name || `Shop #${order.bookShopId}`;
+      const summaryText = allocationSummary || `Order ORD-${order.id} approved with ${sanitized.length} allocations.`;
+
+      // 1. Notify DELIVERY_AND_SALES role
+      await createNotification({
+        title: `Order ORD-${order.id} Approved for ${shopName}`,
+        message: `Order ORD-${order.id} has been approved. Stock has been allocated. Check the details for the full breakdown.\n\n${summaryText}`,
+        details: JSON.stringify({
+          orderId: order.id,
+          shopName,
+          totalAmount: newTotal,
+          allocationSummary: summaryText,
+        }),
+        type: "ORDER",
+        notification_to: "DELIVERY_AND_SALES",
+        notification_from: session?.name || "System",
+      });
+
+      // 2. Notify Delivery Sample accounts individually
+      const deliverySampleAccounts = await (prisma as any).accounts.findMany({
+        where: {
+          account_type: "Delivery Sample",
+          is_deleted: false,
+        },
+        select: { id: true, name: true },
+      });
+      for (const acc of deliverySampleAccounts) {
+        await createNotification({
+          title: `Order ORD-${order.id} Approved for ${shopName}`,
+          message: `Order ORD-${order.id} has been approved. Stock has been allocated. Check order details for the full breakdown.\n\n${summaryText}`,
+          details: JSON.stringify({
+            orderId: order.id,
+            shopName,
+            totalAmount: newTotal,
+            allocationSummary: summaryText,
+          }),
+          type: "ORDER",
+          notification_from: session?.name || "System",
+          accountId: acc.id,
+        });
+      }
+    } catch (notifError) {
+      console.error("Failed to create approval notifications:", notifError);
     }
 
     return { success: true };
@@ -544,5 +631,66 @@ export async function updateOrderPayment(orderId: number, amountPaid: number) {
   } catch (error) {
     console.error("Update order payment error:", error);
     return { success: false, error: "Failed to update order payment" };
+  }
+}
+
+export async function markOrderDelivered(orderId: number) {
+  try {
+    const session = await getCurrentSession();
+    if (!session?.id) return { success: false, error: "Not authenticated" };
+
+    const order = await (prisma as any).orders.findUnique({
+      where: { id: Number(orderId) },
+      select: { id: true, is_approved: true, delivery: true, bookShopId: true, bookshopes: { select: { name: true } } },
+    });
+
+    if (!order) return { success: false, error: "Order not found" };
+    if (!order.is_approved) return { success: false, error: "Order must be approved first" };
+    if (order.delivery) return { success: false, error: "Order already marked as delivered" };
+
+    await (prisma as any).orders.update({
+      where: { id: Number(orderId) },
+      data: {
+        delivery: true,
+        delivered_by: session.id,
+        updatedAt: new Date(),
+      },
+    });
+
+    const shopName = order.bookshopes?.name || `Shop #${order.bookShopId}`;
+
+    // Record activity log
+    try {
+      await (prisma as any).activityLogs.create({
+        data: {
+          accountId: session.id,
+          action: `Marked order ORD-${orderId} as delivered for ${shopName}`,
+          details: JSON.stringify({ orderId, deliveredBy: session.id, shopName }),
+          updatedAt: new Date(),
+        },
+      });
+    } catch (logErr) {
+      console.error("Failed to record delivery activity log:", logErr);
+    }
+
+    // Notify ADMIN
+    try {
+      await createNotification({
+        title: `Order ORD-${orderId} Delivered to ${shopName}`,
+        message: `Order ORD-${orderId} has been marked as delivered by ${session.name || "System"}.`,
+        details: JSON.stringify({ orderId, deliveredBy: session.id, shopName }),
+        type: "ORDER",
+        notification_to: "ADMIN",
+        notification_from: session?.name || "System",
+      });
+    } catch (notifErr) {
+      console.error("Failed to create delivery notification:", notifErr);
+    }
+
+    revalidatePath("/admin_dashboard/manage_orders");
+    return { success: true };
+  } catch (error: any) {
+    console.error("Mark order delivered error:", error);
+    return { success: false, error: error?.message || "Failed to mark order as delivered" };
   }
 }

@@ -25,16 +25,17 @@ import {
     ChevronLeft, 
     ChevronRight, 
     Store, 
-    Phone, 
     MapPin, 
     BadgeDollarSign,
     ArrowUpDown,
     ArrowRight,
     Search,
-    X
+    X,
+    Banknote,
 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import RecordPaymentModal from "@/app/admin_dashboard/book_shops/[id]/RecordPaymentModal";
 
 export type ShopFinance = {
   id: number;
@@ -46,73 +47,6 @@ export type ShopFinance = {
   totalPaid: number;
 };
 
-const columns: ColumnDef<ShopFinance>[] = [
-  {
-    accessorKey: "name",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="hover:bg-transparent p-0 font-black"
-        >
-          SHOP NAME
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
-    },
-    cell: ({ row }) => (
-      <div className="flex items-center gap-3">
-        <div className="size-10 rounded-xl bg-primarycolor/10 flex items-center justify-center text-primarycolor font-black shadow-inner">
-          <Store className="size-5" />
-        </div>
-        <span className="font-bold text-gray-800">{row.getValue("name")}</span>
-      </div>
-    ),
-  },
-  {
-    accessorKey: "location",
-    header: "LOCATION",
-    cell: ({ row }) => (
-      <div className="flex items-center gap-2 text-gray-500 font-medium">
-        <MapPin className="size-4 opacity-50" />
-        {row.getValue("location")}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "totalRemaining",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="hover:bg-transparent p-0 font-black text-right w-full justify-end"
-        >
-          REMAINING MONEY
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
-    },
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("totalRemaining"));
-      return (
-        <div className="text-right">
-          <span className={cn(
-            "inline-flex items-center gap-2 px-4 py-1.5 rounded-xl font-black text-sm border-2",
-            amount > 0 
-                ? "bg-red-50 text-red-600 border-red-100" 
-                : "bg-emerald-50 text-emerald-600 border-emerald-100"
-          )}>
-            <BadgeDollarSign className="size-4" />
-            {amount.toLocaleString()} ETB
-          </span>
-        </div>
-      );
-    },
-  },
-];
-
 interface ShopsFinanceTableProps {
   data: ShopFinance[];
 }
@@ -120,6 +54,93 @@ interface ShopsFinanceTableProps {
 export default function ShopsFinanceTable({ data }: ShopsFinanceTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = React.useState("");
+  const [selectedShop, setSelectedShop] = React.useState<ShopFinance | null>(null);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = React.useState(false);
+
+  const columns = React.useMemo<ColumnDef<ShopFinance>[]>(() => [
+    {
+      accessorKey: "name",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="hover:bg-transparent p-0 font-black"
+          >
+            SHOP NAME
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        )
+      },
+      cell: ({ row }) => (
+        <div className="flex items-center gap-3">
+          <div className="size-10 rounded-xl bg-primarycolor/10 flex items-center justify-center text-primarycolor font-black shadow-inner">
+            <Store className="size-5" />
+          </div>
+          <span className="font-bold text-gray-800">{row.getValue("name")}</span>
+        </div>
+      ),
+    },
+    {
+      accessorKey: "location",
+      header: "LOCATION",
+      cell: ({ row }) => (
+        <div className="flex items-center gap-2 text-gray-500 font-medium">
+          <MapPin className="size-4 opacity-50" />
+          {row.getValue("location")}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "totalRemaining",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="hover:bg-transparent p-0 font-black text-right w-full justify-end"
+          >
+            REMAINING MONEY
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        )
+      },
+      cell: ({ row }) => {
+        const amount = parseFloat(row.getValue("totalRemaining"));
+        return (
+          <div className="text-right">
+            <span className={cn(
+              "inline-flex items-center gap-2 px-4 py-1.5 rounded-xl font-black text-sm border-2",
+              amount > 0 
+                  ? "bg-red-50 text-red-600 border-red-100" 
+                  : "bg-emerald-50 text-emerald-600 border-emerald-100"
+            )}>
+              <BadgeDollarSign className="size-4" />
+              {amount.toLocaleString()} ETB
+            </span>
+          </div>
+        );
+      },
+    },
+    {
+      id: "actions",
+      header: "",
+      cell: ({ row }) => (
+        <div className="flex justify-end">
+          <Button
+            onClick={() => {
+              setSelectedShop(row.original);
+              setIsPaymentModalOpen(true);
+            }}
+            className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl h-10 px-4 font-black uppercase tracking-widest text-[9px] shadow-lg shadow-emerald-600/20 gap-1.5"
+          >
+            <Banknote className="size-3.5" />
+            Record Payment
+          </Button>
+        </div>
+      ),
+    },
+  ], []);
 
   const table = useReactTable({
     data,
@@ -246,6 +267,17 @@ export default function ShopsFinanceTable({ data }: ShopsFinanceTableProps) {
                         {shop.totalRemaining.toLocaleString()} ETB
                     </span>
                 </div>
+
+                <Button
+                  onClick={() => {
+                    setSelectedShop(shop);
+                    setIsPaymentModalOpen(true);
+                  }}
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl h-11 font-black uppercase tracking-widest text-[9px] shadow-lg shadow-emerald-600/20 gap-2"
+                >
+                  <Banknote className="size-4" />
+                  Record Payment
+                </Button>
               </div>
             );
           })
@@ -295,6 +327,16 @@ export default function ShopsFinanceTable({ data }: ShopsFinanceTableProps) {
           </Button>
         </div>
       </div>
+
+      {/* Record Payment Modal */}
+      {selectedShop && (
+        <RecordPaymentModal
+          isOpen={isPaymentModalOpen}
+          onClose={() => setIsPaymentModalOpen(false)}
+          shopId={selectedShop.id}
+          shopName={selectedShop.name}
+        />
+      )}
     </div>
   );
 }

@@ -23,6 +23,7 @@ import Link from 'next/link';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useCalendar } from "@/lib/calendar-context";
 import { toast } from "sonner";
 import { updateBookShopEdition } from "@/app/actions/book-shop-edition-actions";
 import {
@@ -90,6 +91,7 @@ const EditableField = ({ label, field, value, icon: Icon, type = "number", suffi
 };
 
 export default function AssignmentDetailsContent({ assignment: initialAssignment }: AssignmentDetailsContentProps) {
+  const { formatDate } = useCalendar();
   const [assignment, setAssignment] = useState(initialAssignment);
   const [mounted, setMounted] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -228,7 +230,7 @@ export default function AssignmentDetailsContent({ assignment: initialAssignment
                     </div>
                     <div>
                         <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Assignment Date</p>
-                        <h4 className="text-xl font-black text-primarycolor mt-1">{mounted ? new Date(assignment.createdAt).toLocaleDateString() : '...'}</h4>
+                        <h4 className="text-xl font-black text-primarycolor mt-1">{mounted ? formatDate(new Date(assignment.createdAt)) : '...'}</h4>
                     </div>
                 </div>
           </div>

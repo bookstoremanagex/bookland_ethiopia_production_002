@@ -20,6 +20,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { useCalendar } from "@/lib/calendar-context";
 
 interface DbDeliveryNote {
     id: number;
@@ -37,6 +38,7 @@ interface DbDeliveryNote {
 export default function DeliveryNoteDetailPage() {
     const router = useRouter();
     const params = useParams();
+    const { formatDate, formatShort, formatLong, formatDateTime } = useCalendar();
 
     // Safely unwrap and resolve params.id
     const rawId = params?.id;
@@ -121,9 +123,9 @@ export default function DeliveryNoteDetailPage() {
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div>
                         <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-primarycolor/60 bg-primarycolor/5 border border-primarycolor/10 px-3 py-1 rounded-full w-fit">
-                            <Truck className="size-3.5 text-primarycolor" /> {note.deliveryNumber} • Dispatch Ledger
+                            <Truck className="size-3.5 text-primarycolor" /> {note.deliveryNumber} â€¢ Dispatch Ledger
                         </div>
-                        <h1 className="text-3xl font-black text-secondarycolor uppercase tracking-tight mt-2">
+                        <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
                             {note.receiverName}
                         </h1>
                     </div>
@@ -189,7 +191,7 @@ export default function DeliveryNoteDetailPage() {
                                 <p className="text-[10px] font-black uppercase tracking-widest text-secondarycolor/50">Dispatch Date</p>
                                 <span className="text-xs font-semibold text-secondarycolor mt-1 flex items-center gap-1">
                                     <Calendar className="size-3.5 text-primarycolor/60" />
-                                    {note.deliveryDate ? note.deliveryDate.toLocaleDateString() : "—"}
+                                    {note.deliveryDate ? formatDate(new Date(note.deliveryDate)) : "â€”"}
                                 </span>
                             </div>
                         </div>

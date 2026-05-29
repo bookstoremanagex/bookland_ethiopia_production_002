@@ -38,12 +38,13 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import Link from "next/link"
-import { format } from "date-fns"
+import { useCalendar } from "@/lib/calendar-context"
 import { usePathname } from "next/navigation"
 
 export default function DamagedBooksTable({ data }: { data: any[] }) {
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
+    const { formatDate } = useCalendar()
     const pathname = usePathname()
     const dashboardRoot = pathname.split('/').slice(0, 2).join('/')
 
@@ -118,7 +119,7 @@ export default function DamagedBooksTable({ data }: { data: any[] }) {
                 <div className="flex items-center gap-2 text-muted-foreground">
                     <Calendar className="size-3.5" />
                     <span className="font-bold text-[10px]">
-                        {format(new Date(row.getValue("createdAt")), "MMM dd, yyyy")}
+                        {formatDate(new Date(row.getValue("createdAt")))}
                     </span>
                 </div>
             ),
@@ -259,7 +260,7 @@ export default function DamagedBooksTable({ data }: { data: any[] }) {
                                 <div className="flex items-center gap-1.5 text-muted-foreground">
                                     <Calendar className="size-3" />
                                     <span className="font-bold text-[8px]">
-                                        {format(new Date(row.original.createdAt), "MMM dd")}
+                                        {formatDate(new Date(row.original.createdAt), "MMM dd")}
                                     </span>
                                 </div>
                             </div>

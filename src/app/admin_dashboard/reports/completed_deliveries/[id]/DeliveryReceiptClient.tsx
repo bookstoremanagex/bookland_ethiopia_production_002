@@ -21,7 +21,7 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { format } from 'date-fns'
+import { useCalendar } from '@/lib/calendar-context'
 import { cn } from '@/lib/utils'
 
 interface DeliveryReceiptClientProps {
@@ -29,6 +29,7 @@ interface DeliveryReceiptClientProps {
 }
 
 export default function DeliveryReceiptClient({ delivery }: DeliveryReceiptClientProps) {
+    const { formatLong } = useCalendar()
     const handlePrint = () => {
         window.print()
     }
@@ -74,7 +75,7 @@ export default function DeliveryReceiptClient({ delivery }: DeliveryReceiptClien
                         </div>
                         <div className="text-right space-y-1">
                             <p className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em]">Settled On</p>
-                            <p className="text-xl font-black">{format(new Date(delivery.updatedAt), "MMMM dd, yyyy")}</p>
+                            <p className="text-xl font-black">{formatLong(new Date(delivery.updatedAt))}</p>
                         </div>
                     </div>
                 </div>

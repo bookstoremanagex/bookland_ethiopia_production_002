@@ -1,13 +1,13 @@
 "use client"
 
-import { Printer, MapPin, Phone, ExternalLink } from 'lucide-react'
+import { Printer, MapPin, Phone, ExternalLink, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 
 export default function PrintersTable({ data }: { data: any[] }) {
   return (
     <div className="bg-white rounded-[3rem] border-2 border-primarycolor/5 shadow-2xl overflow-hidden">
-      <div className="overflow-x-auto">
+      <div className="hidden md:block overflow-x-auto">
         <table className="w-full">
           <thead>
             <tr className="border-b-2 border-slate-100 bg-slate-50/50">
@@ -62,6 +62,47 @@ export default function PrintersTable({ data }: { data: any[] }) {
             )}
           </tbody>
         </table>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 p-4 md:hidden">
+        {data.length > 0 ? (
+          data.map((printer: any) => (
+            <Link
+              key={printer.id}
+              href={`/admin_dashboard/printing/printers/${printer.id}`}
+              className="block bg-white rounded-2xl border-2 border-primarycolor/5 p-5 hover:shadow-xl hover:border-primarycolor/10 transition-all active:scale-[0.98]"
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="size-10 rounded-xl bg-primarycolor/10 flex items-center justify-center text-primarycolor shrink-0">
+                    <Printer className="size-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="font-black text-primarycolor text-sm leading-tight truncate">{printer.name}</div>
+                    <div className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mt-0.5">Partner ID: #{printer.id}</div>
+                  </div>
+                </div>
+                <ChevronRight className="size-5 text-primarycolor/30 shrink-0 mt-1" />
+              </div>
+
+              <div className="mt-4 flex flex-col gap-2">
+                <div className="flex items-center gap-2">
+                  <MapPin className="size-3.5 text-primarycolor/40 shrink-0" />
+                  <span className="font-bold text-primarycolor text-xs truncate">{printer.location}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Phone className="size-3.5 text-primarycolor/40 shrink-0" />
+                  <span className="font-bold text-primarycolor text-xs truncate">{printer.phone || "N/A"}</span>
+                </div>
+              </div>
+            </Link>
+          ))
+        ) : (
+          <div className="py-16 text-center space-y-4 opacity-30">
+            <Printer className="size-12 mx-auto" />
+            <p className="text-sm font-black uppercase tracking-widest">No printers registered</p>
+          </div>
+        )}
       </div>
     </div>
   )

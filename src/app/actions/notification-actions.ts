@@ -4,13 +4,15 @@ import prisma from "../../lib/prisma";
 import { revalidatePath } from "next/cache";
 import { getCurrentSession } from "./auth-actions";
 
-export async function getUnreadCount(accountId?: number) {
+export async function getUnreadCount(accountId?: number, notificationTo?: string) {
   try {
     const where: any = { is_deleted: false, is_read: false };
-    if (accountId) {
+    if (notificationTo) {
+      where.notification_to = notificationTo;
+    } else if (accountId) {
       where.OR = [
         { accountId },
-        { accountId: null }
+        { accountId: null },
       ];
     }
     const count = await (prisma as any).notification.count({ where })
@@ -20,13 +22,15 @@ export async function getUnreadCount(accountId?: number) {
   }
 }
 
-export async function getNotifications(accountId?: number) {
+export async function getNotifications(accountId?: number, notificationTo?: string) {
   try {
     const where: any = { is_deleted: false };
-    if (accountId) {
+    if (notificationTo) {
+      where.notification_to = notificationTo;
+    } else if (accountId) {
       where.OR = [
         { accountId },
-        { accountId: null }
+        { accountId: null },
       ];
     }
     const notifications = await (prisma as any).notification.findMany({

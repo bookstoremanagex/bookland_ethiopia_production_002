@@ -12,7 +12,7 @@ export default async function ChecksPage() {
         <div className="w-full py-10 px-4 md:px-8 max-w-none mx-auto">
             <div className="mb-10 flex flex-col md:flex-row items-center justify-between gap-6">
                 <div className="space-y-2 text-center md:text-left">
-                    <h1 className="text-4xl md:text-5xl font-black tracking-tight text-primarycolor uppercase italic">
+                    <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
                         Manage <span className="text-secondarycolor not-italic">Checks</span>
                     </h1>
                     <p className="text-muted-foreground font-bold tracking-tight">

@@ -24,6 +24,7 @@ import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useCalendar } from "@/lib/calendar-context";
 import { toast } from "sonner";
 import { updateBookShopEdition } from "@/app/actions/book-shop-edition-actions";
 import {
@@ -115,6 +116,7 @@ const EditableField = ({
 export default function AssignmentDetailsContent({
   assignment: initialAssignment,
 }: AssignmentDetailsContentProps) {
+  const { formatDate } = useCalendar();
   const [assignment, setAssignment] = useState(initialAssignment);
   const pathname = usePathname();
   const dashboardRoot = pathname.split("/").slice(0, 2).join("/");
@@ -283,7 +285,7 @@ export default function AssignmentDetailsContent({
                 </p>
                 <h4 className="text-xl font-black text-primarycolor mt-1">
                   {mounted
-                    ? new Date(assignment.createdAt).toLocaleDateString()
+                    ? formatDate(new Date(assignment.createdAt))
                     : "..."}
                 </h4>
               </div>

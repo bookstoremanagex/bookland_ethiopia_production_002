@@ -143,6 +143,101 @@ export async function deletePrintOrder(id: number) {
   }
 }
 
+export async function quickCreateBook(data: {
+  title: string;
+  author: string;
+  category: string;
+  publication_year: string;
+  language?: string;
+}) {
+  try {
+    const unique_code = `BOOK-${Math.random().toString(36).substring(2, 9).toUpperCase()}`;
+    const sku = `SKU-${data.title.substring(0, 3).toUpperCase()}-${Math.random().toString(36).substring(2, 7).toUpperCase()}`;
+    const book = await (prisma as any).books.create({
+      data: {
+        title: data.title,
+        author: data.author,
+        category: data.category,
+        publication_year: data.publication_year,
+        language: data.language || null,
+        unique_identification_code: unique_code,
+        book_sku: sku,
+        status: "available",
+        updatedAt: new Date(),
+      },
+    });
+    revalidatePath("/admin_dashboard/printing/manage");
+    revalidatePath("/admin_dashboard/books");
+    return { success: true, data: book };
+  } catch (error: any) {
+    return { success: false, error: error.message || "Failed to create book" };
+  }
+}
+
+export async function quickCreateEdition(data: {
+  edition_name: string;
+  bookId: number;
+  total_print_count?: number;
+  number_of_pages?: number;
+  production_price?: number;
+}) {
+  try {
+    const edition = await (prisma as any).bookedition.create({
+      data: {
+        edition_name: data.edition_name,
+        bookId: data.bookId,
+        total_print_count: data.total_print_count || 0,
+        count_remening_for_transfer: data.total_print_count || 0,
+        number_of_pages: data.number_of_pages || 0,
+        production_price: data.production_price || 0,
+        selling_price: data.production_price || 0,
+        updatedAt: new Date(),
+      },
+    });
+    revalidatePath("/admin_dashboard/printing/manage");
+    revalidatePath("/admin_dashboard/books");
+    return { success: true, data: edition };
+  } catch (error: any) {
+    return { success: false, error: error.message || "Failed to create edition" };
+  }
+}
+
+export async function updatePrintOrderItemStatus(itemId: number, status: string) {
+  try {
+    const current = await (prisma as any).printorder_items.findUnique({ where: { id: itemId } });
+    if (!current) return { success: false, error: "Item not found" };
+    if (current.status === "COMPLETED" && status !== "COMPLETED") {
+      return { success: false, error: "Cannot revert a completed item" };
+    }
+    await (prisma as any).printorder_items.update({
+      where: { id: itemId },
+      data: { status, updatedAt: new Date() },
+    });
+    revalidatePath("/printer_dashboard");
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: error.message || "Failed to update status" };
+  }
+}
+
+export async function updatePrintOrderStatus(orderId: number, status: string) {
+  try {
+    const current = await (prisma as any).printorder.findUnique({ where: { id: orderId } });
+    if (!current) return { success: false, error: "Project not found" };
+    if (current.status === "COMPLETED" && status !== "COMPLETED") {
+      return { success: false, error: "Cannot revert a completed project" };
+    }
+    await (prisma as any).printorder.update({
+      where: { id: orderId },
+      data: { status, updatedAt: new Date() },
+    });
+    revalidatePath("/printer_dashboard");
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: error.message || "Failed to update project status" };
+  }
+}
+
 export async function addPrintOrderPayment(orderId: number, data: { amount: number, payment_date: string, reference?: string }) {
     try {
         const payment = await (prisma as any).printorder_payments.create({

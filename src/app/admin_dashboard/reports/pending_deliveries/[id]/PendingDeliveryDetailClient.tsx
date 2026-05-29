@@ -17,7 +17,7 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { format } from 'date-fns'
+import { useCalendar } from '@/lib/calendar-context'
 import { cn } from '@/lib/utils'
 
 interface PendingDeliveryDetailClientProps {
@@ -25,6 +25,7 @@ interface PendingDeliveryDetailClientProps {
 }
 
 export default function PendingDeliveryDetailClient({ delivery }: PendingDeliveryDetailClientProps) {
+    const { formatDate, formatLong } = useCalendar()
     return (
         <div className="min-h-screen bg-[#F8FAFC] p-4 md:p-8">
             {/* Header */}
@@ -110,11 +111,11 @@ export default function PendingDeliveryDetailClient({ delivery }: PendingDeliver
                         <div className="space-y-4 relative z-10">
                             <div className="space-y-1">
                                 <p className="text-[10px] font-black text-white/40 uppercase tracking-widest">Distribution Date</p>
-                                <p className="text-lg font-black">{format(new Date(delivery.createdAt), "MMMM dd, yyyy")}</p>
+                                <p className="text-lg font-black">{formatLong(new Date(delivery.createdAt))}</p>
                             </div>
                             <div className="space-y-1">
                                 <p className="text-[10px] font-black text-white/40 uppercase tracking-widest">Last Activity</p>
-                                <p className="text-lg font-black">{format(new Date(delivery.updatedAt), "MMM dd, hh:mm a")}</p>
+                                <p className="text-lg font-black">{formatDate(new Date(delivery.updatedAt), "MMM dd, hh:mm a")}</p>
                             </div>
                         </div>
                     </div>

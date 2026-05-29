@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Save, User, Mail, Shield, Activity, X, Edit2, Lock, Key, RefreshCcw, ToggleLeft, ToggleRight } from 'lucide-react';
+import { ArrowLeft, Save, User, Mail, Shield, Activity, X, Edit2, Lock, Key, RefreshCcw, ToggleLeft, ToggleRight, BookOpen, Store, FileText, Printer, Receipt, Truck, FileSignature, StickyNote, UserCog, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
@@ -12,8 +12,14 @@ import DeleteAccountModal from '@/components/admin_dashboard_components/DeleteAc
 
 interface RoleData {
   id: number;
-  role_name: string;
   role_status: boolean;
+  roletypeId: number;
+}
+
+interface RoleTypeData {
+  id: number;
+  rolename: string;
+  role_detail: string | null;
 }
 
 interface AccountData {
@@ -25,26 +31,169 @@ interface AccountData {
   roles?: RoleData[];
 }
 
-const AVAILABLE_ROLES = [
-  { id: "adding_book_store", label: "Adding Book Store" },
-  { id: "adding_edition", label: "Adding Edition to Book Shop" },
-  { id: "adding_stores", label: "Adding Stock to Stores" },
-  { id: "adding_damaged_books", label: "Adding Damaged Books" },
-  { id: "adding_checks", label: "Adding Checks" },
+const PERMISSION_GROUPS = [
+  {
+    group: "Books",
+    icon: BookOpen,
+    roles: [
+      { id: "Viewing Books", label: "View Books" },
+      { id: "Editing Books", label: "Edit Books" },
+      { id: "Adding Books", label: "Add Books" },
+      { id: "Deleting Books", label: "Delete Books" },
+    ],
+  },
+  {
+    group: "Stores",
+    icon: Store,
+    roles: [
+      { id: "Adding Stores", label: "Add Stores" },
+      { id: "Viewing Stores", label: "View Stores" },
+      { id: "Editing Stores", label: "Edit Stores" },
+      { id: "Deleting Stores", label: "Delete Stores" },
+    ],
+  },
+  {
+    group: "Damaged Books",
+    icon: AlertTriangle,
+    roles: [
+      { id: "Add DamagedBooks", label: "Add Damaged Books" },
+      { id: "Delete DamagedBooks", label: "Delete Damaged Books" },
+      { id: "Edit DamagedBooks", label: "Edit Damaged Books" },
+      { id: "View DamagedBooks", label: "View Damaged Books" },
+    ],
+  },
+  {
+    group: "Book Shops",
+    icon: Store,
+    roles: [
+      { id: "Adding BookShop", label: "Add Book Shop" },
+      { id: "Viewing BookShops", label: "View Book Shops" },
+      { id: "Editing BookShops", label: "Edit Book Shops" },
+      { id: "Deleting BookShops", label: "Delete Book Shops" },
+    ],
+  },
+  {
+    group: "Finance",
+    icon: Receipt,
+    roles: [
+      { id: "Record Payment", label: "Record Payment" },
+      { id: "Create Check", label: "Create Check" },
+    ],
+  },
+  {
+    group: "Printers",
+    icon: Printer,
+    roles: [
+      { id: "Register Printer", label: "Register Printer" },
+      { id: "Edit Printers", label: "Edit Printers" },
+      { id: "Delete Printer", label: "Delete Printer" },
+    ],
+  },
+  {
+    group: "Contract Documents",
+    icon: FileText,
+    roles: [
+      { id: "Viewing Contract Documents", label: "View Contract Documents" },
+      { id: "Editing Contract Documents", label: "Edit Contract Documents" },
+      { id: "Creating Contract Documents", label: "Create Contract Documents" },
+      { id: "Deleting Contract Documents", label: "Delete Contract Documents" },
+    ],
+  },
+  {
+    group: "Print Agreements",
+    icon: FileSignature,
+    roles: [
+      { id: "Viewing Print Agreements", label: "View Print Agreements" },
+      { id: "Editing Print Agreements", label: "Edit Print Agreements" },
+      { id: "Creating Print Agreements", label: "Create Print Agreements" },
+      { id: "Deleting Print Agreements", label: "Delete Print Agreements" },
+    ],
+  },
+  {
+    group: "Delivery Notes",
+    icon: Truck,
+    roles: [
+      { id: "Creating Delivery Notes", label: "Create Delivery Notes" },
+      { id: "Editing Delivery Notes", label: "Edit Delivery Notes" },
+      { id: "Viewing Delivery Notes", label: "View Delivery Notes" },
+      { id: "Deleting Delivery Notes", label: "Delete Delivery Notes" },
+    ],
+  },
+  {
+    group: "Invoice Document",
+    icon: FileText,
+    roles: [
+      { id: "Creating Invoice Document", label: "Create Invoice" },
+      { id: "Viewing Invoice Document", label: "View Invoice" },
+      { id: "Editing Invoice Document", label: "Edit Invoice" },
+      { id: "Deleting Invoice Document", label: "Delete Invoice" },
+    ],
+  },
+  {
+    group: "Approval Document",
+    icon: FileSignature,
+    roles: [
+      { id: "Creating Approval Document", label: "Create Approval" },
+      { id: "Editing Approval Document", label: "Edit Approval" },
+      { id: "Viewing Approval Document", label: "View Approval" },
+      { id: "Deleting Approval Document", label: "Delete Approval" },
+    ],
+  },
+  {
+    group: "Notes",
+    icon: StickyNote,
+    roles: [
+      { id: "Creating Notes", label: "Create Notes" },
+      { id: "Viewing Notes", label: "View Notes" },
+      { id: "Updating Notes", label: "Update Notes" },
+      { id: "Deleting Notes", label: "Delete Notes" },
+    ],
+  },
+  {
+    group: "Account",
+    icon: UserCog,
+    roles: [
+      { id: "Editing Profile", label: "Edit Profile" },
+      { id: "Editing Password", label: "Edit Password" },
+    ],
+  },
 ];
 
-export default function AccountDetailClient({ account }: { account: AccountData }) {
+function getAllPermissionIds(): string[] {
+  const ids: string[] = [];
+  for (const g of PERMISSION_GROUPS) {
+    for (const r of g.roles) {
+      ids.push(r.id);
+    }
+  }
+  return ids;
+}
+
+function findPermissionLabel(id: string): string {
+  for (const g of PERMISSION_GROUPS) {
+    const found = g.roles.find((r) => r.id === id);
+    if (found) return found.label;
+  }
+  return id;
+}
+
+export default function AccountDetailClient({ account, roletypes }: { account: AccountData; roletypes: RoleTypeData[] }) {
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [showResetForm, setShowResetForm] = useState(false);
+
+  const roletypeMap = new Map(roletypes.map((rt) => [rt.id, rt.rolename]));
+  const accountRoleMap = new Map(
+    (account.roles ?? []).map((r) => [r.roletypeId, r.role_status])
+  );
+
   const [roles, setRoles] = useState<Record<string, boolean>>(() => {
     const initial: Record<string, boolean> = {};
-    for (const r of AVAILABLE_ROLES) {
-      const existing = account.roles?.find((role) => role.role_name === r.id);
-      initial[r.id] = existing?.role_status ?? false;
+    for (const [rtId, rolename] of roletypeMap) {
+      initial[rolename] = accountRoleMap.get(rtId) ?? false;
     }
     return initial;
   });
@@ -57,7 +206,7 @@ export default function AccountDetailClient({ account }: { account: AccountData 
     const res = await toggleRoleAction(account.id, roleId, newValue);
     setTogglingRole(null);
     if (res.success) {
-      toast.success(`${AVAILABLE_ROLES.find((r) => r.id === roleId)?.label} ${newValue ? "enabled" : "disabled"}`);
+      toast.success(`${findPermissionLabel(roleId)} ${newValue ? "enabled" : "disabled"}`);
     } else {
       setRoles((prev) => ({ ...prev, [roleId]: !newValue }));
       toast.error(res.error || "Failed to update role");
@@ -208,6 +357,7 @@ export default function AccountDetailClient({ account }: { account: AccountData 
                     <option value="Sales Staff">Sales Staff</option>
                     <option value="Retail Manager">Retail Manager</option>
                     <option value="Delivery and Sales Management">Delivery and Sales Management</option>
+                    <option value="Delivery Sample">Delivery Sample</option>
                     <option value="Printer">Printer</option>
                     <option value="Viewer">Viewer</option>
                   </select>
@@ -308,7 +458,7 @@ export default function AccountDetailClient({ account }: { account: AccountData 
 
       {/* Roles & Permissions Section */}
       <div className="bg-white rounded-[1.5rem] sm:rounded-[2.5rem] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.08)] border border-primarycolor/5 overflow-hidden">
-        <div className="p-6 sm:p-12 space-y-6">
+        <div className="p-6 sm:p-12 space-y-8">
           <div className="space-y-1">
             <h2 className="text-2xl font-black text-gray-800 flex items-center gap-2">
               <Shield className="size-6 text-primarycolor" />
@@ -316,34 +466,55 @@ export default function AccountDetailClient({ account }: { account: AccountData 
             </h2>
             <p className="text-sm text-gray-500 font-medium">Manage granular permissions for this account.</p>
           </div>
-          <div className="pt-6 border-t border-gray-100 space-y-4">
-            {AVAILABLE_ROLES.map((role) => (
-              <div
-                key={role.id}
-                className="flex items-center justify-between p-4 sm:p-6 rounded-2xl border-2 border-gray-100 hover:border-primarycolor/20 transition-colors"
-              >
-                <div className="space-y-0.5">
-                  <p className="font-bold text-gray-800">{role.label}</p>
-                  <p className="text-xs text-gray-500 font-medium">
-                    {roles[role.id] ? "Permission granted" : "Permission denied"}
-                  </p>
+          <div className="space-y-8">
+            {PERMISSION_GROUPS.map((group) => {
+              const GroupIcon = group.icon;
+              const enabledCount = group.roles.filter((r) => roles[r.id]).length;
+              return (
+                <div key={group.group} className="bg-gray-50/50 rounded-2xl p-5 sm:p-6 border border-gray-200/60 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2.5">
+                      <div className="size-9 rounded-xl bg-primarycolor/10 flex items-center justify-center">
+                        <GroupIcon className="size-5 text-primarycolor" />
+                      </div>
+                      <div>
+                        <h3 className="font-black text-gray-800 text-lg">{group.group}</h3>
+                        <p className="text-xs text-gray-500 font-medium">{enabledCount} of {group.roles.length} enabled</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    {group.roles.map((role) => (
+                      <div
+                        key={role.id}
+                        className="flex items-center justify-between px-4 py-3 rounded-xl bg-white border border-gray-100 hover:border-primarycolor/20 transition-colors"
+                      >
+                        <div className="space-y-0.5">
+                          <p className="font-bold text-sm text-gray-800">{role.label}</p>
+                          <p className="text-xs text-gray-400 font-medium">
+                            {roles[role.id] ? "Permission granted" : "Permission denied"}
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleToggleRole(role.id)}
+                          disabled={togglingRole === role.id}
+                          className={`relative inline-flex h-6 w-10 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primarycolor/20 flex-shrink-0 ${
+                            roles[role.id] ? "bg-primarycolor" : "bg-gray-200"
+                          }`}
+                        >
+                          <span
+                            className={`inline-block size-4 rounded-full bg-white shadow-md border transition-transform ${
+                              roles[role.id] ? "translate-x-5" : "translate-x-0.5"
+                            }`}
+                          />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => handleToggleRole(role.id)}
-                  disabled={togglingRole === role.id}
-                  className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primarycolor/20 ${
-                    roles[role.id] ? "bg-primarycolor" : "bg-gray-200"
-                  }`}
-                >
-                  <span
-                    className={`inline-block size-5 rounded-full bg-white shadow-md border transition-transform ${
-                      roles[role.id] ? "translate-x-6" : "translate-x-1"
-                    }`}
-                  />
-                </button>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>

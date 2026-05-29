@@ -41,7 +41,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
+import { useCalendar } from "@/lib/calendar-context";
 
 export type Order = {
   id: number;
@@ -71,6 +71,7 @@ interface OrdersTableProps {
 }
 
 export function OrdersTable({ data, onViewDetails }: OrdersTableProps) {
+  const { formatDate } = useCalendar();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = React.useState("");
 
@@ -160,7 +161,7 @@ export function OrdersTable({ data, onViewDetails }: OrdersTableProps) {
         <div className="flex items-center gap-2 text-muted-foreground">
           <Calendar className="size-3.5" />
           <span className="font-bold text-[10px]">
-            {format(new Date(row.original.createdAt), "MMM dd, yyyy")}
+            {formatDate(new Date(row.original.createdAt))}
           </span>
         </div>
       ),
@@ -329,7 +330,7 @@ export function OrdersTable({ data, onViewDetails }: OrdersTableProps) {
                       </div>
                     )}
                     <span className="text-[8px] text-muted-foreground font-bold ml-2">
-                      {format(new Date(o.createdAt), "MMM dd")}
+                      {formatDate(new Date(o.createdAt), "MMM dd")}
                     </span>
                   </div>
                   <Button

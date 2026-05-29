@@ -27,6 +27,7 @@ import { cn } from "../../lib/utils";
 import { deleteNote, createNote } from "../../app/actions/notes-actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useCalendar } from "../../lib/calendar-context";
 
 export type NoteItem = {
   id: number;
@@ -48,6 +49,7 @@ interface NotesTableProps {
 
 export function NotesTable({ data: initialData = [], currentUserId }: NotesTableProps) {
   const router = useRouter();
+  const { formatDate, formatShort, formatLong, formatDateTime } = useCalendar();
   const [data, setData] = React.useState<NoteItem[]>(initialData || []);
   const safeData = React.useMemo(() => Array.isArray(data) ? data : [], [data]);
   
@@ -147,7 +149,7 @@ export function NotesTable({ data: initialData = [], currentUserId }: NotesTable
         return (
           <div className="text-xs font-bold text-secondarycolor/60 tabular-nums flex items-center gap-2">
             <Calendar className="size-3.5 text-primarycolor/50" />
-            {date.toLocaleString()}
+            {formatDateTime(new Date(date))}
           </div>
         );
       },
@@ -197,10 +199,10 @@ export function NotesTable({ data: initialData = [], currentUserId }: NotesTable
   return (
     <div className="w-full space-y-8 animate-in fade-in duration-700">
       {/* Quick Note Creator Section */}
-      <div className="bg-card p-8 rounded-[2rem] border-2 border-primarycolor/5 shadow-md hover:shadow-xl hover:border-primarycolor/10 transition-all duration-300 space-y-6 bg-white">
+      <div className="bg-card p-5 md:p-8 rounded-[2rem] border-2 border-primarycolor/5 shadow-md hover:shadow-xl hover:border-primarycolor/10 transition-all duration-300 space-y-6 bg-white">
         <div className="flex items-center justify-between">
           <div className="space-y-1">
-            <h2 className="text-xl font-black text-primarycolor uppercase tracking-tight italic">
+            <h2 className="text-lg md:text-xl font-black text-primarycolor uppercase tracking-tight italic">
               Quick <span className="text-secondarycolor not-italic">Note Creator</span>
             </h2>
             <p className="text-xs font-bold text-muted-foreground">
@@ -267,7 +269,7 @@ export function NotesTable({ data: initialData = [], currentUserId }: NotesTable
       </div>
 
       {/* Action Bar */}
-      <div className="flex flex-col xl:flex-row items-center justify-between gap-6 bg-card p-6 rounded-[2rem] border-2 border-primarycolor/5 shadow-md hover:shadow-xl hover:border-primarycolor/10 transition-all duration-300">
+      <div className="flex flex-col xl:flex-row items-center justify-between gap-6 bg-card p-4 md:p-6 rounded-[2rem] border-2 border-primarycolor/5 shadow-md hover:shadow-xl hover:border-primarycolor/10 transition-all duration-300">
         <div className="relative w-full xl:max-w-md group">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-5 text-muted-foreground group-focus-within:text-primarycolor transition-all duration-500 group-focus-within:scale-110" />
           <Input
@@ -356,14 +358,14 @@ export function NotesTable({ data: initialData = [], currentUserId }: NotesTable
                   </div>
                 </div>
 
-                <p className="text-sm font-semibold text-secondarycolor/80 leading-relaxed break-words whitespace-pre-wrap">
+                <p className="text-sm font-semibold text-secondarycolor/80 leading-relaxed break-words whitespace-pre-wrap line-clamp-4">
                   {item.note_content}
                 </p>
 
                 <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
                   <div className="text-[10px] font-bold text-secondarycolor/50 tabular-nums flex items-center gap-1.5">
                     <Calendar className="size-3 text-primarycolor/45" />
-                    {new Date(item.createdAt).toLocaleString()}
+                    {formatDateTime(new Date(item.createdAt))}
                   </div>
                   <Button
                     size="sm"
@@ -421,7 +423,7 @@ export function NotesTable({ data: initialData = [], currentUserId }: NotesTable
       {/* Create Note Modal */}
       {isCreateModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-secondarycolor/30 backdrop-blur-sm p-4 animate-in fade-in duration-300">
-          <div className="w-full max-w-lg bg-card rounded-[2.5rem] border-2 border-primarycolor/10 shadow-2xl p-8 space-y-6 relative animate-in zoom-in-95 duration-300 bg-white">
+          <div className="w-full max-w-lg bg-card rounded-[2.5rem] border-2 border-primarycolor/10 shadow-2xl p-5 md:p-8 space-y-6 relative animate-in zoom-in-95 duration-300 bg-white">
             <button
               onClick={() => setIsCreateModalOpen(false)}
               className="absolute top-6 right-6 text-muted-foreground hover:text-secondarycolor p-1.5 hover:bg-slate-50 rounded-full transition-all"

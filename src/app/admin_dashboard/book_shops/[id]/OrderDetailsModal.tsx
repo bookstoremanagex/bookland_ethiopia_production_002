@@ -9,6 +9,17 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription as AlertDesc,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Building2,
@@ -23,11 +34,12 @@ import {
   Package,
   ShoppingBag,
   Info,
+  Truck,
 } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-import { updateOrderPayment } from "@/app/actions/order-actions";
+import { updateOrderPayment, markOrderDelivered } from "@/app/actions/order-actions";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Save } from "lucide-react";
@@ -48,6 +60,8 @@ export default function OrderDetailsModal({
   const router = useRouter();
   const [isUpdating, setIsUpdating] = React.useState(false);
   const [editAmount, setEditAmount] = React.useState<string | null>(null);
+  const [isDelivering, setIsDelivering] = React.useState(false);
+  const [deliveryDialogOpen, setDeliveryDialogOpen] = React.useState(false);
 
   React.useEffect(() => {
     if (order) {
@@ -392,6 +406,144 @@ export default function OrderDetailsModal({
               </table>
             </div>
           </div>
+
+          {/* Check Payment Info */}
+          {order.payment_type === "CHECK" && order.checks && (
+            <div className="bg-white rounded-[2rem] p-6 border-2 border-primarycolor/5 shadow-sm space-y-4">
+              <div className="flex items-center gap-2 text-primarycolor">
+                <FileText className="size-4" />
+                <h4 className="font-black uppercase tracking-widest text-xs italic">Check Payment</h4>
+              </div>
+              <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
+                <div>
+                  <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Bank</p>
+                  <p className="font-bold text-slate-700">{order.checks.bankname || "Unknown Bank"}</p>
+                </div>
+                <div>
+                  <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Username</p>
+                  <p className="font-bold text-slate-700">{order.checks.username || "Unknown"}</p>
+                </div>
+                <div>
+                  <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Amount</p>
+                  <p className="font-bold text-slate-700">{order.checks.amount ? `${order.checks.amount} ETB` : "—"}</p>
+                </div>
+                <div>
+                  <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Status</p>
+                  <span className={cn(
+                    "inline-block px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest",
+                    order.checks.status === "CLEARED" ? "bg-emerald-100 text-emerald-700" :
+                    order.checks.status === "BOUNCED" ? "bg-rose-100 text-rose-700" :
+                    "bg-amber-100 text-amber-700"
+                  )}>
+                    {order.checks.status || "PENDING"}
+                  </span>
+                </div>
+                <div>
+                  <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">&nbsp;</p>
+                  <a href={`/admin_dashboard/checks/${order.check_id}`} target="_blank" rel="noopener noreferrer"
+                    className="text-primarycolor underline underline-offset-2 font-bold text-xs hover:text-secondarycolor">
+                    View Check Details
+                  </a>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Store Allocation Breakdown for approved orders */}
+          {order.is_approved && order.allocation_summary && (
+            <div className="bg-white rounded-[2rem] p-6 border-2 border-emerald-100 shadow-sm space-y-4">
+              <div className="flex items-center gap-2 text-emerald-700">
+                <Package className="size-4" />
+                <h4 className="font-black uppercase tracking-widest text-xs italic">Store Allocation Breakdown</h4>
+              </div>
+              <div className="bg-emerald-50/50 rounded-2xl p-5 border border-emerald-100">
+                {order.allocation_summary.split('\n').map((line: string, i: number) => {
+                  if (line.startsWith('📖')) {
+                    return (
+                      <p key={i} className="font-black text-primarycolor text-sm uppercase italic mt-3 first:mt-0 mb-1">
+                        {line.replace('📖 ', '')}
+                      </p>
+                    );
+                  }
+                  if (line.trim() === '') return null;
+                  return (
+                    <p key={i} className="text-[11px] font-bold text-slate-700 ml-4 py-0.5">
+                      {line}
+                    </p>
+                  );
+                })}
+              </div>
+
+              {/* Delivery action */}
+              <div className="flex items-center justify-between pt-2 border-t border-emerald-200">
+                <div className="flex items-center gap-2">
+                  {order.delivery ? (
+                    <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-100 text-emerald-700">
+                      <CheckCircle2 className="size-4" />
+                      <span className="font-black uppercase tracking-widest text-[10px]">Delivered</span>
+                    </div>
+                  ) : (
+                    <AlertDialog open={deliveryDialogOpen} onOpenChange={setDeliveryDialogOpen}>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="rounded-xl h-10 px-5 gap-2 border-2 border-emerald-300 text-emerald-700 hover:bg-emerald-50 font-black uppercase tracking-widest text-[9px]"
+                          disabled={isDelivering}
+                        >
+                          <Truck className="size-3.5" />
+                          {isDelivering ? "Processing..." : "Mark as Delivered"}
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent className="rounded-[2rem] border-4 border-emerald-100">
+                        <AlertDialogHeader>
+                          <AlertDialogTitle className="font-black uppercase tracking-widest text-primarycolor">
+                            Confirm Delivery
+                          </AlertDialogTitle>
+                          <AlertDesc className="font-bold text-muted-foreground">
+                            Mark order <span className="font-black text-primarycolor">ORD-{order.id}</span> as delivered?
+                            This action cannot be undone.
+                          </AlertDesc>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel asChild>
+                            <Button variant="outline" className="rounded-xl font-black uppercase tracking-widest text-[10px]">
+                              Cancel
+                            </Button>
+                          </AlertDialogCancel>
+                          <AlertDialogAction asChild>
+                            <Button
+                              onClick={async () => {
+                                setIsDelivering(true);
+                                try {
+                                  const res = await markOrderDelivered(order.id);
+                                  if (res.success) {
+                                    toast.success("Order marked as delivered!");
+                                    setDeliveryDialogOpen(false);
+                                    router.refresh();
+                                  } else {
+                                    toast.error(res.error || "Failed to mark as delivered");
+                                  }
+                                } catch {
+                                  toast.error("Failed to mark as delivered");
+                                } finally {
+                                  setIsDelivering(false);
+                                }
+                              }}
+                              className="rounded-xl bg-emerald-600 hover:bg-emerald-700 font-black uppercase tracking-widest text-[10px]"
+                              disabled={isDelivering}
+                            >
+                              {isDelivering ? "Processing..." : "Confirm Delivery"}
+                            </Button>
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Footer */}

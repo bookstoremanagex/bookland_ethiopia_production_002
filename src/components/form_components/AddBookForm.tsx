@@ -59,6 +59,7 @@ export function AddBookForm({ className }: AddBookFormProps) {
       author: "",
       pen_name: "",
       isbn: "",
+      copyright_registration_number: "",
       translator: "",
       designer: "",
       language: "",
@@ -101,8 +102,16 @@ export function AddBookForm({ className }: AddBookFormProps) {
         finalImageUrl = uploadRes.url || "";
       }
 
+      const costFields = ['translator_cost','cover_design_cost','text_design_cost','editor_cost','typewriting_cost','store_cost','distribution_cost','advertisement_cost','purchasing_right_cost'] as const;
+      const sanitizedData = { ...data } as any;
+      for (const field of costFields) {
+        if (sanitizedData[field] === undefined || sanitizedData[field] === null || Number.isNaN(Number(sanitizedData[field]))) {
+          sanitizedData[field] = null;
+        }
+      }
+
       const response = await createBook({
-        ...data,
+        ...sanitizedData,
         book_image_url: finalImageUrl,
       });
 
@@ -219,6 +228,22 @@ export function AddBookForm({ className }: AddBookFormProps) {
                 id="isbn"
                 placeholder="e.g. 978-3-16-148410-0"
                 {...register("isbn")}
+                className="border-primarycolor/20 focus:border-primarycolor focus:ring-primarycolor/20"
+              />
+            </div>
+
+            {/* Copyright Registration Number */}
+            <div className="space-y-2 group">
+              <label
+                htmlFor="copyright_registration_number"
+                className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor"
+              >
+                Copyright Registration Number
+              </label>
+              <Input
+                id="copyright_registration_number"
+                placeholder="e.g. CR-2024-001234"
+                {...register("copyright_registration_number")}
                 className="border-primarycolor/20 focus:border-primarycolor focus:ring-primarycolor/20"
               />
             </div>

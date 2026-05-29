@@ -8,11 +8,23 @@ export async function getBooks() {
       where: {
         is_deleted: false,
       },
+      include: {
+        bookedition: {
+          where: { is_deleted: false },
+          select: { id: true },
+        },
+      },
       orderBy: {
         createdAt: "desc",
       },
     });
-    return { success: true, data: books };
+
+    const data = books.map(({ bookedition, ...rest }) => ({
+      ...rest,
+      editionCount: bookedition.length,
+    }));
+
+    return { success: true, data };
   } catch (error) {
     console.error("Failed to fetch books:", error);
     return { success: false, error: "Failed to fetch books" };

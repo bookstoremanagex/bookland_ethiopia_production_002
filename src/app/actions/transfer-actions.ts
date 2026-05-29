@@ -5,34 +5,48 @@ import { revalidatePath } from "next/cache";
 
 export async function searchBooks(query: string, page: number = 0, pageSize: number = 7) {
     try {
+        const where: any = { is_deleted: false };
+        if (query) {
+            where.OR = [
+                { title: { contains: query } },
+                { author: { contains: query } },
+                { isbn: { contains: query } },
+            ];
+        }
         const books = await (prisma as any).books.findMany({
-            where: {
-                is_deleted: false,
-                OR: [
-                    { title: { contains: query } },
-                    { author: { contains: query } },
-                    { isbn: { contains: query } },
-                ],
+            where,
+            include: {
+                bookedition: {
+                    where: { is_deleted: false },
+                    include: {
+                        bookeditionstores: {
+                            where: { is_deleted: false, quantity: { gt: 0 } },
+                            select: { id: true },
+                        },
+                    },
+                },
             },
             skip: page * pageSize,
             take: pageSize,
-            orderBy: {
-                title: 'asc',
-            },
         });
 
-        const totalCount = await (prisma as any).books.count({
-            where: {
-                is_deleted: false,
-                OR: [
-                    { title: { contains: query } },
-                    { author: { contains: query } },
-                    { isbn: { contains: query } },
-                ],
-            },
+        // Sort: in-stock books first, then alphabetically by title
+        const sorted = books.sort((a: any, b: any) => {
+            const aHasStock = a.bookedition.some((ed: any) => ed.bookeditionstores.length > 0);
+            const bHasStock = b.bookedition.some((ed: any) => ed.bookeditionstores.length > 0);
+            if (aHasStock && !bHasStock) return -1;
+            if (!aHasStock && bHasStock) return 1;
+            return a.title.localeCompare(b.title);
         });
 
-        return { success: true, data: books, totalCount };
+        // Map to clean objects, keeping hasStoreStock flag
+        const mapped = sorted.map((book: any) => {
+            const hasStoreStock = book.bookedition.some((ed: any) => ed.bookeditionstores.length > 0);
+            const { bookedition, ...rest } = book;
+            return { ...rest, hasStoreStock };
+        });
+
+        return { success: true, data: mapped, totalCount: mapped.length };
     } catch (error) {
         console.error("Search books error:", error);
         return { success: false, error: "Failed to search books" };
@@ -122,7 +136,7 @@ export async function transferToStore(storeId: number, transfers: { editionId: n
             }
 
             return transferResults;
-        });
+        }, { timeout: 15000 });
 
         revalidatePath(`/admin_dashboard/stores/${storeId}`);
         return { success: true, data: result };

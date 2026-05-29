@@ -1,13 +1,30 @@
 import prisma from "@/lib/prisma";
 import DashboardContainer from "@/components/admin_dashboard_components/home_dashboard/DashboardContainer";
+import { getServerCalendarPref } from "@/lib/server-calendar"
+import { formatDate } from "@/lib/calendar-utils"
 
 export default async function AdminHomePage() {
+  const calendarPref = await getServerCalendarPref()
   // 1. Fetch High Level Stats
-  const [totalBooks, totalShops, assignments] = await Promise.all([
+  const [totalBooks, totalShops, assignments, rawNotifications] = await Promise.all([
     prisma.books.count({ where: { is_deleted: false } }),
     (prisma as any).bookshopes.count({ where: { is_deleted: false } }),
-    (prisma as any).bookshopeditions.findMany({ where: { is_deleted: false } })
+    (prisma as any).bookshopeditions.findMany({ where: { is_deleted: false } }),
+    (prisma as any).notification.findMany({
+      where: { is_deleted: false, is_read: false, notification_to: "ADMIN" },
+      take: 5,
+      orderBy: { createdAt: 'desc' }
+    })
   ]);
+
+  const notifications = (rawNotifications as any[]).map((n: any) => ({
+    id: n.id,
+    title: n.title || "",
+    message: n.message || "",
+    details: n.details || null,
+    type: n.type || "INFO",
+    createdAt: n.createdAt instanceof Date ? n.createdAt.toISOString() : n.createdAt,
+  }));
 
   const totalRevenue = assignments.reduce((acc: any, a: any) => acc + (a.total_price || 0), 0);
   const totalPaid = assignments.reduce((acc: any, a: any) => acc + (a.already_paid || 0), 0);
@@ -29,7 +46,7 @@ export default async function AdminHomePage() {
     bookTitle: a.bookedition.books.title,
     shopName: a.bookshopes.name,
     quantity: a.quantity,
-    date: new Date(a.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+    date: formatDate(new Date(a.createdAt), calendarPref, "MMM dd")
   }));
 
   // 3. Aggregate Production Data
@@ -63,12 +80,13 @@ export default async function AdminHomePage() {
       totalShops,
       totalRevenue,
       totalDebt,
-      revenueGrowth: 24, // Static for demo
-      debtChange: -12    // Static for demo
+      revenueGrowth: 24,
+      debtChange: -12
     },
     financialData,
     recentActivities,
-    productionData: Object.values(productionMap)
+    productionData: Object.values(productionMap),
+    notifications,
   };
 
   return (

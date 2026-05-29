@@ -12,7 +12,8 @@ import {
   Activity,
   Check,
   X,
-  Edit2
+  Edit2,
+  Copyright
 } from 'lucide-react';
 import { Button } from '../../ui/button';
 import { Input } from '../../ui/input';
@@ -187,6 +188,7 @@ export default function BasicInfo({
                         {renderEditableField('publication_year', 'Year', Calendar)}
                         <div className="hidden lg:block">{renderEditableField('edition', 'Edition', Layers)}</div>
                         {renderEditableField('isbn', 'ISBN Code', Hash)}
+                        {renderEditableField('copyright_registration_number', 'Copyright Reg. No', Copyright)}
                         {renderEditableField('number_of_pages', 'Pages', BookOpen, 'number')}
                     </div>
                 </div>

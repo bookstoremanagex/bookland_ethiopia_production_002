@@ -1,11 +1,14 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { GenericAppSidebar } from "@/components/sidebar_components/generic_sideboard"
+import { getCurrentSession } from "../actions/auth-actions";
+import UserMenu from "@/components/admin_dashboard_components/UserMenu";
 
-export default function DeliverySalesLayout({
+export default async function DeliverySalesLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getCurrentSession();
   return (
     <SidebarProvider>
       <GenericAppSidebar 
@@ -15,8 +18,9 @@ export default function DeliverySalesLayout({
         footerText="Logistics & Sales Dept" 
       />
       <div className="flex-1 flex flex-col min-h-screen">
-        <header className="h-16 flex items-center px-4 border-b bg-white/50 backdrop-blur-md sticky top-0 z-30">
+        <header className="h-16 flex items-center justify-between px-4 border-b bg-white/50 backdrop-blur-md sticky top-0 z-30">
           <SidebarTrigger />
+          <UserMenu name={session?.name} role={session?.role} basePath="/delivery_and_sales_dashboard" />
         </header>
         <main className="flex-1">
           {children}

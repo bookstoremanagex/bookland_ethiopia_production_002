@@ -4,6 +4,8 @@ import prisma from "../../lib/prisma";
 import { bookSchema, type BookFormValues } from "../../lib/validation/book-schema";
 import { revalidatePath } from "next/cache";
 import { put, del } from "@vercel/blob";
+import { checkCurrentUserRole } from "./book-shop-actions";
+import { getCurrentSession } from "./auth-actions";
 
 // Helper function to delete Vercel Blob file if URL points to it
 async function deleteBlobIfExists(url: string | null | undefined) {
@@ -49,6 +51,11 @@ export async function uploadBookImageAction(formData: FormData) {
 }
 
 export async function createBook(data: BookFormValues) {
+  const permission = await checkCurrentUserRole("Adding Books");
+  if (!permission.enabled) {
+    return { success: false, error: "You do not have the privilege to add books." };
+  }
+
   const result = bookSchema.safeParse(data);
 
   if (!result.success) {
@@ -71,6 +78,18 @@ export async function createBook(data: BookFormValues) {
       },
     });
 
+    const session = await getCurrentSession();
+    if (session?.id) {
+      await (prisma as any).activityLogs.create({
+        data: {
+          accountId: session.id,
+          action: `Added book "${result.data.title}"`,
+          details: JSON.stringify({ title: result.data.title, author: result.data.author, addedBy: session.name }),
+          updatedAt: new Date(),
+        },
+      });
+    }
+
     revalidatePath("/admin_dashboard/books");
     return { success: true, data: book };
   } catch (error: any) {
@@ -83,6 +102,11 @@ export async function createBook(data: BookFormValues) {
 }
 
 export async function updateBook(id: string, data: Partial<BookFormValues>) {
+  const permission = await checkCurrentUserRole("Editing Books");
+  if (!permission.enabled) {
+    return { success: false, error: "You do not have the privilege to edit books." };
+  }
+
   try {
     // 1. Fetch current book to get its existing cover URL
     const currentBook = await (prisma as any).books.findUnique({
@@ -118,6 +142,11 @@ export async function updateBook(id: string, data: Partial<BookFormValues>) {
 }
 
 export async function deleteBook(id: string) {
+  const permission = await checkCurrentUserRole("Deleting Books");
+  if (!permission.enabled) {
+    return { success: false, error: "You do not have the privilege to delete books." };
+  }
+
   try {
     // 1. Fetch current book to get its image URL before deleting
     const currentBook = await (prisma as any).books.findUnique({

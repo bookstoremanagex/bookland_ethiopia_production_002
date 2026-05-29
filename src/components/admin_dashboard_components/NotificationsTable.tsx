@@ -13,7 +13,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Search, ChevronLeft, ChevronRight, Bell, Check, Trash2, MailOpen, AlertCircle, ShoppingBag, User, Building2, DollarSign, Package, X } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight, Bell, Check, Trash2, MailOpen, AlertCircle, ShoppingBag, User, Building2, DollarSign, Package, X, Banknote, FileText } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import {
@@ -34,6 +34,7 @@ import { cn } from "../../lib/utils";
 import { markAsRead, deleteNotification } from "../../app/actions/notification-actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useCalendar } from "../../lib/calendar-context";
 
 export type NotificationItem = {
   id: number;
@@ -53,6 +54,7 @@ interface NotificationsTableProps {
 
 export function NotificationsTable({ data: initialData = [] }: NotificationsTableProps) {
   const router = useRouter();
+  const { formatDate, formatShort, formatLong, formatDateTime } = useCalendar();
   const [data, setData] = React.useState<NotificationItem[]>(initialData || []);
   const safeData = React.useMemo(() => Array.isArray(data) ? data : [], [data]);
   const [sorting, setSorting] = React.useState<SortingState>([
@@ -207,7 +209,7 @@ export function NotificationsTable({ data: initialData = [] }: NotificationsTabl
         const date = new Date(row.getValue("createdAt"));
         return (
           <div className="text-xs font-bold text-secondarycolor/60 tabular-nums">
-            {date.toLocaleString()}
+            {formatDateTime(new Date(date))}
           </div>
         );
       },
@@ -417,14 +419,16 @@ export function NotificationsTable({ data: initialData = [] }: NotificationsTabl
                 </p>
 
                 {item.details && (
-                  <div className="mt-3 p-3 bg-slate-50 border border-slate-100 rounded-xl text-xs text-muted-foreground italic font-semibold">
-                    {item.details}
+                  <div className="mt-3 p-3 bg-slate-50 border border-slate-100 rounded-xl text-xs text-muted-foreground font-semibold overflow-x-auto break-all whitespace-normal">
+                    <pre className="whitespace-pre-wrap break-all font-sans text-xs m-0">
+                      {item.details}
+                    </pre>
                   </div>
                 )}
 
                 <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
                   <div className="text-[10px] font-bold text-secondarycolor/50 tabular-nums">
-                    {new Date(item.createdAt).toLocaleString()}
+                    {formatDateTime(new Date(item.createdAt))}
                   </div>
                   <div className="flex items-center gap-2">
                     {!item.is_read && (
@@ -487,43 +491,116 @@ export function NotificationsTable({ data: initialData = [] }: NotificationsTabl
             {detailItem?.details && (() => {
               try {
                 const parsed = JSON.parse(detailItem.details);
-                if (parsed.shopName) {
+                if (parsed.purchaseId) {
                   return (
                     <div className="space-y-4 mt-6">
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
-                          <div className="flex items-center gap-2">
-                            <Building2 className="size-4 text-primarycolor/40" />
-                            <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Shop</p>
-                          </div>
-                          <p className="font-black text-primarycolor">{parsed.shopName}</p>
-                        </div>
-                        <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
-                          <div className="flex items-center gap-2">
-                            <User className="size-4 text-primarycolor/40" />
-                            <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Placed By</p>
-                          </div>
-                          <p className="font-black text-primarycolor">{parsed.placedBy}</p>
-                        </div>
+                      <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                        <p className="font-black text-primarycolor">{parsed.customerName || "Anonymous"}</p>
+                        <p className="text-[9px] font-bold text-muted-foreground">{parsed.itemCount || 0} item(s) &middot; {parsed.totalAmount?.toLocaleString()} ETB</p>
                       </div>
-                      <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
-                        <div className="flex items-center gap-2">
-                          <Package className="size-4 text-primarycolor/40" />
-                          <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Items</p>
-                        </div>
-                        <p className="font-bold text-primarycolor text-sm">{parsed.items}</p>
-                      </div>
-                      <div className="p-4 rounded-2xl bg-primarycolor/5 border border-primarycolor/10 flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <DollarSign className="size-5 text-primarycolor" />
-                          <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Total Amount</p>
-                        </div>
-                        <p className="text-xl font-black text-primarycolor">{parsed.totalAmount?.toLocaleString()} ETB</p>
-                      </div>
+                      <button
+                        onClick={() => router.push(`/admin_dashboard/retail_management/${parsed.purchaseId}`)}
+                        className="w-full p-4 rounded-2xl bg-primarycolor/5 border-2 border-primarycolor/10 hover:bg-primarycolor/10 hover:border-primarycolor/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                      >
+                        <ShoppingBag className="size-4 text-primarycolor" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-primarycolor">View Retail Purchase →</span>
+                      </button>
                     </div>
                   );
                 }
-              } catch {}
+                if (parsed.shopName) {
+                  const isPayment = parsed.paymentType || parsed.paymentId;
+                  return (
+                    <div className="space-y-4 mt-6">
+                      <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                        <div className="flex items-center gap-2">
+                          <Building2 className="size-4 text-primarycolor/40" />
+                          <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Shop</p>
+                        </div>
+                        <p className="font-black text-primarycolor">{parsed.shopName}</p>
+                      </div>
+
+                      {isPayment ? (
+                        <>
+                          <div className="p-4 rounded-2xl bg-primarycolor/5 border border-primarycolor/10 flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <DollarSign className="size-5 text-primarycolor" />
+                              <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Payment Amount</p>
+                            </div>
+                            <p className="text-xl font-black text-primarycolor">{parsed.amount?.toLocaleString()} ETB</p>
+                          </div>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                              <div className="flex items-center gap-2">
+                                <Banknote className="size-4 text-primarycolor/40" />
+                                <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Type</p>
+                              </div>
+                              <p className="font-black text-primarycolor">{parsed.paymentType || "—"}</p>
+                            </div>
+                            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                              <div className="flex items-center gap-2">
+                                <FileText className="size-4 text-primarycolor/40" />
+                                <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Payment ID</p>
+                              </div>
+                              <p className="font-black text-primarycolor">#{parsed.paymentId}</p>
+                            </div>
+                          </div>
+                          {parsed.shopId && (
+                            <button
+                              onClick={() => router.push(`/admin_dashboard/manage_payment/${parsed.shopId}`)}
+                              className="w-full p-4 rounded-2xl bg-emerald-50 border-2 border-emerald-200 hover:bg-emerald-100 hover:border-emerald-300 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                            >
+                              <Banknote className="size-4 text-emerald-700" />
+                              <span className="text-[10px] font-black uppercase tracking-widest text-emerald-700">View Payment →</span>
+                            </button>
+                          )}
+                        </>
+                      ) : (
+                        <>
+                          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                            <div className="flex items-center gap-2">
+                              <User className="size-4 text-primarycolor/40" />
+                              <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Placed By</p>
+                            </div>
+                            <p className="font-black text-primarycolor">{parsed.placedBy}</p>
+                          </div>
+                          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                            <div className="flex items-center gap-2">
+                              <Package className="size-4 text-primarycolor/40" />
+                              <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Items</p>
+                            </div>
+                            <p className="font-bold text-primarycolor text-sm">{parsed.items}</p>
+                          </div>
+                          <div className="p-4 rounded-2xl bg-primarycolor/5 border border-primarycolor/10 flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <DollarSign className="size-5 text-primarycolor" />
+                              <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Total Amount</p>
+                            </div>
+                            <p className="text-xl font-black text-primarycolor">{parsed.totalAmount?.toLocaleString()} ETB</p>
+                          </div>
+                          {parsed.orderId && (
+                            <button
+                              onClick={() => router.push(`/admin_dashboard/manage_orders?orderId=${parsed.orderId}`)}
+                              className="w-full p-4 rounded-2xl bg-primarycolor/5 border-2 border-primarycolor/10 hover:bg-primarycolor/10 hover:border-primarycolor/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                            >
+                              <ShoppingBag className="size-4 text-primarycolor" />
+                              <span className="text-[10px] font-black uppercase tracking-widest text-primarycolor">View Order ORD-{parsed.orderId} →</span>
+                            </button>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  );
+                }
+              } catch {
+                return (
+                  <div className="mt-4 p-4 bg-slate-50 border border-slate-100 rounded-xl text-xs text-muted-foreground font-semibold overflow-x-auto">
+                    <pre className="whitespace-pre-wrap break-all font-sans text-xs m-0">
+                      {detailItem.details}
+                    </pre>
+                  </div>
+                );
+              }
               return null;
             })()}
 
@@ -533,7 +610,7 @@ export function NotificationsTable({ data: initialData = [] }: NotificationsTabl
                   {detailItem.type}
                 </span>
                 <span className="text-xs font-bold text-muted-foreground">
-                  {new Date(detailItem.createdAt).toLocaleString()}
+                  {formatDateTime(new Date(detailItem.createdAt))}
                 </span>
               </div>
             )}

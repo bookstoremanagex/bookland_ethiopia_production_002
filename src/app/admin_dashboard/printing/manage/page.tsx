@@ -24,7 +24,7 @@ export default async function ManagePrintingPage() {
         <div className="p-4 md:p-10 space-y-10 bg-[#F8FAFC] min-h-screen">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div className="space-y-2">
-                    <h1 className="text-4xl font-black text-primarycolor uppercase tracking-tighter italic">
+                    <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
                         Print <span className="text-secondarycolor not-italic">Logistics</span>
                     </h1>
                     <p className="text-muted-foreground font-bold uppercase tracking-widest text-[10px]">

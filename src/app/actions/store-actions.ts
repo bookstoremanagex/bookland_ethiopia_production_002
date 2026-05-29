@@ -3,8 +3,13 @@
 import prisma from "../../lib/prisma";
 import { storeSchema, type StoreFormValues } from "@/lib/validation/store-schema";
 import { revalidatePath } from "next/cache";
+import { checkCurrentUserRole } from "./book-shop-actions";
 
 export async function createStore(data: StoreFormValues) {
+  const permission = await checkCurrentUserRole("Adding Stores");
+  if (!permission.enabled) {
+    return { success: false, error: "You do not have the privilege to add stores." };
+  }
   try {
     const validatedData = storeSchema.parse(data);
 
@@ -28,6 +33,11 @@ export async function createStore(data: StoreFormValues) {
 }
 
 export async function updateStore(id: number, data: Partial<StoreFormValues>) {
+  const permission = await checkCurrentUserRole("Editing Stores");
+  if (!permission.enabled) {
+    return { success: false, error: "You do not have the privilege to edit stores." };
+  }
+
   try {
     const store = await (prisma as any).stores.update({
       where: { id },
@@ -47,6 +57,11 @@ export async function updateStore(id: number, data: Partial<StoreFormValues>) {
 }
 
 export async function deleteStore(id: number) {
+  const permission = await checkCurrentUserRole("Deleting Stores");
+  if (!permission.enabled) {
+    return { success: false, error: "You do not have the privilege to delete stores." };
+  }
+
   try {
     const store = await (prisma as any).stores.update({
       where: { id },

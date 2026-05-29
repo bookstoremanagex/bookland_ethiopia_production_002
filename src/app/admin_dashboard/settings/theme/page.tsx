@@ -191,7 +191,7 @@ export default function ThemeSettingsPage() {
                     </div>
                     <div>
                         <span className="text-[10px] font-black uppercase tracking-widest text-primarycolor/60">System Configuration</span>
-                        <h1 className="text-2xl md:text-3xl font-black text-secondarycolor uppercase tracking-tight mt-1">
+                        <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
                             Theme Customization
                         </h1>
                     </div>

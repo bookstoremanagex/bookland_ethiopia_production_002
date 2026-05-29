@@ -22,6 +22,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { useCalendar } from "@/lib/calendar-context";
 
 interface DbInvoice {
     id: number;
@@ -39,6 +40,7 @@ interface DbInvoice {
 export default function InvoiceDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const router = useRouter();
     const resolvedParams = use(params);
+    const { formatDate, formatShort, formatLong, formatDateTime } = useCalendar();
     const invoiceId = parseInt(resolvedParams.id);
 
     const [invoice, setInvoice] = useState<DbInvoice | null>(null);
@@ -108,9 +110,9 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div>
                         <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-primarycolor/60 bg-primarycolor/5 border border-primarycolor/10 px-3 py-1 rounded-full w-fit">
-                            <FileSpreadsheet className="size-3.5 text-primarycolor" /> {invoice.invoiceNumber} • Billings
+                            <FileSpreadsheet className="size-3.5 text-primarycolor" /> {invoice.invoiceNumber} â€¢ Billings
                         </div>
-                        <h1 className="text-3xl font-black text-secondarycolor uppercase tracking-tight mt-2">
+                        <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
                             {invoice.customerName}
                         </h1>
                     </div>
@@ -191,14 +193,14 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
                                     <p className="text-[10px] font-black uppercase tracking-widest text-secondarycolor/50">Issue Date</p>
                                     <span className="text-xs font-semibold text-secondarycolor mt-1 flex items-center gap-1">
                                         <Calendar className="size-3.5 text-primarycolor/60" />
-                                        {invoice.issueDate ? invoice.issueDate.toLocaleDateString() : "—"}
+                                        {invoice.issueDate ? formatDate(new Date(invoice.issueDate)) : "â€”"}
                                     </span>
                                 </div>
                                 <div>
                                     <p className="text-[10px] font-black uppercase tracking-widest text-secondarycolor/50">Due Date</p>
                                     <span className="text-xs font-semibold text-secondarycolor mt-1 flex items-center gap-1">
                                         <Calendar className="size-3.5 text-primarycolor/60" />
-                                        {invoice.dueDate ? invoice.dueDate.toLocaleDateString() : "—"}
+                                        {invoice.dueDate ? formatDate(new Date(invoice.dueDate)) : "â€”"}
                                     </span>
                                 </div>
                             </div>

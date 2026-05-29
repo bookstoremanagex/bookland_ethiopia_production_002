@@ -34,6 +34,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { DateInput } from "@/components/ui/date-input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import {
@@ -48,6 +49,7 @@ import {
     useReactTable,
 } from "@tanstack/react-table";
 import { cn } from "@/lib/utils";
+import { useCalendar } from "@/lib/calendar-context";
 
 interface DbDeliveryNote {
     id: number;
@@ -63,6 +65,7 @@ interface DbDeliveryNote {
 }
 
 export default function DeliveryNotesPage() {
+    const { formatDate } = useCalendar();
     const [notes, setNotes] = useState<DbDeliveryNote[]>([]);
     const [loading, setLoading] = useState(true);
     const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -226,7 +229,7 @@ export default function DeliveryNotesPage() {
                 return (
                     <span className="text-xs font-semibold text-secondarycolor/70 flex items-center gap-1.5">
                         <Calendar className="size-3.5 text-primarycolor/60" />
-                        {val ? val.toLocaleDateString() : "—"}
+                        {val ? formatDate(new Date(val)) : "Ã¢â‚¬â€"}
                     </span>
                 );
             }
@@ -278,7 +281,7 @@ export default function DeliveryNotesPage() {
                     <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-primarycolor/60 bg-primarycolor/5 border border-primarycolor/10 px-3 py-1 rounded-full w-fit">
                         <Truck className="size-3.5 text-primarycolor" /> Dispatch Ledger
                     </div>
-                    <h1 className="text-4xl font-black text-secondarycolor uppercase tracking-tight mt-2">
+                    <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
                         Delivery Notes
                     </h1>
                     <p className="text-muted-foreground text-sm font-medium mt-1">
@@ -349,40 +352,116 @@ export default function DeliveryNotesPage() {
                         <span className="font-bold text-secondarycolor">Retrieving delivery manifest...</span>
                     </div>
                 ) : (
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse">
-                            <thead>
-                                {table.getHeaderGroups().map(headerGroup => (
-                                    <tr key={headerGroup.id} className="border-b border-primarycolor/10 bg-primarycolor/5">
-                                        {headerGroup.headers.map(header => (
-                                            <th key={header.id} className="p-5 text-[10px] font-black uppercase tracking-widest text-secondarycolor/60">
-                                                {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                                            </th>
-                                        ))}
-                                    </tr>
-                                ))}
-                            </thead>
-                            <tbody className="divide-y divide-primarycolor/5">
-                                {table.getRowModel().rows.length > 0 ? (
-                                    table.getRowModel().rows.map(row => (
-                                        <tr key={row.id} className="hover:bg-primarycolor/5 transition-colors">
-                                            {row.getVisibleCells().map(cell => (
-                                                <td key={cell.id} className="p-5">
-                                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                                </td>
+                    <>
+                        {/* Desktop Table */}
+                        <div className="hidden md:block overflow-x-auto">
+                            <table className="w-full text-left border-collapse">
+                                <thead>
+                                    {table.getHeaderGroups().map(headerGroup => (
+                                        <tr key={headerGroup.id} className="border-b border-primarycolor/10 bg-primarycolor/5">
+                                            {headerGroup.headers.map(header => (
+                                                <th key={header.id} className="p-5 text-[10px] font-black uppercase tracking-widest text-secondarycolor/60">
+                                                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                                                </th>
                                             ))}
                                         </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan={columns.length} className="p-16 text-center text-muted-foreground font-black">
-                                            No delivery manifest recorded in the database.
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
+                                    ))}
+                                </thead>
+                                <tbody className="divide-y divide-primarycolor/5">
+                                    {table.getRowModel().rows.length > 0 ? (
+                                        table.getRowModel().rows.map(row => (
+                                            <tr key={row.id} className="hover:bg-primarycolor/5 transition-colors">
+                                                {row.getVisibleCells().map(cell => (
+                                                    <td key={cell.id} className="p-5">
+                                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                                    </td>
+                                                ))}
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td colSpan={columns.length} className="p-16 text-center text-muted-foreground font-black">
+                                                No delivery manifest recorded in the database.
+                                            </td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {/* Mobile Cards */}
+                        <div className="grid grid-cols-1 gap-4 p-4 md:hidden">
+                            {table.getRowModel().rows.length > 0 ? (
+                                table.getRowModel().rows.map(row => {
+                                    const item = row.original
+                                    const status = item.status || "Pending"
+                                    let statusClass = "bg-slate-50 text-slate-600 border-slate-200/50"
+                                    let icon = <AlertCircle className="size-2.5" />
+                                    if (status === "Delivered") {
+                                        statusClass = "bg-emerald-50 text-emerald-700 border-emerald-200/50"
+                                        icon = <CheckCircle2 className="size-2.5" />
+                                    } else if (status === "In Transit") {
+                                        statusClass = "bg-sky-50 text-sky-700 border-sky-200/50"
+                                        icon = <Truck className="size-2.5 animate-bounce" />
+                                    } else if (status === "Pending") {
+                                        statusClass = "bg-amber-50 text-amber-700 border-amber-200/50"
+                                        icon = <Clock className="size-2.5" />
+                                    }
+                                    return (
+                                        <div key={item.id} className="bg-white rounded-2xl border-2 border-primarycolor/5 p-5 space-y-4 hover:shadow-md transition-all">
+                                            <div className="flex items-start justify-between gap-3">
+                                                <div className="min-w-0 flex-1">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-[10px] font-black text-primarycolor">{item.deliveryNumber}</span>
+                                                        <span className={cn("inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full border text-[8px] font-black uppercase tracking-wider", statusClass)}>
+                                                            {icon}
+                                                            {status}
+                                                        </span>
+                                                    </div>
+                                                    <div className="font-black text-primarycolor text-sm leading-tight mt-1 truncate">{item.receiverName}</div>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-center gap-2">
+                                                <div className="size-6 rounded-full bg-primarycolor/10 flex items-center justify-center shrink-0">
+                                                    <User className="size-3 text-primarycolor" />
+                                                </div>
+                                                <div className="min-w-0">
+                                                    <p className="text-xs font-semibold text-secondarycolor truncate">{item.driverName}</p>
+                                                    {item.vehiclePlate && (
+                                                        <p className="text-[9px] text-muted-foreground font-black uppercase">{item.vehiclePlate}</p>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-xs">
+                                                {item.deliveryDate && (
+                                                    <span className="font-semibold text-secondarycolor/70 flex items-center gap-1">
+                                                        <Calendar className="size-3 text-primarycolor/60" /> {formatDate(new Date(item.deliveryDate))}
+                                                    </span>
+                                                )}
+                                            </div>
+
+                                            <div className="flex items-center gap-2 pt-2 border-t border-slate-100">
+                                                <Link href={`/admin_dashboard/document_management/delivery_notes/${item.id}`} className="flex-1">
+                                                    <Button variant="outline" className="w-full h-9 rounded-xl border-primarycolor/20 font-black uppercase tracking-widest text-[10px]">
+                                                        <Eye className="size-3.5 mr-1" /> View
+                                                    </Button>
+                                                </Link>
+                                                <button onClick={() => handleDelete(item.id)} className="h-9 px-4 rounded-xl border border-rose-200 text-rose-500 font-black uppercase tracking-widest text-[10px] hover:bg-rose-50 transition-all">
+                                                    <Trash2 className="size-3.5" />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )
+                                })
+                            ) : (
+                                <div className="p-16 text-center text-muted-foreground font-black">
+                                    No delivery manifest recorded in the database.
+                                </div>
+                            )}
+                        </div>
+                    </>
                 )}
 
                 {/* Pagination Controls */}
@@ -478,8 +557,7 @@ export default function DeliveryNotesPage() {
                             </div>
                             <div className="space-y-2">
                                 <label className="text-xs font-black uppercase tracking-widest text-secondarycolor/80">Dispatch Date</label>
-                                <Input 
-                                    type="date" 
+                                <DateInput 
                                     value={formDeliveryDate}
                                     onChange={(e) => setFormDeliveryDate(e.target.value)}
                                     className="h-11 rounded-xl border-primarycolor/10 focus:border-primarycolor"

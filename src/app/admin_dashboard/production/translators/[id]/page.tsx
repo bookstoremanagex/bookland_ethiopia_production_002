@@ -15,6 +15,8 @@ import {
 } from 'lucide-react';
 import { Button } from '../../../../../components/ui/button';
 import { cn } from '../../../../../lib/utils';
+import { getServerCalendarPref } from '../../../../../lib/server-calendar';
+import { formatDate } from '../../../../../lib/calendar-utils';
 
 interface TranslatorDetailsPageProps {
   params: Promise<{ id: string }>;
@@ -29,6 +31,7 @@ export default async function TranslatorDetailsPage({ params }: TranslatorDetail
   }
 
   const translator = response.data;
+  const calendarPref = await getServerCalendarPref()
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] p-4 md:p-8">
@@ -50,7 +53,7 @@ export default async function TranslatorDetailsPage({ params }: TranslatorDetail
                 <div className="size-1 rounded-full bg-primarycolor/20" />
                 <span className="text-[10px] font-black uppercase tracking-widest text-secondarycolor/60">Expert Resource</span>
               </div>
-              <h1 className="text-4xl font-black text-primarycolor uppercase tracking-tighter leading-none">{translator.name}</h1>
+              <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">{translator.name}</h1>
               <div className="flex flex-wrap items-center gap-2 mt-1">
                 <p className="text-muted-foreground font-bold tracking-tight">
                   Certified Production Partner
@@ -156,7 +159,7 @@ export default async function TranslatorDetailsPage({ params }: TranslatorDetail
                             <h4 className="font-black text-primarycolor text-xl uppercase tracking-tight group-hover:text-secondarycolor transition-colors">{assignment.books.title}</h4>
                             <div className="flex items-center gap-3 mt-1">
                                <div className="flex items-center gap-1.5 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
-                                  <Clock className="size-3" /> {new Date(assignment.startDate).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })}
+                                   <Clock className="size-3" /> {formatDate(new Date(assignment.startDate), calendarPref, "MMM yyyy")}
                                </div>
                                <div className="size-1 rounded-full bg-primarycolor/20" />
                                <div className={cn(

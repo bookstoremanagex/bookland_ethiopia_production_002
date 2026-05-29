@@ -22,7 +22,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from 'sonner'
 import Link from 'next/link'
-import { format } from 'date-fns'
+import { useCalendar } from '@/lib/calendar-context'
 import { updateDamagedBookReport, deleteDamagedBookReport } from '@/app/actions/damaged-book-actions'
 
 interface DamagedBookDetailClientProps {
@@ -36,6 +36,7 @@ export default function DamagedBookDetailClient({ report, books, editions, store
     const router = useRouter()
     const pathname = usePathname()
     const dashboardRoot = pathname.split('/').slice(0, 2).join('/')
+    const { formatLong } = useCalendar()
     const [isEditing, setIsEditing] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false)
@@ -272,7 +273,7 @@ export default function DamagedBookDetailClient({ report, books, editions, store
                                     <div>
                                         <p className="text-[8px] font-black text-muted-foreground uppercase">Created At</p>
                                         <p className="text-xs font-black text-primarycolor uppercase tracking-tight">
-                                            {format(new Date(report.createdAt), "MMMM dd, yyyy")}
+                                            {formatLong(new Date(report.createdAt))}
                                         </p>
                                     </div>
                                 </div>

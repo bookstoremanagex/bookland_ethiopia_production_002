@@ -15,7 +15,7 @@ export default async function ProductionPage() {
                         <Package className="size-8" />
                         <span className="text-sm font-black uppercase tracking-[0.3em] opacity-50">Operations</span>
                     </div>
-                    <h1 className="text-4xl md:text-6xl font-black tracking-tight text-primarycolor uppercase italic leading-none">
+                    <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
                         Production <span className="text-secondarycolor not-italic">Dashboard</span>
                     </h1>
                     <p className="text-muted-foreground font-bold tracking-tight text-lg">

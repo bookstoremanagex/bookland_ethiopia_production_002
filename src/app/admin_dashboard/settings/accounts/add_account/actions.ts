@@ -37,6 +37,34 @@ export async function addAccountAction(data: {
       },
     });
 
+    // Auto-create role entries for all permissions
+    const viewingPermissions = new Set([
+      "Viewing Books",
+      "Viewing Stores",
+      "View DamagedBooks",
+      "Viewing BookShops",
+      "Viewing Contract Documents",
+      "Viewing Print Agreements",
+      "Viewing Delivery Notes",
+      "Viewing Invoice Document",
+      "Viewing Approval Document",
+      "Viewing Notes",
+    ]);
+
+    const allRoleTypes = await (prisma as any).roletypes.findMany({
+      where: { is_deleted: false },
+    });
+
+    const now = new Date();
+    const roleData = allRoleTypes.map((rt: any) => ({
+      accountId: newAccount.id,
+      roletypeId: rt.id,
+      role_status: viewingPermissions.has(rt.rolename),
+      updatedAt: now,
+    }));
+
+    await (prisma as any).roles.createMany({ data: roleData });
+
     return { success: true, accountId: newAccount.id };
   } catch (error) {
     console.error("Error creating account:", error);

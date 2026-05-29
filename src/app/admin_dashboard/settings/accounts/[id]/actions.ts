@@ -76,8 +76,13 @@ export async function deleteAccountAction(id: number) {
 
 export async function toggleRoleAction(accountId: number, roleName: string, enabled: boolean) {
   try {
+    const roleType = await (prisma as any).roletypes.findFirst({
+      where: { rolename: roleName, is_deleted: false },
+    });
+    if (!roleType) return { success: false, error: "Role type not found." };
+
     const existing = await (prisma as any).roles.findFirst({
-      where: { accountId, role_name: roleName, is_deleted: false },
+      where: { accountId, roletypeId: roleType.id, is_deleted: false },
     });
 
     if (existing) {
@@ -89,7 +94,7 @@ export async function toggleRoleAction(accountId: number, roleName: string, enab
       await (prisma as any).roles.create({
         data: {
           accountId,
-          role_name: roleName,
+          roletypeId: roleType.id,
           role_status: enabled,
           updatedAt: new Date(),
         },
@@ -105,8 +110,13 @@ export async function toggleRoleAction(accountId: number, roleName: string, enab
 
 export async function checkRoleAction(accountId: number, roleName: string) {
   try {
+    const roleType = await (prisma as any).roletypes.findFirst({
+      where: { rolename: roleName, is_deleted: false },
+    });
+    if (!roleType) return { success: true, enabled: false };
+
     const role = await (prisma as any).roles.findFirst({
-      where: { accountId, role_name: roleName, is_deleted: false },
+      where: { accountId, roletypeId: roleType.id, is_deleted: false },
     });
     return { success: true, enabled: role?.role_status === true };
   } catch (error) {

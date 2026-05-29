@@ -20,6 +20,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { useCalendar } from "@/lib/calendar-context";
 
 interface DbPrintAgreement {
     id: number;
@@ -37,6 +38,7 @@ interface DbPrintAgreement {
 export default function PrintAgreementDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const router = useRouter();
     const resolvedParams = use(params);
+    const { formatDate, formatShort, formatLong, formatDateTime } = useCalendar();
     const agreementId = parseInt(resolvedParams.id);
 
     const [agreement, setAgreement] = useState<DbPrintAgreement | null>(null);
@@ -105,9 +107,9 @@ export default function PrintAgreementDetailPage({ params }: { params: Promise<{
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div>
                         <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-primarycolor/60 bg-primarycolor/5 border border-primarycolor/10 px-3 py-1 rounded-full w-fit">
-                            <PrinterIcon className="size-3.5 text-primarycolor" /> PAG-{String(agreement.id).padStart(4, "0")} • Print Agreement
+                            <PrinterIcon className="size-3.5 text-primarycolor" /> PAG-{String(agreement.id).padStart(4, "0")} â€¢ Print Agreement
                         </div>
-                        <h1 className="text-3xl font-black text-secondarycolor uppercase tracking-tight mt-2">
+                        <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
                             {agreement.bookTitle}
                         </h1>
                     </div>
@@ -158,7 +160,7 @@ export default function PrintAgreementDetailPage({ params }: { params: Promise<{
                                 <p className="text-[10px] font-black uppercase tracking-widest text-secondarycolor/50">Printing Quoted Cost</p>
                                 <span className="inline-flex items-center gap-1 text-sm font-black text-secondarycolor mt-1">
                                     <DollarSign className="size-4 text-primarycolor/70" />
-                                    {agreement.cost ? `$${agreement.cost.toLocaleString(undefined, { minimumFractionDigits: 2 })}` : "—"}
+                                    {agreement.cost ? `$${agreement.cost.toLocaleString(undefined, { minimumFractionDigits: 2 })}` : "â€”"}
                                 </span>
                             </div>
 
@@ -179,7 +181,7 @@ export default function PrintAgreementDetailPage({ params }: { params: Promise<{
                                 <p className="text-[10px] font-black uppercase tracking-widest text-secondarycolor/50">Commencement Date</p>
                                 <span className="text-xs font-semibold text-secondarycolor mt-1 flex items-center gap-1">
                                     <Calendar className="size-3.5 text-primarycolor/60" />
-                                    {agreement.commencementDate ? agreement.commencementDate.toLocaleDateString() : "—"}
+                                    {agreement.commencementDate ? formatDate(new Date(agreement.commencementDate)) : "â€”"}
                                 </span>
                             </div>
                         </div>

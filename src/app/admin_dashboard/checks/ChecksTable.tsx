@@ -20,6 +20,8 @@ import {
   ExternalLink,
   ArrowUpDown,
   Banknote,
+  User,
+  Building2,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -40,6 +42,7 @@ import {
 } from "@/components/ui/table"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
+import { useCalendar } from "@/lib/calendar-context"
 
 const statusStyles: Record<string, string> = {
   PENDING: "bg-amber-100 text-amber-700 border-amber-200",
@@ -49,6 +52,7 @@ const statusStyles: Record<string, string> = {
 }
 
 export default function ChecksTable({ data }: { data: any[] }) {
+  const { formatDate } = useCalendar()
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
@@ -130,7 +134,7 @@ export default function ChecksTable({ data }: { data: any[] }) {
       cell: ({ row }) => (
         <span className="text-xs font-bold text-muted-foreground">
           {row.original.recordeddate
-            ? new Date(row.original.recordeddate).toLocaleDateString()
+            ? formatDate(new Date(row.original.recordeddate))
             : "—"}
         </span>
       ),
@@ -184,6 +188,21 @@ export default function ChecksTable({ data }: { data: any[] }) {
         </div>
         <div className="flex items-center gap-3 shrink-0">
           <Select
+            value={(table.getColumn("type")?.getFilterValue() as string) ?? "all"}
+            onValueChange={(value) =>
+              table.getColumn("type")?.setFilterValue(value === "all" ? "" : value)
+            }
+          >
+            <SelectTrigger className="h-10 w-36 rounded-xl border-2 border-slate-100 font-bold text-[10px] uppercase tracking-widest">
+              <SelectValue placeholder="All Types" />
+            </SelectTrigger>
+            <SelectContent className="rounded-2xl p-2 border-2">
+              <SelectItem value="all" className="rounded-xl h-10 font-bold text-[10px] uppercase tracking-widest">All Types</SelectItem>
+              <SelectItem value="PAYMENT" className="rounded-xl h-10 font-bold text-[10px] uppercase tracking-widest">Payment</SelectItem>
+              <SelectItem value="COLLATERAL" className="rounded-xl h-10 font-bold text-[10px] uppercase tracking-widest">Collateral</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select
             value={(table.getColumn("status")?.getFilterValue() as string) ?? "all"}
             onValueChange={(value) =>
               table.getColumn("status")?.setFilterValue(value === "all" ? "" : value)
@@ -206,8 +225,8 @@ export default function ChecksTable({ data }: { data: any[] }) {
         </div>
       </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-[2.5rem] border-2 border-primarycolor/5 shadow-2xl overflow-hidden">
+      {/* Desktop Table */}
+      <div className="hidden md:block bg-white rounded-[2.5rem] border-2 border-primarycolor/5 shadow-2xl overflow-hidden">
         <Table>
           <TableHeader className="bg-slate-50/50">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -245,6 +264,73 @@ export default function ChecksTable({ data }: { data: any[] }) {
             )}
           </TableBody>
         </Table>
+      </div>
+
+      {/* Mobile Cards */}
+      <div className="grid grid-cols-1 gap-4 md:hidden">
+        {table.getRowModel().rows?.length ? (
+          table.getRowModel().rows.map((row) => {
+            const item = row.original
+            const status = item.status || "PENDING"
+            return (
+              <Link
+                key={item.id}
+                href={`/admin_dashboard/checks/${item.id}`}
+                className="block bg-white rounded-2xl border-2 border-primarycolor/5 p-5 hover:shadow-xl hover:border-primarycolor/10 transition-all active:scale-[0.98]"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="size-10 rounded-xl bg-primarycolor/10 flex items-center justify-center text-primarycolor shrink-0">
+                      <Banknote className="size-5" />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="font-black text-primarycolor text-sm leading-tight truncate">{item.username || "Unknown"}</span>
+                        <span className="text-[9px] font-bold text-muted-foreground">#{item.id}</span>
+                      </div>
+                      <span className={cn(
+                        "inline-flex items-center mt-1 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider border",
+                        statusStyles[status] || "bg-slate-100 text-slate-600"
+                      )}>
+                        {status}
+                      </span>
+                    </div>
+                  </div>
+                  <ChevronRight className="size-5 text-primarycolor/30 shrink-0 mt-1" />
+                </div>
+
+                <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2">
+                  {item.bankname && (
+                    <div className="flex items-center gap-2">
+                      <Building2 className="size-3.5 text-primarycolor/40 shrink-0" />
+                      <span className="font-bold text-primarycolor text-xs">{item.bankname}</span>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-primarycolor text-xs">
+                      Type: <span className="text-primarycolor/60">{item.type || "—"}</span>
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-primarycolor text-xs">
+                      Amount: <span className="text-primarycolor/60">{item.amount || "—"}</span>
+                    </span>
+                  </div>
+                  {item.recordeddate && (
+                    <div className="text-[10px] font-bold text-muted-foreground">
+                      {formatDate(new Date(item.recordeddate))}
+                    </div>
+                  )}
+                </div>
+              </Link>
+            )
+          })
+        ) : (
+          <div className="py-16 text-center space-y-4 opacity-30">
+            <Banknote className="size-12 mx-auto" />
+            <p className="text-sm font-black uppercase tracking-widest">No checks found</p>
+          </div>
+        )}
       </div>
 
       {/* Pagination */}

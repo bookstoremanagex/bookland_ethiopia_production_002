@@ -159,22 +159,25 @@ export default function PrinterTable({ data }: { data: any[] }) {
 
   return (
     <div className="w-full space-y-6">
-        <div className="flex items-center gap-6 px-10 h-20 bg-white rounded-[2rem] border-2 border-primarycolor/5 shadow-xl">
-            <Search className="size-5 text-slate-400 shrink-0" />
-            <Input
-                placeholder="Search printers by name or location..."
-                value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-                onChange={(event) =>
-                    table.getColumn("name")?.setFilterValue(event.target.value)
-                }
-                className="h-full border-none focus-visible:ring-0 bg-transparent font-bold text-primarycolor placeholder:text-slate-300 px-0"
-            />
-            <div className="px-4 py-2 rounded-xl bg-primarycolor/5 border border-primarycolor/10 text-[10px] font-black text-primarycolor uppercase tracking-widest shrink-0">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 px-6 h-auto sm:h-20 bg-white rounded-[2rem] border-2 border-primarycolor/5 shadow-xl">
+            <div className="flex items-center gap-4 flex-1">
+                <Search className="size-5 text-slate-400 shrink-0" />
+                <Input
+                    placeholder="Search printers by name or location..."
+                    value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+                    onChange={(event) =>
+                        table.getColumn("name")?.setFilterValue(event.target.value)
+                    }
+                    className="h-12 sm:h-full border-none focus-visible:ring-0 bg-transparent font-bold text-primarycolor placeholder:text-slate-300 px-0"
+                />
+            </div>
+            <div className="px-4 py-2 rounded-xl bg-primarycolor/5 border border-primarycolor/10 text-[10px] font-black text-primarycolor uppercase tracking-widest shrink-0 text-center">
                 {data.length} Partners
             </div>
         </div>
 
-        <div className="bg-white rounded-[2.5rem] border-2 border-primarycolor/5 shadow-2xl overflow-hidden">
+        {/* Desktop Table */}
+        <div className="hidden md:block bg-white rounded-[2.5rem] border-2 border-primarycolor/5 shadow-2xl overflow-hidden">
             <Table>
                 <TableHeader className="bg-slate-50/50">
                     {table.getHeaderGroups().map((headerGroup) => (
@@ -207,6 +210,70 @@ export default function PrinterTable({ data }: { data: any[] }) {
                     )}
                 </TableBody>
             </Table>
+        </div>
+
+        {/* Mobile Cards */}
+        <div className="grid grid-cols-1 gap-4 md:hidden">
+            {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => {
+                    const item = row.original
+                    const totalUnits = (item.bookeditionprinters || []).reduce((acc: number, i: any) => acc + (i.quantity || 0), 0)
+                    return (
+                        <Link
+                            key={item.id}
+                            href={`/admin_dashboard/printing/printers/${item.id}`}
+                            className="block bg-white rounded-2xl border-2 border-primarycolor/5 p-5 hover:shadow-xl hover:border-primarycolor/10 transition-all active:scale-[0.98]"
+                        >
+                            <div className="flex items-start justify-between gap-4">
+                                <div className="flex items-center gap-3 min-w-0">
+                                    <div className="size-10 rounded-xl bg-primarycolor/5 flex items-center justify-center text-primarycolor border border-primarycolor/10 shrink-0">
+                                        <Printer className="size-5" />
+                                    </div>
+                                    <div className="min-w-0">
+                                        <div className="font-black text-primarycolor text-sm leading-tight truncate">{item.name}</div>
+                                        <div className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mt-0.5">Partner ID: #{item.id}</div>
+                                    </div>
+                                </div>
+                                <ChevronRight className="size-5 text-primarycolor/30 shrink-0 mt-1" />
+                            </div>
+
+                            <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2">
+                                {item.location && (
+                                    <div className="flex items-center gap-2">
+                                        <MapPin className="size-3.5 text-primarycolor/40 shrink-0" />
+                                        <span className="font-bold text-primarycolor text-xs truncate">{item.location}</span>
+                                    </div>
+                                )}
+                                {item.phone && (
+                                    <div className="flex items-center gap-2">
+                                        <Phone className="size-3.5 text-primarycolor/40 shrink-0" />
+                                        <span className="font-bold text-primarycolor text-xs truncate">{item.phone}</span>
+                                    </div>
+                                )}
+                                {item.email && (
+                                    <div className="flex items-center gap-2">
+                                        <Mail className="size-3.5 text-primarycolor/40 shrink-0" />
+                                        <span className="font-bold text-primarycolor text-xs truncate">{item.email}</span>
+                                    </div>
+                                )}
+                                <div className="flex items-center gap-2">
+                                    <Package className="size-3.5 text-primarycolor/40 shrink-0" />
+                                    <span className="font-bold text-primarycolor text-xs">{totalUnits} units</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <ClipboardList className="size-3.5 text-rose-500 shrink-0" />
+                                    <span className="font-black text-rose-600 text-xs">{item.printorder?.length || 0} orders</span>
+                                </div>
+                            </div>
+                        </Link>
+                    )
+                })
+            ) : (
+                <div className="py-16 text-center space-y-4 opacity-30">
+                    <Printer className="size-12 mx-auto" />
+                    <p className="text-sm font-black uppercase tracking-widest">No printers registered</p>
+                </div>
+            )}
         </div>
 
         <div className="flex items-center justify-between px-4">

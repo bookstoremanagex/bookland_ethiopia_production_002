@@ -21,13 +21,16 @@ import {
     ArrowRight,
     ShieldAlert,
     Edit2,
-    Activity
+    Activity,
+    Banknote
 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '../../../../../components/ui/button';
 import { Input } from '../../../../../components/ui/input';
+import { DateInput } from '../../../../../components/ui/date-input';
 import { cn } from '../../../../../lib/utils';
 import { format } from 'date-fns';
+import { useCalendar } from '@/lib/calendar-context';
 
 interface ProjectDetailsClientProps {
     initialProject: any;
@@ -41,11 +44,15 @@ export default function ProjectDetailsClient({
     translators
 }: ProjectDetailsClientProps) {
     const [project, setProject] = useState(initialProject);
+    const { formatLong } = useCalendar();
     const [isEditing, setIsEditing] = useState(false);
     const [editData, setEditData] = useState({
         bookId: project.bookId,
         translator_id: project.translator_id,
         Status: project.Status,
+        cost: project.cost ?? null,
+        payment_status: project.payment_status || "PENDING",
+        currently_paid: project.currently_paid ?? 0,
         startDate: project.startDate ? format(new Date(project.startDate), "yyyy-MM-dd") : "",
         endDate: project.endDate ? format(new Date(project.endDate), "yyyy-MM-dd") : "",
     });
@@ -224,14 +231,82 @@ export default function ProjectDetailsClient({
                                         </div>
                                     )}
                                 </div>
+
+                                {/* Cost */}
+                                <div className="space-y-3">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Cost (ETB)</label>
+                                    {isEditing ? (
+                                        <input
+                                            type="number"
+                                            step="0.01"
+                                            min="0"
+                                            value={editData.cost ?? ""}
+                                            onChange={(e) => {
+                                                const val = e.target.value;
+                                                setEditData({ ...editData, cost: val === "" ? null : Number(val) });
+                                            }}
+                                            className="w-full h-14 px-6 bg-primarycolor/5 border-2 border-primarycolor/10 rounded-2xl font-black outline-none focus:border-primarycolor transition-all"
+                                            placeholder="0.00"
+                                        />
+                                    ) : (
+                                        <div className="flex items-center gap-4 p-4 rounded-2xl bg-primarycolor/5 border-2 border-transparent">
+                                            <Banknote className="size-5 text-primarycolor" />
+                                            <span className="font-black text-secondarycolor">{project.cost ? `${project.cost.toLocaleString()} ETB` : "—"}</span>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Payment Status */}
+                                <div className="space-y-3">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Payment Status</label>
+                                    {isEditing ? (
+                                        <select
+                                            value={editData.payment_status}
+                                            onChange={(e) => setEditData({ ...editData, payment_status: e.target.value })}
+                                            className="w-full h-14 px-6 bg-primarycolor/5 border-2 border-primarycolor/10 rounded-2xl font-black outline-none focus:border-primarycolor transition-all"
+                                        >
+                                            <option value="PENDING">Pending</option>
+                                            <option value="CURRENTLY_PAID">Currently Paid</option>
+                                            <option value="SUCCEEDED">Succeeded</option>
+                                        </select>
+                                    ) : (
+                                        <div className="flex items-center gap-4 p-4 rounded-2xl bg-primarycolor/5 border-2 border-transparent">
+                                            <Clock className="size-5 text-primarycolor" />
+                                            <span className="font-black text-secondarycolor uppercase tracking-widest text-xs">{project.payment_status?.replace('_', ' ') || "PENDING"}</span>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Currently Paid */}
+                                <div className="space-y-3">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Amount Paid (ETB)</label>
+                                    {isEditing ? (
+                                        <input
+                                            type="number"
+                                            step="0.01"
+                                            min="0"
+                                            value={editData.currently_paid ?? ""}
+                                            onChange={(e) => {
+                                                const val = e.target.value;
+                                                setEditData({ ...editData, currently_paid: val === "" ? 0 : Number(val) });
+                                            }}
+                                            className="w-full h-14 px-6 bg-primarycolor/5 border-2 border-primarycolor/10 rounded-2xl font-black outline-none focus:border-primarycolor transition-all"
+                                            placeholder="0.00"
+                                        />
+                                    ) : (
+                                        <div className="flex items-center gap-4 p-4 rounded-2xl bg-primarycolor/5 border-2 border-transparent">
+                                            <Banknote className="size-5 text-primarycolor" />
+                                            <span className="font-black text-secondarycolor">{project.currently_paid ? `${project.currently_paid.toLocaleString()} ETB` : "0 ETB"}</span>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
 
                             <div className="pt-10 border-t-2 border-primarycolor/5 grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div className="space-y-3">
                                     <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Project Initiation</label>
                                     {isEditing ? (
-                                        <Input
-                                            type="date"
+                                        <DateInput
                                             value={editData.startDate}
                                             onChange={(e) => setEditData({ ...editData, startDate: e.target.value })}
                                             className="h-14 px-6 bg-primarycolor/5 border-2 border-primarycolor/10 rounded-2xl font-black"
@@ -239,7 +314,7 @@ export default function ProjectDetailsClient({
                                     ) : (
                                         <div className="flex items-center gap-4 p-4 rounded-2xl bg-secondarycolor/5 border-2 border-transparent">
                                             <Calendar className="size-5 text-secondarycolor" />
-                                            <span className="font-black text-secondarycolor">{project.startDate ? format(new Date(project.startDate), "MMMM dd, yyyy") : "Not Set"}</span>
+                                            <span className="font-black text-secondarycolor">{project.startDate ? formatLong(new Date(project.startDate)) : "Not Set"}</span>
                                         </div>
                                     )}
                                 </div>
@@ -247,8 +322,7 @@ export default function ProjectDetailsClient({
                                 <div className="space-y-3">
                                     <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Target Deadline</label>
                                     {isEditing ? (
-                                        <Input
-                                            type="date"
+                                        <DateInput
                                             value={editData.endDate}
                                             onChange={(e) => setEditData({ ...editData, endDate: e.target.value })}
                                             className="h-14 px-6 bg-primarycolor/5 border-2 border-primarycolor/10 rounded-2xl font-black"
@@ -256,7 +330,7 @@ export default function ProjectDetailsClient({
                                     ) : (
                                         <div className="flex items-center gap-4 p-4 rounded-2xl bg-secondarycolor/5 border-2 border-transparent">
                                             <Calendar className="size-5 text-secondarycolor" />
-                                            <span className="font-black text-secondarycolor">{project.endDate ? format(new Date(project.endDate), "MMMM dd, yyyy") : "Not Set"}</span>
+                                            <span className="font-black text-secondarycolor">{project.endDate ? formatLong(new Date(project.endDate)) : "Not Set"}</span>
                                         </div>
                                     )}
                                 </div>

@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { updateNote, deleteNote } from "../../../actions/notes-actions";
 import { toast } from "sonner";
+import { useCalendar } from "@/lib/calendar-context";
 
 interface NoteDetailClientProps {
   note: {
@@ -34,6 +35,7 @@ interface NoteDetailClientProps {
 
 export function NoteDetailClient({ note }: NoteDetailClientProps) {
   const router = useRouter();
+  const { formatDate, formatShort, formatLong, formatDateTime } = useCalendar();
   
   const [title, setTitle] = useState(note.title || "");
   const [content, setContent] = useState(note.note_content);
@@ -91,7 +93,7 @@ export function NoteDetailClient({ note }: NoteDetailClientProps) {
         <Button
           variant="ghost"
           onClick={() => router.push("/admin_dashboard/notes")}
-          className="group text-sm font-black uppercase tracking-widest text-primarycolor hover:bg-primarycolor/5 rounded-2xl px-5 py-6 gap-2"
+          className="group text-sm font-black uppercase tracking-widest text-primarycolor hover:bg-primarycolor/5 rounded-2xl px-5 py-3 md:py-6 gap-2"
         >
           <ArrowLeft className="size-4 group-hover:-translate-x-1 transition-transform" />
           Back to Notes
@@ -103,10 +105,10 @@ export function NoteDetailClient({ note }: NoteDetailClientProps) {
       </div>
 
       {/* Main Form Container */}
-      <div className="bg-card rounded-[2.5rem] border-2 border-primarycolor/5 p-8 md:p-12 shadow-2xl hover:border-primarycolor/10 transition-all duration-300 space-y-8 bg-white">
+      <div className="bg-card rounded-[2.5rem] border-2 border-primarycolor/5 p-5 md:p-12 shadow-2xl hover:border-primarycolor/10 transition-all duration-300 space-y-8 bg-white">
         
         {/* Author / Metadata Card */}
-        <div className="bg-primarycolor/5 rounded-2xl p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div className="bg-primarycolor/5 rounded-2xl p-4 md:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-6">
           <div className="flex items-center gap-3.5">
             <div className="size-11 rounded-full bg-primarycolor flex items-center justify-center text-white text-lg font-black uppercase italic shadow-md">
               {note.accounts.name.substring(0, 2)}
@@ -125,12 +127,12 @@ export function NoteDetailClient({ note }: NoteDetailClientProps) {
           <div className="text-xs font-bold text-secondarycolor/60 tabular-nums space-y-1">
             <div className="flex items-center gap-2">
               <Calendar className="size-4 text-primarycolor/50" />
-              <span>Created: {new Date(note.createdAt).toLocaleString()}</span>
+              <span>Created: {formatDateTime(new Date(note.createdAt))}</span>
             </div>
             {note.updatedAt !== note.createdAt && (
               <div className="flex items-center gap-2 text-primarycolor">
                 <Edit3 className="size-4 text-primarycolor/50" />
-                <span>Last Updated: {new Date(note.updatedAt).toLocaleString()}</span>
+                <span>Last Updated: {formatDateTime(new Date(note.updatedAt))}</span>
               </div>
             )}
           </div>
@@ -162,7 +164,7 @@ export function NoteDetailClient({ note }: NoteDetailClientProps) {
               rows={8}
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              className="w-full p-6 border-2 border-primarycolor/10 focus:border-primarycolor focus:ring-4 focus:ring-primarycolor/5 outline-none rounded-3xl font-semibold text-base resize-y bg-background/50 transition-all min-h-[220px] leading-relaxed text-secondarycolor"
+              className="w-full p-4 md:p-6 border-2 border-primarycolor/10 focus:border-primarycolor focus:ring-4 focus:ring-primarycolor/5 outline-none rounded-3xl font-semibold text-sm md:text-base resize-y bg-background/50 transition-all min-h-[160px] md:min-h-[220px] leading-relaxed text-secondarycolor"
             />
           </div>
 

@@ -38,7 +38,7 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import Link from "next/link"
-import { format } from "date-fns"
+import { useCalendar } from "@/lib/calendar-context"
 import { cn } from "@/lib/utils"
 
 const statusStyles: any = {
@@ -50,7 +50,7 @@ const statusStyles: any = {
     REPRINT: "bg-purple-50 text-purple-600 border-purple-100"
 }
 
-export const columns: ColumnDef<any>[] = [
+function createColumns(formatDate: (date: Date, pattern?: string) => string): ColumnDef<any>[] { return [
     {
         accessorKey: "project_name",
         header: "Printing Project",
@@ -139,7 +139,7 @@ export const columns: ColumnDef<any>[] = [
             <div className="flex items-center gap-2 text-muted-foreground">
                 <Calendar className="size-3.5" />
                 <span className="font-bold text-[10px]">
-                    {format(new Date(row.getValue("createdAt")), "MMM dd, yyyy")}
+                    {formatDate(new Date(row.getValue("createdAt")))}
                 </span>
             </div>
         ),
@@ -154,12 +154,14 @@ export const columns: ColumnDef<any>[] = [
             </Link>
         ),
     },
-]
+] }
 
 export default function PrintOrderTable({ data }: { data: any[] }) {
+    const { formatDate, formatShort, formatLong, formatDateTime } = useCalendar();
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
 
+    const columns = React.useMemo(() => createColumns(formatDate), [formatDate])
     const table = useReactTable({
         data,
         columns,
@@ -182,22 +184,25 @@ export default function PrintOrderTable({ data }: { data: any[] }) {
 
     return (
         <div className="w-full space-y-6">
-            <div className="flex items-center gap-6 px-10 h-20 bg-white rounded-[2rem] border-2 border-primarycolor/5 shadow-xl">
-                <Search className="size-5 text-slate-400 shrink-0" />
-                <Input
-                    placeholder="Search projects..."
-                    value={(table.getColumn("project_name")?.getFilterValue() as string) ?? ""}
-                    onChange={(event) =>
-                        table.getColumn("project_name")?.setFilterValue(event.target.value)
-                    }
-                    className="h-full border-none focus-visible:ring-0 bg-transparent font-bold text-primarycolor placeholder:text-slate-300 px-0"
-                />
-                <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primarycolor/5 border border-primarycolor/10 text-[10px] font-black text-primarycolor uppercase tracking-widest shrink-0">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 px-6 h-auto sm:h-20 bg-white rounded-[2rem] border-2 border-primarycolor/5 shadow-xl">
+                <div className="flex items-center gap-4 flex-1">
+                    <Search className="size-5 text-slate-400 shrink-0" />
+                    <Input
+                        placeholder="Search projects..."
+                        value={(table.getColumn("project_name")?.getFilterValue() as string) ?? ""}
+                        onChange={(event) =>
+                            table.getColumn("project_name")?.setFilterValue(event.target.value)
+                        }
+                        className="h-12 sm:h-full border-none focus-visible:ring-0 bg-transparent font-bold text-primarycolor placeholder:text-slate-300 px-0"
+                    />
+                </div>
+                <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primarycolor/5 border border-primarycolor/10 text-[10px] font-black text-primarycolor uppercase tracking-widest shrink-0 justify-center">
                     <Activity className="size-3" /> {data.length} Projects
                 </div>
             </div>
 
-            <div className="bg-white rounded-[2.5rem] border-2 border-primarycolor/5 shadow-2xl overflow-hidden">
+            {/* Desktop Table */}
+            <div className="hidden md:block bg-white rounded-[2.5rem] border-2 border-primarycolor/5 shadow-2xl overflow-hidden">
                 <Table>
                     <TableHeader className="bg-slate-50/50">
                         {table.getHeaderGroups().map((headerGroup) => (
@@ -230,6 +235,83 @@ export default function PrintOrderTable({ data }: { data: any[] }) {
                         )}
                     </TableBody>
                 </Table>
+            </div>
+
+            {/* Mobile Cards */}
+            <div className="grid grid-cols-1 gap-4 md:hidden">
+                {table.getRowModel().rows?.length ? (
+                    table.getRowModel().rows.map((row) => {
+                        const item = row.original
+                        const items = item.printorder_items || []
+                        const totalUnits = items.reduce((sum: number, i: any) => sum + (i.quantity || 0), 0)
+                        const status = item.status || "NOT_STARTED"
+                        const price = item.total_price || 0
+                        return (
+                            <div
+                                key={item.id}
+                                className="bg-white rounded-2xl border-2 border-primarycolor/5 p-5 space-y-4 hover:shadow-md transition-all"
+                            >
+                                <div className="flex items-start gap-3">
+                                    <div className="size-10 rounded-xl bg-primarycolor/5 flex items-center justify-center text-primarycolor border border-primarycolor/10 shrink-0">
+                                        <Layers className="size-5" />
+                                    </div>
+                                    <div className="min-w-0 flex-1">
+                                        <div className="font-black text-primarycolor text-sm leading-tight truncate">
+                                            {item.project_name || `Project #${item.id}`}
+                                        </div>
+                                        <div className="flex items-center gap-3 mt-1">
+                                            <div className="flex items-center gap-1.5">
+                                                <Printer className="size-2.5 text-muted-foreground" />
+                                                <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest truncate">
+                                                    {item.printer?.name}
+                                                </span>
+                                            </div>
+                                            <div className="flex items-center gap-1.5">
+                                                <BookOpen className="size-2.5 text-muted-foreground" />
+                                                <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">
+                                                    {items.length} Books
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className={cn("px-2.5 py-0.5 rounded-full border shrink-0 self-start", statusStyles[status] || statusStyles.NOT_STARTED)}>
+                                        <span className="text-[8px] font-black uppercase tracking-widest whitespace-nowrap">
+                                            {status.replace("_", " ")}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-4">
+                                        <div className="flex items-center gap-1.5">
+                                            <Hash className="size-3 text-primarycolor/40" />
+                                            <span className="font-black text-primarycolor text-xs">{totalUnits.toLocaleString()} units</span>
+                                        </div>
+                                        <div className="flex items-center gap-1.5">
+                                            <DollarSign className="size-3 text-emerald-500" />
+                                            <span className="font-black text-emerald-600 text-xs">
+                                                {price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <Link href={`/admin_dashboard/printing/manage/${item.id}`}>
+                                        <Button
+                                            variant="outline"
+                                            className="h-9 px-4 rounded-xl border-primarycolor/20 font-black uppercase tracking-widest text-[10px]"
+                                        >
+                                            Details
+                                        </Button>
+                                    </Link>
+                                </div>
+                            </div>
+                        )
+                    })
+                ) : (
+                    <div className="py-16 text-center space-y-4 opacity-30">
+                        <Layers className="size-12 mx-auto" />
+                        <p className="text-sm font-black uppercase tracking-widest">No print projects found</p>
+                    </div>
+                )}
             </div>
 
             <div className="flex items-center justify-between px-4">

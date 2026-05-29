@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { DateInput } from "@/components/ui/date-input";
 import {
     Select,
     SelectContent,
@@ -386,8 +387,7 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName }
                                         <label className="text-[9px] font-black uppercase tracking-widest text-primarycolor ml-1">Recorded Date</label>
                                         <div className="relative">
                                             <Calendar className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 size-3.5 md:size-4 text-muted-foreground" />
-                                            <Input
-                                                type="date"
+                                            <DateInput
                                                 value={newCheck.recordeddate}
                                                 onChange={(e) => setNewCheck({ ...newCheck, recordeddate: e.target.value })}
                                                 className="h-11 md:h-12 pl-9 md:pl-10 rounded-xl border-2 border-purple-200 font-bold text-xs"

@@ -8,7 +8,7 @@ import { createNotification } from "./notification-actions";
 export async function checkIsAdminUser() {
     try {
         const session = await getCurrentSession();
-        return { success: true, isAdmin: session?.role === "Admin" };
+        return { success: true, isAdmin: session?.role === "ADMIN" };
     } catch {
         return { success: true, isAdmin: false };
     }
@@ -102,10 +102,43 @@ export async function approvePayment(paymentId: number) {
         if (!payment) return { success: false, error: "Payment not found" };
         if (payment.status === "APPROVED") return { success: false, error: "Payment already approved" };
 
+        // Approve the payment first
         await (prisma as any).payments.update({
             where: { id: paymentId },
             data: { status: "APPROVED" }
         });
+
+        // Distribute the payment across the shop's unpaid orders (oldest first)
+        try {
+            let remaining = payment.amount;
+            const shopOrders = await (prisma as any).orders.findMany({
+                where: {
+                    bookShopId: payment.shopId,
+                    is_deleted: false,
+                },
+                orderBy: { createdAt: 'asc' }
+            });
+
+            for (const order of shopOrders) {
+                if (remaining <= 0) break;
+                const orderRemaining = (order.total_amount || 0) - (order.amount_paid || 0);
+                if (orderRemaining <= 0) continue;
+                const toApply = Math.min(remaining, orderRemaining);
+                await (prisma as any).orders.update({
+                    where: { id: order.id },
+                    data: { amount_paid: (order.amount_paid || 0) + toApply }
+                });
+                remaining -= toApply;
+            }
+        } catch (deductError) {
+            // Revert the approval if deduction fails
+            await (prisma as any).payments.update({
+                where: { id: paymentId },
+                data: { status: "PENDING" }
+            });
+            console.error("Error deducting payment from orders:", deductError);
+            return { success: false, error: "Payment approved but failed to deduct from debt. Approval reverted." };
+        }
 
         await createNotification({
             title: `Payment Approved - ${payment.shop?.name || "Unknown Shop"}`,
@@ -120,6 +153,23 @@ export async function approvePayment(paymentId: number) {
             }),
             type: "PAYMENT",
             notification_to: "ADMIN",
+            notification_from: session?.name || "System",
+        });
+
+        // Notify DELIVERY_AND_SALES
+        await createNotification({
+            title: `Payment Approved - ${payment.shop?.name || "Unknown Shop"}`,
+            message: `A payment of ${payment.amount.toLocaleString()} ETB for ${payment.shop?.name || "Unknown Shop"} has been approved.`,
+            details: JSON.stringify({
+                shopId: payment.shopId,
+                shopName: payment.shop?.name,
+                amount: payment.amount,
+                paymentType: payment.payment_type,
+                checkId: payment.checkId,
+                paymentId: payment.id
+            }),
+            type: "PAYMENT",
+            notification_to: "DELIVERY_AND_SALES",
             notification_from: session?.name || "System",
         });
 
@@ -139,7 +189,9 @@ export async function approvePayment(paymentId: number) {
             }
         });
 
-        revalidatePath("/admin_dashboard/manage_payment", "layout");
+        revalidatePath("/admin_dashboard", "layout");
+        revalidatePath("/delivery_and_sales_dashboard", "layout");
+        revalidatePath("/delivery_sample_dashboard", "layout");
 
         return { success: true, data: payment };
     } catch (error) {
