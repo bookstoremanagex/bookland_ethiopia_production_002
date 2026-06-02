@@ -70,15 +70,15 @@ export function AddBookForm({ className }: AddBookFormProps) {
       number_of_pages: null,
       info: "",
       book_image_url: "",
-      translator_cost: null,
-      cover_design_cost: null,
-      text_design_cost: null,
-      editor_cost: null,
-      typewriting_cost: null,
-      store_cost: null,
-      distribution_cost: null,
-      advertisement_cost: null,
-      purchasing_right_cost: null,
+      translator_cost: 0,
+      cover_design_cost: 0,
+      text_design_cost: 0,
+      editor_cost: 0,
+      typewriting_cost: 0,
+      store_cost: 0,
+      distribution_cost: 0,
+      advertisement_cost: 0,
+      purchasing_right_cost: 0,
       status: "available",
       productionstatus: "ON_PRODUCTION",
     },
@@ -102,16 +102,8 @@ export function AddBookForm({ className }: AddBookFormProps) {
         finalImageUrl = uploadRes.url || "";
       }
 
-      const costFields = ['translator_cost','cover_design_cost','text_design_cost','editor_cost','typewriting_cost','store_cost','distribution_cost','advertisement_cost','purchasing_right_cost'] as const;
-      const sanitizedData = { ...data } as any;
-      for (const field of costFields) {
-        if (sanitizedData[field] === undefined || sanitizedData[field] === null || Number.isNaN(Number(sanitizedData[field]))) {
-          sanitizedData[field] = null;
-        }
-      }
-
       const response = await createBook({
-        ...sanitizedData,
+        ...data,
         book_image_url: finalImageUrl,
       });
 
