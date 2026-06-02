@@ -21,9 +21,7 @@ export async function getShopRemainingBalance(shopId: number) {
         if (!shop) return { success: false, error: "Shop not found" };
 
         const totalDebt = shop.orders.reduce((sum: number, o: any) => sum + (o.total_amount || 0), 0);
-        const orderPaid = shop.orders.reduce((sum: number, o: any) => sum + (o.amount_paid || 0), 0);
-        const paymentPaid = shop.payments.reduce((sum: number, p: any) => sum + (p.amount || 0), 0);
-        const remaining = totalDebt - orderPaid - paymentPaid;
+        const remaining = totalDebt - shop.orders.reduce((sum: number, o: any) => sum + (o.amount_paid || 0), 0);
 
         return { success: true, remaining };
     } catch (error) {

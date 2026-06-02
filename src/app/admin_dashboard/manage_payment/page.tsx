@@ -17,9 +17,7 @@ export default async function ManagePaymentPage() {
 
     const data = shops.map((shop: any) => {
         const totalDebt = shop.orders.reduce((sum: number, order: any) => sum + (order.total_amount || 0), 0);
-        const orderPaid = shop.orders.reduce((sum: number, order: any) => sum + (order.amount_paid || 0), 0);
-        const paymentPaid = shop.payments.reduce((sum: number, p: any) => sum + (p.amount || 0), 0);
-        const totalPaid = orderPaid + paymentPaid;
+        const totalPaid = shop.orders.reduce((sum: number, order: any) => sum + (order.amount_paid || 0), 0);
         const totalRemaining = totalDebt - totalPaid;
         return {
             id: shop.id,
