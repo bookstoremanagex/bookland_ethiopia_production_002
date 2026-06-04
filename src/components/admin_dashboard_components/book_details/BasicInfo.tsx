@@ -13,7 +13,8 @@ import {
   Check,
   X,
   Edit2,
-  Copyright
+  Copyright,
+  ArrowUpDown
 } from 'lucide-react';
 import { Button } from '../../ui/button';
 import { Input } from '../../ui/input';
@@ -190,6 +191,7 @@ export default function BasicInfo({
                         {renderEditableField('isbn', 'ISBN Code', Hash)}
                         {renderEditableField('copyright_registration_number', 'Copyright Reg. No', Copyright)}
                         {renderEditableField('number_of_pages', 'Pages', BookOpen, 'number')}
+                        {renderEditableField('book_sort_index', 'Sort Index', ArrowUpDown, 'number')}
                     </div>
                 </div>
             </div>

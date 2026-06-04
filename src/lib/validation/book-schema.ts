@@ -16,6 +16,7 @@ export const bookSchema = z.object({
   number_of_pages: z.coerce.number().optional().nullable(),
   info: z.string().optional().nullable(),
   book_image_url: z.string().optional().nullable(),
+  book_sort_index: z.coerce.number().optional().nullable(),
   translator_cost: z.coerce.number().catch(0),
   cover_design_cost: z.coerce.number().catch(0),
   text_design_cost: z.coerce.number().catch(0),

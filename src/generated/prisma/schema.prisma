@@ -108,7 +108,9 @@ model bookeditionprinters {
 }
 
 model books {
-  id                            Int                     @id @default(autoincrement())
+  id              Int  @id @default(autoincrement())
+  book_sort_index Int? @default(10000)
+
   unique_identification_code    String                  @unique(map: "Books_unique_identification_code_key")
   isbn                          String?
   title                         String

@@ -141,6 +141,35 @@ export async function updateBook(id: string, data: Partial<BookFormValues>) {
   }
 }
 
+export async function reorderBooks(items: { id: string; book_sort_index: number }[]) {
+  const permission = await checkCurrentUserRole("Editing Books");
+  if (!permission.enabled) {
+    return { success: false, error: "You do not have the privilege to edit books." };
+  }
+
+  try {
+    // Single parameterized SQL — safe and instant
+    const whens = items.map(() => "WHEN ? THEN ?").join(" ");
+    const ins = items.map(() => "?").join(",");
+    const params = items.flatMap((item) => [item.id, item.book_sort_index]);
+    const ids = items.map((item) => item.id);
+
+    await prisma.$executeRawUnsafe(
+      `UPDATE books SET book_sort_index = CASE unique_identification_code ${whens} END WHERE unique_identification_code IN (${ins})`,
+      ...params,
+      ...ids
+    );
+
+    revalidatePath("/admin_dashboard/books");
+    revalidatePath("/admin_dashboard/books/shelf");
+    items.forEach((item) => revalidatePath(`/admin_dashboard/books/${item.id}`));
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to reorder books:", error);
+    return { success: false, error: "Failed to reorder books" };
+  }
+}
+
 export async function deleteBook(id: string) {
   const permission = await checkCurrentUserRole("Deleting Books");
   if (!permission.enabled) {

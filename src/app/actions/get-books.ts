@@ -14,9 +14,10 @@ export async function getBooks() {
           select: { id: true },
         },
       },
-      orderBy: {
-        createdAt: "desc",
-      },
+      orderBy: [
+        { book_sort_index: { sort: "asc", nulls: "last" } },
+        { createdAt: "desc" },
+      ],
     });
 
     const data = books.map(({ bookedition, ...rest }) => ({

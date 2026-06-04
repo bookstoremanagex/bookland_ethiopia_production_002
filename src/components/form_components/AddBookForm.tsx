@@ -68,6 +68,7 @@ export function AddBookForm({ className }: AddBookFormProps) {
       publication_year: "",
       print_batch_id: "",
       number_of_pages: null,
+      book_sort_index: null,
       info: "",
       book_image_url: "",
       translator_cost: 0,
@@ -343,6 +344,25 @@ export function AddBookForm({ className }: AddBookFormProps) {
                 {...register("number_of_pages", { valueAsNumber: true })}
                 className="border-primarycolor/20 focus:border-primarycolor focus:ring-primarycolor/20"
               />
+            </div>
+
+            {/* Sort Index */}
+            <div className="space-y-2 group">
+              <label
+                htmlFor="book_sort_index"
+                className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor"
+              >
+                Sort Index <span className="text-[10px] font-normal text-muted-foreground">(Optional)</span>
+              </label>
+              <Input
+                id="book_sort_index"
+                type="number"
+                step="any"
+                placeholder="0"
+                {...register("book_sort_index", { valueAsNumber: true })}
+                className="border-primarycolor/20 focus:border-primarycolor focus:ring-primarycolor/20"
+              />
+              <p className="text-[9px] font-medium text-muted-foreground">Lower number = higher position in lists</p>
             </div>
 
             {/* Translator */}

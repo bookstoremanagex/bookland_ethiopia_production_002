@@ -40,6 +40,7 @@ export type Book = {
   category: string;
   status: string;
   book_image_url: string | null;
+  book_sort_index: number | null;
 };
 
 interface BooksTableProps {
@@ -126,6 +127,18 @@ export function BooksTable({ data }: BooksTableProps) {
       ),
     },
     {
+      accessorKey: "book_sort_index",
+      header: "Sort",
+      cell: ({ row }) => {
+        const val = row.getValue("book_sort_index") as number | null;
+        return (
+          <div className="font-bold text-muted-foreground tabular-nums text-sm text-center">
+            {val ?? "—"}
+          </div>
+        );
+      },
+    },
+    {
       id: "actions",
       header: "Details",
       cell: ({ row }) => {
@@ -155,6 +168,8 @@ export function BooksTable({ data }: BooksTableProps) {
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({
     isbn: false,
     unique_identification_code: false,
+    id: false,
+    book_sort_index: false,
   });
   const [globalFilter, setGlobalFilter] = React.useState("");
 

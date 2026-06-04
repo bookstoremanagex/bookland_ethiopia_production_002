@@ -192,6 +192,7 @@ exports.Prisma.BookeditionprintersScalarFieldEnum = {
 
 exports.Prisma.BooksScalarFieldEnum = {
   id: 'id',
+  book_sort_index: 'book_sort_index',
   unique_identification_code: 'unique_identification_code',
   isbn: 'isbn',
   title: 'title',

@@ -9109,6 +9109,7 @@ export namespace Prisma {
 
   export type BooksAvgAggregateOutputType = {
     id: number | null
+    book_sort_index: number | null
     number_of_pages: number | null
     translator_cost: number | null
     cover_design_cost: number | null
@@ -9123,6 +9124,7 @@ export namespace Prisma {
 
   export type BooksSumAggregateOutputType = {
     id: number | null
+    book_sort_index: number | null
     number_of_pages: number | null
     translator_cost: number | null
     cover_design_cost: number | null
@@ -9137,6 +9139,7 @@ export namespace Prisma {
 
   export type BooksMinAggregateOutputType = {
     id: number | null
+    book_sort_index: number | null
     unique_identification_code: string | null
     isbn: string | null
     title: string | null
@@ -9174,6 +9177,7 @@ export namespace Prisma {
 
   export type BooksMaxAggregateOutputType = {
     id: number | null
+    book_sort_index: number | null
     unique_identification_code: string | null
     isbn: string | null
     title: string | null
@@ -9211,6 +9215,7 @@ export namespace Prisma {
 
   export type BooksCountAggregateOutputType = {
     id: number
+    book_sort_index: number
     unique_identification_code: number
     isbn: number
     title: number
@@ -9250,6 +9255,7 @@ export namespace Prisma {
 
   export type BooksAvgAggregateInputType = {
     id?: true
+    book_sort_index?: true
     number_of_pages?: true
     translator_cost?: true
     cover_design_cost?: true
@@ -9264,6 +9270,7 @@ export namespace Prisma {
 
   export type BooksSumAggregateInputType = {
     id?: true
+    book_sort_index?: true
     number_of_pages?: true
     translator_cost?: true
     cover_design_cost?: true
@@ -9278,6 +9285,7 @@ export namespace Prisma {
 
   export type BooksMinAggregateInputType = {
     id?: true
+    book_sort_index?: true
     unique_identification_code?: true
     isbn?: true
     title?: true
@@ -9315,6 +9323,7 @@ export namespace Prisma {
 
   export type BooksMaxAggregateInputType = {
     id?: true
+    book_sort_index?: true
     unique_identification_code?: true
     isbn?: true
     title?: true
@@ -9352,6 +9361,7 @@ export namespace Prisma {
 
   export type BooksCountAggregateInputType = {
     id?: true
+    book_sort_index?: true
     unique_identification_code?: true
     isbn?: true
     title?: true
@@ -9476,6 +9486,7 @@ export namespace Prisma {
 
   export type BooksGroupByOutputType = {
     id: number
+    book_sort_index: number | null
     unique_identification_code: string
     isbn: string | null
     title: string
@@ -9532,6 +9543,7 @@ export namespace Prisma {
 
   export type booksSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    book_sort_index?: boolean
     unique_identification_code?: boolean
     isbn?: boolean
     title?: boolean
@@ -9575,6 +9587,7 @@ export namespace Prisma {
 
   export type booksSelectScalar = {
     id?: boolean
+    book_sort_index?: boolean
     unique_identification_code?: boolean
     isbn?: boolean
     title?: boolean
@@ -9610,7 +9623,7 @@ export namespace Prisma {
     purchasing_right_cost?: boolean
   }
 
-  export type booksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "unique_identification_code" | "isbn" | "title" | "author" | "translator" | "designer" | "language" | "edition" | "category" | "publication_year" | "copyright_registration_number" | "print_batch_id" | "book_sku" | "number_of_pages" | "info" | "book_image_url" | "status" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt" | "productionstatus" | "default_edition_id" | "pen_name" | "translator_cost" | "cover_design_cost" | "text_design_cost" | "editor_cost" | "typewriting_cost" | "store_cost" | "distribution_cost" | "advertisement_cost" | "purchasing_right_cost", ExtArgs["result"]["books"]>
+  export type booksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "book_sort_index" | "unique_identification_code" | "isbn" | "title" | "author" | "translator" | "designer" | "language" | "edition" | "category" | "publication_year" | "copyright_registration_number" | "print_batch_id" | "book_sku" | "number_of_pages" | "info" | "book_image_url" | "status" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt" | "productionstatus" | "default_edition_id" | "pen_name" | "translator_cost" | "cover_design_cost" | "text_design_cost" | "editor_cost" | "typewriting_cost" | "store_cost" | "distribution_cost" | "advertisement_cost" | "purchasing_right_cost", ExtArgs["result"]["books"]>
   export type booksInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     bookedition?: boolean | books$bookeditionArgs<ExtArgs>
     damagedbooks?: boolean | books$damagedbooksArgs<ExtArgs>
@@ -9627,6 +9640,7 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
+      book_sort_index: number | null
       unique_identification_code: string
       isbn: string | null
       title: string
@@ -10033,6 +10047,7 @@ export namespace Prisma {
    */
   interface booksFieldRefs {
     readonly id: FieldRef<"books", 'Int'>
+    readonly book_sort_index: FieldRef<"books", 'Int'>
     readonly unique_identification_code: FieldRef<"books", 'String'>
     readonly isbn: FieldRef<"books", 'String'>
     readonly title: FieldRef<"books", 'String'>
@@ -41754,6 +41769,7 @@ export namespace Prisma {
 
   export const BooksScalarFieldEnum: {
     id: 'id',
+    book_sort_index: 'book_sort_index',
     unique_identification_code: 'unique_identification_code',
     isbn: 'isbn',
     title: 'title',
@@ -43147,6 +43163,7 @@ export namespace Prisma {
     OR?: booksWhereInput[]
     NOT?: booksWhereInput | booksWhereInput[]
     id?: IntFilter<"books"> | number
+    book_sort_index?: IntNullableFilter<"books"> | number | null
     unique_identification_code?: StringFilter<"books"> | string
     isbn?: StringNullableFilter<"books"> | string | null
     title?: StringFilter<"books"> | string
@@ -43187,6 +43204,7 @@ export namespace Prisma {
 
   export type booksOrderByWithRelationInput = {
     id?: SortOrder
+    book_sort_index?: SortOrderInput | SortOrder
     unique_identification_code?: SortOrder
     isbn?: SortOrderInput | SortOrder
     title?: SortOrder
@@ -43233,6 +43251,7 @@ export namespace Prisma {
     AND?: booksWhereInput | booksWhereInput[]
     OR?: booksWhereInput[]
     NOT?: booksWhereInput | booksWhereInput[]
+    book_sort_index?: IntNullableFilter<"books"> | number | null
     isbn?: StringNullableFilter<"books"> | string | null
     title?: StringFilter<"books"> | string
     author?: StringNullableFilter<"books"> | string | null
@@ -43271,6 +43290,7 @@ export namespace Prisma {
 
   export type booksOrderByWithAggregationInput = {
     id?: SortOrder
+    book_sort_index?: SortOrderInput | SortOrder
     unique_identification_code?: SortOrder
     isbn?: SortOrderInput | SortOrder
     title?: SortOrder
@@ -43316,6 +43336,7 @@ export namespace Prisma {
     OR?: booksScalarWhereWithAggregatesInput[]
     NOT?: booksScalarWhereWithAggregatesInput | booksScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"books"> | number
+    book_sort_index?: IntNullableWithAggregatesFilter<"books"> | number | null
     unique_identification_code?: StringWithAggregatesFilter<"books"> | string
     isbn?: StringNullableWithAggregatesFilter<"books"> | string | null
     title?: StringWithAggregatesFilter<"books"> | string
@@ -46423,6 +46444,7 @@ export namespace Prisma {
   }
 
   export type booksCreateInput = {
+    book_sort_index?: number | null
     unique_identification_code: string
     isbn?: string | null
     title: string
@@ -46463,6 +46485,7 @@ export namespace Prisma {
 
   export type booksUncheckedCreateInput = {
     id?: number
+    book_sort_index?: number | null
     unique_identification_code: string
     isbn?: string | null
     title: string
@@ -46502,6 +46525,7 @@ export namespace Prisma {
   }
 
   export type booksUpdateInput = {
+    book_sort_index?: NullableIntFieldUpdateOperationsInput | number | null
     unique_identification_code?: StringFieldUpdateOperationsInput | string
     isbn?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
@@ -46542,6 +46566,7 @@ export namespace Prisma {
 
   export type booksUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
+    book_sort_index?: NullableIntFieldUpdateOperationsInput | number | null
     unique_identification_code?: StringFieldUpdateOperationsInput | string
     isbn?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
@@ -46582,6 +46607,7 @@ export namespace Prisma {
 
   export type booksCreateManyInput = {
     id?: number
+    book_sort_index?: number | null
     unique_identification_code: string
     isbn?: string | null
     title: string
@@ -46618,6 +46644,7 @@ export namespace Prisma {
   }
 
   export type booksUpdateManyMutationInput = {
+    book_sort_index?: NullableIntFieldUpdateOperationsInput | number | null
     unique_identification_code?: StringFieldUpdateOperationsInput | string
     isbn?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
@@ -46655,6 +46682,7 @@ export namespace Prisma {
 
   export type booksUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
+    book_sort_index?: NullableIntFieldUpdateOperationsInput | number | null
     unique_identification_code?: StringFieldUpdateOperationsInput | string
     isbn?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
@@ -50071,6 +50099,7 @@ export namespace Prisma {
 
   export type booksCountOrderByAggregateInput = {
     id?: SortOrder
+    book_sort_index?: SortOrder
     unique_identification_code?: SortOrder
     isbn?: SortOrder
     title?: SortOrder
@@ -50108,6 +50137,7 @@ export namespace Prisma {
 
   export type booksAvgOrderByAggregateInput = {
     id?: SortOrder
+    book_sort_index?: SortOrder
     number_of_pages?: SortOrder
     translator_cost?: SortOrder
     cover_design_cost?: SortOrder
@@ -50122,6 +50152,7 @@ export namespace Prisma {
 
   export type booksMaxOrderByAggregateInput = {
     id?: SortOrder
+    book_sort_index?: SortOrder
     unique_identification_code?: SortOrder
     isbn?: SortOrder
     title?: SortOrder
@@ -50159,6 +50190,7 @@ export namespace Prisma {
 
   export type booksMinOrderByAggregateInput = {
     id?: SortOrder
+    book_sort_index?: SortOrder
     unique_identification_code?: SortOrder
     isbn?: SortOrder
     title?: SortOrder
@@ -50196,6 +50228,7 @@ export namespace Prisma {
 
   export type booksSumOrderByAggregateInput = {
     id?: SortOrder
+    book_sort_index?: SortOrder
     number_of_pages?: SortOrder
     translator_cost?: SortOrder
     cover_design_cost?: SortOrder
@@ -54819,6 +54852,7 @@ export namespace Prisma {
   }
 
   export type booksCreateWithoutBookeditionInput = {
+    book_sort_index?: number | null
     unique_identification_code: string
     isbn?: string | null
     title: string
@@ -54858,6 +54892,7 @@ export namespace Prisma {
 
   export type booksUncheckedCreateWithoutBookeditionInput = {
     id?: number
+    book_sort_index?: number | null
     unique_identification_code: string
     isbn?: string | null
     title: string
@@ -55127,6 +55162,7 @@ export namespace Prisma {
   }
 
   export type booksUpdateWithoutBookeditionInput = {
+    book_sort_index?: NullableIntFieldUpdateOperationsInput | number | null
     unique_identification_code?: StringFieldUpdateOperationsInput | string
     isbn?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
@@ -55166,6 +55202,7 @@ export namespace Prisma {
 
   export type booksUncheckedUpdateWithoutBookeditionInput = {
     id?: IntFieldUpdateOperationsInput | number
+    book_sort_index?: NullableIntFieldUpdateOperationsInput | number | null
     unique_identification_code?: StringFieldUpdateOperationsInput | string
     isbn?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
@@ -57115,6 +57152,7 @@ export namespace Prisma {
   }
 
   export type booksCreateWithoutDamagedbooksInput = {
+    book_sort_index?: number | null
     unique_identification_code: string
     isbn?: string | null
     title: string
@@ -57154,6 +57192,7 @@ export namespace Prisma {
 
   export type booksUncheckedCreateWithoutDamagedbooksInput = {
     id?: number
+    book_sort_index?: number | null
     unique_identification_code: string
     isbn?: string | null
     title: string
@@ -57400,6 +57439,7 @@ export namespace Prisma {
   }
 
   export type booksUpdateWithoutDamagedbooksInput = {
+    book_sort_index?: NullableIntFieldUpdateOperationsInput | number | null
     unique_identification_code?: StringFieldUpdateOperationsInput | string
     isbn?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
@@ -57439,6 +57479,7 @@ export namespace Prisma {
 
   export type booksUncheckedUpdateWithoutDamagedbooksInput = {
     id?: IntFieldUpdateOperationsInput | number
+    book_sort_index?: NullableIntFieldUpdateOperationsInput | number | null
     unique_identification_code?: StringFieldUpdateOperationsInput | string
     isbn?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
@@ -58945,6 +58986,7 @@ export namespace Prisma {
   }
 
   export type booksCreateWithoutTranslatorbookInput = {
+    book_sort_index?: number | null
     unique_identification_code: string
     isbn?: string | null
     title: string
@@ -58984,6 +59026,7 @@ export namespace Prisma {
 
   export type booksUncheckedCreateWithoutTranslatorbookInput = {
     id?: number
+    book_sort_index?: number | null
     unique_identification_code: string
     isbn?: string | null
     title: string
@@ -59066,6 +59109,7 @@ export namespace Prisma {
   }
 
   export type booksUpdateWithoutTranslatorbookInput = {
+    book_sort_index?: NullableIntFieldUpdateOperationsInput | number | null
     unique_identification_code?: StringFieldUpdateOperationsInput | string
     isbn?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
@@ -59105,6 +59149,7 @@ export namespace Prisma {
 
   export type booksUncheckedUpdateWithoutTranslatorbookInput = {
     id?: IntFieldUpdateOperationsInput | number
+    book_sort_index?: NullableIntFieldUpdateOperationsInput | number | null
     unique_identification_code?: StringFieldUpdateOperationsInput | string
     isbn?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
