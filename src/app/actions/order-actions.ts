@@ -415,39 +415,43 @@ export async function approveOrder(
           order.total_amount > 0 ? effectivePaid / order.total_amount : 0;
 
         for (const alloc of sanitized) {
-          // 1. Deduct from store or printer stock
+          const itemValue = alloc.quantity * alloc.price;
+          const itemPaid = itemValue * paidRatio;
+          const itemRemaining = itemValue - itemPaid;
+
+          // 1. Deduct from store or printer stock (updateMany with guard eliminates a separate findUnique)
           if (alloc.type === "printer") {
-            const printerStock = await tx.bookeditionprinters.findUnique({
-              where: { id: alloc.storeStockId },
+            const result = await tx.bookeditionprinters.updateMany({
+              where: {
+                id: alloc.storeStockId,
+                quantity: { gte: alloc.quantity },
+              },
+              data: {
+                quantity: { decrement: alloc.quantity },
+                updatedAt: new Date(),
+              },
             });
-            if (!printerStock || (printerStock.quantity || 0) < alloc.quantity) {
+            if (result.count === 0) {
               throw new Error(
                 `Insufficient stock at printer for edition ${alloc.bookEditionId}`,
               );
             }
-            await tx.bookeditionprinters.update({
-              where: { id: alloc.storeStockId },
+          } else {
+            const result = await tx.bookeditionstores.updateMany({
+              where: {
+                id: alloc.storeStockId,
+                quantity: { gte: alloc.quantity },
+              },
               data: {
                 quantity: { decrement: alloc.quantity },
                 updatedAt: new Date(),
               },
             });
-          } else {
-            const storeStock = await tx.bookeditionstores.findUnique({
-              where: { id: alloc.storeStockId },
-            });
-            if (!storeStock || (storeStock.quantity || 0) < alloc.quantity) {
+            if (result.count === 0) {
               throw new Error(
                 `Insufficient stock at store for edition ${alloc.bookEditionId}`,
               );
             }
-            await tx.bookeditionstores.update({
-              where: { id: alloc.storeStockId },
-              data: {
-                quantity: { decrement: alloc.quantity },
-                updatedAt: new Date(),
-              },
-            });
           }
 
           // 2. Add to bookshop editions (create or update)
@@ -458,10 +462,6 @@ export async function approveOrder(
               is_deleted: false,
             },
           });
-
-          const itemValue = alloc.quantity * alloc.price;
-          const itemPaid = itemValue * paidRatio;
-          const itemRemaining = itemValue - itemPaid;
 
           if (existing) {
             await tx.bookshopeditions.update({
@@ -518,7 +518,7 @@ export async function approveOrder(
 
         return true;
       },
-      { timeout: 15000 },
+      { timeout: 60000 },
     );
 
     revalidatePath("/admin_dashboard/manage_orders");
