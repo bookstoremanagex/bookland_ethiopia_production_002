@@ -378,7 +378,7 @@ export default function WalkInCustomer({ initialPurchases }: { initialPurchases:
 function AddOrderDialog({ onClose }: { onClose: () => void }) {
   const router = useRouter();
   const searchRef = useRef<HTMLInputElement>(null);
-  const debounceRef = useRef<NodeJS.Timeout>();
+  const debounceRef = useRef<NodeJS.Timeout>(undefined);
   const [customerName, setCustomerName] = useState("");
   const [activeTab, setActiveTab] = useState<TabKey2>("select");
   const [bookQuery, setBookQuery] = useState("");

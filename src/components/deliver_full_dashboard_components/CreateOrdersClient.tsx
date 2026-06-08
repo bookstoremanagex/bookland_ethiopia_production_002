@@ -120,7 +120,7 @@ function OrderModal({
 }) {
   const router = useRouter();
   const searchRef = useRef<HTMLInputElement>(null);
-  const debounceRef = useRef<NodeJS.Timeout>();
+  const debounceRef = useRef<NodeJS.Timeout>(undefined);
   const [activeTab, setActiveTab] = useState<TabKey>("select");
   const [bookQuery, setBookQuery] = useState("");
   const [books, setBooks] = useState<any[]>([]);
