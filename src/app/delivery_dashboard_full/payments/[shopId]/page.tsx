@@ -5,13 +5,14 @@ import PaymentDetail from "./PaymentDetail";
 export default async function ShopPaymentDetailPage({
   params,
 }: {
-  params: { shopId: string };
+  params: Promise<{ shopId: string }>;
 }) {
-  const shopId = parseInt(params.shopId);
-  if (isNaN(shopId)) notFound();
+  const { shopId } = await params;
+  const parsedShopId = parseInt(shopId);
+  if (isNaN(parsedShopId)) notFound();
 
   const shop = await (prisma as any).bookshopes.findFirst({
-    where: { id: shopId, is_deleted: false },
+    where: { id: parsedShopId, is_deleted: false },
     include: {
       bookshopeditions: {
         where: { is_deleted: false },
