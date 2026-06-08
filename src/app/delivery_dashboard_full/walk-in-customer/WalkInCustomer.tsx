@@ -30,7 +30,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { searchBooks } from "@/app/actions/transfer-actions";
-import { getBookStockData } from "@/app/actions/order-actions";
 import { createRetailPurchase } from "@/app/actions/retail-purchase-actions";
 
 type PurchaseItem = {
@@ -379,6 +378,7 @@ export default function WalkInCustomer({ initialPurchases }: { initialPurchases:
 function AddOrderDialog({ onClose }: { onClose: () => void }) {
   const router = useRouter();
   const searchRef = useRef<HTMLInputElement>(null);
+  const debounceRef = useRef<NodeJS.Timeout>();
   const [customerName, setCustomerName] = useState("");
   const [activeTab, setActiveTab] = useState<TabKey2>("select");
   const [bookQuery, setBookQuery] = useState("");
@@ -401,22 +401,19 @@ function AddOrderDialog({ onClose }: { onClose: () => void }) {
     });
   }, []);
 
-  const handleSearch = async (q: string) => {
+  const handleSearch = (q: string) => {
     setBookQuery(q);
-    if (q.length < 2) {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(async () => {
+      const query = q;
       setSearching(true);
-      const res = await searchBooks("", 0, 200);
+      const res = await searchBooks(query, 0, 200);
       if (res.success) setBooks(res.data || []);
       setSearching(false);
-      return;
-    }
-    setSearching(true);
-    const res = await searchBooks(q, 0, 200);
-    if (res.success) setBooks(res.data || []);
-    setSearching(false);
+    }, 300);
   };
 
-  const toggleBook = async (book: any) => {
+  const toggleBook = (book: any) => {
     if (selectedBooks[book.id]) {
       setSelectedBooks((prev) => {
         const { [book.id]: _, ...rest } = prev;
@@ -430,29 +427,21 @@ function AddOrderDialog({ onClose }: { onClose: () => void }) {
     }
 
     if (!stockMap[book.id]) {
-      setLoadingStock((prev) => new Set(prev).add(book.id));
-      try {
-        const res = await getBookStockData(book.id);
-        if (res.success && res.data) {
-          const editions: EditionInfo[] = res.data;
-          const maxStock = editions.reduce((acc, e) => acc + e.stock, 0);
-          if (maxStock <= 0) {
-            toast.error("No stock available for this book");
-            setLoadingStock((prev) => { const n = new Set(prev); n.delete(book.id); return n; });
-            return;
-          }
-          setStockMap((prev) => ({ ...prev, [book.id]: { editions, maxStock } }));
-          setSelectedBooks((prev) => ({
-            ...prev,
-            [book.id]: { title: book.title, author: book.author || "", quantity: 1 },
-          }));
-        } else {
-          toast.error("Failed to load stock data");
+      // Use editionStock from search results (avoids a separate DB call)
+      if (book.editionStock && book.editionStock.length > 0) {
+        const editions: EditionInfo[] = book.editionStock;
+        const maxStock = editions.reduce((acc, e) => acc + e.stock, 0);
+        if (maxStock <= 0) {
+          toast.error("No stock available for this book");
+          return;
         }
-      } catch {
-        toast.error("Failed to load stock data");
-      } finally {
-        setLoadingStock((prev) => { const n = new Set(prev); n.delete(book.id); return n; });
+        setStockMap((prev) => ({ ...prev, [book.id]: { editions, maxStock } }));
+        setSelectedBooks((prev) => ({
+          ...prev,
+          [book.id]: { title: book.title, author: book.author || "", quantity: 1 },
+        }));
+      } else {
+        toast.error("No stock available for this book");
       }
     } else {
       setSelectedBooks((prev) => ({

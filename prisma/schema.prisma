@@ -150,6 +150,12 @@ model books {
 
   @@index([book_sku], map: "Books_book_sku_idx")
   @@index([unique_identification_code], map: "Books_unique_identification_code_idx")
+
+@@index([title])
+  @@index([author])
+  @@index([category])
+
+
 }
 
 model bookshopeditions {
