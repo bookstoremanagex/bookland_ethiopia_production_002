@@ -80,7 +80,8 @@ export type AdminOrder = {
     bookedition: {
       edition_name: string;
       bookId: number;
-      books: { title: string };
+      book_image_url: string | null;
+      books: { title: string; book_image_url: string | null };
     };
   }[];
 };

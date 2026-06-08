@@ -42,6 +42,8 @@ import {
     ArrowRight,
     Truck,
     Printer,
+    BookOpen,
+    Settings2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCalendar } from "@/lib/calendar-context";
@@ -102,6 +104,18 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
     const [isApproving, setIsApproving] = useState(false);
     const [deliveryDialogOpen, setDeliveryDialogOpen] = useState(false);
     const [isDelivering, setIsDelivering] = useState(false);
+    const [selectedGlobalStoreId, setSelectedGlobalStoreId] = useState<number | null>(null);
+    const [printOptionsOpen, setPrintOptionsOpen] = useState(false);
+    const [printIncludeShop, setPrintIncludeShop] = useState(true);
+    const [printIncludeDate, setPrintIncludeDate] = useState(true);
+    const [printIncludePrice, setPrintIncludePrice] = useState(true);
+    const [printIncludeSubtotal, setPrintIncludeSubtotal] = useState(true);
+    const [printIncludeStore, setPrintIncludeStore] = useState(true);
+    const [printIncludeEdition, setPrintIncludeEdition] = useState(true);
+    const [printIncludeStatus, setPrintIncludeStatus] = useState(true);
+    const [printIncludeDelivery, setPrintIncludeDelivery] = useState(true);
+    const [printFontSize, setPrintFontSize] = useState<"big" | "small" | "very-small" | "extra-small">("small");
+    const [printPageWidth, setPrintPageWidth] = useState<"full" | "half">("full");
 
     // Group order_items by bookId → collect unique books
     const uniqueBooks = React.useMemo(() => {
@@ -177,40 +191,67 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
         }
     }, [order, uniqueBooks]);
 
-    // Auto-fill: use exact per-edition quantities from the order's FIFO breakdown
-    const handleAutoFill = (bookIdx: number) => {
-        const bd = bookBreakdowns[bookIdx];
-        if (!bd) return;
-        const edBreakdown = editionBreakdownPerBook.get(bd.bookId);
-        if (!edBreakdown) return;
+    // All unique stores across all breakdowns (for the global radio, deduplicated by storeId)
+    const allStores = useMemo(() => {
+        const map = new Map<number, { storeStockId: number; storeId: number; storeName: string; type: string }>();
+        for (const bd of bookBreakdowns) {
+            for (const ed of bd.editions) {
+                for (const st of ed.stores) {
+                    if (!map.has(st.storeId)) {
+                        map.set(st.storeId, { storeStockId: st.storeStockId, storeId: st.storeId, storeName: st.storeName, type: st.type });
+                    }
+                }
+            }
+        }
+        return Array.from(map.values());
+    }, [bookBreakdowns]);
 
-        const newEditions: EditionAllocEntry[] = bd.editions.map((ed) => {
-            const fifo = edBreakdown.find((e: any) => e.editionId === ed.editionId);
-            const need = fifo?.quantity || 0;
-            let remaining = need;
-            const storeAllocations: StoreAllocQty[] = ed.stores.map((store) => {
-                if (remaining <= 0) return { storeStockId: store.storeStockId, quantity: 0 };
-                const take = Math.min(remaining, store.availableQty);
-                remaining -= take;
-                return { storeStockId: store.storeStockId, quantity: take };
-            });
-            return { editionId: ed.editionId, storeAllocations };
-        });
-
-        setBookAllocations(prev => {
-            const next = [...prev];
-            next[bookIdx] = { ...next[bookIdx], editions: newEditions };
-            return next;
-        });
+    // When global store changes, just select the store — no auto-fill
+    const handleGlobalStoreChange = (storeId: number | null) => {
+        setSelectedGlobalStoreId(storeId);
+        if (storeId === null) {
+            setBookAllocations(prev => prev.map(ba => ({
+                ...ba,
+                editions: ba.editions.map(ed => ({
+                    ...ed,
+                    storeAllocations: ed.storeAllocations.map(sa => ({ ...sa, quantity: 0 })),
+                })),
+            })));
+        }
     };
 
-    // Auto-fill all books at once
+    // Auto-fill all books from the selected store
     const handleAutoFillAll = () => {
-        bookBreakdowns.forEach((_, bookIdx) => handleAutoFill(bookIdx));
+        const storeId = selectedGlobalStoreId ?? (allStores.length === 1 ? allStores[0].storeId : null);
+        if (storeId === null) return;
+        setBookAllocations(prev => prev.map((ba, bookIdx) => {
+            const bd = bookBreakdowns[bookIdx];
+            if (!bd) return ba;
+            const edBreakdown = editionBreakdownPerBook.get(bd.bookId);
+            if (!edBreakdown) return ba;
+            return {
+                ...ba,
+                editions: ba.editions.map((edAlloc, edIdx) => {
+                    const editionData = bd.editions[edIdx];
+                    if (!editionData) return edAlloc;
+                    const fifo = edBreakdown.find((e: any) => e.editionId === editionData.editionId);
+                    const need = fifo?.quantity || 0;
+                    const storeIdx = editionData.stores.findIndex(s => s.storeId === storeId);
+                    const newStoreAllocs = edAlloc.storeAllocations.map((sa, si) => {
+                        if (si === storeIdx && storeIdx !== -1) {
+                            const take = Math.min(need, editionData.stores[storeIdx].availableQty);
+                            return { ...sa, quantity: take };
+                        }
+                        return { ...sa, quantity: 0 };
+                    });
+                    return { ...edAlloc, storeAllocations: newStoreAllocs };
+                }),
+            };
+        }));
     };
 
     useEffect(() => {
-        if (isOpen && order && !order.is_approved) {
+        if (isOpen && order) {
             loadStockBreakdowns();
         }
         if (!isOpen) {
@@ -218,6 +259,100 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
             setBookAllocations([]);
         }
     }, [isOpen, order]);
+
+    const fontMap = { "big": "24px", "small": "21px", "very-small": "18px", "extra-small": "15px" } as const;
+
+    const handlePrintWithOptions = useCallback(() => {
+        if (!order) return;
+        const fontSize = fontMap[printFontSize];
+        const isHalf = printPageWidth === "half";
+
+        const headers: string[] = ["Book"];
+        if (printIncludeEdition) headers.push("Edition");
+        if (printIncludePrice) headers.push("Price");
+        if (printIncludeSubtotal) headers.push("Subtotal");
+        if (printIncludeStore) headers.push("Store");
+
+        const getStoreForEdition = (editionId: number): string => {
+            for (const ba of bookAllocations) {
+                for (const ed of ba.editions) {
+                    if (ed.editionId === editionId) {
+                        const store = ed.storeAllocations.find(sa => sa.quantity > 0);
+                        if (store) {
+                            for (const bd of bookBreakdowns) {
+                                for (const e of bd.editions) {
+                                    if (e.editionId === editionId) {
+                                        const s = e.stores.find(st => st.storeStockId === store.storeStockId);
+                                        if (s) return `${s.storeName} (${store.quantity})`;
+                                    }
+                                }
+                            }
+                        }
+                        return "-";
+                    }
+                }
+            }
+            return "-";
+        };
+
+        const rows = order.order_items.map((item: any) => {
+            const cells: string[] = [`${item.bookedition?.books?.title || "Unknown"}`];
+            if (printIncludeEdition) cells.push(item.bookedition?.edition_name || "");
+            if (printIncludePrice) cells.push(item.price_at_order.toLocaleString());
+            if (printIncludeSubtotal) cells.push((item.quantity * item.price_at_order).toLocaleString());
+            if (printIncludeStore) cells.push(getStoreForEdition(item.bookEditionId));
+            return `<tr>${cells.map(c => `<td style="padding:4px 10px;border:1px solid #ddd;font-size:${fontSize}">${c}</td>`).join('')}</tr>`;
+        }).join('');
+
+        const metaLines: string[] = [];
+        metaLines.push(`<strong>Order ORD-${order.id}</strong>`);
+        if (printIncludeShop) metaLines.push(`Shop: ${order.bookshopes?.name || ''}${order.bookshopes?.branch ? ` (${order.bookshopes.branch})` : ''}`);
+        if (printIncludeDate) metaLines.push(`Date: ${formatDate(new Date(order.createdAt))}`);
+        if (printIncludeStatus) metaLines.push(`Status: ${order.is_approved ? "Approved" : "Pending"}`);
+        if (printIncludeDelivery) metaLines.push(`Delivery: ${order.delivery ? "Delivered" : "Not Delivered"}`);
+
+        const printWin = window.open('', '_blank', 'width=800,height=600');
+        if (!printWin) return;
+        printWin.document.write(`
+<!DOCTYPE html>
+<html>
+<head>
+<title>Order ORD-${order.id}</title>
+<style>
+  @page { size: ${isHalf ? 'A4 portrait' : 'A4 portrait'}; margin: 8mm; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: ${fontSize};
+    color: #000;
+    ${isHalf ? 'width: 50%; position: fixed; top: 0; left: 0; padding: 16px 24px;' : 'padding: 24px 36px;'}
+  }
+  h1 { font-size: ${parseInt(fontSize) + 6}px; margin-bottom: 8px; }
+  .meta { font-size: ${parseInt(fontSize) - 2}px; color: #555; margin-bottom: 4px; }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: ${fontSize}; }
+  th { background: #eee; padding: 6px 10px; text-align: left; font-weight: 700; border: 1px solid #bbb; font-size: ${parseInt(fontSize) - 1}px; }
+  td { padding: 4px 10px; border: 1px solid #ddd; }
+  .sep { border-top: 1.5px solid #888; margin: 6px 0; }
+</style>
+</head>
+<body>
+  <h1>ORDER SUMMARY</h1>
+  ${metaLines.map(l => `<div class="meta">${l}</div>`).join('')}
+  <div class="sep"></div>
+  <table>
+    <thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
+    <tbody>${rows}</tbody>
+  </table>
+  <div class="sep"></div>
+  <div class="meta"><strong>Total: ${order.total_amount.toLocaleString()} ETB</strong></div>
+  <div class="meta">Paid: ${order.amount_paid.toLocaleString()} ETB | Remaining: ${(order.total_amount - order.amount_paid).toLocaleString()} ETB</div>
+</body>
+</html>
+`);
+        printWin.document.close();
+        printWin.focus();
+        printWin.print();
+    }, [order, printFontSize, printPageWidth, printIncludeShop, printIncludeDate, printIncludePrice, printIncludeSubtotal, printIncludeStore, printIncludeEdition, printIncludeStatus, printIncludeDelivery]);
 
     const handlePrint = useCallback(() => {
         if (!order) return;
@@ -335,6 +470,8 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
         });
     };
 
+
+
     const handleApprove = async () => {
         if (!canApprove) return;
         setIsApproving(true);
@@ -431,115 +568,65 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                     </div>
                 </DialogHeader>
 
-                {order.memo && (
-                    <div className="bg-white px-8 py-4 border-b border-slate-100 shrink-0 flex items-start gap-3">
-                        <FileText className="size-5 text-primarycolor mt-0.5 shrink-0" />
-                        <div>
-                            <p className="text-[9px] font-black text-primarycolor uppercase tracking-widest mb-0.5">Memo</p>
-                            <p className="text-sm font-medium text-slate-600 italic">&ldquo;{order.memo}&rdquo;</p>
-                        </div>
-                    </div>
-                )}
-
-                {order.payment_type === "CHECK" && order.checks && (
-                    <div className="bg-white px-8 py-4 border-b border-slate-100 shrink-0 flex items-start gap-3">
-                        <FileText className="size-5 text-primarycolor mt-0.5 shrink-0" />
-                        <div className="flex-1">
-                            <p className="text-[9px] font-black text-primarycolor uppercase tracking-widest mb-0.5">Check Payment</p>
-                            <div className="flex flex-wrap gap-x-6 gap-y-1 text-sm">
-                                <span className="font-bold text-slate-700">{order.checks.bankname || "Unknown Bank"}</span>
-                                <span className="text-muted-foreground">— {order.checks.username || "Unknown"}</span>
-                                <span className="text-muted-foreground">| {order.checks.amount ? `${order.checks.amount} ETB` : "—"}</span>
-                                <span className={cn(
-                                    "font-black uppercase tracking-widest text-[9px] px-2 py-0.5 rounded-full",
-                                    order.checks.status === "CLEARED" ? "bg-emerald-100 text-emerald-700" :
-                                    order.checks.status === "BOUNCED" ? "bg-rose-100 text-rose-700" :
-                                    "bg-amber-100 text-amber-700"
-                                )}>
-                                    {order.checks.status || "PENDING"}
-                                </span>
-                                <a href={`/admin_dashboard/checks/${order.check_id}`} target="_blank" rel="noopener noreferrer"
-                                    className="text-primarycolor underline underline-offset-2 font-bold text-xs hover:text-secondarycolor">
-                                    View Check Details
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                <div className="flex-1 overflow-y-auto p-6 md:p-8 space-y-6 custom-scrollbar">
-                    {/* Financials */}
-                    <div className="bg-white rounded-xl md:rounded-[1.5rem] p-3 md:p-4 border-2 border-primarycolor/5 shadow-sm space-y-2 md:space-y-3">
-                        <div className="flex items-center gap-1.5 text-primarycolor">
-                            <Banknote className="size-3 md:size-3.5" />
-                            <h4 className="font-black uppercase tracking-widest text-[9px] md:text-[10px] italic">Financial Summary</h4>
-                        </div>
-                        <div className="grid grid-cols-3 gap-2 md:gap-3">
-                            <div className="p-2 md:p-3 rounded-xl bg-slate-50 border border-slate-100 text-center">
-                                <p className="text-[7px] md:text-[8px] font-black text-muted-foreground uppercase tracking-widest">Order Total</p>
-                                <p className="text-sm md:text-base font-black text-primarycolor mt-0.5">
-                                    {order.total_amount.toLocaleString()} <span className="text-[8px] md:text-[9px]">ETB</span>
-                                </p>
-                            </div>
-                            <div className="p-2 md:p-3 rounded-xl bg-emerald-50 border border-emerald-100 text-center">
-                                <p className="text-[7px] md:text-[8px] font-black text-emerald-700 uppercase tracking-widest">Paid Upfront</p>
-                                <p className="text-sm md:text-base font-black text-emerald-800 mt-0.5">
-                                    {order.amount_paid.toLocaleString()} <span className="text-[8px] md:text-[9px]">ETB</span>
-                                </p>
-                            </div>
-                            <div className="p-2 md:p-3 rounded-xl bg-rose-50 border border-rose-100 text-center">
-                                <p className="text-[7px] md:text-[8px] font-black text-rose-700 uppercase tracking-widest">Outstanding</p>
-                                <p className="text-sm md:text-base font-black text-rose-800 mt-0.5">
-                                    {remainingBalance.toLocaleString()} <span className="text-[8px] md:text-[9px]">ETB</span>
-                                </p>
-                            </div>
-                        </div>
-                        <div className="space-y-1">
-                            <div className="flex justify-between text-[8px] md:text-[9px] font-black uppercase tracking-widest text-muted-foreground">
-                                <span>Payment coverage</span>
-                                <span>{paymentPct}%</span>
-                            </div>
-                            <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
-                                <div
-                                    className={cn("h-full rounded-full transition-all duration-700", paymentPct >= 100 ? "bg-emerald-500" : "bg-primarycolor")}
-                                    style={{ width: `${paymentPct}%` }}
-                                />
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* ── APPROVED: Items list + allocation breakdown ── */}
-                    {order.is_approved && (
-                        <>
-                            <div className="bg-white rounded-[2rem] p-6 border-2 border-primarycolor/5 shadow-sm space-y-4">
-                                <div className="flex items-center gap-2 text-primarycolor">
-                                    <Package className="size-4" />
-                                    <h4 className="font-black uppercase tracking-widest text-xs italic">Ordered Items</h4>
+                <div className="flex-1 overflow-y-auto p-6 bg-[#F8FAFC] space-y-6">
+                    {order.is_approved ? (
+                        /* ── APPROVED: Read-only order summary ── */
+                        <div className="space-y-6">
+                            {/* Financial summary */}
+                            <div className="bg-white rounded-[2rem] p-6 border-2 border-primarycolor/5 shadow-sm">
+                                <div className="grid grid-cols-3 gap-4">
+                                    <div className="text-center p-3 rounded-xl bg-slate-50 border border-slate-100">
+                                        <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Total</p>
+                                        <p className="font-black text-primarycolor text-lg mt-0.5">{order.total_amount.toLocaleString()} <span className="text-[8px]">ETB</span></p>
+                                    </div>
+                                    <div className="text-center p-3 rounded-xl bg-emerald-50 border border-emerald-100">
+                                        <p className="text-[8px] font-black text-emerald-700 uppercase tracking-widest">Paid</p>
+                                        <p className="font-black text-emerald-800 text-lg mt-0.5">{order.amount_paid.toLocaleString()} <span className="text-[8px]">ETB</span></p>
+                                    </div>
+                                    <div className="text-center p-3 rounded-xl bg-rose-50 border border-rose-100">
+                                        <p className="text-[8px] font-black text-rose-700 uppercase tracking-widest">Remaining</p>
+                                        <p className="font-black text-rose-800 text-lg mt-0.5">{(order.total_amount - order.amount_paid).toLocaleString()} <span className="text-[8px]">ETB</span></p>
+                                    </div>
                                 </div>
-                                <div className="border border-slate-100 rounded-2xl overflow-hidden">
+                            </div>
+
+                            {/* Ordered items table */}
+                            <div className="bg-white rounded-[2rem] border-2 border-primarycolor/5 shadow-sm overflow-hidden">
+                                <div className="p-5 border-b border-slate-100">
+                                    <h4 className="font-black text-primarycolor uppercase italic text-sm">Ordered Items</h4>
+                                </div>
+                                <div className="overflow-x-auto">
                                     <table className="w-full text-left border-collapse">
                                         <thead>
                                             <tr className="bg-slate-50 border-b border-slate-100">
-                                                <th className="p-4 text-[10px] font-black uppercase tracking-widest text-primarycolor/60">Book & Edition</th>
-                                                <th className="p-4 text-[10px] font-black uppercase tracking-widest text-primarycolor/60 text-center">Qty</th>
-                                                <th className="p-4 text-[10px] font-black uppercase tracking-widest text-primarycolor/60 text-right">Unit Price</th>
-                                                <th className="p-4 text-[10px] font-black uppercase tracking-widest text-primarycolor/60 text-right">Subtotal</th>
+                                                <th className="p-3 text-[9px] font-black uppercase tracking-widest text-primarycolor/60">Book & Edition</th>
+                                                <th className="p-3 text-[9px] font-black uppercase tracking-widest text-primarycolor/60 text-center">Qty</th>
+                                                <th className="p-3 text-[9px] font-black uppercase tracking-widest text-primarycolor/60 text-right">Price</th>
+                                                <th className="p-3 text-[9px] font-black uppercase tracking-widest text-primarycolor/60 text-right">Subtotal</th>
+                                                <th className="p-3 text-[9px] font-black uppercase tracking-widest text-primarycolor/60 text-center">Status</th>
+                                                <th className="p-3 text-[9px] font-black uppercase tracking-widest text-primarycolor/60 text-center">Delivery</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {order.order_items.map((item, i) => (
-                                                <tr key={item.id || i} className="border-b border-slate-50 hover:bg-slate-50/50 h-14">
-                                                    <td className="p-4">
-                                                        <p className="font-black text-primarycolor uppercase italic text-sm leading-tight">
-                                                            {item.bookedition?.books?.title || "Unknown"}
-                                                        </p>
-                                                        <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">
-                                                            {item.bookedition?.edition_name}
-                                                        </p>
+                                                <tr key={item.id || i} className="border-b border-slate-50 hover:bg-slate-50/50">
+                                                    <td className="p-3">
+                                                        <p className="font-black text-primarycolor text-xs uppercase italic leading-tight">{item.bookedition?.books?.title || "Unknown"}</p>
+                                                        <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">{item.bookedition?.edition_name}</p>
                                                     </td>
-                                                    <td className="p-4 text-center font-bold text-slate-700">{item.quantity.toLocaleString()}</td>
-                                                    <td className="p-4 text-right font-bold text-slate-600">{item.price_at_order.toLocaleString()} ETB</td>
-                                                    <td className="p-4 text-right font-black text-primarycolor">{(item.quantity * item.price_at_order).toLocaleString()} ETB</td>
+                                                    <td className="p-3 text-center font-bold text-slate-700 text-sm">{item.quantity.toLocaleString()}</td>
+                                                    <td className="p-3 text-right font-bold text-slate-600 text-sm">{item.price_at_order.toLocaleString()} ETB</td>
+                                                    <td className="p-3 text-right font-black text-primarycolor text-sm">{(item.quantity * item.price_at_order).toLocaleString()} ETB</td>
+                                                    <td className="p-3 text-center">
+                                                        <span className="px-2 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[8px] font-black uppercase tracking-widest">Approved</span>
+                                                    </td>
+                                                    <td className="p-3 text-center">
+                                                        {order.delivery ? (
+                                                            <span className="px-2 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[8px] font-black uppercase tracking-widest">Delivered</span>
+                                                        ) : (
+                                                            <span className="px-2 py-1 rounded-full bg-amber-100 text-amber-700 text-[8px] font-black uppercase tracking-widest">Pending</span>
+                                                        )}
+                                                    </td>
                                                 </tr>
                                             ))}
                                         </tbody>
@@ -547,418 +634,336 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                                 </div>
                             </div>
 
-                            {/* Allocation breakdown */}
+                            {/* Allocation summary */}
                             {order.allocation_summary && (
-                                <div className="bg-white rounded-[2rem] p-6 border-2 border-emerald-100 shadow-sm space-y-4">
-                                    <div className="flex items-center gap-2 text-emerald-700">
+                                <div className="bg-white rounded-[2rem] p-6 border-2 border-emerald-100 shadow-sm">
+                                    <div className="flex items-center gap-2 mb-4 text-emerald-700">
                                         <Truck className="size-4" />
                                         <h4 className="font-black uppercase tracking-widest text-xs italic">Store Allocation Breakdown</h4>
                                     </div>
                                     <div className="bg-emerald-50/50 rounded-2xl p-5 border border-emerald-100">
                                         {order.allocation_summary.split('\n').map((line: string, i: number) => {
                                             if (line.startsWith('📖')) {
-                                                return (
-                                                    <p key={i} className="font-black text-primarycolor text-sm uppercase italic mt-3 first:mt-0 mb-1">
-                                                        {line.replace('📖 ', '')}
-                                                    </p>
-                                                );
+                                                return <p key={i} className="font-black text-primarycolor text-sm uppercase italic mt-3 first:mt-0 mb-1">{line.replace('📖 ', '')}</p>;
                                             }
                                             if (line.trim() === '') return null;
-                                            return (
-                                                <p key={i} className="text-[11px] font-bold text-slate-700 ml-4 py-0.5">
-                                                    {line}
-                                                </p>
-                                            );
+                                            return <p key={i} className="text-[11px] font-bold text-slate-700 ml-4 py-0.5">{line}</p>;
                                         })}
-                                    </div>
-
-                                    {/* Delivery action */}
-                                    <div className="flex items-center justify-between pt-2 border-t border-emerald-200">
-                                        <div className="flex items-center gap-2">
-                                            {order.delivery ? (
-                                                <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-100 text-emerald-700">
-                                                    <CheckCircle2 className="size-4" />
-                                                    <span className="font-black uppercase tracking-widest text-[10px]">Delivered</span>
-                                                </div>
-                                            ) : (
-                                                <AlertDialog open={deliveryDialogOpen} onOpenChange={setDeliveryDialogOpen}>
-                                                    <AlertDialogTrigger asChild>
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                            className="rounded-xl h-10 px-5 gap-2 border-2 border-emerald-300 text-emerald-700 hover:bg-emerald-50 font-black uppercase tracking-widest text-[9px]"
-                                                            disabled={isDelivering}
-                                                        >
-                                                            <Truck className="size-3.5" />
-                                                            {isDelivering ? "Processing..." : "Mark as Delivered"}
-                                                        </Button>
-                                                    </AlertDialogTrigger>
-                                                    <AlertDialogContent className="rounded-[2rem] border-4 border-emerald-100">
-                                                        <AlertDialogHeader>
-                                                            <AlertDialogTitle className="font-black uppercase tracking-widest text-primarycolor">
-                                                                Confirm Delivery
-                                                            </AlertDialogTitle>
-                                                            <AlertDialogDescription className="font-bold text-muted-foreground">
-                                                                Mark order <span className="font-black text-primarycolor">ORD-{order.id}</span> as delivered?
-                                                                This action cannot be undone.
-                                                            </AlertDialogDescription>
-                                                        </AlertDialogHeader>
-                                                        <AlertDialogFooter>
-                                                            <AlertDialogCancel asChild>
-                                                                <Button variant="outline" className="rounded-xl font-black uppercase tracking-widest text-[10px]">
-                                                                    Cancel
-                                                                </Button>
-                                                            </AlertDialogCancel>
-                                                            <AlertDialogAction asChild>
-                                                                <Button
-                                                                    onClick={async () => {
-                                                                        setIsDelivering(true);
-                                                                        try {
-                                                                            const res = await markOrderDelivered(order.id);
-                                                                            if (res.success) {
-                                                                                toast.success("Order marked as delivered!");
-                                                                                setDeliveryDialogOpen(false);
-                                                                                onApproved(order);
-                                                                            } else {
-                                                                                toast.error(res.error || "Failed to mark as delivered");
-                                                                            }
-                                                                        } catch {
-                                                                            toast.error("Failed to mark as delivered");
-                                                                        } finally {
-                                                                            setIsDelivering(false);
-                                                                        }
-                                                                    }}
-                                                                    className="rounded-xl bg-emerald-600 hover:bg-emerald-700 font-black uppercase tracking-widest text-[10px]"
-                                                                    disabled={isDelivering}
-                                                                >
-                                                                    {isDelivering ? "Processing..." : "Confirm Delivery"}
-                                                                </Button>
-                                                            </AlertDialogAction>
-                                                        </AlertDialogFooter>
-                                                    </AlertDialogContent>
-                                                </AlertDialog>
-                                            )}
-                                        </div>
                                     </div>
                                 </div>
                             )}
-                        </>
-                    )}
 
-                    {/* ── PENDING: Edition Breakdown (FIFO Info) ── */}
-                    {!order.is_approved && editionBreakdownPerBook.size > 0 && (
-                        <div className="bg-white rounded-[2rem] p-6 border-2 border-blue-100 shadow-sm space-y-4">
-                            <div className="flex items-center gap-2 text-blue-700">
-                                <Layers className="size-4" />
-                                <h4 className="font-black uppercase tracking-widest text-xs italic">Edition Breakdown (FIFO)</h4>
-                            </div>
-                            <p className="text-[10px] text-muted-foreground font-bold">
-                                Shows how many units the order takes from each edition, starting from the earliest.
-                            </p>
-                            <div className="space-y-4">
-                                {uniqueBooks.map(ub => {
-                                    const editions = editionBreakdownPerBook.get(ub.bookId) || [];
-                                    return (
-                                        <div key={ub.bookId} className="bg-blue-50/50 rounded-2xl p-4 border border-blue-100 space-y-3">
-                                            <p className="font-black text-primarycolor uppercase italic text-sm">{ub.bookTitle}</p>
-                                            <div className="flex flex-wrap gap-2">
-                                                {editions.map((ed, idx) => (
-                                                    <div key={ed.editionId} className="flex items-center gap-2 bg-white px-4 py-2.5 rounded-xl border border-blue-100 shadow-sm">
-                                                        <div className="size-7 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center text-[10px] font-black">
-                                                            {idx + 1}
-                                                        </div>
-                                                        <div>
-                                                            <p className="text-xs font-black text-slate-700">{ed.editionName}</p>
-                                                            <p className="text-[9px] font-bold text-muted-foreground">
-                                                                {ed.quantity} units × {ed.price.toLocaleString()} ETB = <span className="text-blue-700 font-black">{(ed.quantity * ed.price).toLocaleString()} ETB</span>
-                                                            </p>
-                                                        </div>
-                                                        {idx < editions.length - 1 && (
-                                                            <ArrowRight className="size-3.5 text-blue-300 ml-1" />
-                                                        )}
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    );
-                                })}
+                            {/* Shop info */}
+                            <div className="bg-white rounded-[2rem] p-6 border-2 border-primarycolor/5 shadow-sm flex items-center gap-4">
+                                <Building2 className="size-6 text-primarycolor/60 shrink-0" />
+                                <div>
+                                    <p className="font-black text-primarycolor uppercase">{order.bookshopes?.name}</p>
+                                    <p className="text-[9px] font-bold text-muted-foreground">{order.bookshopes?.location}</p>
+                                </div>
+                                <div className="ml-auto text-right">
+                                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Placed on</p>
+                                    <p className="font-bold text-slate-700 text-sm">{formatDate(new Date(order.createdAt))}</p>
+                                </div>
                             </div>
                         </div>
-                    )}
-
-                    {/* ── PENDING: Stock Allocation UI ── */}
-                    {!order.is_approved && (
-                        <div className="space-y-4">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2 text-primarycolor">
-                                    <Store className="size-4" />
-                                    <h4 className="font-black uppercase tracking-widest text-xs italic">Stock Allocation by Edition & Store</h4>
-                                </div>
-                                {bookBreakdowns.length > 0 && (
-                                    <Button
-                                        type="button"
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={handleAutoFillAll}
-                                        className="rounded-xl h-9 px-4 gap-2 border-2 border-primarycolor/20 text-primarycolor hover:bg-primarycolor/5 font-black uppercase tracking-widest text-[9px]"
-                                    >
-                                        <Sparkles className="size-3.5" /> Auto-Fill All
-                                    </Button>
-                                )}
+                    ) : isLoadingStock ? (
+                        <div className="flex items-center justify-center py-20 gap-3 text-muted-foreground">
+                            <Loader2 className="size-6 animate-spin text-primarycolor" />
+                            <span className="font-bold text-sm">Loading stock availability...</span>
+                        </div>
+                    ) : bookBreakdowns.length === 0 ? (
+                        <div className="flex items-center justify-center py-20 text-muted-foreground">
+                            <p className="font-bold text-sm">No stock breakdown data available</p>
+                        </div>
+                    ) : (
+                        <>
+                        {/* Global Store Selector */}
+                        <div className="bg-white rounded-[2rem] p-6 border-2 border-primarycolor/5 shadow-sm space-y-4">
+                            <div className="flex items-center gap-2 text-primarycolor">
+                                <Store className="size-4" />
+                                <h4 className="font-black uppercase tracking-widest text-xs italic">Select Store for Allocation</h4>
                             </div>
-
-                            {isLoadingStock ? (
-                                <div className="flex items-center justify-center py-16 gap-3 text-muted-foreground">
-                                    <Loader2 className="size-6 animate-spin text-primarycolor" />
-                                    <span className="font-bold text-sm">Loading stock availability...</span>
-                                </div>
-                            ) : (
-                                <div className="space-y-6">
-                                    {bookBreakdowns.map((bd, bookIdx) => {
-                                        const ba = bookAllocations[bookIdx];
-                                        const allocatedTotal = bookTotals[bookIdx] || 0;
-                                        const isBookValid = allocatedTotal === bd.requestedQty;
-
-                                        return (
-                                            <div
-                                                key={bd.bookId}
-                                                className={cn(
-                                                    "bg-white rounded-[2rem] p-6 border-2 shadow-sm space-y-5 transition-colors",
-                                                    isBookValid ? "border-emerald-100" : "border-amber-100"
-                                                )}
-                                            >
-                                                {/* Book header */}
-                                                <div className="flex items-start justify-between gap-4">
-                                                    <div className="flex-1">
-                                                        <h5 className="font-black text-primarycolor uppercase italic text-base">{bd.bookTitle}</h5>
-                                                        <div className="flex flex-wrap items-center gap-2 mt-2">
-                                                            <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">
-                                                                Requested: <span className="text-primarycolor font-black text-sm">{bd.requestedQty}</span> units
-                                                            </p>
-                                                            <span className="text-[9px] text-muted-foreground">•</span>
-                                                            <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">
-                                                                Allocated: <span className={cn("font-black text-sm", isBookValid ? "text-emerald-600" : "text-amber-600")}>{allocatedTotal}</span> units
-                                                            </p>
-                                                        </div>
-                                                        {/* Per-edition FIFO hint */}
-                                                        {(() => {
-                                                            const edBreakdown = editionBreakdownPerBook.get(bd.bookId);
-                                                            if (!edBreakdown || edBreakdown.length === 0) return null;
-                                                            return (
-                                                                <div className="flex flex-wrap items-center gap-1.5 mt-2">
-                                                                    <span className="text-[8px] font-black text-blue-600 uppercase tracking-widest">FIFO:</span>
-                                                                    {edBreakdown.map((ed, idx) => (
-                                                                        <span key={ed.editionId} className="text-[9px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100">
-                                                                            {ed.quantity}× {ed.editionName}{idx < edBreakdown.length - 1 ? '' : ''}
-                                                                        </span>
-                                                                    ))}
-                                                                </div>
-                                                            );
-                                                        })()}
-                                                    </div>
-                                                    <div className="flex items-center gap-2 shrink-0">
-                                                        <Button
-                                                            type="button"
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            onClick={() => handleAutoFill(bookIdx)}
-                                                            className="rounded-lg h-8 px-3 gap-1.5 text-primarycolor hover:bg-primarycolor/5 font-black uppercase tracking-widest text-[8px]"
-                                                        >
-                                                            <Sparkles className="size-3" /> Auto-Fill
-                                                        </Button>
-                                                        {isBookValid ? (
-                                                            <div className="px-3 py-1.5 bg-emerald-100 text-emerald-700 rounded-full text-[9px] font-black uppercase tracking-widest flex items-center gap-1">
-                                                                <CheckCircle2 className="size-3" /> Complete
-                                                            </div>
-                                                        ) : (
-                                                            <div className="px-3 py-1.5 bg-amber-50 text-amber-700 rounded-full text-[9px] font-black uppercase tracking-widest flex items-center gap-1">
-                                                                <AlertTriangle className="size-3" /> {bd.requestedQty - allocatedTotal} remaining
-                                                            </div>
-                                                        )}
-                                                    </div>
+                            <div className="flex flex-wrap gap-2">
+                                <label className={cn(
+                                    "flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 cursor-pointer transition-colors",
+                                    selectedGlobalStoreId === null
+                                        ? "border-primarycolor bg-primarycolor/5"
+                                        : "border-slate-100 bg-white hover:border-slate-200"
+                                )}>
+                                    <input
+                                        type="radio"
+                                        name="global-store"
+                                        checked={selectedGlobalStoreId === null}
+                                        onChange={() => handleGlobalStoreChange(null)}
+                                        className="size-4 accent-primarycolor"
+                                    />
+                                    <span className="font-black text-slate-700 text-xs uppercase">None</span>
+                                </label>
+                                                                {allStores.map(st => (
+                                                                    <label
+                                                                        key={st.storeId}
+                                                                        className={cn(
+                                                                            "flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 cursor-pointer transition-colors",
+                                                                            selectedGlobalStoreId === st.storeId
+                                                                                ? "border-emerald-300 bg-emerald-50"
+                                                                                : "border-slate-100 bg-white hover:border-slate-200"
+                                                                        )}
+                                                                    >
+                                                                        <input
+                                                                            type="radio"
+                                                                            name="global-store"
+                                                                            checked={selectedGlobalStoreId === st.storeId}
+                                                                            onChange={() => handleGlobalStoreChange(st.storeId)}
+                                                                            className="size-4 accent-emerald-600"
+                                                                        />
+                                        {st.type === "printer" ? (
+                                            <Printer className="size-4 text-purple-500 shrink-0" />
+                                        ) : (
+                                            <Building2 className="size-4 text-primarycolor/60 shrink-0" />
+                                        )}
+                                        <span className="font-black text-slate-700 text-xs">{st.storeName}</span>
+                                        {st.type === "printer" && (
+                                            <span className="px-1.5 py-0.5 rounded bg-purple-100 text-purple-700 text-[7px] font-black uppercase tracking-widest">Printer</span>
+                                        )}
+                                    </label>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="flex items-center justify-end">
+                            {bookBreakdowns.length > 0 && (
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={handleAutoFillAll}
+                                    disabled={selectedGlobalStoreId === null}
+                                    className={cn(
+                                        "rounded-xl h-9 px-4 gap-2 border-2 font-black uppercase tracking-widest text-[9px]",
+                                        selectedGlobalStoreId === null
+                                            ? "border-slate-200 text-slate-300 cursor-not-allowed"
+                                            : "border-primarycolor/20 text-primarycolor hover:bg-primarycolor/5"
+                                    )}
+                                >
+                                    <Sparkles className="size-3.5" /> Auto-Fill All
+                                </Button>
+                            )}
+                        </div>
+                        {bookBreakdowns.map((bd, bookIdx) => {
+                            const ba = bookAllocations[bookIdx];
+                            const allocatedTotal = bookTotals[bookIdx] || 0;
+                            const isBookValid = allocatedTotal === bd.requestedQty;
+                            const edBreakdown = editionBreakdownPerBook.get(bd.bookId);
+                            const imageUrl = (() => {
+                                const item = order.order_items.find(i => i.bookedition?.bookId === bd.bookId);
+                                return item?.bookedition?.books?.book_image_url || item?.bookedition?.book_image_url || null;
+                            })();
+                            return (
+                                <div key={bd.bookId} className={cn(
+                                    "bg-white rounded-[2rem] border-2 shadow-sm flex overflow-hidden",
+                                    isBookValid ? "border-emerald-100" : "border-amber-100"
+                                )}>
+                                    {/* Book Image */}
+                                    <div className="w-1/4 shrink-0 bg-white p-5 flex items-center justify-center border-r-2 border-slate-100">
+                                        <div className="w-full max-w-[200px]">
+                                            {imageUrl ? (
+                                                <img src={imageUrl} alt={bd.bookTitle} className="w-full h-auto rounded-xl" />
+                                            ) : (
+                                                <div className="w-full aspect-[3/4] flex flex-col items-center justify-center bg-primarycolor/5 rounded-xl">
+                                                    <BookOpen className="size-16 text-primarycolor/20" />
+                                                    <p className="text-[9px] font-bold text-primarycolor/30 uppercase tracking-widest mt-2">
+                                                        No Cover
+                                                    </p>
                                                 </div>
+                                            )}
+                                        </div>
+                                    </div>
 
-                                                {/* Editions grid */}
-                                                {bd.editions.length === 0 ? (
-                                                    <p className="text-[10px] text-muted-foreground italic p-4 bg-slate-50 rounded-xl text-center">No stock available for this book</p>
+                                    {/* Book Details */}
+                                    <div className="flex-1 p-6 space-y-5">
+                                        {/* Book header */}
+                                        <div className="flex items-start justify-between gap-4">
+                                            <div>
+                                                <h5 className="font-black text-primarycolor uppercase italic text-base">{bd.bookTitle}</h5>
+                                                <div className="flex flex-wrap items-center gap-2 mt-2">
+                                                    <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">
+                                                        Requested: <span className="text-primarycolor font-black text-sm">{bd.requestedQty}</span> units
+                                                    </p>
+                                                    <span className="text-[9px] text-muted-foreground">•</span>
+                                                    <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">
+                                                        Allocated: <span className={cn("font-black text-sm", isBookValid ? "text-emerald-600" : "text-amber-600")}>{allocatedTotal}</span> units
+                                                    </p>
+                                                </div>
+                                                {/* Per-edition FIFO hint */}
+                                                {(() => {
+                                                    const ebd = editionBreakdownPerBook.get(bd.bookId);
+                                                    if (!ebd || ebd.length === 0) return null;
+                                                    return (
+                                                        <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                                                            <span className="text-[8px] font-black text-blue-600 uppercase tracking-widest">FIFO:</span>
+                                                            {ebd.map((ed, idx) => (
+                                                                <span key={ed.editionId} className="text-[9px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100">
+                                                                    {ed.quantity}× {ed.editionName}
+                                                                </span>
+                                                            ))}
+                                                        </div>
+                                                    );
+                                                })()}
+                                            </div>
+                                            <div className="flex items-center gap-2 shrink-0">
+                                                {isBookValid ? (
+                                                    <div className="px-3 py-1.5 bg-emerald-100 text-emerald-700 rounded-full text-[9px] font-black uppercase tracking-widest flex items-center gap-1">
+                                                        <CheckCircle2 className="size-3" /> Complete
+                                                    </div>
                                                 ) : (
-                                                    <div className="space-y-4">
-                                                        {ba && ba.editions.map((edAlloc, edIdx) => {
-                                                            const editionData = bd.editions[edIdx];
-                                                            if (!editionData) return null;
-                                                            const editionTotal = edAlloc.storeAllocations.reduce((s, st) => s + st.quantity, 0);
+                                                    <div className="px-3 py-1.5 bg-amber-50 text-amber-700 rounded-full text-[9px] font-black uppercase tracking-widest flex items-center gap-1">
+                                                        <AlertTriangle className="size-3" /> {bd.requestedQty - allocatedTotal} remaining
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
 
-                                                            const edBreakdown = editionBreakdownPerBook.get(bd.bookId);
-                                                            const fifo = edBreakdown?.find((e: any) => e.editionId === editionData.editionId);
-                                                            const requiredQty = fifo?.quantity || 0;
-                                                            const isEditionValid = editionTotal === requiredQty;
+                                        {/* Editions */}
+                                        <div className="space-y-4">
+                                            {bd.editions.length === 0 ? (
+                                                <p className="text-[10px] text-muted-foreground italic p-4 bg-slate-50 rounded-xl text-center">No stock available for this book</p>
+                                            ) : (
+                                                ba && ba.editions.map((edAlloc, edIdx) => {
+                                                    const editionData = bd.editions[edIdx];
+                                                    if (!editionData) return null;
+                                                    const editionTotal = edAlloc.storeAllocations.reduce((s, st) => s + st.quantity, 0);
+                                                    const fifo = edBreakdown?.find((e: any) => e.editionId === editionData.editionId);
+                                                    const requiredQty = fifo?.quantity || 0;
+                                                    const isEditionValid = editionTotal === requiredQty;
 
-                                                            return (
-                                                                <div key={editionData.editionId} className={cn(
-                                                                    "bg-slate-50 rounded-2xl p-5 border space-y-3",
-                                                                    isEditionValid ? "border-emerald-100" : "border-amber-100"
-                                                                )}>
-                                                                    {/* Edition header */}
-                                                                    <div className="flex items-center justify-between gap-4">
-                                                                        <div>
-                                                                            <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Edition</p>
-                                                                            <p className="font-black text-slate-700 text-sm mt-0.5">{editionData.editionName}</p>
-                                                                        </div>
-                                                                        <div className="text-right">
-                                                                            <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Price per Unit</p>
-                                                                            <p className="font-black text-primarycolor text-sm mt-0.5">{editionData.price.toLocaleString()} ETB</p>
-                                                                        </div>
-                                                                        <div className={cn(
-                                                                            "text-right px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-0.5",
-                                                                            isEditionValid ? "bg-emerald-100 text-emerald-700" : "bg-amber-50 text-amber-700"
-                                                                        )}>
-                                                                            <span>{editionTotal}</span>
-                                                                            <span className="text-muted-foreground mx-0.5">/</span>
-                                                                            <span>{requiredQty}</span>
-                                                                            <span className="ml-1">required</span>
-                                                                        </div>
+                                                    return (
+                                                        <div key={editionData.editionId} className={cn(
+                                                            "bg-slate-50 rounded-2xl p-5 border space-y-3",
+                                                            isEditionValid ? "border-emerald-100" : "border-amber-100"
+                                                        )}>
+                                                            {/* Edition header */}
+                                                            <div className="flex items-center justify-between gap-4">
+                                                                <div className="flex items-center gap-3">
+                                                                    <div className="size-8 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center text-[10px] font-black shrink-0">
+                                                                        {edIdx + 1}
                                                                     </div>
+                                                                    <div>
+                                                                        <p className="font-black text-slate-700 text-sm">{editionData.editionName}</p>
+                                                                        <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">
+                                                                            {editionData.price.toLocaleString()} ETB / unit
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                                <div className={cn(
+                                                                    "text-right px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-0.5",
+                                                                    isEditionValid ? "bg-emerald-100 text-emerald-700" : "bg-amber-50 text-amber-700"
+                                                                )}>
+                                                                    <span>{editionTotal}</span>
+                                                                    <span className="text-muted-foreground mx-0.5">/</span>
+                                                                    <span>{requiredQty}</span>
+                                                                    <span className="ml-1">required</span>
+                                                                </div>
+                                                            </div>
 
-                                                                    {/* Store allocation inputs */}
-                                                                    <div className="space-y-2">
-                                                                        <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Select stores and quantities</p>
-                                                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                                                                            {editionData.stores.map((store, stIdx) => {
-                                                                                const storeAlloc = edAlloc.storeAllocations[stIdx];
-                                                                                const currentQty = storeAlloc?.quantity || 0;
-                                                                                const isValid = currentQty <= store.availableQty;
-
-                                                                                return (
-                                                                                    <div
-                                                                                        key={store.storeStockId}
-                                                                                        className={cn(
-                                                                                            "border-2 rounded-xl p-3 space-y-2 transition-colors",
-                                                                                            currentQty > 0
-                                                                                                ? isValid ? "border-emerald-200 bg-emerald-50" : "border-rose-200 bg-rose-50"
-                                                                                                : "border-slate-100 bg-white"
-                                                                                        )}
-                                                                                    >
-                                                                                        <div className="flex items-center justify-between gap-2">
-                                                                                    <div>
-                                                                                        <p className="font-black text-slate-700 text-xs uppercase">{store.storeName}</p>
+                                                            {/* Store allocation inputs */}
+                                                            <div className="space-y-2">
+                                                                <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Allocate from stores</p>
+                                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                                                    {editionData.stores.map((store, stIdx) => {
+                                                                        const storeAlloc = edAlloc.storeAllocations[stIdx];
+                                                                        const currentQty = storeAlloc?.quantity || 0;
+                                                                        const isValid = currentQty <= store.availableQty;
+                                                                        return (
+                                                                            <div
+                                                                                key={store.storeStockId}
+                                                                                className={cn(
+                                                                                    "border-2 rounded-xl p-3 space-y-2 transition-colors",
+                                                                                    currentQty > 0
+                                                                                        ? isValid ? "border-emerald-200 bg-emerald-50" : "border-rose-200 bg-rose-50"
+                                                                                        : "border-slate-100 bg-white"
+                                                                                )}
+                                                                            >
+                                                                                <div className="flex items-center justify-between gap-2">
+                                                                                    <div className="min-w-0">
+                                                                                        <div className="flex items-center gap-1.5">
+                                                                                            {store.type === "printer" ? (
+                                                                                                <Printer className="size-3.5 text-purple-500 shrink-0" />
+                                                                                            ) : (
+                                                                                                <Building2 className="size-3.5 text-primarycolor/60 shrink-0" />
+                                                                                            )}
+                                                                                            <p className="font-black text-slate-700 text-xs truncate">{store.storeName}</p>
+                                                                                        </div>
                                                                                         <div className="flex items-center gap-1.5 mt-0.5">
                                                                                             {store.type === "printer" && (
                                                                                                 <span className="px-1.5 py-0.5 rounded bg-purple-100 text-purple-700 text-[7px] font-black uppercase tracking-widest">Printer</span>
                                                                                             )}
                                                                                             <p className="text-[8px] text-muted-foreground uppercase tracking-widest">
-                                                                                                Available: {store.availableQty}
+                                                                                                Available: <span className="font-black text-slate-600">{store.availableQty}</span>
                                                                                             </p>
                                                                                         </div>
                                                                                     </div>
-                                                                                        </div>
-                                                                                        <Input
-                                                                                            type="number"
-                                                                                            min={0}
-                                                                                            max={store.availableQty}
-                                                                                            value={currentQty}
-                                                                                            onChange={e => handleStoreQtyChange(
-                                                                                                bookIdx,
-                                                                                                edIdx,
-                                                                                                stIdx,
-                                                                                                parseInt(e.target.value) || 0
-                                                                                            )}
-                                                                                            placeholder="0"
-                                                                                            className={cn(
-                                                                                                "h-10 text-center rounded-lg font-bold border-2 text-sm",
-                                                                                                currentQty > 0
-                                                                                                    ? isValid ? "border-emerald-300 focus:border-emerald-500" : "border-rose-300 focus:border-rose-500"
-                                                                                                    : "border-slate-100 focus:border-primarycolor"
-                                                                                            )}
-                                                                                        />
-                                                                                        {currentQty > 0 && (
-                                                                                            <div className="text-[9px] font-bold text-slate-600 text-center">
-                                                                                                Subtotal: {(currentQty * editionData.price).toLocaleString()} ETB
-                                                                                            </div>
-                                                                                        )}
+                                                                                </div>
+                                                                                <Input
+                                                                                    type="number"
+                                                                                    min={0}
+                                                                                    max={store.availableQty}
+                                                                                    value={currentQty}
+                                                                                    onChange={e => handleStoreQtyChange(
+                                                                                        bookIdx,
+                                                                                        edIdx,
+                                                                                        stIdx,
+                                                                                        parseInt(e.target.value) || 0
+                                                                                    )}
+                                                                                    placeholder="0"
+                                                                                    className={cn(
+                                                                                        "h-10 text-center rounded-lg font-bold border-2 text-sm",
+                                                                                        currentQty > 0
+                                                                                            ? isValid ? "border-emerald-300 focus:border-emerald-500" : "border-rose-300 focus:border-rose-500"
+                                                                                            : "border-slate-100 focus:border-primarycolor"
+                                                                                    )}
+                                                                                />
+                                                                                {currentQty > 0 && (
+                                                                                    <div className="text-[9px] font-bold text-slate-600 text-center">
+                                                                                        Subtotal: {(currentQty * editionData.price).toLocaleString()} ETB
                                                                                     </div>
-                                                                                );
-                                                                            })}
-                                                                        </div>
-                                                                    </div>
+                                                                                )}
+                                                                            </div>
+                                                                        );
+                                                                    })}
+                                                                    {editionData.stores.length === 0 && (
+                                                                        <p className="text-[10px] text-muted-foreground italic col-span-full text-center py-4">
+                                                                            No stock available for this edition
+                                                                        </p>
+                                                                    )}
                                                                 </div>
-                                                            );
-                                                        })}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            )}
-
-                            {/* Validation hint */}
-                            {!isLoadingStock && !canApprove && bookBreakdowns.length > 0 && (
-                                <div className="flex items-center gap-3 bg-amber-50 border border-amber-200 rounded-2xl p-4">
-                                    <AlertTriangle className="size-5 text-amber-600 shrink-0" />
-                                    <div>
-                                        <p className="text-[10px] font-black text-amber-800 uppercase tracking-widest">
-                                            Allocation amounts must match requested quantities
-                                        </p>
-                                        <div className="text-[9px] text-amber-700 mt-1 space-y-0.5">
-                                            {bookBreakdowns.map((bd, i) => (
-                                                bookTotals[i] !== bd.requestedQty && (
-                                                    <p key={bd.bookId}>• {bd.bookTitle}: {bd.requestedQty - (bookTotals[i] || 0)} more needed</p>
-                                                )
-                                            ))}
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })
+                                            )}
                                         </div>
                                     </div>
                                 </div>
-                            )}
-                        </div>
+                            );
+                        })}
+                        {!canApprove && bookBreakdowns.length > 0 && (
+                            <div className="flex items-center gap-3 bg-amber-50 border border-amber-200 rounded-2xl p-4">
+                                <AlertTriangle className="size-5 text-amber-600 shrink-0" />
+                                <div>
+                                    <p className="text-[10px] font-black text-amber-800 uppercase tracking-widest">
+                                        Allocation amounts must match requested quantities
+                                    </p>
+                                    <div className="text-[9px] text-amber-700 mt-1 space-y-0.5">
+                                        {bookBreakdowns.map((bd, i) => (
+                                            bookTotals[i] !== bd.requestedQty && (
+                                                <p key={bd.bookId}>• {bd.bookTitle}: {bd.requestedQty - (bookTotals[i] || 0)} more needed</p>
+                                            )
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        </>
                     )}
-
-                    {/* Shop + Meta Info Row (at bottom) */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        {/* Shop Info */}
-                        <div className="bg-white rounded-[2rem] p-6 border-2 border-primarycolor/5 shadow-sm space-y-4 relative overflow-hidden">
-                            <div className="absolute top-0 right-0 size-32 bg-primarycolor/5 rounded-full -mr-16 -mt-16 blur-2xl" />
-                            <div className="flex items-center gap-2 text-primarycolor relative">
-                                <Building2 className="size-4" />
-                                <h4 className="font-black uppercase tracking-widest text-xs italic">Shop Information</h4>
-                            </div>
-                            <div className="space-y-3 relative">
-                                <p className="font-black text-primarycolor text-lg uppercase">{order.bookshopes?.name}</p>
-                                <div className="grid grid-cols-2 gap-3">
-                                    <div>
-                                        <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Branch</p>
-                                        <p className="font-bold text-slate-700 text-sm">{order.bookshopes?.branch || "Main"}</p>
-                                    </div>
-                                    <div>
-                                        <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Phone</p>
-                                        <p className="font-bold text-slate-700 text-sm">{order.bookshopes?.phone || "N/A"}</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-center gap-1.5 text-muted-foreground">
-                                    <MapPin className="size-3.5 shrink-0" />
-                                    <p className="font-bold text-slate-600 text-sm truncate">{order.bookshopes?.location}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Order Meta */}
-                        <div className="bg-white rounded-[2rem] p-6 border-2 border-primarycolor/5 shadow-sm space-y-4">
-                            <div className="flex items-center gap-2 text-primarycolor">
-                                <Info className="size-4" />
-                                <h4 className="font-black uppercase tracking-widest text-xs italic">Order Metadata</h4>
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Order ID</p>
-                                    <p className="font-black text-primarycolor">ORD-{order.id}</p>
-                                </div>
-                                <div>
-                                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Date Placed</p>
-                                    <p className="font-bold text-slate-700 text-sm">{formatDateTime(new Date(order.createdAt))}</p>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
                 </div>
 
                 {/* Footer */}
@@ -977,6 +982,13 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                             className="rounded-2xl h-12 px-5 font-black uppercase tracking-widest text-[10px] border-2 gap-2"
                         >
                             <Printer className="size-4" /> Print
+                        </Button>
+                        <Button
+                            variant="outline"
+                            onClick={() => setPrintOptionsOpen(true)}
+                            className="rounded-2xl h-12 px-5 font-black uppercase tracking-widest text-[10px] border-2 gap-2"
+                        >
+                            <Settings2 className="size-4" /> Print with Options
                         </Button>
                     </div>
                     {!order.is_approved && (
@@ -997,6 +1009,142 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                             )}
                         </Button>
                     )}
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+
+        {/* Print Options Dialog */}
+        <Dialog open={printOptionsOpen} onOpenChange={setPrintOptionsOpen}>
+            <DialogContent className="sm:max-w-3xl w-[95vw] rounded-[2.5rem] border-4 border-primarycolor/5 bg-[#F8FAFC] p-0 overflow-hidden shadow-2xl">
+                <DialogHeader className="bg-white p-5 pb-4 border-b border-slate-100 shrink-0">
+                    <div className="flex items-center gap-3">
+                        <div className="size-9 rounded-2xl bg-primarycolor/10 flex items-center justify-center text-primarycolor shrink-0">
+                            <Settings2 className="size-5" />
+                        </div>
+                        <div>
+                            <DialogTitle className="text-lg font-black text-primarycolor uppercase italic">
+                                Print <span className="text-secondarycolor not-italic">Options</span>
+                            </DialogTitle>
+                            <DialogDescription className="text-[8px] font-bold uppercase tracking-widest text-muted-foreground">
+                                Customize what to include in the printout
+                            </DialogDescription>
+                        </div>
+                    </div>
+                </DialogHeader>
+
+                <div className="p-5 space-y-4 overflow-y-auto">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        {/* Checkboxes */}
+                        <div className="bg-white rounded-2xl p-4 border-2 border-primarycolor/5 space-y-3 md:col-span-2">
+                            <p className="text-[8px] font-black text-primarycolor uppercase tracking-widest italic">Include in print</p>
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                                {[
+                                    { id: "shop", label: "Book Shop", state: printIncludeShop, set: setPrintIncludeShop },
+                                    { id: "date", label: "Date", state: printIncludeDate, set: setPrintIncludeDate },
+                                    { id: "price", label: "Price", state: printIncludePrice, set: setPrintIncludePrice },
+                                    { id: "subtotal", label: "Subtotal", state: printIncludeSubtotal, set: setPrintIncludeSubtotal },
+                                    { id: "store", label: "Store", state: printIncludeStore, set: setPrintIncludeStore },
+                                    { id: "edition", label: "Edition", state: printIncludeEdition, set: setPrintIncludeEdition },
+                                    { id: "status", label: "Status", state: printIncludeStatus, set: setPrintIncludeStatus },
+                                    { id: "delivery", label: "Delivery Status", state: printIncludeDelivery, set: setPrintIncludeDelivery },
+                                ].map(opt => (
+                                    <label
+                                        key={opt.id}
+                                        className="flex items-center gap-2 p-2.5 rounded-xl border-2 border-slate-100 cursor-pointer hover:border-primarycolor/30 transition-colors"
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            checked={opt.state}
+                                            onChange={e => opt.set(e.target.checked)}
+                                            className="size-3.5 accent-primarycolor rounded shrink-0"
+                                        />
+                                        <span className="font-bold text-slate-700 text-[10px] leading-tight">{opt.label}</span>
+                                    </label>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Font size + Page width */}
+                        <div className="space-y-4">
+                            <div className="bg-white rounded-2xl p-4 border-2 border-primarycolor/5 space-y-2.5">
+                                <p className="text-[8px] font-black text-primarycolor uppercase tracking-widest italic">Font Size</p>
+                                <div className="flex flex-col gap-1.5">
+                                    {(["big", "small", "very-small", "extra-small"] as const).map(size => (
+                                        <label
+                                            key={size}
+                                            className={cn(
+                                                "flex items-center gap-2.5 px-3 py-2 rounded-xl border-2 cursor-pointer transition-colors",
+                                                printFontSize === size
+                                                    ? "border-primarycolor bg-primarycolor/5"
+                                                    : "border-slate-100 bg-white hover:border-slate-200"
+                                            )}
+                                        >
+                                            <input
+                                                type="radio"
+                                                name="font-size"
+                                                checked={printFontSize === size}
+                                                onChange={() => setPrintFontSize(size)}
+                                                className="size-3.5 accent-primarycolor shrink-0"
+                                            />
+                                            <span className="font-bold text-slate-700 text-[10px] uppercase tracking-widest">
+                                                {size === "big" ? "Big" : size === "small" ? "Small" : size === "very-small" ? "Very Small" : "Extra Small"}
+                                            </span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="bg-white rounded-2xl p-4 border-2 border-primarycolor/5 space-y-2.5">
+                                <p className="text-[8px] font-black text-primarycolor uppercase tracking-widest italic">Page Width</p>
+                                <div className="flex flex-col gap-1.5">
+                                    {(["full", "half"] as const).map(w => (
+                                        <label
+                                            key={w}
+                                            className={cn(
+                                                "flex items-center gap-2.5 px-3 py-2 rounded-xl border-2 cursor-pointer transition-colors",
+                                                printPageWidth === w
+                                                    ? "border-primarycolor bg-primarycolor/5"
+                                                    : "border-slate-100 bg-white hover:border-slate-200"
+                                            )}
+                                        >
+                                            <input
+                                                type="radio"
+                                                name="page-width"
+                                                checked={printPageWidth === w}
+                                                onChange={() => setPrintPageWidth(w)}
+                                                className="size-3.5 accent-primarycolor shrink-0"
+                                            />
+                                            <div>
+                                                <p className="font-bold text-slate-700 text-[10px] uppercase tracking-widest leading-tight">{w === "full" ? "Full Page" : "Half Page"}</p>
+                                                <p className="text-[7px] text-muted-foreground font-bold uppercase tracking-widest">{w === "full" ? "Entire width" : "Left top fixed"}</p>
+                                            </div>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <DialogFooter className="bg-white p-4 border-t border-slate-100 shrink-0">
+                    <div className="flex gap-3 w-full">
+                        <Button
+                            variant="outline"
+                            onClick={() => setPrintOptionsOpen(false)}
+                            className="flex-1 rounded-2xl h-11 font-black uppercase tracking-widest text-[9px] border-2"
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            onClick={() => {
+                                setPrintOptionsOpen(false);
+                                handlePrintWithOptions();
+                            }}
+                            className="flex-1 rounded-2xl h-11 font-black uppercase tracking-widest text-[9px] bg-primarycolor hover:bg-secondarycolor text-white shadow-lg gap-2"
+                        >
+                            <Printer className="size-3.5" /> Print
+                        </Button>
+                    </div>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
