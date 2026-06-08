@@ -12,14 +12,12 @@ export async function searchBooks(query: string, page: number = 0, pageSize: num
             // faster than LIKE '%query%' on large datasets. Falls back to LIKE
             // if the FULLTEXT index hasn't been created yet.
             try {
-                const searchResults = await (prisma as any).$queryRawUnsafe<
-                    { id: number }[]
-                >(
+                const searchResults = (await (prisma as any).$queryRawUnsafe(
                     `SELECT id FROM Books WHERE MATCH(title, author, isbn) AGAINST(? IN BOOLEAN MODE) AND is_deleted = false ORDER BY title ASC LIMIT ? OFFSET ?`,
                     `${query}*`,
                     pageSize,
                     page * pageSize,
-                );
+                )) as { id: number }[];
                 const ids = searchResults.map((r: any) => r.id);
 
                 if (ids.length === 0) {
