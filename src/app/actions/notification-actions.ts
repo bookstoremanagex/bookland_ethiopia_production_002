@@ -22,7 +22,7 @@ export async function getUnreadCount(accountId?: number, notificationTo?: string
   }
 }
 
-export async function getNotifications(accountId?: number, notificationTo?: string) {
+export async function getNotifications(accountId?: number, notificationTo?: string, take?: number) {
   try {
     const where: any = { is_deleted: false };
     if (notificationTo) {
@@ -38,6 +38,7 @@ export async function getNotifications(accountId?: number, notificationTo?: stri
       orderBy: {
         createdAt: "desc",
       },
+      ...(take ? { take } : {}),
     });
     return { success: true, data: notifications || [] };
   } catch (error: any) {
@@ -70,6 +71,7 @@ export async function createNotification(data: {
     })
     revalidatePath("/admin_dashboard/notifications")
     revalidatePath("/delivery_and_sales_dashboard/notifications")
+    revalidatePath("/delivery_dashboard_full/notifications")
     revalidatePath("/finance_officer_dashboard/notifications")
     revalidatePath("/inventory_manager_dashboard/notifications")
     revalidatePath("/operation_manager_dashboard/notifications")
@@ -87,6 +89,7 @@ function revalidateAllNotificationPaths() {
   const paths = [
     "/admin_dashboard/notifications",
     "/delivery_and_sales_dashboard/notifications",
+    "/delivery_dashboard_full/notifications",
     "/finance_officer_dashboard/notifications",
     "/inventory_manager_dashboard/notifications",
     "/operation_manager_dashboard/notifications",

@@ -13,7 +13,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Search, ChevronLeft, ChevronRight, Bell, Check, Trash2, MailOpen, AlertCircle, ShoppingBag, User, Building2, DollarSign, Package, X, Banknote, FileText } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight, Bell, Check, Trash2, MailOpen, AlertCircle, ShoppingBag, User, Building2, DollarSign, Package, X, Banknote, FileText, Filter } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import {
@@ -30,6 +30,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 import { cn } from "../../lib/utils";
 import { markAsRead, deleteNotification } from "../../app/actions/notification-actions";
 import { toast } from "sonner";
@@ -279,47 +286,46 @@ export function NotificationsTable({ data: initialData = [] }: NotificationsTabl
   return (
     <div className="w-full space-y-8 animate-in fade-in duration-700">
       {/* Search, Filter & Actions Bar */}
-      <div className="flex flex-col xl:flex-row items-center justify-between gap-6 bg-card p-6 rounded-[2rem] border-2 border-primarycolor/5 shadow-md hover:shadow-xl hover:border-primarycolor/10 transition-all duration-300">
-        <div className="relative w-full xl:max-w-md group">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-5 text-muted-foreground group-focus-within:text-primarycolor transition-all duration-500 group-focus-within:scale-110" />
+      <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-md rounded-[2rem] border border-slate-200 shadow-lg shadow-black/10 p-4 space-y-3">
+        <div className="relative w-full group">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-5 text-muted-foreground group-focus-within:text-primarycolor transition-all" />
           <Input
             placeholder="Search notifications..."
             value={globalFilter ?? ""}
             onChange={(event) => setGlobalFilter(event.target.value)}
-            className="pl-12 h-12 bg-background/50 border-primarycolor/10 focus:border-primarycolor focus:ring-primarycolor/5 rounded-2xl transition-all duration-300 focus:shadow-inner font-semibold"
+            className="pl-12 h-12 bg-slate-50/50 border-slate-200 focus:border-primarycolor focus:ring-primarycolor/5 rounded-2xl font-semibold text-base"
           />
         </div>
 
-        {/* Dynamic Select Dropdowns */}
-        <div className="flex flex-col sm:flex-row gap-4 w-full xl:w-auto items-stretch sm:items-center">
-          <div className="flex-1 sm:w-48 bg-background border-2 border-primarycolor/10 rounded-2xl px-4 py-2 flex items-center justify-between shadow-sm">
-            <span className="text-[10px] font-black text-secondarycolor uppercase tracking-widest mr-2">Status</span>
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value as any)}
-              className="text-xs font-black text-primarycolor bg-transparent border-none outline-none focus:ring-0 cursor-pointer text-right uppercase"
-            >
-              <option value="all">All</option>
-              <option value="unread">Unread</option>
-              <option value="read">Read</option>
-            </select>
-          </div>
+        <div className="flex items-center gap-2">
+          <Select
+            value={statusFilter}
+            onValueChange={(v) => setStatusFilter(v as any)}
+          >
+            <SelectTrigger className="h-11 rounded-xl border-slate-200 bg-slate-50/50 text-sm font-semibold w-full">
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="unread">Unread</SelectItem>
+              <SelectItem value="read">Read</SelectItem>
+            </SelectContent>
+          </Select>
 
-          <div className="flex-1 sm:w-56 bg-background border-2 border-primarycolor/10 rounded-2xl px-4 py-2 flex items-center justify-between shadow-sm">
-            <span className="text-[10px] font-black text-secondarycolor uppercase tracking-widest mr-2">Type</span>
-            <select
-              value={typeFilter}
-              onChange={(e) => setTypeFilter(e.target.value)}
-              className="text-xs font-black text-primarycolor bg-transparent border-none outline-none focus:ring-0 cursor-pointer text-right uppercase"
-            >
-              <option value="all">All Categories</option>
+          <Select
+            value={typeFilter}
+            onValueChange={setTypeFilter}
+          >
+            <SelectTrigger className="h-11 rounded-xl border-slate-200 bg-slate-50/50 text-sm font-semibold w-full">
+              <SelectValue placeholder="Type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Categories</SelectItem>
               {uniqueTypes.map((type) => (
-                <option key={type} value={type}>
-                  {type}
-                </option>
+                <SelectItem key={type} value={type}>{type}</SelectItem>
               ))}
-            </select>
-          </div>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
@@ -418,14 +424,6 @@ export function NotificationsTable({ data: initialData = [] }: NotificationsTabl
                   {item.message}
                 </p>
 
-                {item.details && (
-                  <div className="mt-3 p-3 bg-slate-50 border border-slate-100 rounded-xl text-xs text-muted-foreground font-semibold overflow-x-auto break-all whitespace-normal">
-                    <pre className="whitespace-pre-wrap break-all font-sans text-xs m-0">
-                      {item.details}
-                    </pre>
-                  </div>
-                )}
-
                 <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
                   <div className="text-[10px] font-bold text-secondarycolor/50 tabular-nums">
                     {formatDateTime(new Date(item.createdAt))}
@@ -488,122 +486,6 @@ export function NotificationsTable({ data: initialData = [] }: NotificationsTabl
               {detailItem?.message}
             </p>
 
-            {detailItem?.details && (() => {
-              try {
-                const parsed = JSON.parse(detailItem.details);
-                if (parsed.purchaseId) {
-                  return (
-                    <div className="space-y-4 mt-6">
-                      <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
-                        <p className="font-black text-primarycolor">{parsed.customerName || "Anonymous"}</p>
-                        <p className="text-[9px] font-bold text-muted-foreground">{parsed.itemCount || 0} item(s) &middot; {parsed.totalAmount?.toLocaleString()} ETB</p>
-                      </div>
-                      <button
-                        onClick={() => router.push(`/admin_dashboard/retail_management/${parsed.purchaseId}`)}
-                        className="w-full p-4 rounded-2xl bg-primarycolor/5 border-2 border-primarycolor/10 hover:bg-primarycolor/10 hover:border-primarycolor/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
-                      >
-                        <ShoppingBag className="size-4 text-primarycolor" />
-                        <span className="text-[10px] font-black uppercase tracking-widest text-primarycolor">View Retail Purchase →</span>
-                      </button>
-                    </div>
-                  );
-                }
-                if (parsed.shopName) {
-                  const isPayment = parsed.paymentType || parsed.paymentId;
-                  return (
-                    <div className="space-y-4 mt-6">
-                      <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
-                        <div className="flex items-center gap-2">
-                          <Building2 className="size-4 text-primarycolor/40" />
-                          <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Shop</p>
-                        </div>
-                        <p className="font-black text-primarycolor">{parsed.shopName}</p>
-                      </div>
-
-                      {isPayment ? (
-                        <>
-                          <div className="p-4 rounded-2xl bg-primarycolor/5 border border-primarycolor/10 flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                              <DollarSign className="size-5 text-primarycolor" />
-                              <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Payment Amount</p>
-                            </div>
-                            <p className="text-xl font-black text-primarycolor">{parsed.amount?.toLocaleString()} ETB</p>
-                          </div>
-                          <div className="grid grid-cols-2 gap-4">
-                            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
-                              <div className="flex items-center gap-2">
-                                <Banknote className="size-4 text-primarycolor/40" />
-                                <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Type</p>
-                              </div>
-                              <p className="font-black text-primarycolor">{parsed.paymentType || "—"}</p>
-                            </div>
-                            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
-                              <div className="flex items-center gap-2">
-                                <FileText className="size-4 text-primarycolor/40" />
-                                <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Payment ID</p>
-                              </div>
-                              <p className="font-black text-primarycolor">#{parsed.paymentId}</p>
-                            </div>
-                          </div>
-                          {parsed.shopId && (
-                            <button
-                              onClick={() => router.push(`/admin_dashboard/manage_payment/${parsed.shopId}`)}
-                              className="w-full p-4 rounded-2xl bg-emerald-50 border-2 border-emerald-200 hover:bg-emerald-100 hover:border-emerald-300 transition-all flex items-center justify-center gap-2 cursor-pointer"
-                            >
-                              <Banknote className="size-4 text-emerald-700" />
-                              <span className="text-[10px] font-black uppercase tracking-widest text-emerald-700">View Payment →</span>
-                            </button>
-                          )}
-                        </>
-                      ) : (
-                        <>
-                          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
-                            <div className="flex items-center gap-2">
-                              <User className="size-4 text-primarycolor/40" />
-                              <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Placed By</p>
-                            </div>
-                            <p className="font-black text-primarycolor">{parsed.placedBy}</p>
-                          </div>
-                          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
-                            <div className="flex items-center gap-2">
-                              <Package className="size-4 text-primarycolor/40" />
-                              <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Items</p>
-                            </div>
-                            <p className="font-bold text-primarycolor text-sm">{parsed.items}</p>
-                          </div>
-                          <div className="p-4 rounded-2xl bg-primarycolor/5 border border-primarycolor/10 flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                              <DollarSign className="size-5 text-primarycolor" />
-                              <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Total Amount</p>
-                            </div>
-                            <p className="text-xl font-black text-primarycolor">{parsed.totalAmount?.toLocaleString()} ETB</p>
-                          </div>
-                          {parsed.orderId && (
-                            <button
-                              onClick={() => router.push(`/admin_dashboard/manage_orders?orderId=${parsed.orderId}`)}
-                              className="w-full p-4 rounded-2xl bg-primarycolor/5 border-2 border-primarycolor/10 hover:bg-primarycolor/10 hover:border-primarycolor/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
-                            >
-                              <ShoppingBag className="size-4 text-primarycolor" />
-                              <span className="text-[10px] font-black uppercase tracking-widest text-primarycolor">View Order ORD-{parsed.orderId} →</span>
-                            </button>
-                          )}
-                        </>
-                      )}
-                    </div>
-                  );
-                }
-              } catch {
-                return (
-                  <div className="mt-4 p-4 bg-slate-50 border border-slate-100 rounded-xl text-xs text-muted-foreground font-semibold overflow-x-auto">
-                    <pre className="whitespace-pre-wrap break-all font-sans text-xs m-0">
-                      {detailItem.details}
-                    </pre>
-                  </div>
-                );
-              }
-              return null;
-            })()}
-
             {detailItem?.type && (
               <div className="flex items-center gap-2 mt-6">
                 <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border bg-blue-50 text-blue-700 border-blue-200">
@@ -629,36 +511,50 @@ export function NotificationsTable({ data: initialData = [] }: NotificationsTabl
       </Dialog>
 
       {/* Pagination Section */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-8 px-4 py-8 border-t-2 border-primarycolor/5">
-        <div className="text-sm font-black text-muted-foreground order-2 sm:order-1 uppercase tracking-widest">
-          Showing <span className="text-primarycolor underline decoration-2 underline-offset-4">{table.getRowModel().rows.length}</span> /{" "}
-          <span className="text-secondarycolor">{filteredData.length}</span> Notifications
+      <div className="sticky bottom-0 left-0 right-0 z-10 bg-white/95 backdrop-blur-md border-t border-slate-200 px-2 py-2 flex items-center justify-between gap-1 shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
+        <Button
+          variant="ghost"
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+          className="h-11 px-3 rounded-xl text-slate-600 disabled:opacity-20 active:scale-90 active:bg-slate-100 transition-all min-w-24 flex items-center justify-center gap-1.5"
+        >
+          <ChevronLeft className="size-5 shrink-0" />
+          <span className="text-xs font-semibold hidden xs:inline">Prev</span>
+        </Button>
+        <div className="flex items-center gap-0.5 text-xs font-semibold text-slate-500 select-none">
+          {Array.from({ length: Math.min(table.getPageCount(), 5) }).map((_, i) => {
+            const page = (() => {
+              const total = table.getPageCount();
+              const current = table.getState().pagination.pageIndex;
+              if (total <= 5) return i;
+              if (current <= 2) return i;
+              if (current >= total - 3) return total - 5 + i;
+              return current - 2 + i;
+            })();
+            return (
+              <button
+                key={page}
+                onClick={() => table.setPageIndex(page)}
+                className={`size-9 rounded-full text-sm font-semibold transition-all active:scale-90 ${
+                  page === table.getState().pagination.pageIndex
+                    ? "bg-primarycolor text-white shadow-md shadow-primarycolor/20"
+                    : "text-slate-500 hover:bg-slate-100"
+                }`}
+              >
+                {page + 1}
+              </button>
+            );
+          })}
         </div>
-        <div className="flex items-center gap-4 order-1 sm:order-2 w-full sm:w-auto justify-between sm:justify-end">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-            className="h-12 px-6 border-2 border-primarycolor/20 hover:bg-primarycolor/5 rounded-2xl transition-all font-black disabled:opacity-20 active:scale-90"
-          >
-            <ChevronLeft className="size-5 mr-1" />
-            Prev
-          </Button>
-          <div className="flex items-center gap-3 px-6 h-12 bg-primarycolor/5 rounded-2xl text-xs font-black text-secondarycolor border-2 border-primarycolor/10 shadow-inner">
-            PAGE {table.getState().pagination.pageIndex + 1} <span className="opacity-20 mx-1">OF</span> {table.getPageCount()}
-          </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-            className="h-12 px-6 border-2 border-primarycolor/20 hover:bg-primarycolor/5 rounded-2xl transition-all font-black disabled:opacity-20 active:scale-90"
-          >
-            Next
-            <ChevronRight className="size-5 ml-1" />
-          </Button>
-        </div>
+        <Button
+          variant="ghost"
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+          className="h-11 px-3 rounded-xl text-slate-600 disabled:opacity-20 active:scale-90 active:bg-slate-100 transition-all min-w-24 flex items-center justify-center gap-1.5"
+        >
+          <span className="text-xs font-semibold hidden xs:inline">Next</span>
+          <ChevronRight className="size-5 shrink-0" />
+        </Button>
       </div>
     </div>
   );

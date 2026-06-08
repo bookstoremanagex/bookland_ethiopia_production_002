@@ -553,20 +553,29 @@ export async function approveOrder(
       const shopName = order.bookshopes?.name || `Shop #${order.bookShopId}`;
       const summaryText = allocationSummary || `Order ORD-${order.id} approved with ${sanitized.length} allocations.`;
 
-      // 1. Notify DELIVERY_AND_SALES role
-      await createNotification({
-        title: `Order ORD-${order.id} Approved for ${shopName}`,
-        message: `Order ORD-${order.id} has been approved. Stock has been allocated. Check the details for the full breakdown.\n\n${summaryText}`,
-        details: JSON.stringify({
-          orderId: order.id,
-          shopName,
-          totalAmount: newTotal,
-          allocationSummary: summaryText,
-        }),
-        type: "ORDER",
-        notification_to: "DELIVERY_AND_SALES",
-        notification_from: session?.name || "System",
+      // 1. Notify Delivery Account accounts individually
+      const deliveryAccounts = await (prisma as any).accounts.findMany({
+        where: {
+          account_type: "Delivery Account",
+          is_deleted: false,
+        },
+        select: { id: true, name: true },
       });
+      for (const acc of deliveryAccounts) {
+        await createNotification({
+          title: `Order ORD-${order.id} Approved for ${shopName}`,
+          message: `Order ORD-${order.id} has been approved. Stock has been allocated. Check the details for the full breakdown.\n\n${summaryText}`,
+          details: JSON.stringify({
+            orderId: order.id,
+            shopName,
+            totalAmount: newTotal,
+            allocationSummary: summaryText,
+          }),
+          type: "ORDER",
+          notification_from: session?.name || "System",
+          accountId: acc.id,
+        });
+      }
 
       // 2. Notify Delivery Sample accounts individually
       const deliverySampleAccounts = await (prisma as any).accounts.findMany({
@@ -591,6 +600,8 @@ export async function approveOrder(
           accountId: acc.id,
         });
       }
+
+
     } catch (notifError) {
       console.error("Failed to create approval notifications:", notifError);
     }
