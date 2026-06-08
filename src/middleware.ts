@@ -28,7 +28,8 @@ export function middleware(request: NextRequest) {
         'Delivery and Sales Management': '/delivery_and_sales_dashboard',
         'Delivery Sample': '/delivery_sample_dashboard',
         'Printer': '/printer_dashboard',
-        'Viewer': '/viewer_dashboard'
+        'Viewer': '/viewer_dashboard',
+        'Delivery Account': '/delivery_dashboard_full'
       };
 
       const allowedPath = rolePathMap[role] || '/admin_dashboard';
@@ -73,7 +74,8 @@ export function middleware(request: NextRequest) {
         'Delivery and Sales Management': '/delivery_and_sales_dashboard',
         'Delivery Sample': '/delivery_sample_dashboard',
         'Printer': '/printer_dashboard',
-        'Viewer': '/viewer_dashboard'
+        'Viewer': '/viewer_dashboard',
+        'Delivery Account': '/delivery_dashboard_full'
       };
       
       const redirectPath = rolePathMap[role] || '/admin_dashboard';

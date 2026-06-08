@@ -59,6 +59,9 @@ export async function loginAction(email: string, password: string) {
       case "Viewer":
         redirectPath = "/viewer_dashboard";
         break;
+      case "Delivery Account":
+        redirectPath = "/delivery_dashboard_full";
+        break;
       default:
         redirectPath = "/admin_dashboard"; // Fallback
     }
