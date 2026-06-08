@@ -553,7 +553,22 @@ export async function approveOrder(
       const shopName = order.bookshopes?.name || `Shop #${order.bookShopId}`;
       const summaryText = allocationSummary || `Order ORD-${order.id} approved with ${sanitized.length} allocations.`;
 
-      // 1. Notify Delivery Account accounts individually
+      // 1. Notify DELIVERY_AND_SALES role (shows in delivery_dashboard_full notifications)
+      await createNotification({
+        title: `Order ORD-${order.id} Approved for ${shopName}`,
+        message: `Order ORD-${order.id} has been approved. Stock has been allocated.\n\n${summaryText}`,
+        details: JSON.stringify({
+          orderId: order.id,
+          shopName,
+          totalAmount: newTotal,
+          allocationSummary: summaryText,
+        }),
+        type: "ORDER",
+        notification_to: "DELIVERY_AND_SALES",
+        notification_from: session?.name || "System",
+      });
+
+      // 2. Notify Delivery Account accounts individually
       const deliveryAccounts = await (prisma as any).accounts.findMany({
         where: {
           account_type: "Delivery Account",
@@ -577,7 +592,7 @@ export async function approveOrder(
         });
       }
 
-      // 2. Notify Delivery Sample accounts individually
+      // 3. Notify Delivery Sample accounts individually
       const deliverySampleAccounts = await (prisma as any).accounts.findMany({
         where: {
           account_type: "Delivery Sample",
