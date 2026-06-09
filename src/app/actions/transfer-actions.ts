@@ -93,6 +93,24 @@ export async function searchBooks(query: string, page: number = 0, pageSize: num
             return a.title.localeCompare(b.title);
         });
 
+        // Fetch locked amounts for all editions across all returned books
+        const allEditionIds = sorted.flatMap((book: any) =>
+            book.bookedition.map((ed: any) => ed.id)
+        );
+        const lockedMap: Record<number, number> = {};
+        if (allEditionIds.length > 0) {
+            const lockedRecords = await (prisma as any).locked_editions.findMany({
+                where: {
+                    editionId: { in: allEditionIds },
+                    status: "locked",
+                    is_deleted: false,
+                },
+            });
+            for (const lr of lockedRecords) {
+                lockedMap[lr.editionId] = (lockedMap[lr.editionId] || 0) + lr.amount_locked;
+            }
+        }
+
         // Map to clean objects, including edition stock data so callers
         // don't need a separate getBookStockData() call
         const mapped = sorted.map((book: any) => {
@@ -102,11 +120,12 @@ export async function searchBooks(query: string, page: number = 0, pageSize: num
                     (acc: number, s: any) => acc + (s.quantity || 0),
                     0,
                 );
+                const locked = lockedMap[ed.id] || 0;
                 return {
                     id: ed.id,
                     name: ed.edition_name,
                     price: ed.selling_price || 0,
-                    stock: totalStock,
+                    stock: Math.max(0, totalStock - locked),
                 };
             });
             const { bookedition, ...rest } = book;

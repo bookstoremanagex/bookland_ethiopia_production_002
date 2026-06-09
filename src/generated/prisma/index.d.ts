@@ -39,6 +39,11 @@ export type bookeditionprinters = $Result.DefaultSelection<Prisma.$bookeditionpr
  */
 export type books = $Result.DefaultSelection<Prisma.$booksPayload>
 /**
+ * Model locked_editions
+ * 
+ */
+export type locked_editions = $Result.DefaultSelection<Prisma.$locked_editionsPayload>
+/**
  * Model bookshopeditions
  * 
  */
@@ -193,7 +198,15 @@ export type retail_purchase_items = $Result.DefaultSelection<Prisma.$retail_purc
  * Enums
  */
 export namespace $Enums {
-  export const retail_purchase_status: {
+  export const locked_editions_status: {
+  locked: 'locked',
+  unlocked: 'unlocked'
+};
+
+export type locked_editions_status = (typeof locked_editions_status)[keyof typeof locked_editions_status]
+
+
+export const retail_purchase_status: {
   PENDING: 'PENDING',
   APPROVED: 'APPROVED',
   PARTIALLY_PAID: 'PARTIALLY_PAID',
@@ -304,6 +317,10 @@ export const books_productionstatus: {
 export type books_productionstatus = (typeof books_productionstatus)[keyof typeof books_productionstatus]
 
 }
+
+export type locked_editions_status = $Enums.locked_editions_status
+
+export const locked_editions_status: typeof $Enums.locked_editions_status
 
 export type retail_purchase_status = $Enums.retail_purchase_status
 
@@ -512,6 +529,16 @@ export class PrismaClient<
     * ```
     */
   get books(): Prisma.booksDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.locked_editions`: Exposes CRUD operations for the **locked_editions** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Locked_editions
+    * const locked_editions = await prisma.locked_editions.findMany()
+    * ```
+    */
+  get locked_editions(): Prisma.locked_editionsDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.bookshopeditions`: Exposes CRUD operations for the **bookshopeditions** model.
@@ -1258,6 +1285,7 @@ export namespace Prisma {
     bookeditionstores: 'bookeditionstores',
     bookeditionprinters: 'bookeditionprinters',
     books: 'books',
+    locked_editions: 'locked_editions',
     bookshopeditions: 'bookshopeditions',
     bookshopes: 'bookshopes',
     orders: 'orders',
@@ -1306,7 +1334,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "accounts" | "bookedition" | "bookeditionstores" | "bookeditionprinters" | "books" | "bookshopeditions" | "bookshopes" | "orders" | "order_items" | "damagedbooks" | "dashboardmenu" | "menus" | "menu_management" | "printer" | "printorder" | "printorder_payments" | "printorder_items" | "roletypes" | "roles" | "stores" | "translator" | "translatorbook" | "notification" | "activityLogs" | "notes" | "contracts" | "print_agreements" | "delivery_notes" | "invoices" | "approval_documents" | "settings" | "checks" | "payments" | "retail_purchases" | "retail_purchase_items"
+      modelProps: "accounts" | "bookedition" | "bookeditionstores" | "bookeditionprinters" | "books" | "locked_editions" | "bookshopeditions" | "bookshopes" | "orders" | "order_items" | "damagedbooks" | "dashboardmenu" | "menus" | "menu_management" | "printer" | "printorder" | "printorder_payments" | "printorder_items" | "roletypes" | "roles" | "stores" | "translator" | "translatorbook" | "notification" | "activityLogs" | "notes" | "contracts" | "print_agreements" | "delivery_notes" | "invoices" | "approval_documents" | "settings" | "checks" | "payments" | "retail_purchases" | "retail_purchase_items"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1637,6 +1665,72 @@ export namespace Prisma {
           count: {
             args: Prisma.booksCountArgs<ExtArgs>
             result: $Utils.Optional<BooksCountAggregateOutputType> | number
+          }
+        }
+      }
+      locked_editions: {
+        payload: Prisma.$locked_editionsPayload<ExtArgs>
+        fields: Prisma.locked_editionsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.locked_editionsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$locked_editionsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.locked_editionsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$locked_editionsPayload>
+          }
+          findFirst: {
+            args: Prisma.locked_editionsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$locked_editionsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.locked_editionsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$locked_editionsPayload>
+          }
+          findMany: {
+            args: Prisma.locked_editionsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$locked_editionsPayload>[]
+          }
+          create: {
+            args: Prisma.locked_editionsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$locked_editionsPayload>
+          }
+          createMany: {
+            args: Prisma.locked_editionsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.locked_editionsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$locked_editionsPayload>
+          }
+          update: {
+            args: Prisma.locked_editionsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$locked_editionsPayload>
+          }
+          deleteMany: {
+            args: Prisma.locked_editionsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.locked_editionsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.locked_editionsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$locked_editionsPayload>
+          }
+          aggregate: {
+            args: Prisma.Locked_editionsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateLocked_editions>
+          }
+          groupBy: {
+            args: Prisma.locked_editionsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Locked_editionsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.locked_editionsCountArgs<ExtArgs>
+            result: $Utils.Optional<Locked_editionsCountAggregateOutputType> | number
           }
         }
       }
@@ -3721,6 +3815,7 @@ export namespace Prisma {
     bookeditionstores?: bookeditionstoresOmit
     bookeditionprinters?: bookeditionprintersOmit
     books?: booksOmit
+    locked_editions?: locked_editionsOmit
     bookshopeditions?: bookshopeditionsOmit
     bookshopes?: bookshopesOmit
     orders?: ordersOmit
@@ -3889,6 +3984,7 @@ export namespace Prisma {
    */
 
   export type BookeditionCountOutputType = {
+    locked_editions: number
     bookeditionstores: number
     bookeditionprinters: number
     bookshopeditions: number
@@ -3899,6 +3995,7 @@ export namespace Prisma {
   }
 
   export type BookeditionCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    locked_editions?: boolean | BookeditionCountOutputTypeCountLocked_editionsArgs
     bookeditionstores?: boolean | BookeditionCountOutputTypeCountBookeditionstoresArgs
     bookeditionprinters?: boolean | BookeditionCountOutputTypeCountBookeditionprintersArgs
     bookshopeditions?: boolean | BookeditionCountOutputTypeCountBookshopeditionsArgs
@@ -3917,6 +4014,13 @@ export namespace Prisma {
      * Select specific fields to fetch from the BookeditionCountOutputType
      */
     select?: BookeditionCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * BookeditionCountOutputType without action
+   */
+  export type BookeditionCountOutputTypeCountLocked_editionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: locked_editionsWhereInput
   }
 
   /**
@@ -4072,10 +4176,12 @@ export namespace Prisma {
    */
 
   export type OrdersCountOutputType = {
+    locked_editions: number
     order_items: number
   }
 
   export type OrdersCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    locked_editions?: boolean | OrdersCountOutputTypeCountLocked_editionsArgs
     order_items?: boolean | OrdersCountOutputTypeCountOrder_itemsArgs
   }
 
@@ -4088,6 +4194,13 @@ export namespace Prisma {
      * Select specific fields to fetch from the OrdersCountOutputType
      */
     select?: OrdersCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * OrdersCountOutputType without action
+   */
+  export type OrdersCountOutputTypeCountLocked_editionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: locked_editionsWhereInput
   }
 
   /**
@@ -6030,6 +6143,7 @@ export namespace Prisma {
     distribution_cost?: boolean
     advertisement_cost?: boolean
     purchasing_right_cost?: boolean
+    locked_editions?: boolean | bookedition$locked_editionsArgs<ExtArgs>
     books?: boolean | booksDefaultArgs<ExtArgs>
     bookeditionstores?: boolean | bookedition$bookeditionstoresArgs<ExtArgs>
     bookeditionprinters?: boolean | bookedition$bookeditionprintersArgs<ExtArgs>
@@ -6079,6 +6193,7 @@ export namespace Prisma {
 
   export type bookeditionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "edition_name" | "selling_price" | "production_price" | "printing_cost" | "binding_cost" | "design_cost" | "translation_cost" | "memo" | "book_image_url" | "total_print_count" | "book_id" | "number_of_pages" | "bookId" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt" | "editing_cost" | "other_expenses" | "transportation_cost" | "count_remening_for_transfer" | "translator_cost" | "cover_design_cost" | "text_design_cost" | "editor_cost" | "typewriting_cost" | "store_cost" | "distribution_cost" | "advertisement_cost" | "purchasing_right_cost", ExtArgs["result"]["bookedition"]>
   export type bookeditionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    locked_editions?: boolean | bookedition$locked_editionsArgs<ExtArgs>
     books?: boolean | booksDefaultArgs<ExtArgs>
     bookeditionstores?: boolean | bookedition$bookeditionstoresArgs<ExtArgs>
     bookeditionprinters?: boolean | bookedition$bookeditionprintersArgs<ExtArgs>
@@ -6093,6 +6208,7 @@ export namespace Prisma {
   export type $bookeditionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "bookedition"
     objects: {
+      locked_editions: Prisma.$locked_editionsPayload<ExtArgs>[]
       books: Prisma.$booksPayload<ExtArgs>
       bookeditionstores: Prisma.$bookeditionstoresPayload<ExtArgs>[]
       bookeditionprinters: Prisma.$bookeditionprintersPayload<ExtArgs>[]
@@ -6474,6 +6590,7 @@ export namespace Prisma {
    */
   export interface Prisma__bookeditionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    locked_editions<T extends bookedition$locked_editionsArgs<ExtArgs> = {}>(args?: Subset<T, bookedition$locked_editionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$locked_editionsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     books<T extends booksDefaultArgs<ExtArgs> = {}>(args?: Subset<T, booksDefaultArgs<ExtArgs>>): Prisma__booksClient<$Result.GetResult<Prisma.$booksPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     bookeditionstores<T extends bookedition$bookeditionstoresArgs<ExtArgs> = {}>(args?: Subset<T, bookedition$bookeditionstoresArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$bookeditionstoresPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     bookeditionprinters<T extends bookedition$bookeditionprintersArgs<ExtArgs> = {}>(args?: Subset<T, bookedition$bookeditionprintersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$bookeditionprintersPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -6882,6 +6999,30 @@ export namespace Prisma {
      * Limit how many bookeditions to delete.
      */
     limit?: number
+  }
+
+  /**
+   * bookedition.locked_editions
+   */
+  export type bookedition$locked_editionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the locked_editions
+     */
+    select?: locked_editionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the locked_editions
+     */
+    omit?: locked_editionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: locked_editionsInclude<ExtArgs> | null
+    where?: locked_editionsWhereInput
+    orderBy?: locked_editionsOrderByWithRelationInput | locked_editionsOrderByWithRelationInput[]
+    cursor?: locked_editionsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Locked_editionsScalarFieldEnum | Locked_editionsScalarFieldEnum[]
   }
 
   /**
@@ -10515,6 +10656,1029 @@ export namespace Prisma {
 
 
   /**
+   * Model locked_editions
+   */
+
+  export type AggregateLocked_editions = {
+    _count: Locked_editionsCountAggregateOutputType | null
+    _avg: Locked_editionsAvgAggregateOutputType | null
+    _sum: Locked_editionsSumAggregateOutputType | null
+    _min: Locked_editionsMinAggregateOutputType | null
+    _max: Locked_editionsMaxAggregateOutputType | null
+  }
+
+  export type Locked_editionsAvgAggregateOutputType = {
+    id: number | null
+    editionId: number | null
+    amount_locked: number | null
+    order_id: number | null
+  }
+
+  export type Locked_editionsSumAggregateOutputType = {
+    id: number | null
+    editionId: number | null
+    amount_locked: number | null
+    order_id: number | null
+  }
+
+  export type Locked_editionsMinAggregateOutputType = {
+    id: number | null
+    editionId: number | null
+    amount_locked: number | null
+    order_id: number | null
+    status: $Enums.locked_editions_status | null
+    is_deleted: boolean | null
+    updatedAt: Date | null
+    createdAt: Date | null
+    deletedAt: Date | null
+  }
+
+  export type Locked_editionsMaxAggregateOutputType = {
+    id: number | null
+    editionId: number | null
+    amount_locked: number | null
+    order_id: number | null
+    status: $Enums.locked_editions_status | null
+    is_deleted: boolean | null
+    updatedAt: Date | null
+    createdAt: Date | null
+    deletedAt: Date | null
+  }
+
+  export type Locked_editionsCountAggregateOutputType = {
+    id: number
+    editionId: number
+    amount_locked: number
+    order_id: number
+    status: number
+    is_deleted: number
+    updatedAt: number
+    createdAt: number
+    deletedAt: number
+    _all: number
+  }
+
+
+  export type Locked_editionsAvgAggregateInputType = {
+    id?: true
+    editionId?: true
+    amount_locked?: true
+    order_id?: true
+  }
+
+  export type Locked_editionsSumAggregateInputType = {
+    id?: true
+    editionId?: true
+    amount_locked?: true
+    order_id?: true
+  }
+
+  export type Locked_editionsMinAggregateInputType = {
+    id?: true
+    editionId?: true
+    amount_locked?: true
+    order_id?: true
+    status?: true
+    is_deleted?: true
+    updatedAt?: true
+    createdAt?: true
+    deletedAt?: true
+  }
+
+  export type Locked_editionsMaxAggregateInputType = {
+    id?: true
+    editionId?: true
+    amount_locked?: true
+    order_id?: true
+    status?: true
+    is_deleted?: true
+    updatedAt?: true
+    createdAt?: true
+    deletedAt?: true
+  }
+
+  export type Locked_editionsCountAggregateInputType = {
+    id?: true
+    editionId?: true
+    amount_locked?: true
+    order_id?: true
+    status?: true
+    is_deleted?: true
+    updatedAt?: true
+    createdAt?: true
+    deletedAt?: true
+    _all?: true
+  }
+
+  export type Locked_editionsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which locked_editions to aggregate.
+     */
+    where?: locked_editionsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of locked_editions to fetch.
+     */
+    orderBy?: locked_editionsOrderByWithRelationInput | locked_editionsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: locked_editionsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` locked_editions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` locked_editions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned locked_editions
+    **/
+    _count?: true | Locked_editionsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: Locked_editionsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: Locked_editionsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Locked_editionsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Locked_editionsMaxAggregateInputType
+  }
+
+  export type GetLocked_editionsAggregateType<T extends Locked_editionsAggregateArgs> = {
+        [P in keyof T & keyof AggregateLocked_editions]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateLocked_editions[P]>
+      : GetScalarType<T[P], AggregateLocked_editions[P]>
+  }
+
+
+
+
+  export type locked_editionsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: locked_editionsWhereInput
+    orderBy?: locked_editionsOrderByWithAggregationInput | locked_editionsOrderByWithAggregationInput[]
+    by: Locked_editionsScalarFieldEnum[] | Locked_editionsScalarFieldEnum
+    having?: locked_editionsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Locked_editionsCountAggregateInputType | true
+    _avg?: Locked_editionsAvgAggregateInputType
+    _sum?: Locked_editionsSumAggregateInputType
+    _min?: Locked_editionsMinAggregateInputType
+    _max?: Locked_editionsMaxAggregateInputType
+  }
+
+  export type Locked_editionsGroupByOutputType = {
+    id: number
+    editionId: number
+    amount_locked: number
+    order_id: number
+    status: $Enums.locked_editions_status
+    is_deleted: boolean
+    updatedAt: Date
+    createdAt: Date
+    deletedAt: Date
+    _count: Locked_editionsCountAggregateOutputType | null
+    _avg: Locked_editionsAvgAggregateOutputType | null
+    _sum: Locked_editionsSumAggregateOutputType | null
+    _min: Locked_editionsMinAggregateOutputType | null
+    _max: Locked_editionsMaxAggregateOutputType | null
+  }
+
+  type GetLocked_editionsGroupByPayload<T extends locked_editionsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Locked_editionsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Locked_editionsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Locked_editionsGroupByOutputType[P]>
+            : GetScalarType<T[P], Locked_editionsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type locked_editionsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    editionId?: boolean
+    amount_locked?: boolean
+    order_id?: boolean
+    status?: boolean
+    is_deleted?: boolean
+    updatedAt?: boolean
+    createdAt?: boolean
+    deletedAt?: boolean
+    bookedition?: boolean | bookeditionDefaultArgs<ExtArgs>
+    orders?: boolean | ordersDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["locked_editions"]>
+
+
+
+  export type locked_editionsSelectScalar = {
+    id?: boolean
+    editionId?: boolean
+    amount_locked?: boolean
+    order_id?: boolean
+    status?: boolean
+    is_deleted?: boolean
+    updatedAt?: boolean
+    createdAt?: boolean
+    deletedAt?: boolean
+  }
+
+  export type locked_editionsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "editionId" | "amount_locked" | "order_id" | "status" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt", ExtArgs["result"]["locked_editions"]>
+  export type locked_editionsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    bookedition?: boolean | bookeditionDefaultArgs<ExtArgs>
+    orders?: boolean | ordersDefaultArgs<ExtArgs>
+  }
+
+  export type $locked_editionsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "locked_editions"
+    objects: {
+      bookedition: Prisma.$bookeditionPayload<ExtArgs>
+      orders: Prisma.$ordersPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      editionId: number
+      amount_locked: number
+      order_id: number
+      status: $Enums.locked_editions_status
+      is_deleted: boolean
+      updatedAt: Date
+      createdAt: Date
+      deletedAt: Date
+    }, ExtArgs["result"]["locked_editions"]>
+    composites: {}
+  }
+
+  type locked_editionsGetPayload<S extends boolean | null | undefined | locked_editionsDefaultArgs> = $Result.GetResult<Prisma.$locked_editionsPayload, S>
+
+  type locked_editionsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<locked_editionsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Locked_editionsCountAggregateInputType | true
+    }
+
+  export interface locked_editionsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['locked_editions'], meta: { name: 'locked_editions' } }
+    /**
+     * Find zero or one Locked_editions that matches the filter.
+     * @param {locked_editionsFindUniqueArgs} args - Arguments to find a Locked_editions
+     * @example
+     * // Get one Locked_editions
+     * const locked_editions = await prisma.locked_editions.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends locked_editionsFindUniqueArgs>(args: SelectSubset<T, locked_editionsFindUniqueArgs<ExtArgs>>): Prisma__locked_editionsClient<$Result.GetResult<Prisma.$locked_editionsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Locked_editions that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {locked_editionsFindUniqueOrThrowArgs} args - Arguments to find a Locked_editions
+     * @example
+     * // Get one Locked_editions
+     * const locked_editions = await prisma.locked_editions.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends locked_editionsFindUniqueOrThrowArgs>(args: SelectSubset<T, locked_editionsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__locked_editionsClient<$Result.GetResult<Prisma.$locked_editionsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Locked_editions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {locked_editionsFindFirstArgs} args - Arguments to find a Locked_editions
+     * @example
+     * // Get one Locked_editions
+     * const locked_editions = await prisma.locked_editions.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends locked_editionsFindFirstArgs>(args?: SelectSubset<T, locked_editionsFindFirstArgs<ExtArgs>>): Prisma__locked_editionsClient<$Result.GetResult<Prisma.$locked_editionsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Locked_editions that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {locked_editionsFindFirstOrThrowArgs} args - Arguments to find a Locked_editions
+     * @example
+     * // Get one Locked_editions
+     * const locked_editions = await prisma.locked_editions.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends locked_editionsFindFirstOrThrowArgs>(args?: SelectSubset<T, locked_editionsFindFirstOrThrowArgs<ExtArgs>>): Prisma__locked_editionsClient<$Result.GetResult<Prisma.$locked_editionsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Locked_editions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {locked_editionsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Locked_editions
+     * const locked_editions = await prisma.locked_editions.findMany()
+     * 
+     * // Get first 10 Locked_editions
+     * const locked_editions = await prisma.locked_editions.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const locked_editionsWithIdOnly = await prisma.locked_editions.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends locked_editionsFindManyArgs>(args?: SelectSubset<T, locked_editionsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$locked_editionsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Locked_editions.
+     * @param {locked_editionsCreateArgs} args - Arguments to create a Locked_editions.
+     * @example
+     * // Create one Locked_editions
+     * const Locked_editions = await prisma.locked_editions.create({
+     *   data: {
+     *     // ... data to create a Locked_editions
+     *   }
+     * })
+     * 
+     */
+    create<T extends locked_editionsCreateArgs>(args: SelectSubset<T, locked_editionsCreateArgs<ExtArgs>>): Prisma__locked_editionsClient<$Result.GetResult<Prisma.$locked_editionsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Locked_editions.
+     * @param {locked_editionsCreateManyArgs} args - Arguments to create many Locked_editions.
+     * @example
+     * // Create many Locked_editions
+     * const locked_editions = await prisma.locked_editions.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends locked_editionsCreateManyArgs>(args?: SelectSubset<T, locked_editionsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Locked_editions.
+     * @param {locked_editionsDeleteArgs} args - Arguments to delete one Locked_editions.
+     * @example
+     * // Delete one Locked_editions
+     * const Locked_editions = await prisma.locked_editions.delete({
+     *   where: {
+     *     // ... filter to delete one Locked_editions
+     *   }
+     * })
+     * 
+     */
+    delete<T extends locked_editionsDeleteArgs>(args: SelectSubset<T, locked_editionsDeleteArgs<ExtArgs>>): Prisma__locked_editionsClient<$Result.GetResult<Prisma.$locked_editionsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Locked_editions.
+     * @param {locked_editionsUpdateArgs} args - Arguments to update one Locked_editions.
+     * @example
+     * // Update one Locked_editions
+     * const locked_editions = await prisma.locked_editions.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends locked_editionsUpdateArgs>(args: SelectSubset<T, locked_editionsUpdateArgs<ExtArgs>>): Prisma__locked_editionsClient<$Result.GetResult<Prisma.$locked_editionsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Locked_editions.
+     * @param {locked_editionsDeleteManyArgs} args - Arguments to filter Locked_editions to delete.
+     * @example
+     * // Delete a few Locked_editions
+     * const { count } = await prisma.locked_editions.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends locked_editionsDeleteManyArgs>(args?: SelectSubset<T, locked_editionsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Locked_editions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {locked_editionsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Locked_editions
+     * const locked_editions = await prisma.locked_editions.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends locked_editionsUpdateManyArgs>(args: SelectSubset<T, locked_editionsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Locked_editions.
+     * @param {locked_editionsUpsertArgs} args - Arguments to update or create a Locked_editions.
+     * @example
+     * // Update or create a Locked_editions
+     * const locked_editions = await prisma.locked_editions.upsert({
+     *   create: {
+     *     // ... data to create a Locked_editions
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Locked_editions we want to update
+     *   }
+     * })
+     */
+    upsert<T extends locked_editionsUpsertArgs>(args: SelectSubset<T, locked_editionsUpsertArgs<ExtArgs>>): Prisma__locked_editionsClient<$Result.GetResult<Prisma.$locked_editionsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Locked_editions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {locked_editionsCountArgs} args - Arguments to filter Locked_editions to count.
+     * @example
+     * // Count the number of Locked_editions
+     * const count = await prisma.locked_editions.count({
+     *   where: {
+     *     // ... the filter for the Locked_editions we want to count
+     *   }
+     * })
+    **/
+    count<T extends locked_editionsCountArgs>(
+      args?: Subset<T, locked_editionsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Locked_editionsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Locked_editions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Locked_editionsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Locked_editionsAggregateArgs>(args: Subset<T, Locked_editionsAggregateArgs>): Prisma.PrismaPromise<GetLocked_editionsAggregateType<T>>
+
+    /**
+     * Group by Locked_editions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {locked_editionsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends locked_editionsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: locked_editionsGroupByArgs['orderBy'] }
+        : { orderBy?: locked_editionsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, locked_editionsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetLocked_editionsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the locked_editions model
+   */
+  readonly fields: locked_editionsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for locked_editions.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__locked_editionsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    bookedition<T extends bookeditionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, bookeditionDefaultArgs<ExtArgs>>): Prisma__bookeditionClient<$Result.GetResult<Prisma.$bookeditionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    orders<T extends ordersDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ordersDefaultArgs<ExtArgs>>): Prisma__ordersClient<$Result.GetResult<Prisma.$ordersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the locked_editions model
+   */
+  interface locked_editionsFieldRefs {
+    readonly id: FieldRef<"locked_editions", 'Int'>
+    readonly editionId: FieldRef<"locked_editions", 'Int'>
+    readonly amount_locked: FieldRef<"locked_editions", 'Int'>
+    readonly order_id: FieldRef<"locked_editions", 'Int'>
+    readonly status: FieldRef<"locked_editions", 'locked_editions_status'>
+    readonly is_deleted: FieldRef<"locked_editions", 'Boolean'>
+    readonly updatedAt: FieldRef<"locked_editions", 'DateTime'>
+    readonly createdAt: FieldRef<"locked_editions", 'DateTime'>
+    readonly deletedAt: FieldRef<"locked_editions", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * locked_editions findUnique
+   */
+  export type locked_editionsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the locked_editions
+     */
+    select?: locked_editionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the locked_editions
+     */
+    omit?: locked_editionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: locked_editionsInclude<ExtArgs> | null
+    /**
+     * Filter, which locked_editions to fetch.
+     */
+    where: locked_editionsWhereUniqueInput
+  }
+
+  /**
+   * locked_editions findUniqueOrThrow
+   */
+  export type locked_editionsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the locked_editions
+     */
+    select?: locked_editionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the locked_editions
+     */
+    omit?: locked_editionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: locked_editionsInclude<ExtArgs> | null
+    /**
+     * Filter, which locked_editions to fetch.
+     */
+    where: locked_editionsWhereUniqueInput
+  }
+
+  /**
+   * locked_editions findFirst
+   */
+  export type locked_editionsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the locked_editions
+     */
+    select?: locked_editionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the locked_editions
+     */
+    omit?: locked_editionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: locked_editionsInclude<ExtArgs> | null
+    /**
+     * Filter, which locked_editions to fetch.
+     */
+    where?: locked_editionsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of locked_editions to fetch.
+     */
+    orderBy?: locked_editionsOrderByWithRelationInput | locked_editionsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for locked_editions.
+     */
+    cursor?: locked_editionsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` locked_editions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` locked_editions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of locked_editions.
+     */
+    distinct?: Locked_editionsScalarFieldEnum | Locked_editionsScalarFieldEnum[]
+  }
+
+  /**
+   * locked_editions findFirstOrThrow
+   */
+  export type locked_editionsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the locked_editions
+     */
+    select?: locked_editionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the locked_editions
+     */
+    omit?: locked_editionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: locked_editionsInclude<ExtArgs> | null
+    /**
+     * Filter, which locked_editions to fetch.
+     */
+    where?: locked_editionsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of locked_editions to fetch.
+     */
+    orderBy?: locked_editionsOrderByWithRelationInput | locked_editionsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for locked_editions.
+     */
+    cursor?: locked_editionsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` locked_editions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` locked_editions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of locked_editions.
+     */
+    distinct?: Locked_editionsScalarFieldEnum | Locked_editionsScalarFieldEnum[]
+  }
+
+  /**
+   * locked_editions findMany
+   */
+  export type locked_editionsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the locked_editions
+     */
+    select?: locked_editionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the locked_editions
+     */
+    omit?: locked_editionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: locked_editionsInclude<ExtArgs> | null
+    /**
+     * Filter, which locked_editions to fetch.
+     */
+    where?: locked_editionsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of locked_editions to fetch.
+     */
+    orderBy?: locked_editionsOrderByWithRelationInput | locked_editionsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing locked_editions.
+     */
+    cursor?: locked_editionsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` locked_editions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` locked_editions.
+     */
+    skip?: number
+    distinct?: Locked_editionsScalarFieldEnum | Locked_editionsScalarFieldEnum[]
+  }
+
+  /**
+   * locked_editions create
+   */
+  export type locked_editionsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the locked_editions
+     */
+    select?: locked_editionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the locked_editions
+     */
+    omit?: locked_editionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: locked_editionsInclude<ExtArgs> | null
+    /**
+     * The data needed to create a locked_editions.
+     */
+    data: XOR<locked_editionsCreateInput, locked_editionsUncheckedCreateInput>
+  }
+
+  /**
+   * locked_editions createMany
+   */
+  export type locked_editionsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many locked_editions.
+     */
+    data: locked_editionsCreateManyInput | locked_editionsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * locked_editions update
+   */
+  export type locked_editionsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the locked_editions
+     */
+    select?: locked_editionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the locked_editions
+     */
+    omit?: locked_editionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: locked_editionsInclude<ExtArgs> | null
+    /**
+     * The data needed to update a locked_editions.
+     */
+    data: XOR<locked_editionsUpdateInput, locked_editionsUncheckedUpdateInput>
+    /**
+     * Choose, which locked_editions to update.
+     */
+    where: locked_editionsWhereUniqueInput
+  }
+
+  /**
+   * locked_editions updateMany
+   */
+  export type locked_editionsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update locked_editions.
+     */
+    data: XOR<locked_editionsUpdateManyMutationInput, locked_editionsUncheckedUpdateManyInput>
+    /**
+     * Filter which locked_editions to update
+     */
+    where?: locked_editionsWhereInput
+    /**
+     * Limit how many locked_editions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * locked_editions upsert
+   */
+  export type locked_editionsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the locked_editions
+     */
+    select?: locked_editionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the locked_editions
+     */
+    omit?: locked_editionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: locked_editionsInclude<ExtArgs> | null
+    /**
+     * The filter to search for the locked_editions to update in case it exists.
+     */
+    where: locked_editionsWhereUniqueInput
+    /**
+     * In case the locked_editions found by the `where` argument doesn't exist, create a new locked_editions with this data.
+     */
+    create: XOR<locked_editionsCreateInput, locked_editionsUncheckedCreateInput>
+    /**
+     * In case the locked_editions was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<locked_editionsUpdateInput, locked_editionsUncheckedUpdateInput>
+  }
+
+  /**
+   * locked_editions delete
+   */
+  export type locked_editionsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the locked_editions
+     */
+    select?: locked_editionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the locked_editions
+     */
+    omit?: locked_editionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: locked_editionsInclude<ExtArgs> | null
+    /**
+     * Filter which locked_editions to delete.
+     */
+    where: locked_editionsWhereUniqueInput
+  }
+
+  /**
+   * locked_editions deleteMany
+   */
+  export type locked_editionsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which locked_editions to delete
+     */
+    where?: locked_editionsWhereInput
+    /**
+     * Limit how many locked_editions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * locked_editions without action
+   */
+  export type locked_editionsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the locked_editions
+     */
+    select?: locked_editionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the locked_editions
+     */
+    omit?: locked_editionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: locked_editionsInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model bookshopeditions
    */
 
@@ -13003,6 +14167,7 @@ export namespace Prisma {
     delivered_by?: boolean
     updatedAt?: boolean
     createdAt?: boolean
+    locked_editions?: boolean | orders$locked_editionsArgs<ExtArgs>
     bookshopes?: boolean | bookshopesDefaultArgs<ExtArgs>
     checks?: boolean | orders$checksArgs<ExtArgs>
     order_items?: boolean | orders$order_itemsArgs<ExtArgs>
@@ -13032,6 +14197,7 @@ export namespace Prisma {
 
   export type ordersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "bookShopId" | "order_type" | "memo" | "is_approved" | "total_amount" | "amount_paid" | "payment_type" | "check_id" | "status" | "is_deleted" | "allocation_summary" | "delivery" | "delivered_by" | "updatedAt" | "createdAt", ExtArgs["result"]["orders"]>
   export type ordersInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    locked_editions?: boolean | orders$locked_editionsArgs<ExtArgs>
     bookshopes?: boolean | bookshopesDefaultArgs<ExtArgs>
     checks?: boolean | orders$checksArgs<ExtArgs>
     order_items?: boolean | orders$order_itemsArgs<ExtArgs>
@@ -13041,6 +14207,7 @@ export namespace Prisma {
   export type $ordersPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "orders"
     objects: {
+      locked_editions: Prisma.$locked_editionsPayload<ExtArgs>[]
       bookshopes: Prisma.$bookshopesPayload<ExtArgs>
       checks: Prisma.$checksPayload<ExtArgs> | null
       order_items: Prisma.$order_itemsPayload<ExtArgs>[]
@@ -13402,6 +14569,7 @@ export namespace Prisma {
    */
   export interface Prisma__ordersClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    locked_editions<T extends orders$locked_editionsArgs<ExtArgs> = {}>(args?: Subset<T, orders$locked_editionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$locked_editionsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     bookshopes<T extends bookshopesDefaultArgs<ExtArgs> = {}>(args?: Subset<T, bookshopesDefaultArgs<ExtArgs>>): Prisma__bookshopesClient<$Result.GetResult<Prisma.$bookshopesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     checks<T extends orders$checksArgs<ExtArgs> = {}>(args?: Subset<T, orders$checksArgs<ExtArgs>>): Prisma__checksClient<$Result.GetResult<Prisma.$checksPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     order_items<T extends orders$order_itemsArgs<ExtArgs> = {}>(args?: Subset<T, orders$order_itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$order_itemsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -13790,6 +14958,30 @@ export namespace Prisma {
      * Limit how many orders to delete.
      */
     limit?: number
+  }
+
+  /**
+   * orders.locked_editions
+   */
+  export type orders$locked_editionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the locked_editions
+     */
+    select?: locked_editionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the locked_editions
+     */
+    omit?: locked_editionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: locked_editionsInclude<ExtArgs> | null
+    where?: locked_editionsWhereInput
+    orderBy?: locked_editionsOrderByWithRelationInput | locked_editionsOrderByWithRelationInput[]
+    cursor?: locked_editionsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Locked_editionsScalarFieldEnum | Locked_editionsScalarFieldEnum[]
   }
 
   /**
@@ -41808,6 +43000,21 @@ export namespace Prisma {
   export type BooksScalarFieldEnum = (typeof BooksScalarFieldEnum)[keyof typeof BooksScalarFieldEnum]
 
 
+  export const Locked_editionsScalarFieldEnum: {
+    id: 'id',
+    editionId: 'editionId',
+    amount_locked: 'amount_locked',
+    order_id: 'order_id',
+    status: 'status',
+    is_deleted: 'is_deleted',
+    updatedAt: 'updatedAt',
+    createdAt: 'createdAt',
+    deletedAt: 'deletedAt'
+  };
+
+  export type Locked_editionsScalarFieldEnum = (typeof Locked_editionsScalarFieldEnum)[keyof typeof Locked_editionsScalarFieldEnum]
+
+
   export const BookshopeditionsScalarFieldEnum: {
     id: 'id',
     bookShopId: 'bookShopId',
@@ -42642,6 +43849,13 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'locked_editions_status'
+   */
+  export type Enumlocked_editions_statusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'locked_editions_status'>
+    
+
+
+  /**
    * Reference to a field of type 'damagedbooks_type'
    */
   export type Enumdamagedbooks_typeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'damagedbooks_type'>
@@ -42834,6 +44048,7 @@ export namespace Prisma {
     distribution_cost?: FloatNullableFilter<"bookedition"> | number | null
     advertisement_cost?: FloatNullableFilter<"bookedition"> | number | null
     purchasing_right_cost?: FloatNullableFilter<"bookedition"> | number | null
+    locked_editions?: Locked_editionsListRelationFilter
     books?: XOR<BooksScalarRelationFilter, booksWhereInput>
     bookeditionstores?: BookeditionstoresListRelationFilter
     bookeditionprinters?: BookeditionprintersListRelationFilter
@@ -42876,6 +44091,7 @@ export namespace Prisma {
     distribution_cost?: SortOrderInput | SortOrder
     advertisement_cost?: SortOrderInput | SortOrder
     purchasing_right_cost?: SortOrderInput | SortOrder
+    locked_editions?: locked_editionsOrderByRelationAggregateInput
     books?: booksOrderByWithRelationInput
     bookeditionstores?: bookeditionstoresOrderByRelationAggregateInput
     bookeditionprinters?: bookeditionprintersOrderByRelationAggregateInput
@@ -42922,6 +44138,7 @@ export namespace Prisma {
     distribution_cost?: FloatNullableFilter<"bookedition"> | number | null
     advertisement_cost?: FloatNullableFilter<"bookedition"> | number | null
     purchasing_right_cost?: FloatNullableFilter<"bookedition"> | number | null
+    locked_editions?: Locked_editionsListRelationFilter
     books?: XOR<BooksScalarRelationFilter, booksWhereInput>
     bookeditionstores?: BookeditionstoresListRelationFilter
     bookeditionprinters?: BookeditionprintersListRelationFilter
@@ -43372,6 +44589,86 @@ export namespace Prisma {
     purchasing_right_cost?: FloatNullableWithAggregatesFilter<"books"> | number | null
   }
 
+  export type locked_editionsWhereInput = {
+    AND?: locked_editionsWhereInput | locked_editionsWhereInput[]
+    OR?: locked_editionsWhereInput[]
+    NOT?: locked_editionsWhereInput | locked_editionsWhereInput[]
+    id?: IntFilter<"locked_editions"> | number
+    editionId?: IntFilter<"locked_editions"> | number
+    amount_locked?: IntFilter<"locked_editions"> | number
+    order_id?: IntFilter<"locked_editions"> | number
+    status?: Enumlocked_editions_statusFilter<"locked_editions"> | $Enums.locked_editions_status
+    is_deleted?: BoolFilter<"locked_editions"> | boolean
+    updatedAt?: DateTimeFilter<"locked_editions"> | Date | string
+    createdAt?: DateTimeFilter<"locked_editions"> | Date | string
+    deletedAt?: DateTimeFilter<"locked_editions"> | Date | string
+    bookedition?: XOR<BookeditionScalarRelationFilter, bookeditionWhereInput>
+    orders?: XOR<OrdersScalarRelationFilter, ordersWhereInput>
+  }
+
+  export type locked_editionsOrderByWithRelationInput = {
+    id?: SortOrder
+    editionId?: SortOrder
+    amount_locked?: SortOrder
+    order_id?: SortOrder
+    status?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+    deletedAt?: SortOrder
+    bookedition?: bookeditionOrderByWithRelationInput
+    orders?: ordersOrderByWithRelationInput
+  }
+
+  export type locked_editionsWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: locked_editionsWhereInput | locked_editionsWhereInput[]
+    OR?: locked_editionsWhereInput[]
+    NOT?: locked_editionsWhereInput | locked_editionsWhereInput[]
+    editionId?: IntFilter<"locked_editions"> | number
+    amount_locked?: IntFilter<"locked_editions"> | number
+    order_id?: IntFilter<"locked_editions"> | number
+    status?: Enumlocked_editions_statusFilter<"locked_editions"> | $Enums.locked_editions_status
+    is_deleted?: BoolFilter<"locked_editions"> | boolean
+    updatedAt?: DateTimeFilter<"locked_editions"> | Date | string
+    createdAt?: DateTimeFilter<"locked_editions"> | Date | string
+    deletedAt?: DateTimeFilter<"locked_editions"> | Date | string
+    bookedition?: XOR<BookeditionScalarRelationFilter, bookeditionWhereInput>
+    orders?: XOR<OrdersScalarRelationFilter, ordersWhereInput>
+  }, "id">
+
+  export type locked_editionsOrderByWithAggregationInput = {
+    id?: SortOrder
+    editionId?: SortOrder
+    amount_locked?: SortOrder
+    order_id?: SortOrder
+    status?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+    deletedAt?: SortOrder
+    _count?: locked_editionsCountOrderByAggregateInput
+    _avg?: locked_editionsAvgOrderByAggregateInput
+    _max?: locked_editionsMaxOrderByAggregateInput
+    _min?: locked_editionsMinOrderByAggregateInput
+    _sum?: locked_editionsSumOrderByAggregateInput
+  }
+
+  export type locked_editionsScalarWhereWithAggregatesInput = {
+    AND?: locked_editionsScalarWhereWithAggregatesInput | locked_editionsScalarWhereWithAggregatesInput[]
+    OR?: locked_editionsScalarWhereWithAggregatesInput[]
+    NOT?: locked_editionsScalarWhereWithAggregatesInput | locked_editionsScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"locked_editions"> | number
+    editionId?: IntWithAggregatesFilter<"locked_editions"> | number
+    amount_locked?: IntWithAggregatesFilter<"locked_editions"> | number
+    order_id?: IntWithAggregatesFilter<"locked_editions"> | number
+    status?: Enumlocked_editions_statusWithAggregatesFilter<"locked_editions"> | $Enums.locked_editions_status
+    is_deleted?: BoolWithAggregatesFilter<"locked_editions"> | boolean
+    updatedAt?: DateTimeWithAggregatesFilter<"locked_editions"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"locked_editions"> | Date | string
+    deletedAt?: DateTimeWithAggregatesFilter<"locked_editions"> | Date | string
+  }
+
   export type bookshopeditionsWhereInput = {
     AND?: bookshopeditionsWhereInput | bookshopeditionsWhereInput[]
     OR?: bookshopeditionsWhereInput[]
@@ -43582,6 +44879,7 @@ export namespace Prisma {
     delivered_by?: IntNullableFilter<"orders"> | number | null
     updatedAt?: DateTimeFilter<"orders"> | Date | string
     createdAt?: DateTimeFilter<"orders"> | Date | string
+    locked_editions?: Locked_editionsListRelationFilter
     bookshopes?: XOR<BookshopesScalarRelationFilter, bookshopesWhereInput>
     checks?: XOR<ChecksNullableScalarRelationFilter, checksWhereInput> | null
     order_items?: Order_itemsListRelationFilter
@@ -43604,6 +44902,7 @@ export namespace Prisma {
     delivered_by?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
     createdAt?: SortOrder
+    locked_editions?: locked_editionsOrderByRelationAggregateInput
     bookshopes?: bookshopesOrderByWithRelationInput
     checks?: checksOrderByWithRelationInput
     order_items?: order_itemsOrderByRelationAggregateInput
@@ -43630,6 +44929,7 @@ export namespace Prisma {
     delivered_by?: IntNullableFilter<"orders"> | number | null
     updatedAt?: DateTimeFilter<"orders"> | Date | string
     createdAt?: DateTimeFilter<"orders"> | Date | string
+    locked_editions?: Locked_editionsListRelationFilter
     bookshopes?: XOR<BookshopesScalarRelationFilter, bookshopesWhereInput>
     checks?: XOR<ChecksNullableScalarRelationFilter, checksWhereInput> | null
     order_items?: Order_itemsListRelationFilter
@@ -46067,6 +47367,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    locked_editions?: locked_editionsCreateNestedManyWithoutBookeditionInput
     books: booksCreateNestedOneWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersCreateNestedManyWithoutBookeditionInput
@@ -46109,6 +47410,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    locked_editions?: locked_editionsUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookeditionInput
@@ -46148,6 +47450,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    locked_editions?: locked_editionsUpdateManyWithoutBookeditionNestedInput
     books?: booksUpdateOneRequiredWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUpdateManyWithoutBookeditionNestedInput
@@ -46190,6 +47493,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    locked_editions?: locked_editionsUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookeditionNestedInput
@@ -46718,6 +48022,85 @@ export namespace Prisma {
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
+  export type locked_editionsCreateInput = {
+    amount_locked?: number
+    status?: $Enums.locked_editions_status
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    bookedition: bookeditionCreateNestedOneWithoutLocked_editionsInput
+    orders: ordersCreateNestedOneWithoutLocked_editionsInput
+  }
+
+  export type locked_editionsUncheckedCreateInput = {
+    id?: number
+    editionId: number
+    amount_locked?: number
+    order_id: number
+    status?: $Enums.locked_editions_status
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+  }
+
+  export type locked_editionsUpdateInput = {
+    amount_locked?: IntFieldUpdateOperationsInput | number
+    status?: Enumlocked_editions_statusFieldUpdateOperationsInput | $Enums.locked_editions_status
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bookedition?: bookeditionUpdateOneRequiredWithoutLocked_editionsNestedInput
+    orders?: ordersUpdateOneRequiredWithoutLocked_editionsNestedInput
+  }
+
+  export type locked_editionsUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    editionId?: IntFieldUpdateOperationsInput | number
+    amount_locked?: IntFieldUpdateOperationsInput | number
+    order_id?: IntFieldUpdateOperationsInput | number
+    status?: Enumlocked_editions_statusFieldUpdateOperationsInput | $Enums.locked_editions_status
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type locked_editionsCreateManyInput = {
+    id?: number
+    editionId: number
+    amount_locked?: number
+    order_id: number
+    status?: $Enums.locked_editions_status
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+  }
+
+  export type locked_editionsUpdateManyMutationInput = {
+    amount_locked?: IntFieldUpdateOperationsInput | number
+    status?: Enumlocked_editions_statusFieldUpdateOperationsInput | $Enums.locked_editions_status
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type locked_editionsUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    editionId?: IntFieldUpdateOperationsInput | number
+    amount_locked?: IntFieldUpdateOperationsInput | number
+    order_id?: IntFieldUpdateOperationsInput | number
+    status?: Enumlocked_editions_statusFieldUpdateOperationsInput | $Enums.locked_editions_status
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type bookshopeditionsCreateInput = {
     quantity?: number
     price_per_peice?: number | null
@@ -46939,6 +48322,7 @@ export namespace Prisma {
     delivered_by?: number | null
     updatedAt?: Date | string
     createdAt?: Date | string
+    locked_editions?: locked_editionsCreateNestedManyWithoutOrdersInput
     bookshopes: bookshopesCreateNestedOneWithoutOrdersInput
     checks?: checksCreateNestedOneWithoutOrdersInput
     order_items?: order_itemsCreateNestedManyWithoutOrderInput
@@ -46961,6 +48345,7 @@ export namespace Prisma {
     delivered_by?: number | null
     updatedAt?: Date | string
     createdAt?: Date | string
+    locked_editions?: locked_editionsUncheckedCreateNestedManyWithoutOrdersInput
     order_items?: order_itemsUncheckedCreateNestedManyWithoutOrderInput
   }
 
@@ -46978,6 +48363,7 @@ export namespace Prisma {
     delivered_by?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    locked_editions?: locked_editionsUpdateManyWithoutOrdersNestedInput
     bookshopes?: bookshopesUpdateOneRequiredWithoutOrdersNestedInput
     checks?: checksUpdateOneWithoutOrdersNestedInput
     order_items?: order_itemsUpdateManyWithoutOrderNestedInput
@@ -47000,6 +48386,7 @@ export namespace Prisma {
     delivered_by?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    locked_editions?: locked_editionsUncheckedUpdateManyWithoutOrdersNestedInput
     order_items?: order_itemsUncheckedUpdateManyWithoutOrderNestedInput
   }
 
@@ -49673,6 +51060,12 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
+  export type Locked_editionsListRelationFilter = {
+    every?: locked_editionsWhereInput
+    some?: locked_editionsWhereInput
+    none?: locked_editionsWhereInput
+  }
+
   export type BooksScalarRelationFilter = {
     is?: booksWhereInput
     isNot?: booksWhereInput
@@ -49717,6 +51110,10 @@ export namespace Prisma {
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
+  }
+
+  export type locked_editionsOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type bookeditionstoresOrderByRelationAggregateInput = {
@@ -50251,6 +51648,78 @@ export namespace Prisma {
     _max?: NestedEnumbooks_productionstatusNullableFilter<$PrismaModel>
   }
 
+  export type Enumlocked_editions_statusFilter<$PrismaModel = never> = {
+    equals?: $Enums.locked_editions_status | Enumlocked_editions_statusFieldRefInput<$PrismaModel>
+    in?: $Enums.locked_editions_status[]
+    notIn?: $Enums.locked_editions_status[]
+    not?: NestedEnumlocked_editions_statusFilter<$PrismaModel> | $Enums.locked_editions_status
+  }
+
+  export type OrdersScalarRelationFilter = {
+    is?: ordersWhereInput
+    isNot?: ordersWhereInput
+  }
+
+  export type locked_editionsCountOrderByAggregateInput = {
+    id?: SortOrder
+    editionId?: SortOrder
+    amount_locked?: SortOrder
+    order_id?: SortOrder
+    status?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+    deletedAt?: SortOrder
+  }
+
+  export type locked_editionsAvgOrderByAggregateInput = {
+    id?: SortOrder
+    editionId?: SortOrder
+    amount_locked?: SortOrder
+    order_id?: SortOrder
+  }
+
+  export type locked_editionsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    editionId?: SortOrder
+    amount_locked?: SortOrder
+    order_id?: SortOrder
+    status?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+    deletedAt?: SortOrder
+  }
+
+  export type locked_editionsMinOrderByAggregateInput = {
+    id?: SortOrder
+    editionId?: SortOrder
+    amount_locked?: SortOrder
+    order_id?: SortOrder
+    status?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+    deletedAt?: SortOrder
+  }
+
+  export type locked_editionsSumOrderByAggregateInput = {
+    id?: SortOrder
+    editionId?: SortOrder
+    amount_locked?: SortOrder
+    order_id?: SortOrder
+  }
+
+  export type Enumlocked_editions_statusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.locked_editions_status | Enumlocked_editions_statusFieldRefInput<$PrismaModel>
+    in?: $Enums.locked_editions_status[]
+    notIn?: $Enums.locked_editions_status[]
+    not?: NestedEnumlocked_editions_statusWithAggregatesFilter<$PrismaModel> | $Enums.locked_editions_status
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumlocked_editions_statusFilter<$PrismaModel>
+    _max?: NestedEnumlocked_editions_statusFilter<$PrismaModel>
+  }
+
   export type BookshopesScalarRelationFilter = {
     is?: bookshopesWhereInput
     isNot?: bookshopesWhereInput
@@ -50516,11 +51985,6 @@ export namespace Prisma {
     _sum?: NestedFloatFilter<$PrismaModel>
     _min?: NestedFloatFilter<$PrismaModel>
     _max?: NestedFloatFilter<$PrismaModel>
-  }
-
-  export type OrdersScalarRelationFilter = {
-    is?: ordersWhereInput
-    isNot?: ordersWhereInput
   }
 
   export type order_itemsCountOrderByAggregateInput = {
@@ -52478,6 +53942,13 @@ export namespace Prisma {
     deleteMany?: rolesScalarWhereInput | rolesScalarWhereInput[]
   }
 
+  export type locked_editionsCreateNestedManyWithoutBookeditionInput = {
+    create?: XOR<locked_editionsCreateWithoutBookeditionInput, locked_editionsUncheckedCreateWithoutBookeditionInput> | locked_editionsCreateWithoutBookeditionInput[] | locked_editionsUncheckedCreateWithoutBookeditionInput[]
+    connectOrCreate?: locked_editionsCreateOrConnectWithoutBookeditionInput | locked_editionsCreateOrConnectWithoutBookeditionInput[]
+    createMany?: locked_editionsCreateManyBookeditionInputEnvelope
+    connect?: locked_editionsWhereUniqueInput | locked_editionsWhereUniqueInput[]
+  }
+
   export type booksCreateNestedOneWithoutBookeditionInput = {
     create?: XOR<booksCreateWithoutBookeditionInput, booksUncheckedCreateWithoutBookeditionInput>
     connectOrCreate?: booksCreateOrConnectWithoutBookeditionInput
@@ -52531,6 +54002,13 @@ export namespace Prisma {
     connectOrCreate?: printorder_itemsCreateOrConnectWithoutBookeditionInput | printorder_itemsCreateOrConnectWithoutBookeditionInput[]
     createMany?: printorder_itemsCreateManyBookeditionInputEnvelope
     connect?: printorder_itemsWhereUniqueInput | printorder_itemsWhereUniqueInput[]
+  }
+
+  export type locked_editionsUncheckedCreateNestedManyWithoutBookeditionInput = {
+    create?: XOR<locked_editionsCreateWithoutBookeditionInput, locked_editionsUncheckedCreateWithoutBookeditionInput> | locked_editionsCreateWithoutBookeditionInput[] | locked_editionsUncheckedCreateWithoutBookeditionInput[]
+    connectOrCreate?: locked_editionsCreateOrConnectWithoutBookeditionInput | locked_editionsCreateOrConnectWithoutBookeditionInput[]
+    createMany?: locked_editionsCreateManyBookeditionInputEnvelope
+    connect?: locked_editionsWhereUniqueInput | locked_editionsWhereUniqueInput[]
   }
 
   export type bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput = {
@@ -52600,6 +54078,20 @@ export namespace Prisma {
     decrement?: number
     multiply?: number
     divide?: number
+  }
+
+  export type locked_editionsUpdateManyWithoutBookeditionNestedInput = {
+    create?: XOR<locked_editionsCreateWithoutBookeditionInput, locked_editionsUncheckedCreateWithoutBookeditionInput> | locked_editionsCreateWithoutBookeditionInput[] | locked_editionsUncheckedCreateWithoutBookeditionInput[]
+    connectOrCreate?: locked_editionsCreateOrConnectWithoutBookeditionInput | locked_editionsCreateOrConnectWithoutBookeditionInput[]
+    upsert?: locked_editionsUpsertWithWhereUniqueWithoutBookeditionInput | locked_editionsUpsertWithWhereUniqueWithoutBookeditionInput[]
+    createMany?: locked_editionsCreateManyBookeditionInputEnvelope
+    set?: locked_editionsWhereUniqueInput | locked_editionsWhereUniqueInput[]
+    disconnect?: locked_editionsWhereUniqueInput | locked_editionsWhereUniqueInput[]
+    delete?: locked_editionsWhereUniqueInput | locked_editionsWhereUniqueInput[]
+    connect?: locked_editionsWhereUniqueInput | locked_editionsWhereUniqueInput[]
+    update?: locked_editionsUpdateWithWhereUniqueWithoutBookeditionInput | locked_editionsUpdateWithWhereUniqueWithoutBookeditionInput[]
+    updateMany?: locked_editionsUpdateManyWithWhereWithoutBookeditionInput | locked_editionsUpdateManyWithWhereWithoutBookeditionInput[]
+    deleteMany?: locked_editionsScalarWhereInput | locked_editionsScalarWhereInput[]
   }
 
   export type booksUpdateOneRequiredWithoutBookeditionNestedInput = {
@@ -52706,6 +54198,20 @@ export namespace Prisma {
     update?: printorder_itemsUpdateWithWhereUniqueWithoutBookeditionInput | printorder_itemsUpdateWithWhereUniqueWithoutBookeditionInput[]
     updateMany?: printorder_itemsUpdateManyWithWhereWithoutBookeditionInput | printorder_itemsUpdateManyWithWhereWithoutBookeditionInput[]
     deleteMany?: printorder_itemsScalarWhereInput | printorder_itemsScalarWhereInput[]
+  }
+
+  export type locked_editionsUncheckedUpdateManyWithoutBookeditionNestedInput = {
+    create?: XOR<locked_editionsCreateWithoutBookeditionInput, locked_editionsUncheckedCreateWithoutBookeditionInput> | locked_editionsCreateWithoutBookeditionInput[] | locked_editionsUncheckedCreateWithoutBookeditionInput[]
+    connectOrCreate?: locked_editionsCreateOrConnectWithoutBookeditionInput | locked_editionsCreateOrConnectWithoutBookeditionInput[]
+    upsert?: locked_editionsUpsertWithWhereUniqueWithoutBookeditionInput | locked_editionsUpsertWithWhereUniqueWithoutBookeditionInput[]
+    createMany?: locked_editionsCreateManyBookeditionInputEnvelope
+    set?: locked_editionsWhereUniqueInput | locked_editionsWhereUniqueInput[]
+    disconnect?: locked_editionsWhereUniqueInput | locked_editionsWhereUniqueInput[]
+    delete?: locked_editionsWhereUniqueInput | locked_editionsWhereUniqueInput[]
+    connect?: locked_editionsWhereUniqueInput | locked_editionsWhereUniqueInput[]
+    update?: locked_editionsUpdateWithWhereUniqueWithoutBookeditionInput | locked_editionsUpdateWithWhereUniqueWithoutBookeditionInput[]
+    updateMany?: locked_editionsUpdateManyWithWhereWithoutBookeditionInput | locked_editionsUpdateManyWithWhereWithoutBookeditionInput[]
+    deleteMany?: locked_editionsScalarWhereInput | locked_editionsScalarWhereInput[]
   }
 
   export type bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput = {
@@ -52992,6 +54498,38 @@ export namespace Prisma {
     deleteMany?: translatorbookScalarWhereInput | translatorbookScalarWhereInput[]
   }
 
+  export type bookeditionCreateNestedOneWithoutLocked_editionsInput = {
+    create?: XOR<bookeditionCreateWithoutLocked_editionsInput, bookeditionUncheckedCreateWithoutLocked_editionsInput>
+    connectOrCreate?: bookeditionCreateOrConnectWithoutLocked_editionsInput
+    connect?: bookeditionWhereUniqueInput
+  }
+
+  export type ordersCreateNestedOneWithoutLocked_editionsInput = {
+    create?: XOR<ordersCreateWithoutLocked_editionsInput, ordersUncheckedCreateWithoutLocked_editionsInput>
+    connectOrCreate?: ordersCreateOrConnectWithoutLocked_editionsInput
+    connect?: ordersWhereUniqueInput
+  }
+
+  export type Enumlocked_editions_statusFieldUpdateOperationsInput = {
+    set?: $Enums.locked_editions_status
+  }
+
+  export type bookeditionUpdateOneRequiredWithoutLocked_editionsNestedInput = {
+    create?: XOR<bookeditionCreateWithoutLocked_editionsInput, bookeditionUncheckedCreateWithoutLocked_editionsInput>
+    connectOrCreate?: bookeditionCreateOrConnectWithoutLocked_editionsInput
+    upsert?: bookeditionUpsertWithoutLocked_editionsInput
+    connect?: bookeditionWhereUniqueInput
+    update?: XOR<XOR<bookeditionUpdateToOneWithWhereWithoutLocked_editionsInput, bookeditionUpdateWithoutLocked_editionsInput>, bookeditionUncheckedUpdateWithoutLocked_editionsInput>
+  }
+
+  export type ordersUpdateOneRequiredWithoutLocked_editionsNestedInput = {
+    create?: XOR<ordersCreateWithoutLocked_editionsInput, ordersUncheckedCreateWithoutLocked_editionsInput>
+    connectOrCreate?: ordersCreateOrConnectWithoutLocked_editionsInput
+    upsert?: ordersUpsertWithoutLocked_editionsInput
+    connect?: ordersWhereUniqueInput
+    update?: XOR<XOR<ordersUpdateToOneWithWhereWithoutLocked_editionsInput, ordersUpdateWithoutLocked_editionsInput>, ordersUncheckedUpdateWithoutLocked_editionsInput>
+  }
+
   export type bookeditionCreateNestedOneWithoutBookshopeditionsInput = {
     create?: XOR<bookeditionCreateWithoutBookshopeditionsInput, bookeditionUncheckedCreateWithoutBookshopeditionsInput>
     connectOrCreate?: bookeditionCreateOrConnectWithoutBookshopeditionsInput
@@ -53146,6 +54684,13 @@ export namespace Prisma {
     deleteMany?: paymentsScalarWhereInput | paymentsScalarWhereInput[]
   }
 
+  export type locked_editionsCreateNestedManyWithoutOrdersInput = {
+    create?: XOR<locked_editionsCreateWithoutOrdersInput, locked_editionsUncheckedCreateWithoutOrdersInput> | locked_editionsCreateWithoutOrdersInput[] | locked_editionsUncheckedCreateWithoutOrdersInput[]
+    connectOrCreate?: locked_editionsCreateOrConnectWithoutOrdersInput | locked_editionsCreateOrConnectWithoutOrdersInput[]
+    createMany?: locked_editionsCreateManyOrdersInputEnvelope
+    connect?: locked_editionsWhereUniqueInput | locked_editionsWhereUniqueInput[]
+  }
+
   export type bookshopesCreateNestedOneWithoutOrdersInput = {
     create?: XOR<bookshopesCreateWithoutOrdersInput, bookshopesUncheckedCreateWithoutOrdersInput>
     connectOrCreate?: bookshopesCreateOrConnectWithoutOrdersInput
@@ -53165,6 +54710,13 @@ export namespace Prisma {
     connect?: order_itemsWhereUniqueInput | order_itemsWhereUniqueInput[]
   }
 
+  export type locked_editionsUncheckedCreateNestedManyWithoutOrdersInput = {
+    create?: XOR<locked_editionsCreateWithoutOrdersInput, locked_editionsUncheckedCreateWithoutOrdersInput> | locked_editionsCreateWithoutOrdersInput[] | locked_editionsUncheckedCreateWithoutOrdersInput[]
+    connectOrCreate?: locked_editionsCreateOrConnectWithoutOrdersInput | locked_editionsCreateOrConnectWithoutOrdersInput[]
+    createMany?: locked_editionsCreateManyOrdersInputEnvelope
+    connect?: locked_editionsWhereUniqueInput | locked_editionsWhereUniqueInput[]
+  }
+
   export type order_itemsUncheckedCreateNestedManyWithoutOrderInput = {
     create?: XOR<order_itemsCreateWithoutOrderInput, order_itemsUncheckedCreateWithoutOrderInput> | order_itemsCreateWithoutOrderInput[] | order_itemsUncheckedCreateWithoutOrderInput[]
     connectOrCreate?: order_itemsCreateOrConnectWithoutOrderInput | order_itemsCreateOrConnectWithoutOrderInput[]
@@ -53178,6 +54730,20 @@ export namespace Prisma {
     decrement?: number
     multiply?: number
     divide?: number
+  }
+
+  export type locked_editionsUpdateManyWithoutOrdersNestedInput = {
+    create?: XOR<locked_editionsCreateWithoutOrdersInput, locked_editionsUncheckedCreateWithoutOrdersInput> | locked_editionsCreateWithoutOrdersInput[] | locked_editionsUncheckedCreateWithoutOrdersInput[]
+    connectOrCreate?: locked_editionsCreateOrConnectWithoutOrdersInput | locked_editionsCreateOrConnectWithoutOrdersInput[]
+    upsert?: locked_editionsUpsertWithWhereUniqueWithoutOrdersInput | locked_editionsUpsertWithWhereUniqueWithoutOrdersInput[]
+    createMany?: locked_editionsCreateManyOrdersInputEnvelope
+    set?: locked_editionsWhereUniqueInput | locked_editionsWhereUniqueInput[]
+    disconnect?: locked_editionsWhereUniqueInput | locked_editionsWhereUniqueInput[]
+    delete?: locked_editionsWhereUniqueInput | locked_editionsWhereUniqueInput[]
+    connect?: locked_editionsWhereUniqueInput | locked_editionsWhereUniqueInput[]
+    update?: locked_editionsUpdateWithWhereUniqueWithoutOrdersInput | locked_editionsUpdateWithWhereUniqueWithoutOrdersInput[]
+    updateMany?: locked_editionsUpdateManyWithWhereWithoutOrdersInput | locked_editionsUpdateManyWithWhereWithoutOrdersInput[]
+    deleteMany?: locked_editionsScalarWhereInput | locked_editionsScalarWhereInput[]
   }
 
   export type bookshopesUpdateOneRequiredWithoutOrdersNestedInput = {
@@ -53210,6 +54776,20 @@ export namespace Prisma {
     update?: order_itemsUpdateWithWhereUniqueWithoutOrderInput | order_itemsUpdateWithWhereUniqueWithoutOrderInput[]
     updateMany?: order_itemsUpdateManyWithWhereWithoutOrderInput | order_itemsUpdateManyWithWhereWithoutOrderInput[]
     deleteMany?: order_itemsScalarWhereInput | order_itemsScalarWhereInput[]
+  }
+
+  export type locked_editionsUncheckedUpdateManyWithoutOrdersNestedInput = {
+    create?: XOR<locked_editionsCreateWithoutOrdersInput, locked_editionsUncheckedCreateWithoutOrdersInput> | locked_editionsCreateWithoutOrdersInput[] | locked_editionsUncheckedCreateWithoutOrdersInput[]
+    connectOrCreate?: locked_editionsCreateOrConnectWithoutOrdersInput | locked_editionsCreateOrConnectWithoutOrdersInput[]
+    upsert?: locked_editionsUpsertWithWhereUniqueWithoutOrdersInput | locked_editionsUpsertWithWhereUniqueWithoutOrdersInput[]
+    createMany?: locked_editionsCreateManyOrdersInputEnvelope
+    set?: locked_editionsWhereUniqueInput | locked_editionsWhereUniqueInput[]
+    disconnect?: locked_editionsWhereUniqueInput | locked_editionsWhereUniqueInput[]
+    delete?: locked_editionsWhereUniqueInput | locked_editionsWhereUniqueInput[]
+    connect?: locked_editionsWhereUniqueInput | locked_editionsWhereUniqueInput[]
+    update?: locked_editionsUpdateWithWhereUniqueWithoutOrdersInput | locked_editionsUpdateWithWhereUniqueWithoutOrdersInput[]
+    updateMany?: locked_editionsUpdateManyWithWhereWithoutOrdersInput | locked_editionsUpdateManyWithWhereWithoutOrdersInput[]
+    deleteMany?: locked_editionsScalarWhereInput | locked_editionsScalarWhereInput[]
   }
 
   export type order_itemsUncheckedUpdateManyWithoutOrderNestedInput = {
@@ -54403,6 +55983,23 @@ export namespace Prisma {
     _max?: NestedEnumbooks_productionstatusNullableFilter<$PrismaModel>
   }
 
+  export type NestedEnumlocked_editions_statusFilter<$PrismaModel = never> = {
+    equals?: $Enums.locked_editions_status | Enumlocked_editions_statusFieldRefInput<$PrismaModel>
+    in?: $Enums.locked_editions_status[]
+    notIn?: $Enums.locked_editions_status[]
+    not?: NestedEnumlocked_editions_statusFilter<$PrismaModel> | $Enums.locked_editions_status
+  }
+
+  export type NestedEnumlocked_editions_statusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.locked_editions_status | Enumlocked_editions_statusFieldRefInput<$PrismaModel>
+    in?: $Enums.locked_editions_status[]
+    notIn?: $Enums.locked_editions_status[]
+    not?: NestedEnumlocked_editions_statusWithAggregatesFilter<$PrismaModel> | $Enums.locked_editions_status
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumlocked_editions_statusFilter<$PrismaModel>
+    _max?: NestedEnumlocked_editions_statusFilter<$PrismaModel>
+  }
+
   export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
     in?: number[]
@@ -54851,6 +56448,37 @@ export namespace Prisma {
     deletedAt?: DateTimeFilter<"roles"> | Date | string
   }
 
+  export type locked_editionsCreateWithoutBookeditionInput = {
+    amount_locked?: number
+    status?: $Enums.locked_editions_status
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    orders: ordersCreateNestedOneWithoutLocked_editionsInput
+  }
+
+  export type locked_editionsUncheckedCreateWithoutBookeditionInput = {
+    id?: number
+    amount_locked?: number
+    order_id: number
+    status?: $Enums.locked_editions_status
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+  }
+
+  export type locked_editionsCreateOrConnectWithoutBookeditionInput = {
+    where: locked_editionsWhereUniqueInput
+    create: XOR<locked_editionsCreateWithoutBookeditionInput, locked_editionsUncheckedCreateWithoutBookeditionInput>
+  }
+
+  export type locked_editionsCreateManyBookeditionInputEnvelope = {
+    data: locked_editionsCreateManyBookeditionInput | locked_editionsCreateManyBookeditionInput[]
+    skipDuplicates?: boolean
+  }
+
   export type booksCreateWithoutBookeditionInput = {
     book_sort_index?: number | null
     unique_identification_code: string
@@ -55148,6 +56776,37 @@ export namespace Prisma {
   export type printorder_itemsCreateManyBookeditionInputEnvelope = {
     data: printorder_itemsCreateManyBookeditionInput | printorder_itemsCreateManyBookeditionInput[]
     skipDuplicates?: boolean
+  }
+
+  export type locked_editionsUpsertWithWhereUniqueWithoutBookeditionInput = {
+    where: locked_editionsWhereUniqueInput
+    update: XOR<locked_editionsUpdateWithoutBookeditionInput, locked_editionsUncheckedUpdateWithoutBookeditionInput>
+    create: XOR<locked_editionsCreateWithoutBookeditionInput, locked_editionsUncheckedCreateWithoutBookeditionInput>
+  }
+
+  export type locked_editionsUpdateWithWhereUniqueWithoutBookeditionInput = {
+    where: locked_editionsWhereUniqueInput
+    data: XOR<locked_editionsUpdateWithoutBookeditionInput, locked_editionsUncheckedUpdateWithoutBookeditionInput>
+  }
+
+  export type locked_editionsUpdateManyWithWhereWithoutBookeditionInput = {
+    where: locked_editionsScalarWhereInput
+    data: XOR<locked_editionsUpdateManyMutationInput, locked_editionsUncheckedUpdateManyWithoutBookeditionInput>
+  }
+
+  export type locked_editionsScalarWhereInput = {
+    AND?: locked_editionsScalarWhereInput | locked_editionsScalarWhereInput[]
+    OR?: locked_editionsScalarWhereInput[]
+    NOT?: locked_editionsScalarWhereInput | locked_editionsScalarWhereInput[]
+    id?: IntFilter<"locked_editions"> | number
+    editionId?: IntFilter<"locked_editions"> | number
+    amount_locked?: IntFilter<"locked_editions"> | number
+    order_id?: IntFilter<"locked_editions"> | number
+    status?: Enumlocked_editions_statusFilter<"locked_editions"> | $Enums.locked_editions_status
+    is_deleted?: BoolFilter<"locked_editions"> | boolean
+    updatedAt?: DateTimeFilter<"locked_editions"> | Date | string
+    createdAt?: DateTimeFilter<"locked_editions"> | Date | string
+    deletedAt?: DateTimeFilter<"locked_editions"> | Date | string
   }
 
   export type booksUpsertWithoutBookeditionInput = {
@@ -55467,6 +57126,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    locked_editions?: locked_editionsCreateNestedManyWithoutBookeditionInput
     books: booksCreateNestedOneWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsCreateNestedManyWithoutBookeditionInput
@@ -55508,6 +57168,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    locked_editions?: locked_editionsUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookeditionInput
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutBookeditionInput
@@ -55594,6 +57255,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    locked_editions?: locked_editionsUpdateManyWithoutBookeditionNestedInput
     books?: booksUpdateOneRequiredWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUpdateManyWithoutBookeditionNestedInput
@@ -55635,6 +57297,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    locked_editions?: locked_editionsUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookeditionNestedInput
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutBookeditionNestedInput
@@ -55711,6 +57374,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    locked_editions?: locked_editionsCreateNestedManyWithoutBookeditionInput
     books: booksCreateNestedOneWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsCreateNestedManyWithoutBookeditionInput
@@ -55752,6 +57416,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    locked_editions?: locked_editionsUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookeditionInput
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutBookeditionInput
@@ -55840,6 +57505,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    locked_editions?: locked_editionsUpdateManyWithoutBookeditionNestedInput
     books?: booksUpdateOneRequiredWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUpdateManyWithoutBookeditionNestedInput
@@ -55881,6 +57547,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    locked_editions?: locked_editionsUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookeditionNestedInput
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutBookeditionNestedInput
@@ -55959,6 +57626,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    locked_editions?: locked_editionsCreateNestedManyWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsCreateNestedManyWithoutBookeditionInput
@@ -55999,6 +57667,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    locked_editions?: locked_editionsUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookeditionInput
@@ -56203,6 +57872,278 @@ export namespace Prisma {
     deletedAt?: DateTimeFilter<"translatorbook"> | Date | string
   }
 
+  export type bookeditionCreateWithoutLocked_editionsInput = {
+    edition_name: string
+    selling_price?: number | null
+    production_price?: number | null
+    printing_cost?: number | null
+    binding_cost?: number | null
+    design_cost?: number | null
+    translation_cost?: number | null
+    memo?: string | null
+    book_image_url?: string | null
+    total_print_count?: number | null
+    book_id?: number | null
+    number_of_pages?: number | null
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    editing_cost?: number | null
+    other_expenses?: number | null
+    transportation_cost?: number | null
+    count_remening_for_transfer?: number | null
+    translator_cost?: number | null
+    cover_design_cost?: number | null
+    text_design_cost?: number | null
+    editor_cost?: number | null
+    typewriting_cost?: number | null
+    store_cost?: number | null
+    distribution_cost?: number | null
+    advertisement_cost?: number | null
+    purchasing_right_cost?: number | null
+    books: booksCreateNestedOneWithoutBookeditionInput
+    bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
+    bookeditionprinters?: bookeditionprintersCreateNestedManyWithoutBookeditionInput
+    bookshopeditions?: bookshopeditionsCreateNestedManyWithoutBookeditionInput
+    damagedbooks?: damagedbooksCreateNestedManyWithoutBookeditionInput
+    order_items?: order_itemsCreateNestedManyWithoutBookeditionInput
+    retail_purchase_items?: retail_purchase_itemsCreateNestedManyWithoutEditionInput
+    printorder_items?: printorder_itemsCreateNestedManyWithoutBookeditionInput
+  }
+
+  export type bookeditionUncheckedCreateWithoutLocked_editionsInput = {
+    id?: number
+    edition_name: string
+    selling_price?: number | null
+    production_price?: number | null
+    printing_cost?: number | null
+    binding_cost?: number | null
+    design_cost?: number | null
+    translation_cost?: number | null
+    memo?: string | null
+    book_image_url?: string | null
+    total_print_count?: number | null
+    book_id?: number | null
+    number_of_pages?: number | null
+    bookId: number
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    editing_cost?: number | null
+    other_expenses?: number | null
+    transportation_cost?: number | null
+    count_remening_for_transfer?: number | null
+    translator_cost?: number | null
+    cover_design_cost?: number | null
+    text_design_cost?: number | null
+    editor_cost?: number | null
+    typewriting_cost?: number | null
+    store_cost?: number | null
+    distribution_cost?: number | null
+    advertisement_cost?: number | null
+    purchasing_right_cost?: number | null
+    bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
+    bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutBookeditionInput
+    bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookeditionInput
+    damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutBookeditionInput
+    order_items?: order_itemsUncheckedCreateNestedManyWithoutBookeditionInput
+    retail_purchase_items?: retail_purchase_itemsUncheckedCreateNestedManyWithoutEditionInput
+    printorder_items?: printorder_itemsUncheckedCreateNestedManyWithoutBookeditionInput
+  }
+
+  export type bookeditionCreateOrConnectWithoutLocked_editionsInput = {
+    where: bookeditionWhereUniqueInput
+    create: XOR<bookeditionCreateWithoutLocked_editionsInput, bookeditionUncheckedCreateWithoutLocked_editionsInput>
+  }
+
+  export type ordersCreateWithoutLocked_editionsInput = {
+    order_type: string
+    memo?: string | null
+    is_approved?: boolean
+    total_amount?: number
+    amount_paid?: number
+    payment_type?: string | null
+    status?: string
+    is_deleted?: boolean
+    allocation_summary?: string | null
+    delivery?: boolean
+    delivered_by?: number | null
+    updatedAt?: Date | string
+    createdAt?: Date | string
+    bookshopes: bookshopesCreateNestedOneWithoutOrdersInput
+    checks?: checksCreateNestedOneWithoutOrdersInput
+    order_items?: order_itemsCreateNestedManyWithoutOrderInput
+  }
+
+  export type ordersUncheckedCreateWithoutLocked_editionsInput = {
+    id?: number
+    bookShopId: number
+    order_type: string
+    memo?: string | null
+    is_approved?: boolean
+    total_amount?: number
+    amount_paid?: number
+    payment_type?: string | null
+    check_id?: number | null
+    status?: string
+    is_deleted?: boolean
+    allocation_summary?: string | null
+    delivery?: boolean
+    delivered_by?: number | null
+    updatedAt?: Date | string
+    createdAt?: Date | string
+    order_items?: order_itemsUncheckedCreateNestedManyWithoutOrderInput
+  }
+
+  export type ordersCreateOrConnectWithoutLocked_editionsInput = {
+    where: ordersWhereUniqueInput
+    create: XOR<ordersCreateWithoutLocked_editionsInput, ordersUncheckedCreateWithoutLocked_editionsInput>
+  }
+
+  export type bookeditionUpsertWithoutLocked_editionsInput = {
+    update: XOR<bookeditionUpdateWithoutLocked_editionsInput, bookeditionUncheckedUpdateWithoutLocked_editionsInput>
+    create: XOR<bookeditionCreateWithoutLocked_editionsInput, bookeditionUncheckedCreateWithoutLocked_editionsInput>
+    where?: bookeditionWhereInput
+  }
+
+  export type bookeditionUpdateToOneWithWhereWithoutLocked_editionsInput = {
+    where?: bookeditionWhereInput
+    data: XOR<bookeditionUpdateWithoutLocked_editionsInput, bookeditionUncheckedUpdateWithoutLocked_editionsInput>
+  }
+
+  export type bookeditionUpdateWithoutLocked_editionsInput = {
+    edition_name?: StringFieldUpdateOperationsInput | string
+    selling_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    production_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    printing_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    binding_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    total_print_count?: NullableIntFieldUpdateOperationsInput | number | null
+    book_id?: NullableIntFieldUpdateOperationsInput | number | null
+    number_of_pages?: NullableIntFieldUpdateOperationsInput | number | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    editing_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
+    transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
+    translator_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    text_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    editor_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    typewriting_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    store_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    books?: booksUpdateOneRequiredWithoutBookeditionNestedInput
+    bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
+    bookeditionprinters?: bookeditionprintersUpdateManyWithoutBookeditionNestedInput
+    bookshopeditions?: bookshopeditionsUpdateManyWithoutBookeditionNestedInput
+    damagedbooks?: damagedbooksUpdateManyWithoutBookeditionNestedInput
+    order_items?: order_itemsUpdateManyWithoutBookeditionNestedInput
+    retail_purchase_items?: retail_purchase_itemsUpdateManyWithoutEditionNestedInput
+    printorder_items?: printorder_itemsUpdateManyWithoutBookeditionNestedInput
+  }
+
+  export type bookeditionUncheckedUpdateWithoutLocked_editionsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    edition_name?: StringFieldUpdateOperationsInput | string
+    selling_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    production_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    printing_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    binding_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    total_print_count?: NullableIntFieldUpdateOperationsInput | number | null
+    book_id?: NullableIntFieldUpdateOperationsInput | number | null
+    number_of_pages?: NullableIntFieldUpdateOperationsInput | number | null
+    bookId?: IntFieldUpdateOperationsInput | number
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    editing_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
+    transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
+    translator_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    text_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    editor_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    typewriting_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    store_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
+    bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutBookeditionNestedInput
+    bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookeditionNestedInput
+    damagedbooks?: damagedbooksUncheckedUpdateManyWithoutBookeditionNestedInput
+    order_items?: order_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
+    retail_purchase_items?: retail_purchase_itemsUncheckedUpdateManyWithoutEditionNestedInput
+    printorder_items?: printorder_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
+  }
+
+  export type ordersUpsertWithoutLocked_editionsInput = {
+    update: XOR<ordersUpdateWithoutLocked_editionsInput, ordersUncheckedUpdateWithoutLocked_editionsInput>
+    create: XOR<ordersCreateWithoutLocked_editionsInput, ordersUncheckedCreateWithoutLocked_editionsInput>
+    where?: ordersWhereInput
+  }
+
+  export type ordersUpdateToOneWithWhereWithoutLocked_editionsInput = {
+    where?: ordersWhereInput
+    data: XOR<ordersUpdateWithoutLocked_editionsInput, ordersUncheckedUpdateWithoutLocked_editionsInput>
+  }
+
+  export type ordersUpdateWithoutLocked_editionsInput = {
+    order_type?: StringFieldUpdateOperationsInput | string
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    is_approved?: BoolFieldUpdateOperationsInput | boolean
+    total_amount?: FloatFieldUpdateOperationsInput | number
+    amount_paid?: FloatFieldUpdateOperationsInput | number
+    payment_type?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    allocation_summary?: NullableStringFieldUpdateOperationsInput | string | null
+    delivery?: BoolFieldUpdateOperationsInput | boolean
+    delivered_by?: NullableIntFieldUpdateOperationsInput | number | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bookshopes?: bookshopesUpdateOneRequiredWithoutOrdersNestedInput
+    checks?: checksUpdateOneWithoutOrdersNestedInput
+    order_items?: order_itemsUpdateManyWithoutOrderNestedInput
+  }
+
+  export type ordersUncheckedUpdateWithoutLocked_editionsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    bookShopId?: IntFieldUpdateOperationsInput | number
+    order_type?: StringFieldUpdateOperationsInput | string
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    is_approved?: BoolFieldUpdateOperationsInput | boolean
+    total_amount?: FloatFieldUpdateOperationsInput | number
+    amount_paid?: FloatFieldUpdateOperationsInput | number
+    payment_type?: NullableStringFieldUpdateOperationsInput | string | null
+    check_id?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: StringFieldUpdateOperationsInput | string
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    allocation_summary?: NullableStringFieldUpdateOperationsInput | string | null
+    delivery?: BoolFieldUpdateOperationsInput | boolean
+    delivered_by?: NullableIntFieldUpdateOperationsInput | number | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    order_items?: order_itemsUncheckedUpdateManyWithoutOrderNestedInput
+  }
+
   export type bookeditionCreateWithoutBookshopeditionsInput = {
     edition_name: string
     selling_price?: number | null
@@ -56233,6 +58174,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    locked_editions?: locked_editionsCreateNestedManyWithoutBookeditionInput
     books: booksCreateNestedOneWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersCreateNestedManyWithoutBookeditionInput
@@ -56274,6 +58216,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    locked_editions?: locked_editionsUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutBookeditionInput
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutBookeditionInput
@@ -56362,6 +58305,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    locked_editions?: locked_editionsUpdateManyWithoutBookeditionNestedInput
     books?: booksUpdateOneRequiredWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUpdateManyWithoutBookeditionNestedInput
@@ -56403,6 +58347,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    locked_editions?: locked_editionsUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutBookeditionNestedInput
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutBookeditionNestedInput
@@ -56504,6 +58449,7 @@ export namespace Prisma {
     delivered_by?: number | null
     updatedAt?: Date | string
     createdAt?: Date | string
+    locked_editions?: locked_editionsCreateNestedManyWithoutOrdersInput
     checks?: checksCreateNestedOneWithoutOrdersInput
     order_items?: order_itemsCreateNestedManyWithoutOrderInput
   }
@@ -56524,6 +58470,7 @@ export namespace Prisma {
     delivered_by?: number | null
     updatedAt?: Date | string
     createdAt?: Date | string
+    locked_editions?: locked_editionsUncheckedCreateNestedManyWithoutOrdersInput
     order_items?: order_itemsUncheckedCreateNestedManyWithoutOrderInput
   }
 
@@ -56656,6 +58603,37 @@ export namespace Prisma {
     deletedAt?: DateTimeFilter<"payments"> | Date | string
   }
 
+  export type locked_editionsCreateWithoutOrdersInput = {
+    amount_locked?: number
+    status?: $Enums.locked_editions_status
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    bookedition: bookeditionCreateNestedOneWithoutLocked_editionsInput
+  }
+
+  export type locked_editionsUncheckedCreateWithoutOrdersInput = {
+    id?: number
+    editionId: number
+    amount_locked?: number
+    status?: $Enums.locked_editions_status
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+  }
+
+  export type locked_editionsCreateOrConnectWithoutOrdersInput = {
+    where: locked_editionsWhereUniqueInput
+    create: XOR<locked_editionsCreateWithoutOrdersInput, locked_editionsUncheckedCreateWithoutOrdersInput>
+  }
+
+  export type locked_editionsCreateManyOrdersInputEnvelope = {
+    data: locked_editionsCreateManyOrdersInput | locked_editionsCreateManyOrdersInput[]
+    skipDuplicates?: boolean
+  }
+
   export type bookshopesCreateWithoutOrdersInput = {
     name: string
     location: string
@@ -56749,6 +58727,22 @@ export namespace Prisma {
   export type order_itemsCreateManyOrderInputEnvelope = {
     data: order_itemsCreateManyOrderInput | order_itemsCreateManyOrderInput[]
     skipDuplicates?: boolean
+  }
+
+  export type locked_editionsUpsertWithWhereUniqueWithoutOrdersInput = {
+    where: locked_editionsWhereUniqueInput
+    update: XOR<locked_editionsUpdateWithoutOrdersInput, locked_editionsUncheckedUpdateWithoutOrdersInput>
+    create: XOR<locked_editionsCreateWithoutOrdersInput, locked_editionsUncheckedCreateWithoutOrdersInput>
+  }
+
+  export type locked_editionsUpdateWithWhereUniqueWithoutOrdersInput = {
+    where: locked_editionsWhereUniqueInput
+    data: XOR<locked_editionsUpdateWithoutOrdersInput, locked_editionsUncheckedUpdateWithoutOrdersInput>
+  }
+
+  export type locked_editionsUpdateManyWithWhereWithoutOrdersInput = {
+    where: locked_editionsScalarWhereInput
+    data: XOR<locked_editionsUpdateManyMutationInput, locked_editionsUncheckedUpdateManyWithoutOrdersInput>
   }
 
   export type bookshopesUpsertWithoutOrdersInput = {
@@ -56865,6 +58859,7 @@ export namespace Prisma {
     delivered_by?: number | null
     updatedAt?: Date | string
     createdAt?: Date | string
+    locked_editions?: locked_editionsCreateNestedManyWithoutOrdersInput
     bookshopes: bookshopesCreateNestedOneWithoutOrdersInput
     checks?: checksCreateNestedOneWithoutOrdersInput
   }
@@ -56886,6 +58881,7 @@ export namespace Prisma {
     delivered_by?: number | null
     updatedAt?: Date | string
     createdAt?: Date | string
+    locked_editions?: locked_editionsUncheckedCreateNestedManyWithoutOrdersInput
   }
 
   export type ordersCreateOrConnectWithoutOrder_itemsInput = {
@@ -56923,6 +58919,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    locked_editions?: locked_editionsCreateNestedManyWithoutBookeditionInput
     books: booksCreateNestedOneWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersCreateNestedManyWithoutBookeditionInput
@@ -56964,6 +58961,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    locked_editions?: locked_editionsUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookeditionInput
@@ -57002,6 +59000,7 @@ export namespace Prisma {
     delivered_by?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    locked_editions?: locked_editionsUpdateManyWithoutOrdersNestedInput
     bookshopes?: bookshopesUpdateOneRequiredWithoutOrdersNestedInput
     checks?: checksUpdateOneWithoutOrdersNestedInput
   }
@@ -57023,6 +59022,7 @@ export namespace Prisma {
     delivered_by?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    locked_editions?: locked_editionsUncheckedUpdateManyWithoutOrdersNestedInput
   }
 
   export type bookeditionUpsertWithoutOrder_itemsInput = {
@@ -57066,6 +59066,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    locked_editions?: locked_editionsUpdateManyWithoutBookeditionNestedInput
     books?: booksUpdateOneRequiredWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUpdateManyWithoutBookeditionNestedInput
@@ -57107,6 +59108,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    locked_editions?: locked_editionsUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookeditionNestedInput
@@ -57265,6 +59267,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    locked_editions?: locked_editionsCreateNestedManyWithoutBookeditionInput
     books: booksCreateNestedOneWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersCreateNestedManyWithoutBookeditionInput
@@ -57306,6 +59309,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    locked_editions?: locked_editionsUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookeditionInput
@@ -57558,6 +59562,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    locked_editions?: locked_editionsUpdateManyWithoutBookeditionNestedInput
     books?: booksUpdateOneRequiredWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUpdateManyWithoutBookeditionNestedInput
@@ -57599,6 +59604,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    locked_editions?: locked_editionsUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookeditionNestedInput
@@ -58457,6 +60463,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    locked_editions?: locked_editionsCreateNestedManyWithoutBookeditionInput
     books: booksCreateNestedOneWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersCreateNestedManyWithoutBookeditionInput
@@ -58498,6 +60505,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    locked_editions?: locked_editionsUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookeditionInput
@@ -58602,6 +60610,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    locked_editions?: locked_editionsUpdateManyWithoutBookeditionNestedInput
     books?: booksUpdateOneRequiredWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUpdateManyWithoutBookeditionNestedInput
@@ -58643,6 +60652,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    locked_editions?: locked_editionsUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookeditionNestedInput
@@ -59424,6 +61434,7 @@ export namespace Prisma {
     delivered_by?: number | null
     updatedAt?: Date | string
     createdAt?: Date | string
+    locked_editions?: locked_editionsCreateNestedManyWithoutOrdersInput
     bookshopes: bookshopesCreateNestedOneWithoutOrdersInput
     order_items?: order_itemsCreateNestedManyWithoutOrderInput
   }
@@ -59444,6 +61455,7 @@ export namespace Prisma {
     delivered_by?: number | null
     updatedAt?: Date | string
     createdAt?: Date | string
+    locked_editions?: locked_editionsUncheckedCreateNestedManyWithoutOrdersInput
     order_items?: order_itemsUncheckedCreateNestedManyWithoutOrderInput
   }
 
@@ -59750,6 +61762,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    locked_editions?: locked_editionsCreateNestedManyWithoutBookeditionInput
     books: booksCreateNestedOneWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersCreateNestedManyWithoutBookeditionInput
@@ -59791,6 +61804,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    locked_editions?: locked_editionsUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookeditionInput
@@ -59885,6 +61899,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    locked_editions?: locked_editionsUpdateManyWithoutBookeditionNestedInput
     books?: booksUpdateOneRequiredWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUpdateManyWithoutBookeditionNestedInput
@@ -59926,6 +61941,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    locked_editions?: locked_editionsUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookeditionNestedInput
@@ -60114,6 +62130,17 @@ export namespace Prisma {
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type locked_editionsCreateManyBookeditionInput = {
+    id?: number
+    amount_locked?: number
+    order_id: number
+    status?: $Enums.locked_editions_status
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+  }
+
   export type bookeditionstoresCreateManyBookeditionInput = {
     id?: number
     quantity?: number | null
@@ -60188,6 +62215,38 @@ export namespace Prisma {
     is_deleted?: boolean
     updatedAt?: Date | string
     createdAt?: Date | string
+  }
+
+  export type locked_editionsUpdateWithoutBookeditionInput = {
+    amount_locked?: IntFieldUpdateOperationsInput | number
+    status?: Enumlocked_editions_statusFieldUpdateOperationsInput | $Enums.locked_editions_status
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orders?: ordersUpdateOneRequiredWithoutLocked_editionsNestedInput
+  }
+
+  export type locked_editionsUncheckedUpdateWithoutBookeditionInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    amount_locked?: IntFieldUpdateOperationsInput | number
+    order_id?: IntFieldUpdateOperationsInput | number
+    status?: Enumlocked_editions_statusFieldUpdateOperationsInput | $Enums.locked_editions_status
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type locked_editionsUncheckedUpdateManyWithoutBookeditionInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    amount_locked?: IntFieldUpdateOperationsInput | number
+    order_id?: IntFieldUpdateOperationsInput | number
+    status?: Enumlocked_editions_statusFieldUpdateOperationsInput | $Enums.locked_editions_status
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type bookeditionstoresUpdateWithoutBookeditionInput = {
@@ -60505,6 +62564,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    locked_editions?: locked_editionsUpdateManyWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUpdateManyWithoutBookeditionNestedInput
@@ -60545,6 +62605,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    locked_editions?: locked_editionsUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookeditionNestedInput
@@ -60781,6 +62842,7 @@ export namespace Prisma {
     delivered_by?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    locked_editions?: locked_editionsUpdateManyWithoutOrdersNestedInput
     checks?: checksUpdateOneWithoutOrdersNestedInput
     order_items?: order_itemsUpdateManyWithoutOrderNestedInput
   }
@@ -60801,6 +62863,7 @@ export namespace Prisma {
     delivered_by?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    locked_editions?: locked_editionsUncheckedUpdateManyWithoutOrdersNestedInput
     order_items?: order_itemsUncheckedUpdateManyWithoutOrderNestedInput
   }
 
@@ -60857,11 +62920,54 @@ export namespace Prisma {
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type locked_editionsCreateManyOrdersInput = {
+    id?: number
+    editionId: number
+    amount_locked?: number
+    status?: $Enums.locked_editions_status
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+  }
+
   export type order_itemsCreateManyOrderInput = {
     id?: number
     bookEditionId: number
     quantity: number
     price_at_order: number
+  }
+
+  export type locked_editionsUpdateWithoutOrdersInput = {
+    amount_locked?: IntFieldUpdateOperationsInput | number
+    status?: Enumlocked_editions_statusFieldUpdateOperationsInput | $Enums.locked_editions_status
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bookedition?: bookeditionUpdateOneRequiredWithoutLocked_editionsNestedInput
+  }
+
+  export type locked_editionsUncheckedUpdateWithoutOrdersInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    editionId?: IntFieldUpdateOperationsInput | number
+    amount_locked?: IntFieldUpdateOperationsInput | number
+    status?: Enumlocked_editions_statusFieldUpdateOperationsInput | $Enums.locked_editions_status
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type locked_editionsUncheckedUpdateManyWithoutOrdersInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    editionId?: IntFieldUpdateOperationsInput | number
+    amount_locked?: IntFieldUpdateOperationsInput | number
+    status?: Enumlocked_editions_statusFieldUpdateOperationsInput | $Enums.locked_editions_status
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type order_itemsUpdateWithoutOrderInput = {
@@ -61488,6 +63594,7 @@ export namespace Prisma {
     delivered_by?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    locked_editions?: locked_editionsUpdateManyWithoutOrdersNestedInput
     bookshopes?: bookshopesUpdateOneRequiredWithoutOrdersNestedInput
     order_items?: order_itemsUpdateManyWithoutOrderNestedInput
   }
@@ -61508,6 +63615,7 @@ export namespace Prisma {
     delivered_by?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    locked_editions?: locked_editionsUncheckedUpdateManyWithoutOrdersNestedInput
     order_items?: order_itemsUncheckedUpdateManyWithoutOrderNestedInput
   }
 

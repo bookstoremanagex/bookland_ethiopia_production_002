@@ -228,6 +228,18 @@ exports.Prisma.BooksScalarFieldEnum = {
   purchasing_right_cost: 'purchasing_right_cost'
 };
 
+exports.Prisma.Locked_editionsScalarFieldEnum = {
+  id: 'id',
+  editionId: 'editionId',
+  amount_locked: 'amount_locked',
+  order_id: 'order_id',
+  status: 'status',
+  is_deleted: 'is_deleted',
+  updatedAt: 'updatedAt',
+  createdAt: 'createdAt',
+  deletedAt: 'deletedAt'
+};
+
 exports.Prisma.BookshopeditionsScalarFieldEnum = {
   id: 'id',
   bookShopId: 'bookShopId',
@@ -843,6 +855,11 @@ exports.books_productionstatus = exports.$Enums.books_productionstatus = {
   SALES: 'SALES'
 };
 
+exports.locked_editions_status = exports.$Enums.locked_editions_status = {
+  locked: 'locked',
+  unlocked: 'unlocked'
+};
+
 exports.damagedbooks_type = exports.$Enums.damagedbooks_type = {
   STORE: 'STORE',
   PRINTING: 'PRINTING',
@@ -920,6 +937,7 @@ exports.Prisma.ModelName = {
   bookeditionstores: 'bookeditionstores',
   bookeditionprinters: 'bookeditionprinters',
   books: 'books',
+  locked_editions: 'locked_editions',
   bookshopeditions: 'bookshopeditions',
   bookshopes: 'bookshopes',
   orders: 'orders',

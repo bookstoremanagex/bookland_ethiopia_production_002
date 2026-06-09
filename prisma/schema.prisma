@@ -63,6 +63,7 @@ model bookedition {
   distribution_cost           Float?
   advertisement_cost          Float?
   purchasing_right_cost       Float?
+  locked_editions             locked_editions[]
   books                       books                 @relation(fields: [bookId], references: [id], map: "BookEdition_bookId_fkey")
   bookeditionstores           bookeditionstores[]
   bookeditionprinters         bookeditionprinters[]
@@ -158,6 +159,26 @@ model books {
 
 }
 
+model locked_editions {
+  id  Int @id @default(autoincrement())
+  editionId Int
+  amount_locked Int @default(0)
+  order_id Int
+status locked_editions_status @default(locked)
+  is_deleted Boolean @default(false)
+  updatedAt DateTime
+  createdAt DateTime @default(now())
+  deletedAt DateTime @default(now())
+
+  bookedition bookedition @relation(fields: [editionId], references: [id], onDelete: Cascade, map: "LockedEditions_editionId_fkey")
+  orders      orders      @relation(fields: [order_id], references: [id], onDelete: Cascade, map: "LockedEditions_order_id_fkey")
+}
+
+enum locked_editions_status {
+  locked
+  unlocked
+}
+
 model bookshopeditions {
   id               Int         @id @default(autoincrement())
   bookShopId       Int
@@ -210,6 +231,7 @@ model orders {
   allocation_summary String?       @db.Text
   delivery            Boolean       @default(false)
   delivered_by        Int?
+  locked_editions     locked_editions[]
   updatedAt           DateTime      @updatedAt
   createdAt           DateTime      @default(now())
   bookshopes          bookshopes    @relation(fields: [bookShopId], references: [id], onDelete: Cascade)

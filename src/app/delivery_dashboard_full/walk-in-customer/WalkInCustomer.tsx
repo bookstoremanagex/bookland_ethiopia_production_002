@@ -388,6 +388,7 @@ function AddOrderDialog({ onClose }: { onClose: () => void }) {
   const [stockMap, setStockMap] = useState<Record<number, StockInfo>>({});
   const [loadingStock, setLoadingStock] = useState<Set<number>>(new Set());
   const [amountPaid, setAmountPaid] = useState("0");
+  const [lockBooks, setLockBooks] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -531,6 +532,7 @@ function AddOrderDialog({ onClose }: { onClose: () => void }) {
       const res = await createRetailPurchase({
         name: customerName.trim(),
         amountPaid: parseFloat(amountPaid) || 0,
+        lock_books: lockBooks,
         items,
       });
       if (res.success) {
@@ -966,6 +968,29 @@ function AddOrderDialog({ onClose }: { onClose: () => void }) {
                         placeholder="0.00"
                         className="h-12 rounded-2xl border-2 border-slate-100 bg-white font-bold text-sm focus:border-primarycolor transition-all"
                       />
+                    </div>
+
+                    <div className="flex items-center justify-between py-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Lock Books</span>
+                      </div>
+                      <button
+                        type="button"
+                        role="switch"
+                        aria-checked={lockBooks}
+                        onClick={() => setLockBooks(!lockBooks)}
+                        className={cn(
+                          "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors",
+                          lockBooks ? "bg-primarycolor" : "bg-slate-200"
+                        )}
+                      >
+                        <span
+                          className={cn(
+                            "pointer-events-none inline-block size-5 rounded-full bg-white shadow ring-0 transition-transform",
+                            lockBooks ? "translate-x-5" : "translate-x-0"
+                          )}
+                        />
+                      </button>
                     </div>
                   </div>
 

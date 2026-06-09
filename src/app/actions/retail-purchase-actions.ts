@@ -52,6 +52,7 @@ export async function createRetailPurchase(data: {
     date?: string;
     memo?: string;
     amountPaid?: number;
+    lock_books?: boolean;
     items: { editionId: number; quantity: number; unitPrice: number }[];
 }) {
     try {
@@ -79,6 +80,23 @@ export async function createRetailPurchase(data: {
             },
             include: { items: { include: { edition: { include: { books: true } } } } }
         });
+
+        // If lock_books is enabled, create locked_editions records
+        if (data.lock_books) {
+            try {
+                await (prisma as any).locked_editions.createMany({
+                    data: data.items.map((item) => ({
+                        editionId: item.editionId,
+                        amount_locked: item.quantity,
+                        order_id: purchase.id,
+                        status: "locked",
+                        updatedAt: new Date(),
+                    })),
+                });
+            } catch (lockErr) {
+                console.error("Failed to lock editions for retail purchase:", lockErr);
+            }
+        }
 
         await createNotification({
             title: `New Retail Purchase from ${data.name || "Anonymous"}`,
@@ -176,6 +194,11 @@ export async function approveRetailPurchase(
                     },
                 });
             }
+
+            // Delete locked_editions for this purchase (stock is now physically deducted)
+            await tx.locked_editions.deleteMany({
+                where: { order_id: purchaseId, status: "locked" },
+            });
 
             // Mark purchase as approved
             await tx.retail_purchases.update({

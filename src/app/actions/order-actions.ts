@@ -75,16 +75,33 @@ export async function getBookStockData(bookId: number) {
       orderBy: { createdAt: "asc" }, // Earliest first for FIFO
     });
 
+    // Subtract locked amounts from edition stock
+    const editionIds = editions.map((ed: any) => ed.id);
+    const lockedMap: Record<number, number> = {};
+    if (editionIds.length > 0) {
+      const lockedRecords = await (prisma as any).locked_editions.findMany({
+        where: {
+          editionId: { in: editionIds },
+          status: "locked",
+          is_deleted: false,
+        },
+      });
+      for (const lr of lockedRecords) {
+        lockedMap[lr.editionId] = (lockedMap[lr.editionId] || 0) + lr.amount_locked;
+      }
+    }
+
     const stockData = editions.map((ed: any) => {
       const totalStock = ed.bookeditionstores.reduce(
         (acc: number, s: any) => acc + (s.quantity || 0),
         0,
       );
+      const locked = lockedMap[ed.id] || 0;
       return {
         id: ed.id,
         name: ed.edition_name,
         price: ed.selling_price || 0,
-        stock: totalStock,
+        stock: Math.max(0, totalStock - locked),
       };
     });
 
@@ -102,6 +119,7 @@ export async function createOrder(data: {
   amount_paid: number;
   payment_type?: string;
   check_id?: number | null;
+  lock_books?: boolean;
   items: { bookId: number; quantity: number }[];
 }) {
   try {
@@ -186,6 +204,23 @@ export async function createOrder(data: {
         });
       } catch (paymentErr) {
         console.error("Failed to create payment record for check order:", paymentErr);
+      }
+    }
+
+    // 2c. If lock_books is enabled, create locked_editions records
+    if (data.lock_books) {
+      try {
+        await (prisma as any).locked_editions.createMany({
+          data: finalOrderItems.map((item: any) => ({
+            editionId: item.bookEditionId,
+            amount_locked: item.quantity,
+            order_id: order.id,
+            status: "locked",
+            updatedAt: new Date(),
+          })),
+        });
+      } catch (lockErr) {
+        console.error("Failed to lock editions:", lockErr);
       }
     }
 
@@ -295,7 +330,7 @@ export async function getAllOrders() {
  * For each edition of a given book, returns the list of stores that have stock,
  * with the store name, storeId, editionId, edition name, price, and available quantity.
  */
-export async function getBookStockBreakdown(bookId: number, editionIds?: number[]) {
+export async function getBookStockBreakdown(bookId: number, editionIds?: number[], excludeOrderId?: number) {
   try {
     const id = Number(bookId);
     const where: any = { bookId: id, is_deleted: false };
@@ -317,12 +352,31 @@ export async function getBookStockBreakdown(bookId: number, editionIds?: number[
       orderBy: { createdAt: "asc" },
     });
 
+    // Fetch aggregated locked amounts for all relevant editions, excluding current order's own locks
+    const allEditionIds = editions.map((ed: any) => ed.id);
+    const lockedMap: Record<number, number> = {};
+    if (allEditionIds.length > 0) {
+      const lockWhere: any = {
+        editionId: { in: allEditionIds },
+        status: "locked",
+        is_deleted: false,
+      };
+      if (excludeOrderId !== undefined) {
+        lockWhere.order_id = { not: excludeOrderId };
+      }
+      const lockedRecords = await (prisma as any).locked_editions.findMany({
+        where: lockWhere,
+      });
+      for (const lr of lockedRecords) {
+        lockedMap[lr.editionId] = (lockedMap[lr.editionId] || 0) + lr.amount_locked;
+      }
+    }
+
     const result = editions
-      .map((ed: any) => ({
-        editionId: ed.id,
-        editionName: ed.edition_name,
-        price: ed.selling_price || 0,
-        stores: [
+      .map((ed: any) => {
+        const lockedAmount = lockedMap[ed.id] || 0;
+        let remainingToSubtract = lockedAmount;
+        const stores = [
           ...ed.bookeditionstores.map((s: any) => ({
             storeStockId: s.id,
             storeId: s.storeId,
@@ -337,8 +391,21 @@ export async function getBookStockBreakdown(bookId: number, editionIds?: number[
             availableQty: p.quantity || 0,
             type: "printer" as const,
           })),
-        ],
-      }))
+        ].map(st => {
+          if (remainingToSubtract <= 0) return st;
+          const sub = Math.min(st.availableQty, remainingToSubtract);
+          remainingToSubtract -= sub;
+          return { ...st, availableQty: st.availableQty - sub };
+        });
+
+        return {
+          editionId: ed.id,
+          editionName: ed.edition_name,
+          price: ed.selling_price || 0,
+          lockedAmount,
+          stores,
+        };
+      })
       .filter((edition: any) => edition.stores.length > 0);
 
     return { success: true, data: result };
@@ -505,7 +572,12 @@ export async function approveOrder(
           });
         }
 
-        // 4. Mark order as approved (orders uses @updatedAt, so omit manual updatedAt)
+        // 4. Delete locked_editions for this order (stock is now physically deducted)
+        await tx.locked_editions.deleteMany({
+          where: { order_id: order.id, status: "locked" },
+        });
+
+        // 5. Mark order as approved (orders uses @updatedAt, so omit manual updatedAt)
         await tx.orders.update({
           where: { id: order.id },
           data: {
@@ -716,5 +788,69 @@ export async function markOrderDelivered(orderId: number) {
   } catch (error: any) {
     console.error("Mark order delivered error:", error);
     return { success: false, error: error?.message || "Failed to mark order as delivered" };
+  }
+}
+
+export async function removeBookFromOrder(orderId: number, bookId: number) {
+  try {
+    const session = await getCurrentSession();
+    if (!session || session.role !== "ADMIN") {
+      return { success: false, error: "Only administrators can modify orders" };
+    }
+
+    const id = Number(orderId);
+    const bId = Number(bookId);
+
+    const order = await (prisma as any).orders.findUnique({ where: { id } });
+    if (!order) return { success: false, error: "Order not found" };
+    if (order.is_approved) return { success: false, error: "Cannot modify an approved order" };
+
+    // Fetch order_items with their edition info for this book
+    const itemsWithBooks = await (prisma as any).order_items.findMany({
+      where: { orderId: id },
+      include: { bookedition: true },
+    });
+
+    const targetItems = itemsWithBooks.filter(
+      (item: any) => item.bookedition?.bookId === bId,
+    );
+
+    if (targetItems.length === 0) {
+      return { success: false, error: "No items found for this book in the order" };
+    }
+
+    const removedTotal = targetItems.reduce(
+      (sum: number, item: any) => sum + item.quantity * item.price_at_order,
+      0,
+    );
+    const editionIds = targetItems.map((item: any) => item.bookEditionId);
+
+    // Delete the order_items and update total in a transaction
+    await (prisma as any).$transaction(async (tx: any) => {
+      await tx.order_items.deleteMany({
+        where: { id: { in: targetItems.map((i: any) => i.id) } },
+      });
+
+      await tx.orders.update({
+        where: { id },
+        data: {
+          total_amount: { decrement: removedTotal },
+          updatedAt: new Date(),
+        },
+      });
+
+      // Remove locked_editions for these editions on this order
+      if (editionIds.length > 0) {
+        await tx.locked_editions.deleteMany({
+          where: { order_id: id, editionId: { in: editionIds } },
+        });
+      }
+    });
+
+    revalidatePath("/admin_dashboard/manage_orders");
+    return { success: true, data: { removedTotal } };
+  } catch (error: any) {
+    console.error("Remove book from order error:", error);
+    return { success: false, error: error?.message || "Failed to remove book from order" };
   }
 }

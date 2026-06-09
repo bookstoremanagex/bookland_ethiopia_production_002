@@ -48,7 +48,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useCalendar } from "@/lib/calendar-context";
 import { toast } from "sonner";
-import { getBookStockBreakdown, approveOrder, markOrderDelivered } from "@/app/actions/order-actions";
+import { getBookStockBreakdown, approveOrder, markOrderDelivered, removeBookFromOrder } from "@/app/actions/order-actions";
 import type { AdminOrder } from "./ManageOrdersPageContent";
 
 interface StoreOption {
@@ -63,6 +63,7 @@ interface EditionBreakdown {
     editionId: number;
     editionName: string;
     price: number;
+    lockedAmount: number;
     stores: StoreOption[];
 }
 
@@ -111,11 +112,16 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
     const [printIncludePrice, setPrintIncludePrice] = useState(true);
     const [printIncludeSubtotal, setPrintIncludeSubtotal] = useState(true);
     const [printIncludeStore, setPrintIncludeStore] = useState(true);
+    const [printIncludeQty, setPrintIncludeQty] = useState(true);
     const [printIncludeEdition, setPrintIncludeEdition] = useState(true);
     const [printIncludeStatus, setPrintIncludeStatus] = useState(true);
     const [printIncludeDelivery, setPrintIncludeDelivery] = useState(true);
     const [printFontSize, setPrintFontSize] = useState<"big" | "small" | "very-small" | "extra-small">("small");
     const [printPageWidth, setPrintPageWidth] = useState<"full" | "half">("full");
+    const [ignoredBookIds, setIgnoredBookIds] = useState<number[]>([]);
+    const [editedEditionQtys, setEditedEditionQtys] = useState<Record<number, Record<number, number>>>({});
+    const [advancedBookId, setAdvancedBookId] = useState<number | null>(null);
+    const [removeConfirmOpen, setRemoveConfirmOpen] = useState(false);
 
     // Group order_items by bookId → collect unique books
     const uniqueBooks = React.useMemo(() => {
@@ -163,13 +169,13 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
     }, [order]);
 
     const loadStockBreakdowns = useCallback(async () => {
-        if (!order || order.is_approved || uniqueBooks.length === 0) return;
+        if (!order || uniqueBooks.length === 0) return;
         setIsLoadingStock(true);
         try {
             const results: BookBreakdown[] = [];
             for (const ub of uniqueBooks) {
                 const editionsInOrder = (editionBreakdownPerBook.get(ub.bookId) || []).map(e => e.editionId);
-                const res = await getBookStockBreakdown(ub.bookId, editionsInOrder);
+                const res = await getBookStockBreakdown(ub.bookId, editionsInOrder, order.id);
                 if (res.success && res.data) {
                     results.push({ ...ub, editions: res.data as EditionBreakdown[] });
                 }
@@ -269,26 +275,39 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
 
         const headers: string[] = ["Book"];
         if (printIncludeEdition) headers.push("Edition");
+        if (printIncludeQty) headers.push("Qty");
         if (printIncludePrice) headers.push("Price");
         if (printIncludeSubtotal) headers.push("Subtotal");
         if (printIncludeStore) headers.push("Store");
 
         const getStoreForEdition = (editionId: number): string => {
+            // Try allocated stores first (pending orders)
             for (const ba of bookAllocations) {
                 for (const ed of ba.editions) {
                     if (ed.editionId === editionId) {
-                        const store = ed.storeAllocations.find(sa => sa.quantity > 0);
-                        if (store) {
-                            for (const bd of bookBreakdowns) {
-                                for (const e of bd.editions) {
-                                    if (e.editionId === editionId) {
-                                        const s = e.stores.find(st => st.storeStockId === store.storeStockId);
-                                        if (s) return `${s.storeName} (${store.quantity})`;
+                        const allocatedStores = ed.storeAllocations
+                            .filter(sa => sa.quantity > 0)
+                            .map(sa => {
+                                for (const bd of bookBreakdowns) {
+                                    for (const e of bd.editions) {
+                                        if (e.editionId === editionId) {
+                                            const s = e.stores.find(st => st.storeStockId === sa.storeStockId);
+                                            if (s) return `${s.storeName} (${sa.quantity})`;
+                                        }
                                     }
                                 }
-                            }
-                        }
-                        return "-";
+                                return null;
+                            })
+                            .filter(Boolean);
+                        if (allocatedStores.length > 0) return allocatedStores.join(", ");
+                    }
+                }
+            }
+            // Fallback: show available stores from stock breakdown
+            for (const bd of bookBreakdowns) {
+                for (const e of bd.editions) {
+                    if (e.editionId === editionId && e.stores.length > 0) {
+                        return e.stores.map(s => `${s.storeName}`).join(", ");
                     }
                 }
             }
@@ -298,6 +317,7 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
         const rows = order.order_items.map((item: any) => {
             const cells: string[] = [`${item.bookedition?.books?.title || "Unknown"}`];
             if (printIncludeEdition) cells.push(item.bookedition?.edition_name || "");
+            if (printIncludeQty) cells.push(String(item.quantity));
             if (printIncludePrice) cells.push(item.price_at_order.toLocaleString());
             if (printIncludeSubtotal) cells.push((item.quantity * item.price_at_order).toLocaleString());
             if (printIncludeStore) cells.push(getStoreForEdition(item.bookEditionId));
@@ -343,6 +363,40 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
     <thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
     <tbody>${rows}</tbody>
   </table>
+  ${printIncludeStore ? `
+  <div class="sep"></div>
+  <h2 style="font-size:${parseInt(fontSize) + 3}px;margin:12px 0 6px;">STOCK ALLOCATION</h2>
+  <table>
+    <thead><tr><th>Book</th><th>Edition</th><th>Store</th><th>Amount</th></tr></thead>
+    <tbody>
+      ${bookBreakdowns.flatMap(bd =>
+        bd.editions.flatMap(ed => {
+          const allocRows: string[] = [];
+          for (const ba of bookAllocations) {
+            if (ba.bookId !== bd.bookId) continue;
+            for (const edAlloc of ba.editions) {
+              if (edAlloc.editionId !== ed.editionId) continue;
+              for (const sa of edAlloc.storeAllocations) {
+                if (sa.quantity <= 0) continue;
+                const storeData = ed.stores.find(s => s.storeStockId === sa.storeStockId);
+                if (storeData) {
+                  allocRows.push(`<tr><td>${bd.bookTitle}</td><td>${ed.editionName}</td><td>${storeData.storeName}</td><td style="text-align:center">${sa.quantity}</td></tr>`);
+                }
+              }
+            }
+          }
+          // Fallback: show available stores if no allocations
+          if (allocRows.length === 0) {
+            for (const st of ed.stores) {
+              allocRows.push(`<tr><td>${bd.bookTitle}</td><td>${ed.editionName}</td><td>${st.storeName}</td><td style="text-align:center">${st.availableQty}</td></tr>`);
+            }
+          }
+          return allocRows;
+        })
+      ).join('')}
+    </tbody>
+  </table>
+  ` : ''}
   <div class="sep"></div>
   <div class="meta"><strong>Total: ${order.total_amount.toLocaleString()} ETB</strong></div>
   <div class="meta">Paid: ${order.amount_paid.toLocaleString()} ETB | Remaining: ${(order.total_amount - order.amount_paid).toLocaleString()} ETB</div>
@@ -440,13 +494,20 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
         && bookBreakdowns.length > 0
         && bookAllocations.length > 0
         && bookBreakdowns.every((bd, i) => {
+            if (ignoredBookIds.includes(bd.bookId)) return true;
             const edBreakdown = editionBreakdownPerBook.get(bd.bookId);
-            if (!edBreakdown) return false;
+            const customQtys = editedEditionQtys[bd.bookId];
+            if (!edBreakdown && !customQtys) return false;
             const allocated = bookTotals[i] || 0;
             if (allocated !== bd.requestedQty) return false;
-            // Check each edition matches
+            // Check each edition matches (use edited qtys if available, else FIFO)
             return bd.editions.every((ed, edIdx) => {
-                const fifo = edBreakdown.find((e: any) => e.editionId === ed.editionId);
+                if (customQtys && customQtys[ed.editionId] !== undefined) {
+                    const need = customQtys[ed.editionId] || 0;
+                    const have = editionTotals[i]?.[edIdx] || 0;
+                    return have === need;
+                }
+                const fifo = edBreakdown?.find((e: any) => e.editionId === ed.editionId);
                 const need = fifo?.quantity || 0;
                 const have = editionTotals[i]?.[edIdx] || 0;
                 return have === need;
@@ -483,6 +544,7 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
             for (let i = 0; i < bookAllocations.length; i++) {
                 const ba = bookAllocations[i];
                 const bd = bookBreakdowns[i];
+                if (ignoredBookIds.includes(bd.bookId)) continue;
                 const bookLines: string[] = [];
                 for (const ed of ba.editions) {
                     const editionData = bd.editions.find(e => e.editionId === ed.editionId);
@@ -797,20 +859,37 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                                                 {(() => {
                                                     const ebd = editionBreakdownPerBook.get(bd.bookId);
                                                     if (!ebd || ebd.length === 0) return null;
+                                                    const customQtysForBook = editedEditionQtys[bd.bookId] || {};
+                                                    const hasEdits = Object.keys(customQtysForBook).length > 0;
                                                     return (
                                                         <div className="flex flex-wrap items-center gap-1.5 mt-2">
-                                                            <span className="text-[8px] font-black text-blue-600 uppercase tracking-widest">FIFO:</span>
-                                                            {ebd.map((ed, idx) => (
-                                                                <span key={ed.editionId} className="text-[9px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100">
-                                                                    {ed.quantity}× {ed.editionName}
-                                                                </span>
-                                                            ))}
+                                                            <span className={cn("text-[8px] font-black uppercase tracking-widest", hasEdits ? "text-amber-600" : "text-blue-600")}>
+                                                                {hasEdits ? "Edited:" : "FIFO:"}
+                                                            </span>
+                                                            {ebd.map((ed, idx) => {
+                                                                const displayQty = customQtysForBook[ed.editionId] ?? ed.quantity;
+                                                                const isChanged = customQtysForBook[ed.editionId] !== undefined && customQtysForBook[ed.editionId] !== ed.quantity;
+                                                                return (
+                                                                    <span key={ed.editionId} className={cn(
+                                                                        "text-[9px] font-bold px-2 py-0.5 rounded-md border",
+                                                                        isChanged
+                                                                            ? "text-amber-700 bg-amber-50 border-amber-200"
+                                                                            : "text-blue-700 bg-blue-50 border-blue-100"
+                                                                    )}>
+                                                                        {displayQty}× {ed.editionName}
+                                                                    </span>
+                                                                );
+                                                            })}
                                                         </div>
                                                     );
                                                 })()}
                                             </div>
                                             <div className="flex items-center gap-2 shrink-0">
-                                                {isBookValid ? (
+                                                {ignoredBookIds.includes(bd.bookId) ? (
+                                                    <div className="px-3 py-1.5 bg-slate-200 text-slate-600 rounded-full text-[9px] font-black uppercase tracking-widest flex items-center gap-1">
+                                                        <Info className="size-3" /> Ignored
+                                                    </div>
+                                                ) : isBookValid ? (
                                                     <div className="px-3 py-1.5 bg-emerald-100 text-emerald-700 rounded-full text-[9px] font-black uppercase tracking-widest flex items-center gap-1">
                                                         <CheckCircle2 className="size-3" /> Complete
                                                     </div>
@@ -819,11 +898,18 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                                                         <AlertTriangle className="size-3" /> {bd.requestedQty - allocatedTotal} remaining
                                                     </div>
                                                 )}
+                                                <button
+                                                    onClick={() => setAdvancedBookId(bd.bookId)}
+                                                    className="size-8 rounded-xl border-2 border-slate-200 flex items-center justify-center text-muted-foreground hover:bg-slate-50 hover:border-primarycolor/30 hover:text-primarycolor transition-all active:scale-90"
+                                                    title="Advanced operation"
+                                                >
+                                                    <Settings2 className="size-4" />
+                                                </button>
                                             </div>
                                         </div>
 
                                         {/* Editions */}
-                                        <div className="space-y-4">
+                                        <div className={cn("space-y-4", ignoredBookIds.includes(bd.bookId) && "opacity-40 pointer-events-none")}>
                                             {bd.editions.length === 0 ? (
                                                 <p className="text-[10px] text-muted-foreground italic p-4 bg-slate-50 rounded-xl text-center">No stock available for this book</p>
                                             ) : (
@@ -832,7 +918,8 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                                                     if (!editionData) return null;
                                                     const editionTotal = edAlloc.storeAllocations.reduce((s, st) => s + st.quantity, 0);
                                                     const fifo = edBreakdown?.find((e: any) => e.editionId === editionData.editionId);
-                                                    const requiredQty = fifo?.quantity || 0;
+                                                    const customQty = editedEditionQtys[bd.bookId]?.[editionData.editionId];
+                                                    const requiredQty = customQty !== undefined ? customQty : (fifo?.quantity || 0);
                                                     const isEditionValid = editionTotal === requiredQty;
 
                                                     return (
@@ -851,6 +938,11 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                                                                         <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">
                                                                             {editionData.price.toLocaleString()} ETB / unit
                                                                         </p>
+                                                                        {editionData.lockedAmount > 0 && (
+                                                                            <p className="text-[8px] font-bold text-rose-600 uppercase tracking-widest mt-0.5">
+                                                                                Locked: {editionData.lockedAmount} units
+                                                                            </p>
+                                                                        )}
                                                                     </div>
                                                                 </div>
                                                                 <div className={cn(
@@ -953,11 +1045,16 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                                         Allocation amounts must match requested quantities
                                     </p>
                                     <div className="text-[9px] text-amber-700 mt-1 space-y-0.5">
-                                        {bookBreakdowns.map((bd, i) => (
-                                            bookTotals[i] !== bd.requestedQty && (
-                                                <p key={bd.bookId}>• {bd.bookTitle}: {bd.requestedQty - (bookTotals[i] || 0)} more needed</p>
-                                            )
-                                        ))}
+                                        {bookBreakdowns.map((bd, i) => {
+                                            if (ignoredBookIds.includes(bd.bookId)) return null;
+                                            if (bookTotals[i] !== bd.requestedQty) {
+                                                return <p key={bd.bookId}>• {bd.bookTitle}: {bd.requestedQty - (bookTotals[i] || 0)} more needed</p>;
+                                            }
+                                            return null;
+                                        })}
+                                        {ignoredBookIds.length > 0 && (
+                                            <p className="text-slate-500 mt-2">{ignoredBookIds.length} book{ignoredBookIds.length > 1 ? "s" : ""} ignored — will not be allocated</p>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -1041,6 +1138,7 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                                 {[
                                     { id: "shop", label: "Book Shop", state: printIncludeShop, set: setPrintIncludeShop },
                                     { id: "date", label: "Date", state: printIncludeDate, set: setPrintIncludeDate },
+                                    { id: "qty", label: "Qty", state: printIncludeQty, set: setPrintIncludeQty },
                                     { id: "price", label: "Price", state: printIncludePrice, set: setPrintIncludePrice },
                                     { id: "subtotal", label: "Subtotal", state: printIncludeSubtotal, set: setPrintIncludeSubtotal },
                                     { id: "store", label: "Store", state: printIncludeStore, set: setPrintIncludeStore },
@@ -1143,6 +1241,140 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                             className="flex-1 rounded-2xl h-11 font-black uppercase tracking-widest text-[9px] bg-primarycolor hover:bg-secondarycolor text-white shadow-lg gap-2"
                         >
                             <Printer className="size-3.5" /> Print
+                        </Button>
+                    </div>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+
+        {/* Advanced Operation Dialog */}
+        <Dialog open={advancedBookId !== null} onOpenChange={o => { if (!o) setAdvancedBookId(null); }}>
+            <DialogContent className="sm:max-w-lg rounded-[2.5rem] border-4 border-primarycolor/5 p-0 overflow-hidden shadow-2xl">
+                <DialogHeader className="bg-white p-6 pb-4 border-b border-slate-100">
+                    <DialogTitle className="text-base font-black text-primarycolor uppercase italic flex items-center gap-2">
+                        <Settings2 className="size-5" /> Advanced Operation
+                    </DialogTitle>
+                    <DialogDescription className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground">
+                        {(() => {
+                            const bd = bookBreakdowns.find(b => b.bookId === advancedBookId);
+                            return bd ? bd.bookTitle : "Unknown book";
+                        })()}
+                    </DialogDescription>
+                </DialogHeader>
+                {removeConfirmOpen ? (
+                    <div className="p-6 space-y-5">
+                        <div className="flex items-center gap-3 bg-rose-50 border-2 border-rose-200 rounded-2xl p-5">
+                            <AlertTriangle className="size-8 text-rose-500 shrink-0" />
+                            <div>
+                                <p className="font-black text-rose-800 text-sm uppercase">Remove this book?</p>
+                                <p className="text-[10px] font-bold text-rose-600 mt-1">
+                                    This will permanently remove all order items for this book and update the order total.
+                                </p>
+                            </div>
+                        </div>
+                        <div className="flex gap-2">
+                            <Button
+                                variant="outline"
+                                onClick={() => setRemoveConfirmOpen(false)}
+                                className="flex-1 rounded-2xl h-11 font-black uppercase tracking-widest text-[9px] border-2"
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                onClick={async () => {
+                                    if (advancedBookId !== null && order) {
+                                        const res = await removeBookFromOrder(order.id, advancedBookId);
+                                        if (res.success) {
+                                            toast.success("Book removed from order");
+                                            setAdvancedBookId(null);
+                                            setRemoveConfirmOpen(false);
+                                            onClose();
+                                            setTimeout(() => window.location.reload(), 500);
+                                        } else {
+                                            toast.error(res.error || "Failed to remove book");
+                                            setRemoveConfirmOpen(false);
+                                        }
+                                    }
+                                }}
+                                className="flex-1 rounded-2xl h-11 font-black uppercase tracking-widest text-[9px] bg-rose-600 hover:bg-rose-700 text-white shadow-lg"
+                            >
+                                Remove
+                            </Button>
+                        </div>
+                    </div>
+                ) : (
+                <div className="p-6 space-y-4 max-h-[60vh] overflow-y-auto">
+                    {(() => {
+                        const bd = bookBreakdowns.find(b => b.bookId === advancedBookId);
+                        if (!bd) return <p className="text-sm text-muted-foreground">Book not found</p>;
+                        const ebd = editionBreakdownPerBook.get(bd.bookId) || [];
+                        if (ebd.length === 0) return <p className="text-sm text-muted-foreground">No edition breakdown available</p>;
+                        const customQtys = editedEditionQtys[bd.bookId] || {};
+                        const fifoTotal = ebd.reduce((s, e) => s + e.quantity * e.price, 0);
+                        const editedTotal = ebd.reduce((s, e) => s + (customQtys[e.editionId] ?? e.quantity) * e.price, 0);
+                        return (
+                            <div className="space-y-3">
+                                <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Edition Quantities</p>
+                                {ebd.map((ed) => {
+                                    const currentVal = customQtys[ed.editionId] ?? ed.quantity;
+                                    return (
+                                        <div key={ed.editionId} className="flex items-center gap-3 bg-slate-50 rounded-2xl p-4 border-2 border-slate-100">
+                                            <div className="flex-1 min-w-0">
+                                                <p className="font-black text-slate-700 text-sm">{ed.editionName}</p>
+                                                <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">{ed.price.toLocaleString()} ETB / unit</p>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <Input
+                                                    type="number"
+                                                    min={0}
+                                                    max={bd.requestedQty}
+                                                    value={currentVal}
+                                                    onChange={e => {
+                                                        const v = Math.max(0, Math.min(bd.requestedQty, parseInt(e.target.value) || 0));
+                                                        setEditedEditionQtys(prev => ({
+                                                            ...prev,
+                                                            [bd.bookId]: { ...(prev[bd.bookId] || {}), [ed.editionId]: v },
+                                                        }));
+                                                    }}
+                                                    className="w-20 h-10 text-center font-black text-sm rounded-xl border-2 border-primarycolor/20 tabular-nums [-moz-appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                                                />
+                                                <span className="text-[9px] font-bold text-muted-foreground tabular-nums w-20 text-right">
+                                                    = {(currentVal * ed.price).toLocaleString()} ETB
+                                                </span>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                                <div className="h-px bg-slate-100" />
+                                <div className="flex items-center justify-between text-sm">
+                                    <p className="font-bold text-muted-foreground">FIFO Total</p>
+                                    <p className="font-black text-slate-700 tabular-nums">{fifoTotal.toLocaleString()} ETB</p>
+                                </div>
+                                <div className="flex items-center justify-between text-sm">
+                                    <p className="font-bold text-muted-foreground">Edited Total</p>
+                                    <p className={cn("font-black tabular-nums", editedTotal !== fifoTotal ? "text-amber-600" : "text-slate-700")}>
+                                        {editedTotal.toLocaleString()} ETB
+                                    </p>
+                                </div>
+                            </div>
+                        );
+                    })()}
+                </div>
+                )}
+                <DialogFooter className="bg-white p-4 border-t border-slate-100 shrink-0">
+                    <div className="flex gap-2 w-full">
+                        <Button
+                            variant="outline"
+                            onClick={() => setRemoveConfirmOpen(true)}
+                            className="flex-1 rounded-2xl h-11 font-black uppercase tracking-widest text-[9px] border-2 border-rose-200 text-rose-600 hover:bg-rose-50"
+                        >
+                            Remove Order
+                        </Button>
+                        <Button
+                            onClick={() => setAdvancedBookId(null)}
+                            className="flex-1 rounded-2xl h-11 font-black uppercase tracking-widest text-[9px] bg-primarycolor hover:bg-secondarycolor text-white shadow-lg"
+                        >
+                            Confirm
                         </Button>
                     </div>
                 </DialogFooter>
