@@ -111,13 +111,14 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
     const [printIncludeDate, setPrintIncludeDate] = useState(true);
     const [printIncludePrice, setPrintIncludePrice] = useState(true);
     const [printIncludeSubtotal, setPrintIncludeSubtotal] = useState(true);
-    const [printIncludeStore, setPrintIncludeStore] = useState(true);
     const [printIncludeQty, setPrintIncludeQty] = useState(true);
     const [printIncludeEdition, setPrintIncludeEdition] = useState(true);
+    const [printIncludeStore, setPrintIncludeStore] = useState(false);
     const [printIncludeStatus, setPrintIncludeStatus] = useState(true);
     const [printIncludeDelivery, setPrintIncludeDelivery] = useState(true);
     const [printFontSize, setPrintFontSize] = useState<"big" | "small" | "very-small" | "extra-small">("small");
     const [printPageWidth, setPrintPageWidth] = useState<"full" | "half">("full");
+    const [printStoreMode, setPrintStoreMode] = useState(false);
     const [ignoredBookIds, setIgnoredBookIds] = useState<number[]>([]);
     const [editedEditionQtys, setEditedEditionQtys] = useState<Record<number, Record<number, number>>>({});
     const [advancedBookId, setAdvancedBookId] = useState<number | null>(null);
@@ -266,44 +267,72 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
         }
     }, [isOpen, order]);
 
+    // When Store is selected, Edition must be on
+    useEffect(() => {
+        if (printIncludeStore) setPrintIncludeEdition(true);
+    }, [printIncludeStore]);
+
     const fontMap = { "big": "24px", "small": "21px", "very-small": "18px", "extra-small": "15px" } as const;
 
-    const handlePrintWithOptions = useCallback(() => {
+    const handlePrintWithOptions = () => {
         if (!order) return;
         const fontSize = fontMap[printFontSize];
         const isHalf = printPageWidth === "half";
 
-        const headers: string[] = ["Book"];
-        if (printIncludeEdition) headers.push("Edition");
-        if (printIncludeQty) headers.push("Qty");
-        if (printIncludePrice) headers.push("Price");
-        if (printIncludeSubtotal) headers.push("Subtotal");
-        if (printIncludeStore) headers.push("Store");
-
         const getStoreForEdition = (editionId: number): string => {
-            // Try allocated stores first (pending orders)
+            const storeMap = new Map<number, { name: string; qty: number }[]>();
             for (const ba of bookAllocations) {
                 for (const ed of ba.editions) {
-                    if (ed.editionId === editionId) {
-                        const allocatedStores = ed.storeAllocations
-                            .filter(sa => sa.quantity > 0)
-                            .map(sa => {
-                                for (const bd of bookBreakdowns) {
-                                    for (const e of bd.editions) {
-                                        if (e.editionId === editionId) {
-                                            const s = e.stores.find(st => st.storeStockId === sa.storeStockId);
-                                            if (s) return `${s.storeName} (${sa.quantity})`;
-                                        }
-                                    }
+                    if (ed.editionId !== editionId) continue;
+                    for (const sa of ed.storeAllocations) {
+                        if (sa.quantity <= 0) continue;
+                        for (const bd of bookBreakdowns) {
+                            for (const e of bd.editions) {
+                                if (e.editionId !== editionId) continue;
+                                const s = e.stores.find(st => st.storeStockId === sa.storeStockId);
+                                if (s) {
+                                    const arr = storeMap.get(editionId) || [];
+                                    arr.push({ name: s.storeName, qty: sa.quantity });
+                                    storeMap.set(editionId, arr);
                                 }
-                                return null;
-                            })
-                            .filter(Boolean);
-                        if (allocatedStores.length > 0) return allocatedStores.join(", ");
+                            }
+                        }
                     }
                 }
             }
-            // Fallback: show available stores from stock breakdown
+            if (storeMap.has(editionId)) {
+                return storeMap.get(editionId)!.map(s => `${s.name} (${s.qty})`).join(", ");
+            }
+            if (order.is_approved && order.allocation_summary) {
+                const item = order.order_items.find(i => i.bookEditionId === editionId);
+                const bookTitle = item?.bookedition?.books?.title;
+                const edName = item?.bookedition?.edition_name;
+                if (bookTitle && edName) {
+                    const lines = order.allocation_summary.split('\n');
+                    const escapedEd = edName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                    const edRe = new RegExp(`${escapedEd}:\\s*(\\d+)\\s*units?\\s*→\\s*(.+)`, 'i');
+                    let inSection = false;
+                    const matches: string[] = [];
+                    for (const rawLine of lines) {
+                        const line = rawLine.trim();
+                        if (line.includes(`"${bookTitle}"`)) {
+                            inSection = true;
+                            continue;
+                        }
+                        if (inSection && line === '') {
+                            inSection = false;
+                            continue;
+                        }
+                        if (inSection) {
+                            const m = line.match(edRe);
+                            if (m) {
+                                matches.push(`${m[2].trim()} (${m[1]})`);
+                            }
+                        }
+                    }
+                    if (matches.length > 0) return matches.join(", ");
+                }
+            }
             for (const bd of bookBreakdowns) {
                 for (const e of bd.editions) {
                     if (e.editionId === editionId && e.stores.length > 0) {
@@ -314,32 +343,44 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
             return "-";
         };
 
-        const rows = order.order_items.map((item: any) => {
-            const cells: string[] = [`${item.bookedition?.books?.title || "Unknown"}`];
-            if (printIncludeEdition) cells.push(item.bookedition?.edition_name || "");
-            if (printIncludeQty) cells.push(String(item.quantity));
-            if (printIncludePrice) cells.push(item.price_at_order.toLocaleString());
-            if (printIncludeSubtotal) cells.push((item.quantity * item.price_at_order).toLocaleString());
-            if (printIncludeStore) cells.push(getStoreForEdition(item.bookEditionId));
-            return `<tr>${cells.map(c => `<td style="padding:4px 10px;border:1px solid #ddd;font-size:${fontSize}">${c}</td>`).join('')}</tr>`;
-        }).join('');
+        let printContent: string;
+        if (printStoreMode) {
+            // ── Store Info mode: group by book+edition, show store allocations ──
+            const storeRows: string[] = [];
+            const editionMap = new Map<number, Map<number, { editionName: string; bookTitle: string; qty: number }>>();
+            for (const item of order.order_items) {
+                const bid = item.bookedition?.bookId!;
+                const eid = item.bookEditionId;
+                if (!editionMap.has(bid)) editionMap.set(bid, new Map());
+                const sub = editionMap.get(bid)!;
+                if (sub.has(eid)) {
+                    sub.get(eid)!.qty += item.quantity;
+                } else {
+                    sub.set(eid, {
+                        editionName: item.bookedition?.edition_name || "Unknown",
+                        bookTitle: item.bookedition?.books?.title || "Unknown",
+                        qty: item.quantity,
+                    });
+                }
+            }
+            for (const [, editions] of editionMap) {
+                for (const [eid, ed] of editions) {
+                    storeRows.push(`<tr><td style="padding:4px 10px;border:1px solid #ddd;font-size:${fontSize}">${ed.bookTitle}</td><td style="padding:4px 10px;border:1px solid #ddd;font-size:${fontSize}">${ed.editionName}</td><td style="padding:4px 10px;border:1px solid #ddd;font-size:${fontSize};text-align:center">${ed.qty}</td><td style="padding:4px 10px;border:1px solid #ddd;font-size:${fontSize}">${getStoreForEdition(eid)}</td></tr>`);
+                }
+            }
 
-        const metaLines: string[] = [];
-        metaLines.push(`<strong>Order ORD-${order.id}</strong>`);
-        if (printIncludeShop) metaLines.push(`Shop: ${order.bookshopes?.name || ''}${order.bookshopes?.branch ? ` (${order.bookshopes.branch})` : ''}`);
-        if (printIncludeDate) metaLines.push(`Date: ${formatDate(new Date(order.createdAt))}`);
-        if (printIncludeStatus) metaLines.push(`Status: ${order.is_approved ? "Approved" : "Pending"}`);
-        if (printIncludeDelivery) metaLines.push(`Delivery: ${order.delivery ? "Delivered" : "Not Delivered"}`);
-
-        const printWin = window.open('', '_blank', 'width=800,height=600');
-        if (!printWin) return;
-        printWin.document.write(`
+            printContent = `
 <!DOCTYPE html>
 <html>
 <head>
-<title>Order ORD-${order.id}</title>
+<title>Store Allocation - Order ORD-${order.id}</title>
 <style>
-  @page { size: ${isHalf ? 'A4 portrait' : 'A4 portrait'}; margin: 8mm; }
+  @page {
+    size: ${isHalf ? 'A4 portrait' : 'A4 portrait'};
+    margin: 8mm;
+    @top-center { content: "Order ORD-${order.id}"; font-size: 10px; color: #888; font-weight: bold; }
+    @bottom-center { content: "Page " counter(page); font-size: 9px; color: #aaa; }
+  }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     font-family: Arial, Helvetica, sans-serif;
@@ -347,7 +388,6 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
     color: #000;
     ${isHalf ? 'width: 50%; position: fixed; top: 0; left: 0; padding: 16px 24px;' : 'padding: 24px 36px;'}
   }
-  h1 { font-size: ${parseInt(fontSize) + 6}px; margin-bottom: 8px; }
   .meta { font-size: ${parseInt(fontSize) - 2}px; color: #555; margin-bottom: 4px; }
   table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: ${fontSize}; }
   th { background: #eee; padding: 6px 10px; text-align: left; font-weight: 700; border: 1px solid #bbb; font-size: ${parseInt(fontSize) - 1}px; }
@@ -356,57 +396,107 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
 </style>
 </head>
 <body>
-  <h1>ORDER SUMMARY</h1>
-  ${metaLines.map(l => `<div class="meta">${l}</div>`).join('')}
+  <div class="meta" style="font-weight:900;font-size:${fontSize}">Order ORD-${order.id}</div>
+  <div class="sep"></div>
+  <table>
+    <thead><tr><th>Book</th><th>Edition</th><th style="text-align:center">Qty</th><th>Store</th></tr></thead>
+    <tbody>${storeRows.join('')}</tbody>
+  </table>
+</body>
+</html>`;
+        } else {
+            // ── Custom print mode ──
+            const headers: string[] = ["Book"];
+            if (printIncludeEdition) headers.push("Edition");
+            if (printIncludeQty) headers.push("Qty");
+            if (printIncludePrice) headers.push("Price");
+            if (printIncludeSubtotal) headers.push("Subtotal");
+            if (printIncludeStore) headers.push("Store");
+
+            const rows = (() => {
+                if (printIncludeEdition) {
+                    return order.order_items.map((item: any) => {
+                        const cells: string[] = [`${item.bookedition?.books?.title || "Unknown"}`];
+                        cells.push(item.bookedition?.edition_name || "");
+                        if (printIncludeQty) cells.push(String(item.quantity));
+                        if (printIncludePrice) cells.push(item.price_at_order.toLocaleString());
+                        if (printIncludeSubtotal) cells.push((item.quantity * item.price_at_order).toLocaleString());
+                        if (printIncludeStore) cells.push(getStoreForEdition(item.bookEditionId));
+                        return `<tr>${cells.map(c => `<td style="padding:4px 10px;border:1px solid #ddd;font-size:${fontSize}">${c}</td>`).join('')}</tr>`;
+                    }).join('');
+                }
+                // Edition OFF: group by book title, merge quantities
+                const bookMap = new Map<string, { qty: number; price: number }>();
+                for (const item of order.order_items) {
+                    const title = item.bookedition?.books?.title || "Unknown";
+                    const existing = bookMap.get(title) || { qty: 0, price: item.price_at_order };
+                    existing.qty += item.quantity;
+                    bookMap.set(title, existing);
+                }
+                return Array.from(bookMap.entries()).map(([title, data]) => {
+                    const cells: string[] = [title];
+                    if (printIncludeQty) cells.push(String(data.qty));
+                    if (printIncludePrice) cells.push(data.price.toLocaleString());
+                    if (printIncludeSubtotal) cells.push((data.qty * data.price).toLocaleString());
+                    return `<tr>${cells.map(c => `<td style="padding:4px 10px;border:1px solid #ddd;font-size:${fontSize}">${c}</td>`).join('')}</tr>`;
+                }).join('');
+            })();
+
+            const metaLines: string[] = [];
+            metaLines.push(`<strong>Order ORD-${order.id}</strong>`);
+            if (printIncludeShop) metaLines.push(`Shop: ${order.bookshopes?.name || ''}${order.bookshopes?.branch ? ` (${order.bookshopes.branch})` : ''}`);
+            if (printIncludeDate) metaLines.push(`Date: ${formatDate(new Date(order.createdAt))}`);
+            if (printIncludeStatus) metaLines.push(`Status: ${order.is_approved ? "Approved" : "Pending"}`);
+            if (printIncludeDelivery) metaLines.push(`Delivery: ${order.delivery ? "Delivered" : "Not Delivered"}`);
+
+            printContent = `
+<!DOCTYPE html>
+<html>
+<head>
+<title>Order ORD-${order.id}</title>
+<style>
+  @page {
+    size: ${isHalf ? 'A4 portrait' : 'A4 portrait'};
+    margin: 8mm;
+    @top-center { content: "Order ORD-${order.id}"; font-size: 10px; color: #888; font-weight: bold; }
+    @bottom-center { content: "Page " counter(page); font-size: 9px; color: #aaa; }
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: ${fontSize};
+    color: #000;
+    ${isHalf ? 'width: 50%; position: fixed; top: 0; left: 0; padding: 16px 24px;' : 'padding: 24px 36px;'}
+  }
+  .meta { font-size: ${parseInt(fontSize) - 2}px; color: #555; margin-bottom: 4px; }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: ${fontSize}; }
+  th { background: #eee; padding: 6px 10px; text-align: left; font-weight: 700; border: 1px solid #bbb; font-size: ${parseInt(fontSize) - 1}px; }
+  td { padding: 4px 10px; border: 1px solid #ddd; }
+  .sep { border-top: 1.5px solid #888; margin: 6px 0; }
+</style>
+</head>
+<body>
+  <div class="meta" style="font-weight:900;font-size:${fontSize}">Order ORD-${order.id}</div>
+  ${metaLines.slice(1).map(l => `<div class="meta">${l}</div>`).join('')}
   <div class="sep"></div>
   <table>
     <thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
     <tbody>${rows}</tbody>
   </table>
-  ${printIncludeStore ? `
-  <div class="sep"></div>
-  <h2 style="font-size:${parseInt(fontSize) + 3}px;margin:12px 0 6px;">STOCK ALLOCATION</h2>
-  <table>
-    <thead><tr><th>Book</th><th>Edition</th><th>Store</th><th>Amount</th></tr></thead>
-    <tbody>
-      ${bookBreakdowns.flatMap(bd =>
-        bd.editions.flatMap(ed => {
-          const allocRows: string[] = [];
-          for (const ba of bookAllocations) {
-            if (ba.bookId !== bd.bookId) continue;
-            for (const edAlloc of ba.editions) {
-              if (edAlloc.editionId !== ed.editionId) continue;
-              for (const sa of edAlloc.storeAllocations) {
-                if (sa.quantity <= 0) continue;
-                const storeData = ed.stores.find(s => s.storeStockId === sa.storeStockId);
-                if (storeData) {
-                  allocRows.push(`<tr><td>${bd.bookTitle}</td><td>${ed.editionName}</td><td>${storeData.storeName}</td><td style="text-align:center">${sa.quantity}</td></tr>`);
-                }
-              }
-            }
-          }
-          // Fallback: show available stores if no allocations
-          if (allocRows.length === 0) {
-            for (const st of ed.stores) {
-              allocRows.push(`<tr><td>${bd.bookTitle}</td><td>${ed.editionName}</td><td>${st.storeName}</td><td style="text-align:center">${st.availableQty}</td></tr>`);
-            }
-          }
-          return allocRows;
-        })
-      ).join('')}
-    </tbody>
-  </table>
-  ` : ''}
   <div class="sep"></div>
   <div class="meta"><strong>Total: ${order.total_amount.toLocaleString()} ETB</strong></div>
   <div class="meta">Paid: ${order.amount_paid.toLocaleString()} ETB | Remaining: ${(order.total_amount - order.amount_paid).toLocaleString()} ETB</div>
 </body>
-</html>
-`);
+</html>`;
+        }
+
+        const printWin = window.open('', '_blank', 'width=800,height=600');
+        if (!printWin) return;
+        printWin.document.write(printContent);
         printWin.document.close();
         printWin.focus();
         printWin.print();
-    }, [order, printFontSize, printPageWidth, printIncludeShop, printIncludeDate, printIncludePrice, printIncludeSubtotal, printIncludeStore, printIncludeEdition, printIncludeStatus, printIncludeDelivery]);
+    };
 
     const handlePrint = useCallback(() => {
         if (!order) return;
@@ -1112,124 +1202,155 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
 
         {/* Print Options Dialog */}
         <Dialog open={printOptionsOpen} onOpenChange={setPrintOptionsOpen}>
-            <DialogContent className="sm:max-w-3xl w-[95vw] rounded-[2.5rem] border-4 border-primarycolor/5 bg-[#F8FAFC] p-0 overflow-hidden shadow-2xl">
-                <DialogHeader className="bg-white p-5 pb-4 border-b border-slate-100 shrink-0">
+            <DialogContent className="sm:max-w-5xl w-[95vw] rounded-[2.5rem] border-4 border-primarycolor/5 bg-[#F8FAFC] p-0 overflow-hidden shadow-2xl">
+                <DialogHeader className="bg-white p-4 pb-3 border-b border-slate-100 shrink-0">
                     <div className="flex items-center gap-3">
-                        <div className="size-9 rounded-2xl bg-primarycolor/10 flex items-center justify-center text-primarycolor shrink-0">
-                            <Settings2 className="size-5" />
+                        <div className="size-8 rounded-2xl bg-primarycolor/10 flex items-center justify-center text-primarycolor shrink-0">
+                            <Settings2 className="size-4" />
                         </div>
                         <div>
-                            <DialogTitle className="text-lg font-black text-primarycolor uppercase italic">
+                            <DialogTitle className="text-base font-black text-primarycolor uppercase italic">
                                 Print <span className="text-secondarycolor not-italic">Options</span>
                             </DialogTitle>
-                            <DialogDescription className="text-[8px] font-bold uppercase tracking-widest text-muted-foreground">
-                                Customize what to include in the printout
-                            </DialogDescription>
                         </div>
                     </div>
                 </DialogHeader>
 
-                <div className="p-5 space-y-4 overflow-y-auto">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        {/* Checkboxes */}
-                        <div className="bg-white rounded-2xl p-4 border-2 border-primarycolor/5 space-y-3 md:col-span-2">
-                            <p className="text-[8px] font-black text-primarycolor uppercase tracking-widest italic">Include in print</p>
-                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <div className="p-4 space-y-3 overflow-y-auto">
+                    {/* Top row: mode toggle + font size + page width */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        {/* Mode toggle */}
+                        <div className="bg-white rounded-2xl p-2.5 border-2 border-primarycolor/5">
+                            <p className="text-[7px] font-black text-primarycolor uppercase tracking-widest italic mb-1.5">Print Mode</p>
+                            <div className="flex gap-1.5">
                                 {[
-                                    { id: "shop", label: "Book Shop", state: printIncludeShop, set: setPrintIncludeShop },
-                                    { id: "date", label: "Date", state: printIncludeDate, set: setPrintIncludeDate },
-                                    { id: "qty", label: "Qty", state: printIncludeQty, set: setPrintIncludeQty },
-                                    { id: "price", label: "Price", state: printIncludePrice, set: setPrintIncludePrice },
-                                    { id: "subtotal", label: "Subtotal", state: printIncludeSubtotal, set: setPrintIncludeSubtotal },
-                                    { id: "store", label: "Store", state: printIncludeStore, set: setPrintIncludeStore },
-                                    { id: "edition", label: "Edition", state: printIncludeEdition, set: setPrintIncludeEdition },
-                                    { id: "status", label: "Status", state: printIncludeStatus, set: setPrintIncludeStatus },
-                                    { id: "delivery", label: "Delivery Status", state: printIncludeDelivery, set: setPrintIncludeDelivery },
-                                ].map(opt => (
+                                    { id: false, label: "Custom" },
+                                    { id: true, label: "Store Info" },
+                                ].map(mode => (
                                     <label
-                                        key={opt.id}
-                                        className="flex items-center gap-2 p-2.5 rounded-xl border-2 border-slate-100 cursor-pointer hover:border-primarycolor/30 transition-colors"
+                                        key={String(mode.id)}
+                                        className={cn(
+                                            "flex-1 flex items-center gap-1.5 p-2 rounded-xl border-2 cursor-pointer transition-colors",
+                                            printStoreMode === mode.id
+                                                ? "border-primarycolor bg-primarycolor/5"
+                                                : "border-slate-100 bg-white hover:border-slate-200"
+                                        )}
                                     >
                                         <input
-                                            type="checkbox"
-                                            checked={opt.state}
-                                            onChange={e => opt.set(e.target.checked)}
-                                            className="size-3.5 accent-primarycolor rounded shrink-0"
+                                            type="radio"
+                                            name="print-mode"
+                                            checked={printStoreMode === mode.id}
+                                            onChange={() => {
+                                                setPrintStoreMode(mode.id);
+                                                if (mode.id) {
+                                                    setPrintIncludeEdition(true);
+                                                    setPrintIncludeQty(true);
+                                                }
+                                            }}
+                                            className="size-3 accent-primarycolor shrink-0"
                                         />
-                                        <span className="font-bold text-slate-700 text-[10px] leading-tight">{opt.label}</span>
+                                        <span className="font-bold text-slate-700 text-[9px] uppercase tracking-widest leading-tight">{mode.label}</span>
                                     </label>
                                 ))}
                             </div>
                         </div>
 
-                        {/* Font size + Page width */}
-                        <div className="space-y-4">
-                            <div className="bg-white rounded-2xl p-4 border-2 border-primarycolor/5 space-y-2.5">
-                                <p className="text-[8px] font-black text-primarycolor uppercase tracking-widest italic">Font Size</p>
-                                <div className="flex flex-col gap-1.5">
-                                    {(["big", "small", "very-small", "extra-small"] as const).map(size => (
-                                        <label
-                                            key={size}
-                                            className={cn(
-                                                "flex items-center gap-2.5 px-3 py-2 rounded-xl border-2 cursor-pointer transition-colors",
-                                                printFontSize === size
-                                                    ? "border-primarycolor bg-primarycolor/5"
-                                                    : "border-slate-100 bg-white hover:border-slate-200"
-                                            )}
-                                        >
-                                            <input
-                                                type="radio"
-                                                name="font-size"
-                                                checked={printFontSize === size}
-                                                onChange={() => setPrintFontSize(size)}
-                                                className="size-3.5 accent-primarycolor shrink-0"
-                                            />
-                                            <span className="font-bold text-slate-700 text-[10px] uppercase tracking-widest">
-                                                {size === "big" ? "Big" : size === "small" ? "Small" : size === "very-small" ? "Very Small" : "Extra Small"}
-                                            </span>
-                                        </label>
-                                    ))}
-                                </div>
+                        {/* Font size */}
+                        <div className="bg-white rounded-2xl p-2.5 border-2 border-primarycolor/5">
+                            <p className="text-[7px] font-black text-primarycolor uppercase tracking-widest italic mb-1.5">Font Size</p>
+                            <div className="flex flex-wrap gap-1">
+                                {(["big", "small", "very-small", "extra-small"] as const).map(size => (
+                                    <label
+                                        key={size}
+                                        className={cn(
+                                            "flex items-center gap-1 px-2 py-1.5 rounded-xl border-2 cursor-pointer transition-colors",
+                                            printFontSize === size
+                                                ? "border-primarycolor bg-primarycolor/5"
+                                                : "border-slate-100 bg-white hover:border-slate-200"
+                                        )}
+                                    >
+                                        <input
+                                            type="radio"
+                                            name="font-size"
+                                            checked={printFontSize === size}
+                                            onChange={() => setPrintFontSize(size)}
+                                            className="size-3 accent-primarycolor shrink-0"
+                                        />
+                                        <span className="font-bold text-slate-700 text-[8px] uppercase tracking-widest">
+                                            {size === "big" ? "Big" : size === "small" ? "Small" : size === "very-small" ? "V.Small" : "X.Small"}
+                                        </span>
+                                    </label>
+                                ))}
                             </div>
+                        </div>
 
-                            <div className="bg-white rounded-2xl p-4 border-2 border-primarycolor/5 space-y-2.5">
-                                <p className="text-[8px] font-black text-primarycolor uppercase tracking-widest italic">Page Width</p>
-                                <div className="flex flex-col gap-1.5">
-                                    {(["full", "half"] as const).map(w => (
-                                        <label
-                                            key={w}
-                                            className={cn(
-                                                "flex items-center gap-2.5 px-3 py-2 rounded-xl border-2 cursor-pointer transition-colors",
-                                                printPageWidth === w
-                                                    ? "border-primarycolor bg-primarycolor/5"
-                                                    : "border-slate-100 bg-white hover:border-slate-200"
-                                            )}
-                                        >
-                                            <input
-                                                type="radio"
-                                                name="page-width"
-                                                checked={printPageWidth === w}
-                                                onChange={() => setPrintPageWidth(w)}
-                                                className="size-3.5 accent-primarycolor shrink-0"
-                                            />
-                                            <div>
-                                                <p className="font-bold text-slate-700 text-[10px] uppercase tracking-widest leading-tight">{w === "full" ? "Full Page" : "Half Page"}</p>
-                                                <p className="text-[7px] text-muted-foreground font-bold uppercase tracking-widest">{w === "full" ? "Entire width" : "Left top fixed"}</p>
-                                            </div>
-                                        </label>
-                                    ))}
-                                </div>
+                        {/* Page width */}
+                        <div className="bg-white rounded-2xl p-2.5 border-2 border-primarycolor/5">
+                            <p className="text-[7px] font-black text-primarycolor uppercase tracking-widest italic mb-1.5">Page Width</p>
+                            <div className="flex gap-1.5">
+                                {(["full", "half"] as const).map(w => (
+                                    <label
+                                        key={w}
+                                        className={cn(
+                                            "flex-1 flex items-center gap-1.5 p-2 rounded-xl border-2 cursor-pointer transition-colors",
+                                            printPageWidth === w
+                                                ? "border-primarycolor bg-primarycolor/5"
+                                                : "border-slate-100 bg-white hover:border-slate-200"
+                                        )}
+                                    >
+                                        <input
+                                            type="radio"
+                                            name="page-width"
+                                            checked={printPageWidth === w}
+                                            onChange={() => setPrintPageWidth(w)}
+                                            className="size-3 accent-primarycolor shrink-0"
+                                        />
+                                        <span className="font-bold text-slate-700 text-[8px] uppercase tracking-widest">{w === "full" ? "Full" : "Half"}</span>
+                                    </label>
+                                ))}
                             </div>
+                        </div>
+                    </div>
+
+                    {/* Checkboxes */}
+                    <div className={cn("bg-white rounded-2xl p-3 border-2 border-primarycolor/5", printStoreMode && "opacity-40 pointer-events-none")}>
+                        <p className="text-[7px] font-black text-primarycolor uppercase tracking-widest italic mb-2">Include in print</p>
+                        <div className="flex flex-wrap gap-1.5">
+                            {[
+                                { id: "shop", label: "Book Shop", state: printIncludeShop, set: setPrintIncludeShop },
+                                { id: "date", label: "Date", state: printIncludeDate, set: setPrintIncludeDate },
+                                { id: "qty", label: "Qty", state: printIncludeQty, set: setPrintIncludeQty },
+                                { id: "price", label: "Price", state: printIncludePrice, set: setPrintIncludePrice },
+                                { id: "subtotal", label: "Subtotal", state: printIncludeSubtotal, set: setPrintIncludeSubtotal },
+                                { id: "edition", label: "Edition", state: printIncludeEdition, set: setPrintIncludeEdition },
+                                { id: "store", label: "Store", state: printIncludeStore, set: setPrintIncludeStore },
+                                { id: "status", label: "Status", state: printIncludeStatus, set: setPrintIncludeStatus },
+                                { id: "delivery", label: "Delivery", state: printIncludeDelivery, set: setPrintIncludeDelivery },
+                            ].map(opt => (
+                                <label
+                                    key={opt.id}
+                                    className="flex items-center gap-1.5 px-2 py-1.5 rounded-xl border-2 border-slate-100 cursor-pointer hover:border-primarycolor/30 transition-colors"
+                                >
+                                    <input
+                                        type="checkbox"
+                                        checked={opt.state}
+                                        disabled={printStoreMode}
+                                        onChange={e => opt.set(e.target.checked)}
+                                        className="size-3 accent-primarycolor rounded shrink-0"
+                                    />
+                                    <span className="font-bold text-slate-700 text-[8px] leading-tight whitespace-nowrap">{opt.label}</span>
+                                </label>
+                            ))}
                         </div>
                     </div>
                 </div>
 
-                <DialogFooter className="bg-white p-4 border-t border-slate-100 shrink-0">
-                    <div className="flex gap-3 w-full">
+                <DialogFooter className="bg-white p-3 border-t border-slate-100 shrink-0">
+                    <div className="flex gap-2 w-full">
                         <Button
                             variant="outline"
                             onClick={() => setPrintOptionsOpen(false)}
-                            className="flex-1 rounded-2xl h-11 font-black uppercase tracking-widest text-[9px] border-2"
+                            className="flex-1 rounded-2xl h-10 font-black uppercase tracking-widest text-[8px] border-2"
                         >
                             Cancel
                         </Button>
@@ -1238,9 +1359,9 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                                 setPrintOptionsOpen(false);
                                 handlePrintWithOptions();
                             }}
-                            className="flex-1 rounded-2xl h-11 font-black uppercase tracking-widest text-[9px] bg-primarycolor hover:bg-secondarycolor text-white shadow-lg gap-2"
+                            className="flex-1 rounded-2xl h-10 font-black uppercase tracking-widest text-[8px] bg-primarycolor hover:bg-secondarycolor text-white shadow-lg gap-1.5"
                         >
-                            <Printer className="size-3.5" /> Print
+                            <Printer className="size-3" /> Print
                         </Button>
                     </div>
                 </DialogFooter>
