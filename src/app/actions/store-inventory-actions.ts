@@ -147,6 +147,152 @@ export async function deleteStoreInventory(id: number, editionId: number) {
     }
 }
 
+export async function getStoreBooksAndEditions(storeId: number) {
+    try {
+        const store = await (prisma as any).stores.findUnique({
+            where: { id: storeId, is_deleted: false },
+            include: {
+                bookeditionstores: {
+                    where: { is_deleted: false, quantity: { gt: 0 } },
+                    include: {
+                        bookedition: {
+                            include: { books: true }
+                        }
+                    },
+                    orderBy: { updatedAt: 'desc' }
+                }
+            }
+        });
+        if (!store) return { success: false, error: "Store not found" };
+
+        // Group editions by book for structured response
+        const bookMap: Record<string, any> = {};
+        for (const item of store.bookeditionstores) {
+            const book = item.bookedition?.books;
+            if (!book) continue;
+            const key = String(book.id);
+            if (!bookMap[key]) {
+                bookMap[key] = { bookId: book.id, title: book.title, author: book.author, editions: [] };
+            }
+            bookMap[key].editions.push({
+                id: item.bookedition.id,
+                name: item.bookedition.edition_name,
+                storeStockId: item.id,
+                quantity: item.quantity,
+            });
+        }
+
+        return { success: true, data: Object.values(bookMap) };
+    } catch (error) {
+        return { success: false, error: "Failed to fetch store books" };
+    }
+}
+
+export async function transferBetweenStores(fromStoreId: number, toStoreId: number, transfers: { editionId: number, quantity: number }[]) {
+    try {
+        if (fromStoreId === toStoreId) {
+            return { success: false, error: "Source and destination stores must be different" };
+        }
+
+        const result = await (prisma as any).$transaction(async (tx: any) => {
+            const results = [];
+
+            for (const t of transfers) {
+                if (t.quantity < 1) {
+                    throw new Error(`Invalid quantity for edition ID ${t.editionId}`);
+                }
+
+                // Check availability in source store
+                const fromStock = await tx.bookeditionstores.findFirst({
+                    where: {
+                        storeId: fromStoreId,
+                        editionId: t.editionId,
+                        is_deleted: false,
+                    }
+                });
+
+                const available = Number(fromStock?.quantity || 0);
+                if (available < t.quantity) {
+                    throw new Error(`Insufficient stock: only ${available} available in source store for edition ID ${t.editionId}`);
+                }
+
+                // Deduct from source store
+                const newFromQty = available - t.quantity;
+                if (newFromQty === 0) {
+                    await tx.bookeditionstores.update({
+                        where: { id: fromStock.id },
+                        data: { quantity: 0, is_deleted: true, updatedAt: new Date() },
+                    });
+                } else {
+                    await tx.bookeditionstores.update({
+                        where: { id: fromStock.id },
+                        data: { quantity: newFromQty, updatedAt: new Date() },
+                    });
+                }
+
+                // Add to destination store
+                const toStock = await tx.bookeditionstores.findFirst({
+                    where: {
+                        storeId: toStoreId,
+                        editionId: t.editionId,
+                        is_deleted: false,
+                    }
+                });
+
+                if (toStock) {
+                    await tx.bookeditionstores.update({
+                        where: { id: toStock.id },
+                        data: { quantity: { increment: t.quantity }, updatedAt: new Date() },
+                    });
+                } else {
+                    await tx.bookeditionstores.create({
+                        data: {
+                            storeId: toStoreId,
+                            editionId: t.editionId,
+                            quantity: t.quantity,
+                            updatedAt: new Date(),
+                        }
+                    });
+                }
+
+                results.push({ editionId: t.editionId, quantity: t.quantity });
+            }
+
+            return results;
+        }, { timeout: 15000 });
+
+        revalidatePath('/admin_dashboard/stores');
+        return { success: true, data: result };
+    } catch (error: any) {
+        return { success: false, error: error.message || "Transfer failed" };
+    }
+}
+
+export async function getStoreInventoryWithDetails(storeId: number) {
+    try {
+        const store = await (prisma as any).stores.findUnique({
+            where: { id: storeId, is_deleted: false },
+            include: {
+                bookeditionstores: {
+                    where: { is_deleted: false },
+                    include: {
+                        bookedition: {
+                            include: {
+                                books: true
+                            }
+                        }
+                    },
+                    orderBy: { updatedAt: 'desc' }
+                }
+            }
+        });
+        if (!store) return { success: false, error: "Store not found" };
+        return { success: true, data: store };
+    } catch (error) {
+        return { success: false, error: "Failed to fetch store inventory" };
+    }
+}
+
 export async function batchAssignEditionToStores(
   data: { editionId: number; stores: { storeId: number; quantity: number }[] }
 ) {

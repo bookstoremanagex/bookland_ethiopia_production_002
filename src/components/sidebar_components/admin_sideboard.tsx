@@ -70,7 +70,7 @@ const menuItems = [
   { title: "Profile", icon: User, url: "/admin_dashboard/profile" },
   { title: "Books", icon: BookOpen, url: "/admin_dashboard/books" },
   { title: "Book Shelf", icon: Library, url: "/admin_dashboard/books/shelf" },
-  { title: "Stores", icon: Store, url: "/admin_dashboard/stores" },
+
   {
     title: "Damaged Books",
     icon: ShieldAlert,
@@ -233,6 +233,113 @@ export function AdminAppSidebar({ accountId }: { accountId?: number }) {
                     </SidebarMenuItem>
                   );
                 })}
+
+                {/* Expandable Section: Stores */}
+                <Collapsible
+                  asChild
+                  className="group/collapsible"
+                  defaultOpen={
+                    isMounted &&
+                    activePath?.includes("/admin_dashboard/stores")
+                  }
+                >
+                  <SidebarMenuItem>
+                    <CollapsibleTrigger asChild>
+                      <SidebarMenuButton
+                        tooltip="Stores"
+                        className={cn(
+                          "transition-all duration-300 h-10 px-4",
+                          isMounted &&
+                            activePath?.includes("/admin_dashboard/stores")
+                            ? "bg-primarycolor/10 text-primarycolor font-black"
+                            : "hover:bg-primarycolor/5 text-foreground",
+                        )}
+                      >
+                        <Store
+                          className={cn(
+                            "w-5 h-5",
+                            isMounted &&
+                              activePath?.includes("/admin_dashboard/stores")
+                              ? "text-primarycolor"
+                              : "text-primarycolor/70",
+                          )}
+                        />
+                        <span>Stores</span>
+                        <ChevronRight className="ml-auto w-4 h-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                      </SidebarMenuButton>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <SidebarMenuSub>
+                        <SidebarMenuSubItem>
+                          <SidebarMenuSubButton
+                            asChild
+                            isActive={
+                              isMounted &&
+                              (activePath ===
+                                "/admin_dashboard/stores" ||
+                                (activePath.startsWith(
+                                  "/admin_dashboard/stores/",
+                                ) && !activePath.startsWith(
+                                  "/admin_dashboard/stores/options",
+                                )))
+                            }
+                            className={cn(
+                              "transition-all duration-300 rounded-lg h-9 px-4",
+                              "data-[active=true]:bg-primarycolor data-[active=true]:text-white data-[active=true]:font-black data-[active=true]:shadow-md data-[active=true]:shadow-primarycolor/20",
+                              "hover:bg-primarycolor/10 hover:text-primarycolor",
+                            )}
+                          >
+                            <Link href="/admin_dashboard/stores">
+                              <Store
+                                className={cn(
+                                  "w-4 h-4",
+                                  isMounted &&
+                                    activePath ===
+                                      "/admin_dashboard/stores"
+                                    ? "text-white"
+                                    : "text-primarycolor/70",
+                                )}
+                              />
+                              <span>Manage Store</span>
+                            </Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                        <SidebarMenuSubItem>
+                          <SidebarMenuSubButton
+                            asChild
+                            isActive={
+                              isMounted &&
+                              (activePath ===
+                                "/admin_dashboard/stores/options" ||
+                                activePath.startsWith(
+                                  "/admin_dashboard/stores/options/",
+                                ))
+                            }
+                            className={cn(
+                              "transition-all duration-300 rounded-lg h-9 px-4",
+                              "data-[active=true]:bg-primarycolor data-[active=true]:text-white data-[active=true]:font-black data-[active=true]:shadow-md data-[active=true]:shadow-primarycolor/20",
+                              "hover:bg-primarycolor/10 hover:text-primarycolor",
+                            )}
+                          >
+                            <Link href="/admin_dashboard/stores/options">
+                              <Settings
+                                className={cn(
+                                  "w-4 h-4",
+                                  isMounted &&
+                                    activePath ===
+                                      "/admin_dashboard/stores/options"
+                                    ? "text-white"
+                                    : "text-primarycolor/70",
+                                )}
+                              />
+                              <span>Store Options</span>
+                            </Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      </SidebarMenuSub>
+                    </CollapsibleContent>
+                  </SidebarMenuItem>
+                </Collapsible>
 
                 {/* Expandable Section: Production */}
                 <Collapsible

@@ -27,6 +27,7 @@ import {
     FileCheck,
     Palette,
     TrendingUp,
+    Settings,
 } from "lucide-react"
 
 export interface MenuItem {
@@ -53,7 +54,17 @@ export const ALL_DASHBOARD_MENUS: MenuItem[] = [
     { id: "profile", title: "Profile", icon: User, path: "profile", menuName: "Profile" },
     { id: "books", title: "Books", icon: BookOpen, path: "books", menuName: "Books" },
     { id: "shelf", title: "Book Shelf", icon: Library, path: "books/shelf", menuName: "Book Shelf" },
-    { id: "stores", title: "Stores", icon: Store, path: "stores", menuName: "Stores" },
+    { 
+        id: "stores", 
+        title: "Stores", 
+        icon: Store, 
+        path: "stores",
+        menuName: "Stores",
+        subItems: [
+            { title: "Manage Store", icon: Store, path: "stores", menuName: "Manage Store" },
+            { title: "Store Options", icon: Settings, path: "stores/options", menuName: "Store Options" },
+        ]
+    },
     { id: "damaged", title: "Damaged Books", icon: ShieldAlert, path: "books/damaged", menuName: "Damaged Books" },
     { id: "shop", title: "Book Shop", icon: ShoppingBag, path: "book_shops", menuName: "Book Shop" },
     { id: "statistics", title: "Statistics", icon: BarChart3, path: "statistics", menuName: "Statistics" },

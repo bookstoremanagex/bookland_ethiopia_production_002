@@ -10,6 +10,7 @@ export const MODULE_MAP: Record<string, any> = {
     "books/shelf": dynamic(() => import("@/app/admin_dashboard/books/shelf/page")),
     "books/damaged": dynamic(() => import("@/app/admin_dashboard/books/damaged/page")),
     "stores": dynamic(() => import("@/app/admin_dashboard/stores/page")),
+    "stores/options": dynamic(() => import("@/app/admin_dashboard/stores/options/page")),
     "book_shops": dynamic(() => import("@/app/admin_dashboard/book_shops/page")),
     "statistics": dynamic(() => import("@/app/admin_dashboard/statistics/page")),
     "production/books": dynamic(() => import("@/app/admin_dashboard/production/books/page")),

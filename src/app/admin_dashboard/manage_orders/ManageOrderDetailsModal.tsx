@@ -444,7 +444,7 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
 
             const metaLines: string[] = [];
             metaLines.push(`<strong>Order ORD-${order.id}</strong>`);
-            if (printIncludeShop) metaLines.push(`Shop: ${order.bookshopes?.name || ''}${order.bookshopes?.branch ? ` (${order.bookshopes.branch})` : ''}`);
+            if (printIncludeShop) metaLines.push(`Shop: <span style="font-weight:900;font-size:${parseInt(fontSize) + 2}px">${order.bookshopes?.name || ''}${order.bookshopes?.branch ? ` (${order.bookshopes.branch})` : ''}</span>`);
             if (printIncludeDate) metaLines.push(`Date: ${formatDate(new Date(order.createdAt))}`);
             if (printIncludeStatus) metaLines.push(`Status: ${order.is_approved ? "Approved" : "Pending"}`);
             if (printIncludeDelivery) metaLines.push(`Delivery: ${order.delivery ? "Delivered" : "Not Delivered"}`);
@@ -484,8 +484,8 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
     <tbody>${rows}</tbody>
   </table>
   <div class="sep"></div>
-  <div class="meta"><strong>Total: ${order.total_amount.toLocaleString()} ETB</strong></div>
-  <div class="meta">Paid: ${order.amount_paid.toLocaleString()} ETB | Remaining: ${(order.total_amount - order.amount_paid).toLocaleString()} ETB</div>
+  <div class="meta" style="text-align:right"><strong>Total: ${order.total_amount.toLocaleString()} ETB</strong></div>
+  <div class="meta" style="text-align:right">Paid: ${order.amount_paid.toLocaleString()} ETB | Remaining: ${(order.total_amount - order.amount_paid).toLocaleString()} ETB</div>
 </body>
 </html>`;
         }
