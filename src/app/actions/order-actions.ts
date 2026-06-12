@@ -854,3 +854,106 @@ export async function removeBookFromOrder(orderId: number, bookId: number) {
     return { success: false, error: error?.message || "Failed to remove book from order" };
   }
 }
+
+export async function updateShopDebt(shopId: number, newTotalDebt: number) {
+  try {
+    const session = await getCurrentSession();
+    if (!session?.id) return { success: false, error: "Unauthorized" };
+
+    const shopOrders = await (prisma as any).orders.findMany({
+      where: { bookShopId: shopId, is_deleted: false },
+      select: { total_amount: true, amount_paid: true },
+    });
+    const currentDebt = shopOrders.reduce((s: number, o: any) => s + (o.total_amount || 0), 0);
+    const diff = newTotalDebt - currentDebt;
+    if (Math.abs(diff) < 0.01) return { success: true };
+
+    if (diff > 0) {
+      await (prisma as any).orders.create({
+        data: {
+          bookShopId: shopId,
+          total_amount: diff,
+          amount_paid: 0,
+          status: "PENDING",
+          payment_type: "DIRECT",
+          updatedAt: new Date(),
+          createdAt: new Date(),
+        },
+      });
+    } else {
+      let remaining = -diff;
+      const orders = await (prisma as any).orders.findMany({
+        where: { bookShopId: shopId, is_deleted: false },
+        orderBy: { createdAt: 'desc' },
+      });
+      for (const order of orders) {
+        if (remaining <= 0) break;
+        const orderTotal = order.total_amount || 0;
+        if (orderTotal <= 0) continue;
+        const toReduce = Math.min(remaining, orderTotal);
+        await (prisma as any).orders.update({
+          where: { id: order.id },
+          data: { total_amount: orderTotal - toReduce },
+        });
+        remaining -= toReduce;
+      }
+    }
+
+    revalidatePath("/admin_dashboard", "layout");
+    return { success: true };
+  } catch (error) {
+    console.error("Update shop debt error:", error);
+    return { success: false, error: "Failed to update shop debt" };
+  }
+}
+
+export async function updateShopTotals(shopId: number, totalPaid: number) {
+  try {
+    const session = await getCurrentSession();
+    if (!session?.id) return { success: false, error: "Unauthorized" };
+
+    const orders = await (prisma as any).orders.findMany({
+      where: { bookShopId: shopId, is_deleted: false },
+      orderBy: { createdAt: 'asc' },
+    });
+
+    const currentPaid = orders.reduce((sum: number, o: any) => sum + (o.amount_paid || 0), 0);
+    const diff = totalPaid - currentPaid;
+    if (Math.abs(diff) < 0.01) return { success: true };
+
+    if (diff > 0) {
+      let remaining = diff;
+      for (const order of orders) {
+        if (remaining <= 0) break;
+        const orderRemaining = (order.total_amount || 0) - (order.amount_paid || 0);
+        if (orderRemaining <= 0) continue;
+        const toApply = Math.min(remaining, orderRemaining);
+        await (prisma as any).orders.update({
+          where: { id: order.id },
+          data: { amount_paid: (order.amount_paid || 0) + toApply },
+        });
+        remaining -= toApply;
+      }
+    } else {
+      let remaining = -diff;
+      const reversed = [...orders].reverse();
+      for (const order of reversed) {
+        if (remaining <= 0) break;
+        const paid = order.amount_paid || 0;
+        if (paid <= 0) continue;
+        const toRemove = Math.min(remaining, paid);
+        await (prisma as any).orders.update({
+          where: { id: order.id },
+          data: { amount_paid: paid - toRemove },
+        });
+        remaining -= toRemove;
+      }
+    }
+
+    revalidatePath("/admin_dashboard", "layout");
+    return { success: true };
+  } catch (error) {
+    console.error("Update shop totals error:", error);
+    return { success: false, error: "Failed to update shop totals" };
+  }
+}
