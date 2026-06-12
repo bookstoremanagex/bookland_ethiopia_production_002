@@ -17,10 +17,11 @@ export default async function PaymentsPage() {
   });
 
   const shopData = (shops as any[]).map((shop: any) => {
+    const previousDebt = shop.previousDebt || 0;
     const totalDebt = (shop.orders || []).reduce(
       (sum: number, o: any) => sum + (o.total_amount || 0),
       0
-    );
+    ) + previousDebt;
     const totalPaid = (shop.orders || []).reduce(
       (sum: number, o: any) => sum + (o.amount_paid || 0),
       0

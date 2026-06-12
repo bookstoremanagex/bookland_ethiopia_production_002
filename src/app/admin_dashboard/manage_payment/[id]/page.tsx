@@ -23,8 +23,10 @@ export default async function ManagePaymentDetailPage({ params }: { params: Prom
 
     if (!shop) notFound();
 
-    const totalDebt = shop.orders.reduce((sum: number, o: any) => sum + (o.total_amount || 0), 0);
+    const previousDebt = shop.previousDebt || 0;
+    const orderDebt = shop.orders.reduce((sum: number, o: any) => sum + (o.total_amount || 0), 0);
     const totalPaid = shop.orders.reduce((sum: number, o: any) => sum + (o.amount_paid || 0), 0);
+    const totalDebt = orderDebt + previousDebt;
     const totalRemaining = totalDebt - totalPaid;
 
     return (
@@ -37,6 +39,7 @@ export default async function ManagePaymentDetailPage({ params }: { params: Prom
                 email: shop.email || "",
                 branch: shop.branch || "",
                 createdAt: shop.createdAt,
+                previousDebt,
             }}
             payments={shop.payments.map((p: any) => ({
                 id: p.id,
@@ -58,6 +61,7 @@ export default async function ManagePaymentDetailPage({ params }: { params: Prom
                 createdAt: p.createdAt,
             }))}
             totals={{ totalDebt, totalPaid, totalRemaining }}
+            previousDebt={previousDebt}
         />
     );
 }

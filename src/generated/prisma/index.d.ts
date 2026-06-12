@@ -12776,10 +12776,12 @@ export namespace Prisma {
 
   export type BookshopesAvgAggregateOutputType = {
     id: number | null
+    previousDebt: number | null
   }
 
   export type BookshopesSumAggregateOutputType = {
     id: number | null
+    previousDebt: number | null
   }
 
   export type BookshopesMinAggregateOutputType = {
@@ -12793,6 +12795,7 @@ export namespace Prisma {
     updatedAt: Date | null
     createdAt: Date | null
     deletedAt: Date | null
+    previousDebt: number | null
   }
 
   export type BookshopesMaxAggregateOutputType = {
@@ -12806,6 +12809,7 @@ export namespace Prisma {
     updatedAt: Date | null
     createdAt: Date | null
     deletedAt: Date | null
+    previousDebt: number | null
   }
 
   export type BookshopesCountAggregateOutputType = {
@@ -12819,16 +12823,19 @@ export namespace Prisma {
     updatedAt: number
     createdAt: number
     deletedAt: number
+    previousDebt: number
     _all: number
   }
 
 
   export type BookshopesAvgAggregateInputType = {
     id?: true
+    previousDebt?: true
   }
 
   export type BookshopesSumAggregateInputType = {
     id?: true
+    previousDebt?: true
   }
 
   export type BookshopesMinAggregateInputType = {
@@ -12842,6 +12849,7 @@ export namespace Prisma {
     updatedAt?: true
     createdAt?: true
     deletedAt?: true
+    previousDebt?: true
   }
 
   export type BookshopesMaxAggregateInputType = {
@@ -12855,6 +12863,7 @@ export namespace Prisma {
     updatedAt?: true
     createdAt?: true
     deletedAt?: true
+    previousDebt?: true
   }
 
   export type BookshopesCountAggregateInputType = {
@@ -12868,6 +12877,7 @@ export namespace Prisma {
     updatedAt?: true
     createdAt?: true
     deletedAt?: true
+    previousDebt?: true
     _all?: true
   }
 
@@ -12968,6 +12978,7 @@ export namespace Prisma {
     updatedAt: Date
     createdAt: Date
     deletedAt: Date
+    previousDebt: number
     _count: BookshopesCountAggregateOutputType | null
     _avg: BookshopesAvgAggregateOutputType | null
     _sum: BookshopesSumAggregateOutputType | null
@@ -13000,6 +13011,7 @@ export namespace Prisma {
     updatedAt?: boolean
     createdAt?: boolean
     deletedAt?: boolean
+    previousDebt?: boolean
     bookshopeditions?: boolean | bookshopes$bookshopeditionsArgs<ExtArgs>
     orders?: boolean | bookshopes$ordersArgs<ExtArgs>
     payments?: boolean | bookshopes$paymentsArgs<ExtArgs>
@@ -13019,9 +13031,10 @@ export namespace Prisma {
     updatedAt?: boolean
     createdAt?: boolean
     deletedAt?: boolean
+    previousDebt?: boolean
   }
 
-  export type bookshopesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "location" | "branch" | "phone" | "email" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt", ExtArgs["result"]["bookshopes"]>
+  export type bookshopesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "location" | "branch" | "phone" | "email" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt" | "previousDebt", ExtArgs["result"]["bookshopes"]>
   export type bookshopesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     bookshopeditions?: boolean | bookshopes$bookshopeditionsArgs<ExtArgs>
     orders?: boolean | bookshopes$ordersArgs<ExtArgs>
@@ -13047,6 +13060,7 @@ export namespace Prisma {
       updatedAt: Date
       createdAt: Date
       deletedAt: Date
+      previousDebt: number
     }, ExtArgs["result"]["bookshopes"]>
     composites: {}
   }
@@ -13429,6 +13443,7 @@ export namespace Prisma {
     readonly updatedAt: FieldRef<"bookshopes", 'DateTime'>
     readonly createdAt: FieldRef<"bookshopes", 'DateTime'>
     readonly deletedAt: FieldRef<"bookshopes", 'DateTime'>
+    readonly previousDebt: FieldRef<"bookshopes", 'Float'>
   }
     
 
@@ -43045,7 +43060,8 @@ export namespace Prisma {
     is_deleted: 'is_deleted',
     updatedAt: 'updatedAt',
     createdAt: 'createdAt',
-    deletedAt: 'deletedAt'
+    deletedAt: 'deletedAt',
+    previousDebt: 'previousDebt'
   };
 
   export type BookshopesScalarFieldEnum = (typeof BookshopesScalarFieldEnum)[keyof typeof BookshopesScalarFieldEnum]
@@ -44785,6 +44801,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"bookshopes"> | Date | string
     createdAt?: DateTimeFilter<"bookshopes"> | Date | string
     deletedAt?: DateTimeFilter<"bookshopes"> | Date | string
+    previousDebt?: FloatFilter<"bookshopes"> | number
     bookshopeditions?: BookshopeditionsListRelationFilter
     orders?: OrdersListRelationFilter
     payments?: PaymentsListRelationFilter
@@ -44801,6 +44818,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     createdAt?: SortOrder
     deletedAt?: SortOrder
+    previousDebt?: SortOrder
     bookshopeditions?: bookshopeditionsOrderByRelationAggregateInput
     orders?: ordersOrderByRelationAggregateInput
     payments?: paymentsOrderByRelationAggregateInput
@@ -44821,6 +44839,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"bookshopes"> | Date | string
     createdAt?: DateTimeFilter<"bookshopes"> | Date | string
     deletedAt?: DateTimeFilter<"bookshopes"> | Date | string
+    previousDebt?: FloatFilter<"bookshopes"> | number
     bookshopeditions?: BookshopeditionsListRelationFilter
     orders?: OrdersListRelationFilter
     payments?: PaymentsListRelationFilter
@@ -44837,6 +44856,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     createdAt?: SortOrder
     deletedAt?: SortOrder
+    previousDebt?: SortOrder
     _count?: bookshopesCountOrderByAggregateInput
     _avg?: bookshopesAvgOrderByAggregateInput
     _max?: bookshopesMaxOrderByAggregateInput
@@ -44858,6 +44878,7 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"bookshopes"> | Date | string
     createdAt?: DateTimeWithAggregatesFilter<"bookshopes"> | Date | string
     deletedAt?: DateTimeWithAggregatesFilter<"bookshopes"> | Date | string
+    previousDebt?: FloatWithAggregatesFilter<"bookshopes"> | number
   }
 
   export type ordersWhereInput = {
@@ -48219,6 +48240,7 @@ export namespace Prisma {
     updatedAt: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+    previousDebt?: number
     bookshopeditions?: bookshopeditionsCreateNestedManyWithoutBookshopesInput
     orders?: ordersCreateNestedManyWithoutBookshopesInput
     payments?: paymentsCreateNestedManyWithoutShopInput
@@ -48235,6 +48257,7 @@ export namespace Prisma {
     updatedAt: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+    previousDebt?: number
     bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookshopesInput
     orders?: ordersUncheckedCreateNestedManyWithoutBookshopesInput
     payments?: paymentsUncheckedCreateNestedManyWithoutShopInput
@@ -48250,6 +48273,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    previousDebt?: FloatFieldUpdateOperationsInput | number
     bookshopeditions?: bookshopeditionsUpdateManyWithoutBookshopesNestedInput
     orders?: ordersUpdateManyWithoutBookshopesNestedInput
     payments?: paymentsUpdateManyWithoutShopNestedInput
@@ -48266,6 +48290,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    previousDebt?: FloatFieldUpdateOperationsInput | number
     bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookshopesNestedInput
     orders?: ordersUncheckedUpdateManyWithoutBookshopesNestedInput
     payments?: paymentsUncheckedUpdateManyWithoutShopNestedInput
@@ -48282,6 +48307,7 @@ export namespace Prisma {
     updatedAt: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+    previousDebt?: number
   }
 
   export type bookshopesUpdateManyMutationInput = {
@@ -48294,6 +48320,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    previousDebt?: FloatFieldUpdateOperationsInput | number
   }
 
   export type bookshopesUncheckedUpdateManyInput = {
@@ -48307,6 +48334,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    previousDebt?: FloatFieldUpdateOperationsInput | number
   }
 
   export type ordersCreateInput = {
@@ -51802,6 +51830,17 @@ export namespace Prisma {
     remaining_amount?: SortOrder
   }
 
+  export type FloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
   export type OrdersListRelationFilter = {
     every?: ordersWhereInput
     some?: ordersWhereInput
@@ -51839,10 +51878,12 @@ export namespace Prisma {
     updatedAt?: SortOrder
     createdAt?: SortOrder
     deletedAt?: SortOrder
+    previousDebt?: SortOrder
   }
 
   export type bookshopesAvgOrderByAggregateInput = {
     id?: SortOrder
+    previousDebt?: SortOrder
   }
 
   export type bookshopesMaxOrderByAggregateInput = {
@@ -51856,6 +51897,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     createdAt?: SortOrder
     deletedAt?: SortOrder
+    previousDebt?: SortOrder
   }
 
   export type bookshopesMinOrderByAggregateInput = {
@@ -51869,13 +51911,15 @@ export namespace Prisma {
     updatedAt?: SortOrder
     createdAt?: SortOrder
     deletedAt?: SortOrder
+    previousDebt?: SortOrder
   }
 
   export type bookshopesSumOrderByAggregateInput = {
     id?: SortOrder
+    previousDebt?: SortOrder
   }
 
-  export type FloatFilter<$PrismaModel = never> = {
+  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
     in?: number[]
     notIn?: number[]
@@ -51883,7 +51927,12 @@ export namespace Prisma {
     lte?: number | FloatFieldRefInput<$PrismaModel>
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
   }
 
   export type ChecksNullableScalarRelationFilter = {
@@ -51970,22 +52019,6 @@ export namespace Prisma {
     amount_paid?: SortOrder
     check_id?: SortOrder
     delivered_by?: SortOrder
-  }
-
-  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[]
-    notIn?: number[]
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedFloatFilter<$PrismaModel>
-    _min?: NestedFloatFilter<$PrismaModel>
-    _max?: NestedFloatFilter<$PrismaModel>
   }
 
   export type order_itemsCountOrderByAggregateInput = {
@@ -54601,6 +54634,14 @@ export namespace Prisma {
     connect?: paymentsWhereUniqueInput | paymentsWhereUniqueInput[]
   }
 
+  export type FloatFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type bookshopeditionsUpdateManyWithoutBookshopesNestedInput = {
     create?: XOR<bookshopeditionsCreateWithoutBookshopesInput, bookshopeditionsUncheckedCreateWithoutBookshopesInput> | bookshopeditionsCreateWithoutBookshopesInput[] | bookshopeditionsUncheckedCreateWithoutBookshopesInput[]
     connectOrCreate?: bookshopeditionsCreateOrConnectWithoutBookshopesInput | bookshopeditionsCreateOrConnectWithoutBookshopesInput[]
@@ -54723,14 +54764,6 @@ export namespace Prisma {
     connectOrCreate?: order_itemsCreateOrConnectWithoutOrderInput | order_itemsCreateOrConnectWithoutOrderInput[]
     createMany?: order_itemsCreateManyOrderInputEnvelope
     connect?: order_itemsWhereUniqueInput | order_itemsWhereUniqueInput[]
-  }
-
-  export type FloatFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type locked_editionsUpdateManyWithoutOrdersNestedInput = {
@@ -58241,6 +58274,7 @@ export namespace Prisma {
     updatedAt: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+    previousDebt?: number
     orders?: ordersCreateNestedManyWithoutBookshopesInput
     payments?: paymentsCreateNestedManyWithoutShopInput
   }
@@ -58256,6 +58290,7 @@ export namespace Prisma {
     updatedAt: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+    previousDebt?: number
     orders?: ordersUncheckedCreateNestedManyWithoutBookshopesInput
     payments?: paymentsUncheckedCreateNestedManyWithoutShopInput
   }
@@ -58378,6 +58413,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    previousDebt?: FloatFieldUpdateOperationsInput | number
     orders?: ordersUpdateManyWithoutBookshopesNestedInput
     payments?: paymentsUpdateManyWithoutShopNestedInput
   }
@@ -58393,6 +58429,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    previousDebt?: FloatFieldUpdateOperationsInput | number
     orders?: ordersUncheckedUpdateManyWithoutBookshopesNestedInput
     payments?: paymentsUncheckedUpdateManyWithoutShopNestedInput
   }
@@ -58645,6 +58682,7 @@ export namespace Prisma {
     updatedAt: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+    previousDebt?: number
     bookshopeditions?: bookshopeditionsCreateNestedManyWithoutBookshopesInput
     payments?: paymentsCreateNestedManyWithoutShopInput
   }
@@ -58660,6 +58698,7 @@ export namespace Prisma {
     updatedAt: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+    previousDebt?: number
     bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookshopesInput
     payments?: paymentsUncheckedCreateNestedManyWithoutShopInput
   }
@@ -58767,6 +58806,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    previousDebt?: FloatFieldUpdateOperationsInput | number
     bookshopeditions?: bookshopeditionsUpdateManyWithoutBookshopesNestedInput
     payments?: paymentsUpdateManyWithoutShopNestedInput
   }
@@ -58782,6 +58822,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    previousDebt?: FloatFieldUpdateOperationsInput | number
     bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookshopesNestedInput
     payments?: paymentsUncheckedUpdateManyWithoutShopNestedInput
   }
@@ -61512,6 +61553,7 @@ export namespace Prisma {
     updatedAt: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+    previousDebt?: number
     bookshopeditions?: bookshopeditionsCreateNestedManyWithoutBookshopesInput
     orders?: ordersCreateNestedManyWithoutBookshopesInput
   }
@@ -61527,6 +61569,7 @@ export namespace Prisma {
     updatedAt: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+    previousDebt?: number
     bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookshopesInput
     orders?: ordersUncheckedCreateNestedManyWithoutBookshopesInput
   }
@@ -61595,6 +61638,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    previousDebt?: FloatFieldUpdateOperationsInput | number
     bookshopeditions?: bookshopeditionsUpdateManyWithoutBookshopesNestedInput
     orders?: ordersUpdateManyWithoutBookshopesNestedInput
   }
@@ -61610,6 +61654,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    previousDebt?: FloatFieldUpdateOperationsInput | number
     bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookshopesNestedInput
     orders?: ordersUncheckedUpdateManyWithoutBookshopesNestedInput
   }

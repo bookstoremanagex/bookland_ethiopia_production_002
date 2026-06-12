@@ -113,10 +113,12 @@ function OrderModal({
   shop,
   open,
   onClose,
+  sample,
 }: {
   shop: ShopRow;
   open: boolean;
   onClose: () => void;
+  sample?: boolean;
 }) {
   const router = useRouter();
   const searchRef = useRef<HTMLInputElement>(null);
@@ -132,6 +134,8 @@ function OrderModal({
   const [amountPaid, setAmountPaid] = useState("");
   const [lockBooks, setLockBooks] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [totalMode, setTotalMode] = useState<"auto" | "manual">("auto");
+  const [manualTotal, setManualTotal] = useState(0);
   const [initialLoading, setInitialLoading] = useState(true);
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -242,6 +246,7 @@ function OrderModal({
         bookShopId: shop.id,
         order_type: orderType,
         amount_paid: parseFloat(amountPaid) || 0,
+        total_amount: totalMode === "manual" ? manualTotal : null,
         lock_books: lockBooks,
         items,
       });
@@ -291,7 +296,7 @@ function OrderModal({
               </div>
               <div>
                 <DialogTitle className="text-base font-black text-primarycolor uppercase italic text-left leading-tight">
-                  New Order
+                  {sample ? "Sample Order" : "New Order"}
                 </DialogTitle>
                 <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">{shop.name}</p>
               </div>
@@ -621,7 +626,14 @@ function OrderModal({
               )}
 
               {activeTab === "info" && (
-                <div className="p-4 space-y-5">
+                <div className="p-4 space-y-4">
+                  {sample && (
+                    <div className="text-center py-2">
+                      <span className="inline-block px-6 py-1.5 rounded-full border-2 border-dashed border-amber-400 text-amber-600 font-black text-[10px] uppercase tracking-[0.3em] bg-amber-50/50">
+                        Sample Order — Not Submitted
+                      </span>
+                    </div>
+                  )}
                   <div className="bg-primarycolor/[0.02] rounded-3xl border-2 border-primarycolor/5 p-5 space-y-5">
                     <div className="flex items-center justify-between">
                       <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Order Summary</p>
@@ -650,11 +662,47 @@ function OrderModal({
 
                     <div className="h-px bg-slate-100" />
 
+                    {/* Auto / Manual total toggle */}
+                    <div className="flex gap-1 p-0.5 rounded-lg bg-slate-100">
+                      <button
+                        type="button"
+                        onClick={() => setTotalMode("auto")}
+                        className={cn(
+                          "flex-1 py-1 rounded-md text-[8px] font-black uppercase tracking-widest transition-all cursor-pointer",
+                          totalMode === "auto" ? "bg-white text-primarycolor shadow-sm" : "text-slate-400 hover:text-slate-700"
+                        )}
+                      >
+                        Auto
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setTotalMode("manual")}
+                        className={cn(
+                          "flex-1 py-1 rounded-md text-[8px] font-black uppercase tracking-widest transition-all cursor-pointer",
+                          totalMode === "manual" ? "bg-white text-primarycolor shadow-sm" : "text-slate-400 hover:text-slate-700"
+                        )}
+                      >
+                        Manual
+                      </button>
+                    </div>
+
                     <div className="flex items-center justify-between">
                       <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Grand Total</p>
-                      <p className="text-xl font-black text-primarycolor tabular-nums">
-                        {grandTotal.toLocaleString()} <span className="text-[10px] font-bold text-muted-foreground">ETB</span>
-                      </p>
+                      {totalMode === "manual" ? (
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="number"
+                            value={manualTotal}
+                            onChange={e => setManualTotal(parseFloat(e.target.value) || 0)}
+                            className="w-28 h-8 px-2 rounded-lg border-2 border-slate-200 bg-white font-black text-sm text-right outline-none focus:border-primarycolor [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          />
+                          <span className="text-[10px] font-bold text-muted-foreground">ETB</span>
+                        </div>
+                      ) : (
+                        <p className="text-xl font-black text-primarycolor tabular-nums">
+                          {grandTotal.toLocaleString()} <span className="text-[10px] font-bold text-muted-foreground">ETB</span>
+                        </p>
+                      )}
                     </div>
 
                     <div className="h-px bg-slate-100" />
@@ -672,53 +720,65 @@ function OrderModal({
                       </Select>
                     </div>
 
-                    <div className="space-y-2">
-                      <label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Amount Paid (ETB)</label>
-                      <Input
-                        type="number"
-                        value={amountPaid}
-                        onChange={(e) => setAmountPaid(e.target.value)}
-                        placeholder="0.00"
-                        className="h-12 rounded-2xl border-2 border-slate-100 bg-white font-bold text-sm focus:border-primarycolor transition-all"
-                      />
-                    </div>
+                    {!sample && (
+                      <>
+                        <div className="space-y-2">
+                          <label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Amount Paid (ETB)</label>
+                          <Input
+                            type="number"
+                            value={amountPaid}
+                            onChange={(e) => setAmountPaid(e.target.value)}
+                            placeholder="0.00"
+                            className="h-12 rounded-2xl border-2 border-slate-100 bg-white font-bold text-sm focus:border-primarycolor transition-all"
+                          />
+                        </div>
 
-                    <div className="flex items-center justify-between py-1">
-                      <div className="flex items-center gap-2">
-                        <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Lock Books</span>
-                      </div>
-                      <button
-                        type="button"
-                        role="switch"
-                        aria-checked={lockBooks}
-                        onClick={() => setLockBooks(!lockBooks)}
-                        className={cn(
-                          "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors",
-                          lockBooks ? "bg-primarycolor" : "bg-slate-200"
-                        )}
-                      >
-                        <span
-                          className={cn(
-                            "pointer-events-none inline-block size-5 rounded-full bg-white shadow ring-0 transition-transform",
-                            lockBooks ? "translate-x-5" : "translate-x-0"
-                          )}
-                        />
-                      </button>
-                    </div>
+                        <div className="flex items-center justify-between py-1">
+                          <div className="flex items-center gap-2">
+                            <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Lock Books</span>
+                          </div>
+                          <button
+                            type="button"
+                            role="switch"
+                            aria-checked={lockBooks}
+                            onClick={() => setLockBooks(!lockBooks)}
+                            className={cn(
+                              "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors",
+                              lockBooks ? "bg-primarycolor" : "bg-slate-200"
+                            )}
+                          >
+                            <span
+                              className={cn(
+                                "pointer-events-none inline-block size-5 rounded-full bg-white shadow ring-0 transition-transform",
+                                lockBooks ? "translate-x-5" : "translate-x-0"
+                              )}
+                            />
+                          </button>
+                        </div>
+                      </>
+                    )}
                   </div>
 
-                  <Button
-                    onClick={handleSubmit}
-                    disabled={isSubmitting || selectedCount === 0}
-                    className="w-full h-14 rounded-2xl bg-primarycolor hover:bg-secondarycolor text-white font-black uppercase tracking-widest text-xs shadow-lg shadow-primarycolor/30 gap-2"
-                  >
-                    {isSubmitting ? (
-                      <Loader2 className="size-5 animate-spin" />
-                    ) : (
-                      <Check className="size-5" />
-                    )}
-                    {isSubmitting ? "Creating Order..." : `Create Order — ${grandTotal.toLocaleString()} ETB`}
-                  </Button>
+                  {sample ? (
+                    <div className="text-center py-3">
+                      <p className="text-[9px] font-black text-amber-600 uppercase tracking-widest">
+                        This is a sample preview — no order has been created
+                      </p>
+                    </div>
+                  ) : (
+                    <Button
+                      onClick={handleSubmit}
+                      disabled={isSubmitting || selectedCount === 0}
+                      className="w-full h-14 rounded-2xl bg-primarycolor hover:bg-secondarycolor text-white font-black uppercase tracking-widest text-xs shadow-lg shadow-primarycolor/30 gap-2"
+                    >
+                      {isSubmitting ? (
+                        <Loader2 className="size-5 animate-spin" />
+                      ) : (
+                        <Check className="size-5" />
+                      )}
+                      {isSubmitting ? "Creating Order..." : `Create Order — ${grandTotal.toLocaleString()} ETB`}
+                    </Button>
+                  )}
                 </div>
               )}
             </motion.div>
@@ -761,9 +821,10 @@ function OrderModal({
 
 interface CreateOrdersClientProps {
   shops: ShopRow[];
+  sample?: boolean;
 }
 
-export default function CreateOrdersClient({ shops }: CreateOrdersClientProps) {
+export default function CreateOrdersClient({ shops, sample }: CreateOrdersClientProps) {
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [orderShop, setOrderShop] = useState<ShopRow | null>(null);
@@ -871,6 +932,7 @@ export default function CreateOrdersClient({ shops }: CreateOrdersClientProps) {
           shop={orderShop}
           open={!!orderShop}
           onClose={() => setOrderShop(null)}
+          sample={sample}
         />
       )}
     </div>

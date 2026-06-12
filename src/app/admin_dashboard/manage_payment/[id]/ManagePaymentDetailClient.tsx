@@ -34,7 +34,18 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { approvePayment, checkIsAdminUser } from "@/app/actions/payment-actions";
 import { updateCheckStatus, updateCheckDetails } from "@/app/actions/check-actions";
-import { updateShopTotals, updateShopDebt } from "@/app/actions/order-actions";
+import { updateShopPreviousDebt } from "@/app/actions/book-shop-actions";
+import {
+    AlertDialog,
+    AlertDialogContent,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogCancel,
+    AlertDialogAction,
+} from "@/components/ui/alert-dialog";
+
 import RecordPaymentModal from "./RecordPaymentModal";
 import {
     Drawer,
@@ -45,15 +56,7 @@ import {
     DrawerFooter,
     DrawerClose,
 } from "@/components/ui/drawer";
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+
 
 interface CheckInfo {
     id: number;
@@ -85,6 +88,7 @@ interface ShopInfo {
     email: string;
     branch: string;
     createdAt: string | Date;
+    previousDebt: number;
 }
 
 interface Totals {
@@ -97,9 +101,10 @@ interface Props {
     shop: ShopInfo;
     payments: Payment[];
     totals: Totals;
+    previousDebt: number;
 }
 
-export default function ManagePaymentDetailClient({ shop, payments, totals }: Props) {
+export default function ManagePaymentDetailClient({ shop, payments, totals, previousDebt }: Props) {
     const { formatDate } = useCalendar();
     const router = useRouter();
     const [isAdmin, setIsAdmin] = useState(false);
@@ -111,12 +116,12 @@ export default function ManagePaymentDetailClient({ shop, payments, totals }: Pr
     const [editingCheck, setEditingCheck] = useState(false);
     const [editForm, setEditForm] = useState({ bankname: "", username: "", type: "", amount: "", recordeddate: "" });
     const [savingCheck, setSavingCheck] = useState(false);
-    const [editingTotals, setEditingTotals] = useState(false);
-    const [editingDebt, setEditingDebt] = useState(false);
-    const [totalPaidInput, setTotalPaidInput] = useState(String(totals.totalPaid));
-    const [totalDebtInput, setTotalDebtInput] = useState(String(totals.totalDebt));
-    const [savingTotals, setSavingTotals] = useState(false);
-    const [confirmAction, setConfirmAction] = useState<{ type: "debt" | "paid"; value: number; paidValue?: number } | null>(null);
+
+    const [previousDebtValue, setPreviousDebtValue] = useState(previousDebt);
+    const [isDebtDialogOpen, setIsDebtDialogOpen] = useState(false);
+    const [debtInputValue, setDebtInputValue] = useState(previousDebt.toString());
+    const [savingDebt, setSavingDebt] = useState(false);
+
     const [paymentPage, setPaymentPage] = useState(1);
     const perPage = 15;
 
@@ -238,91 +243,43 @@ export default function ManagePaymentDetailClient({ shop, payments, totals }: Pr
                 {/* Totals Card */}
                 <div className="bg-primarycolor rounded-[2rem] p-6 md:p-8 text-white shadow-xl space-y-5 relative overflow-hidden">
                     <div className="absolute top-0 right-0 size-40 bg-white/5 rounded-full -mr-20 -mt-20 blur-2xl" />
-                    {isAdmin && (
-                        <div className="relative flex justify-end">
-                            <button
-                                onClick={() => {
-                                    if (editingTotals) {
-                                        setEditingTotals(false)
-                                        setEditingDebt(false)
-                                    } else {
-                                        setTotalDebtInput(String(totals.totalDebt))
-                                        setTotalPaidInput(String(totals.totalPaid))
-                                        setEditingTotals(true)
-                                        setEditingDebt(true)
-                                    }
-                                }}
-                                className="text-[8px] font-black uppercase tracking-widest text-white/50 hover:text-white transition-colors"
-                            >
-                                {editingTotals ? "Cancel" : "Edit"}
-                            </button>
+                    <div className="space-y-1 relative">
+                        <div className="flex items-center justify-between">
+                            <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Previous Debt</p>
+                            {isAdmin && (
+                                <button
+                                    onClick={() => { setDebtInputValue(previousDebtValue.toString()); setIsDebtDialogOpen(true); }}
+                                    className="text-[8px] font-black uppercase tracking-widest text-white/50 hover:text-white transition-colors cursor-pointer"
+                                >
+                                    Edit
+                                </button>
+                            )}
                         </div>
-                    )}
-
+                        <p className="text-lg font-black">{previousDebtValue.toLocaleString()} ETB</p>
+                    </div>
                     <div className="space-y-1 relative">
-                        <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Total Debt</p>
-                        {editingDebt ? (
-                            <input
-                                type="number"
-                                value={totalDebtInput}
-                                onChange={e => {
-                                    setTotalDebtInput(e.target.value)
-                                }}
-                                className="w-full h-11 px-4 rounded-xl bg-white/15 text-white font-black text-xl outline-none focus:bg-white/20 border border-white/20 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                            />
-                        ) : (
+                        <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Order Debt</p>
+                        <p className="text-xl font-black">{(totals.totalDebt - previousDebtValue).toLocaleString()} ETB</p>
+                    </div>
+                    <div className="pt-4 border-t border-white/20 relative space-y-3">
+                        <div className="flex items-center justify-between">
+                            <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Total Debt</p>
                             <p className="text-2xl font-black">{totals.totalDebt.toLocaleString()} ETB</p>
-                        )}
-                    </div>
-
-                    <div className="space-y-1 relative">
-                        <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Total Paid</p>
-                        {editingDebt ? (
-                            <input
-                                type="number"
-                                value={totalPaidInput}
-                                onChange={e => {
-                                    setTotalPaidInput(e.target.value)
-                                }}
-                                className="w-full h-11 px-4 rounded-xl bg-white/15 text-white font-black text-lg outline-none focus:bg-white/20 border border-white/20 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                            />
-                        ) : (
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Total Paid</p>
                             <p className="text-xl font-bold text-emerald-200">{totals.totalPaid.toLocaleString()} ETB</p>
-                        )}
+                        </div>
+                        <div className="pt-3 border-t border-white/20">
+                            <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Remaining</p>
+                            <p className={cn(
+                                "text-3xl font-black mt-1",
+                                totals.totalRemaining > 0 ? "text-rose-200" : "text-emerald-200"
+                            )}>
+                                {totals.totalRemaining.toLocaleString()} ETB
+                            </p>
+                        </div>
                     </div>
-
-                    <div className="pt-4 border-t border-white/20 relative">
-                        <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Remaining</p>
-                        <p className={cn(
-                            "text-3xl font-black mt-1",
-                            (editingDebt
-                                ? (parseFloat(totalDebtInput) || 0) - (parseFloat(totalPaidInput) || 0)
-                                : totals.totalRemaining) > 0
-                                ? "text-rose-200" : "text-emerald-200"
-                        )}>
-                            {(editingDebt
-                                ? (parseFloat(totalDebtInput) || 0) - (parseFloat(totalPaidInput) || 0)
-                                : totals.totalRemaining
-                            ).toLocaleString()} ETB
-                        </p>
-                    </div>
-
-                    {editingDebt && (
-                        <button
-                            onClick={() => {
-                                const debt = parseFloat(totalDebtInput)
-                                const paid = parseFloat(totalPaidInput)
-                                if (isNaN(debt) || debt < 0 || isNaN(paid) || paid < 0) {
-                                    toast.error("Enter valid amounts")
-                                    return
-                                }
-                                setConfirmAction({ type: "debt", value: debt, paidValue: paid })
-                            }}
-                            className="relative w-full h-12 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-white font-black text-[10px] uppercase tracking-widest transition-all"
-                        >
-                            Save Changes
-                        </button>
-                    )}
                 </div>
 
                 {/* Check Summary Card */}
@@ -509,6 +466,77 @@ export default function ManagePaymentDetailClient({ shop, payments, totals }: Pr
                     </div>
                 )}
             </div>
+
+            {/* Previous Debt Edit Warning Dialog */}
+            <AlertDialog open={isDebtDialogOpen} onOpenChange={setIsDebtDialogOpen}>
+                <AlertDialogContent className="rounded-[2rem] border-2 border-primarycolor/5 p-6 max-w-md">
+                    <AlertDialogHeader>
+                        <AlertDialogTitle className="text-lg font-black text-primarycolor uppercase tracking-tight italic">
+                            Edit Previous Debt
+                        </AlertDialogTitle>
+                        <div className="space-y-1">
+                            <p className="text-[10px] font-black text-rose-600 uppercase tracking-widest">
+                                ⚠ Warning: This will change the total debt calculation
+                            </p>
+                            <p className="text-[9px] font-black text-muted-foreground">
+                                Enter the new previous debt amount for <span className="text-primarycolor">{shop.name}</span>.
+                                Total debt is the sum of order debt and previous debt.
+                            </p>
+                        </div>
+                    </AlertDialogHeader>
+                    <div className="py-4">
+                        <label className="text-[8px] font-black uppercase tracking-widest text-muted-foreground mb-2 block">Previous Debt (ETB)</label>
+                        <input
+                            type="number"
+                            value={debtInputValue}
+                            onChange={e => setDebtInputValue(e.target.value)}
+                            className="w-full h-12 px-4 rounded-2xl border-2 border-primarycolor/10 bg-white font-bold text-sm outline-none focus:border-primarycolor transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            autoFocus
+                        />
+                        <div className="mt-3 p-3 rounded-xl bg-amber-50 border border-amber-100">
+                            <p className="text-[9px] font-bold text-amber-700">
+                                New Total Debt: {(totals.totalDebt - previousDebtValue + (parseFloat(debtInputValue) || 0)).toLocaleString()} ETB
+                            </p>
+                            <p className="text-[9px] font-bold text-amber-700">
+                                New Remaining: {(totals.totalDebt - previousDebtValue + (parseFloat(debtInputValue) || 0) - totals.totalPaid).toLocaleString()} ETB
+                            </p>
+                        </div>
+                    </div>
+                    <AlertDialogFooter className="gap-2">
+                        <AlertDialogCancel asChild>
+                            <Button variant="outline" className="h-12 rounded-2xl border-2 font-black uppercase tracking-widest text-[10px] flex-1">
+                                Cancel
+                            </Button>
+                        </AlertDialogCancel>
+                        <AlertDialogAction asChild>
+                            <Button
+                                onClick={async () => {
+                                    setSavingDebt(true)
+                                    try {
+                                        const res = await updateShopPreviousDebt(shop.id, parseFloat(debtInputValue) || 0)
+                                        if (res.success) {
+                                            setPreviousDebtValue(parseFloat(debtInputValue) || 0)
+                                            toast.success("Previous debt updated")
+                                            setIsDebtDialogOpen(false)
+                                            router.refresh()
+                                        } else {
+                                            toast.error(res.error)
+                                        }
+                                    } catch {
+                                        toast.error("Failed to update previous debt")
+                                    } finally {
+                                        setSavingDebt(false)
+                                    }
+                                }}
+                                disabled={savingDebt}
+                                className="h-12 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black uppercase tracking-widest text-[10px] flex-1"
+                            >
+                                {savingDebt ? "Saving..." : "Save"}
+                            </Button>
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
 
             <RecordPaymentModal
                 isOpen={isPaymentModalOpen}
@@ -767,64 +795,6 @@ export default function ManagePaymentDetailClient({ shop, payments, totals }: Pr
                     </DrawerFooter>
                 </DrawerContent>
             </Drawer>
-
-            <AlertDialog open={!!confirmAction} onOpenChange={(o) => { if (!o) setConfirmAction(null) }}>
-                <AlertDialogContent className="sm:max-w-md rounded-3xl">
-                    <AlertDialogHeader>
-                        <AlertDialogTitle className="text-sm font-black uppercase tracking-widest text-rose-600">
-                            ⚠️ Confirm Change
-                        </AlertDialogTitle>
-                        <div className="text-xs space-y-3">
-                            <div className="bg-rose-50 border border-rose-200 rounded-2xl p-4 space-y-2">
-                                <div className="font-bold text-rose-800">
-                                    You are about to manually adjust the totals for <strong>{shop.name}</strong>.
-                                </div>
-                                <div className="text-muted-foreground">
-                                    Total debt will be set to <strong>{(confirmAction?.value || 0).toLocaleString()} ETB</strong> and total paid to <strong>{(confirmAction?.paidValue || 0).toLocaleString()} ETB</strong>.
-                                </div>
-                                <div className="text-muted-foreground">
-                                    A new adjustment order will be created or existing orders will be modified to match these values.
-                                </div>
-                                <div className="font-bold text-rose-700">This action cannot be easily undone. Are you sure?</div>
-                            </div>
-                        </div>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <AlertDialogCancel asChild>
-                            <button className="h-11 px-6 rounded-xl text-xs font-bold border border-border hover:bg-muted transition-colors cursor-pointer">
-                                Cancel
-                            </button>
-                        </AlertDialogCancel>
-                        <AlertDialogAction asChild>
-                            <button
-                                disabled={savingTotals}
-                                onClick={async () => {
-                                    if (!confirmAction) return
-                                    setSavingTotals(true)
-                                    try {
-                                        const debtRes = await updateShopDebt(shop.id, confirmAction.value)
-                                        if (!debtRes.success) { toast.error(debtRes.error); return }
-                                        const paidRes = await updateShopTotals(shop.id, confirmAction.paidValue || 0)
-                                        if (!paidRes.success) { toast.error(paidRes.error); return }
-                                        toast.success("Totals updated")
-                                        setEditingDebt(false)
-                                        setEditingTotals(false)
-                                        setConfirmAction(null)
-                                        router.refresh()
-                                    } catch {
-                                        toast.error("Failed to update")
-                                    } finally {
-                                        setSavingTotals(false)
-                                    }
-                                }}
-                                className="h-11 px-6 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white transition-colors cursor-pointer disabled:opacity-50"
-                            >
-                                {savingTotals ? "Saving..." : "Yes, Apply Change"}
-                            </button>
-                        </AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
         </div>
     );
 }

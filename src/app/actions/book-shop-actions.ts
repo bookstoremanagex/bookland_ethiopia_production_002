@@ -83,6 +83,24 @@ export async function updateBookShop(id: number, data: any) {
     }
 }
 
+export async function updateShopPreviousDebt(id: number, previousDebt: number) {
+    const permission = await checkCurrentUserRole("Editing BookShops");
+    if (!permission.enabled) {
+        return { success: false, error: "You do not have permission to edit book shops." };
+    }
+
+    try {
+        await (prisma as any).bookshopes.update({
+            where: { id },
+            data: { previousDebt, updatedAt: new Date() }
+        });
+        revalidatePath("/admin_dashboard/manage_payment");
+        return { success: true };
+    } catch (error) {
+        return { success: false, error: "Failed to update previous debt" };
+    }
+}
+
 export async function deleteBookShop(id: number) {
     const permission = await checkCurrentUserRole("Deleting BookShops");
     if (!permission.enabled) {

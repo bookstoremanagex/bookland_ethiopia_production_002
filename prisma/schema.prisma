@@ -211,6 +211,7 @@ model bookshopes {
   updatedAt        DateTime
   createdAt        DateTime           @default(now())
   deletedAt        DateTime           @default(now())
+  previousDebt     Float              @default(0)
   bookshopeditions bookshopeditions[]
   orders           orders[]
   payments         payments[]

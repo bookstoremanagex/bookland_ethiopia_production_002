@@ -99,6 +99,7 @@ export function DeliverSidebar() {
     activePath === "/delivery_dashboard_full/orders" ||
     activePath.startsWith("/delivery_dashboard_full/orders/") ||
     activePath === "/delivery_dashboard_full/create-orders" ||
+    activePath === "/delivery_dashboard_full/sample-order" ||
     activePath === "/delivery_dashboard_full/walk-in-customer" ||
     activePath.startsWith("/delivery_dashboard_full/walk-in-customer/")
   );
@@ -236,6 +237,22 @@ export function DeliverSidebar() {
                             <Link href="/delivery_dashboard_full/walk-in-customer" onClick={() => setOpenMobile(false)}>
                               <User className={cn("w-4 h-4", isMounted && activePath === "/delivery_dashboard_full/walk-in-customer" ? "text-white" : "text-primarycolor/70")} />
                               <span>Walk in Customer</span>
+                            </Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                        <SidebarMenuSubItem>
+                          <SidebarMenuSubButton
+                            asChild
+                            isActive={isMounted && activePath === "/delivery_dashboard_full/sample-order"}
+                            className={cn(
+                              "transition-all duration-300 rounded-lg h-11 px-4 my-0.5",
+                              "data-[active=true]:bg-primarycolor data-[active=true]:text-white data-[active=true]:font-black data-[active=true]:shadow-md data-[active=true]:shadow-primarycolor/20",
+                              "hover:bg-primarycolor/10 hover:text-primarycolor",
+                            )}
+                          >
+                            <Link href="/delivery_dashboard_full/sample-order" onClick={() => setOpenMobile(false)}>
+                              <FileText className={cn("w-4 h-4", isMounted && activePath === "/delivery_dashboard_full/sample-order" ? "text-white" : "text-primarycolor/70")} />
+                              <span>Sample Order</span>
                             </Link>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>

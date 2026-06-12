@@ -2,6 +2,8 @@ import prisma from "@/lib/prisma";
 import DamagedBooksTable from "./DamagedBooksTable";
 import ReportDamageButton from "./ReportDamageButton";
 
+export const dynamic = "force-dynamic";
+
 export default async function DamagedBooksPage() {
     const [damagedBooks, books, editions, stores] = await Promise.all([
         (prisma as any).damagedbooks.findMany({

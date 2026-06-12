@@ -55,6 +55,8 @@ export default function AddOrderModal({ isOpen, onClose, shopId, shopName }: Add
     const [memo, setMemo] = useState("");
     const [amountPaid, setAmountPaid] = useState(0);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [totalMode, setTotalMode] = useState<"auto" | "manual">("auto");
+    const [manualTotal, setManualTotal] = useState(0);
 
     // Payment method state
     const [paymentType, setPaymentType] = useState<"DIRECT" | "CHECK">("DIRECT");
@@ -101,6 +103,8 @@ export default function AddOrderModal({ isOpen, onClose, shopId, shopName }: Add
         setCheckImagePreview("");
         setPaymentType("DIRECT");
         setCheckOption("new");
+        setTotalMode("auto");
+        setManualTotal(0);
     };
 
     // Fetch immediately on open, debounce when user types
@@ -275,6 +279,7 @@ export default function AddOrderModal({ isOpen, onClose, shopId, shopName }: Add
                 order_type: orderType,
                 memo,
                 amount_paid: amountPaid,
+                total_amount: totalMode === "manual" ? manualTotal : null,
                 payment_type: paymentType,
                 check_id: finalCheckId,
                 items: selectedWithStock.map(item => ({ bookId: item.id, quantity: quantities[item.id] ?? 0 }))
@@ -706,9 +711,46 @@ export default function AddOrderModal({ isOpen, onClose, shopId, shopName }: Add
                                             <span className="font-black text-emerald-900 uppercase tracking-widest text-[8px] md:text-[10px]">Order Summary</span>
                                             <span className="px-2 md:px-3 py-0.5 bg-white rounded-full text-emerald-600 text-[7px] md:text-[9px] font-black uppercase">{stepTwoBooks.length} book{stepTwoBooks.length > 1 ? "s" : ""}</span>
                                         </div>
+
+                                        {/* Auto / Manual total toggle */}
+                                        <div className="flex gap-1.5 p-1 rounded-lg bg-emerald-100/50">
+                                            <button
+                                                type="button"
+                                                onClick={() => setTotalMode("auto")}
+                                                className={cn(
+                                                    "flex-1 py-1.5 rounded-md text-[8px] font-black uppercase tracking-widest transition-all cursor-pointer",
+                                                    totalMode === "auto" ? "bg-white text-emerald-900 shadow-sm" : "text-emerald-600/60 hover:text-emerald-900"
+                                                )}
+                                            >
+                                                Auto
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => setTotalMode("manual")}
+                                                className={cn(
+                                                    "flex-1 py-1.5 rounded-md text-[8px] font-black uppercase tracking-widest transition-all cursor-pointer",
+                                                    totalMode === "manual" ? "bg-white text-emerald-900 shadow-sm" : "text-emerald-600/60 hover:text-emerald-900"
+                                                )}
+                                            >
+                                                Manual
+                                            </button>
+                                        </div>
+
                                         <div className="flex justify-between items-center">
                                             <span className="text-[8px] md:text-[10px] font-black uppercase tracking-widest text-emerald-800/60">Total Value</span>
-                                            <span className="text-base md:text-xl font-black text-emerald-900">{grandTotal.toLocaleString()} <span className="text-[10px] md:text-xs">ETB</span></span>
+                                            {totalMode === "manual" ? (
+                                                <div className="flex items-center gap-2">
+                                                    <input
+                                                        type="number"
+                                                        value={manualTotal}
+                                                        onChange={e => setManualTotal(parseFloat(e.target.value) || 0)}
+                                                        className="w-32 h-8 px-2 rounded-lg border-2 border-emerald-200 bg-white font-black text-sm text-right outline-none focus:border-emerald-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                                    />
+                                                    <span className="text-[10px] md:text-xs font-black text-emerald-900">ETB</span>
+                                                </div>
+                                            ) : (
+                                                <span className="text-base md:text-xl font-black text-emerald-900">{grandTotal.toLocaleString()} <span className="text-[10px] md:text-xs">ETB</span></span>
+                                            )}
                                         </div>
                                         <div className="flex justify-between items-center">
                                             <span className="text-[8px] md:text-[10px] font-black uppercase tracking-widest text-emerald-800/60">Payment</span>
@@ -716,7 +758,7 @@ export default function AddOrderModal({ isOpen, onClose, shopId, shopName }: Add
                                         </div>
                                         <div className="flex justify-between items-center text-rose-600">
                                             <span className="text-[8px] md:text-[10px] font-black uppercase tracking-widest opacity-60">Remaining Balance</span>
-                                            <span className="text-sm md:text-base font-black">{(grandTotal - amountPaid).toLocaleString()} ETB</span>
+                                            <span className="text-sm md:text-base font-black">{((totalMode === "manual" ? manualTotal : grandTotal) - amountPaid).toLocaleString()} ETB</span>
                                         </div>
                                     </div>
 

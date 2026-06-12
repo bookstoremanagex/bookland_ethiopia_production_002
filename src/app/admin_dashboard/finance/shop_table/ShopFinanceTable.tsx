@@ -44,6 +44,7 @@ export interface ShopFinanceData {
     totalBooks: number
     totalPaid: number
     totalDebt: number
+    previousDebt: number
     totalValue: number
     collectionRate: number
 }
@@ -81,6 +82,15 @@ export const columns: ColumnDef<ShopFinanceData>[] = [
     cell: ({ row }) => (
         <div className="font-bold text-slate-600">
             {row.getValue<number>("totalBooks").toLocaleString()} <span className="text-[8px] opacity-50 uppercase">Units</span>
+        </div>
+    ),
+  },
+  {
+    accessorKey: "previousDebt",
+    header: "Previous Debt",
+    cell: ({ row }) => (
+        <div className="font-bold text-amber-600">
+            {row.getValue<number>("previousDebt").toLocaleString()} <span className="text-[8px] opacity-50">ETB</span>
         </div>
     ),
   },
@@ -282,6 +292,10 @@ export default function ShopFinanceTable({ data }: { data: ShopFinanceData[] }) 
                   <div className="bg-slate-50 rounded-xl p-3 space-y-0.5">
                     <p className="text-[8px] font-black uppercase tracking-widest text-muted-foreground">Books</p>
                     <p className="font-bold text-slate-600">{item.totalBooks.toLocaleString()}</p>
+                  </div>
+                  <div className="bg-amber-50 rounded-xl p-3 space-y-0.5">
+                    <p className="text-[8px] font-black uppercase tracking-widest text-amber-600/60">Previous Debt</p>
+                    <p className="font-bold text-amber-600">{item.previousDebt.toLocaleString()} <span className="text-[7px] opacity-50">ETB</span></p>
                   </div>
                   <div className="bg-slate-50 rounded-xl p-3 space-y-0.5">
                     <p className="text-[8px] font-black uppercase tracking-widest text-muted-foreground">Gross Value</p>

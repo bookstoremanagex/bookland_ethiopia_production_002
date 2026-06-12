@@ -7,25 +7,31 @@ export default async function FinanceShopTablePage() {
         include: {
             bookshopeditions: {
                 where: { is_deleted: false }
-            }
+            },
+            orders: {
+                where: { is_deleted: false },
+                select: { total_amount: true, amount_paid: true },
+            },
         }
     });
 
     const data = (shops as any[]).map(shop => {
         const totalBooks = shop.bookshopeditions.reduce((acc: any, ed: any) => acc + (ed.quantity || 0), 0);
-        const totalPaid = shop.bookshopeditions.reduce((acc: any, ed: any) => acc + (ed.already_paid || 0), 0);
-        const totalDebt = shop.bookshopeditions.reduce((acc: any, ed: any) => acc + (ed.remaining_amount || 0), 0);
         const totalValue = shop.bookshopeditions.reduce((acc: any, ed: any) => acc + (ed.total_price || 0), 0);
+        const totalPaidFromOrders = (shop.orders || []).reduce((acc: any, o: any) => acc + (o.amount_paid || 0), 0);
+        const previousDebt = shop.previousDebt || 0;
+        const totalDebtFromOrders = shop.orders.reduce((acc: any, o: any) => acc + ((o.total_amount || 0) - (o.amount_paid || 0)), 0) + previousDebt;
 
         return {
             id: shop.id,
             name: shop.name,
             branch: shop.branch || 'Main',
             totalBooks,
-            totalPaid,
-            totalDebt,
+            totalPaid: totalPaidFromOrders,
+            totalDebt: totalDebtFromOrders,
+            previousDebt,
             totalValue,
-            collectionRate: totalValue > 0 ? (totalPaid / totalValue) * 100 : 0
+            collectionRate: totalValue > 0 ? (totalPaidFromOrders / totalValue) * 100 : 0
         };
     });
 

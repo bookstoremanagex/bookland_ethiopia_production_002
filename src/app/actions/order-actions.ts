@@ -117,6 +117,7 @@ export async function createOrder(data: {
   order_type: string;
   memo?: string;
   amount_paid: number;
+  total_amount?: number | null;
   payment_type?: string;
   check_id?: number | null;
   lock_books?: boolean;
@@ -165,6 +166,10 @@ export async function createOrder(data: {
           `Internal error: Could not fill order for book ${item.bookId} despite available stock check.`,
         );
       }
+    }
+
+    if (data.total_amount != null) {
+      totalAmount = data.total_amount;
     }
 
     // 2. Create the order

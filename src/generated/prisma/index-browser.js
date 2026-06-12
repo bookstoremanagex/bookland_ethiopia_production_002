@@ -266,7 +266,8 @@ exports.Prisma.BookshopesScalarFieldEnum = {
   is_deleted: 'is_deleted',
   updatedAt: 'updatedAt',
   createdAt: 'createdAt',
-  deletedAt: 'deletedAt'
+  deletedAt: 'deletedAt',
+  previousDebt: 'previousDebt'
 };
 
 exports.Prisma.OrdersScalarFieldEnum = {
