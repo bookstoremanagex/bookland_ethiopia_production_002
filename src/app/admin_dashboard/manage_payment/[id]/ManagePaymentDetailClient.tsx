@@ -23,6 +23,7 @@ import {
     User,
     DollarSign,
     ImageIcon,
+    Truck,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -32,7 +33,7 @@ import { useCalendar } from "@/lib/calendar-context";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { approvePayment, checkIsAdminUser } from "@/app/actions/payment-actions";
-import { updateCheckStatus } from "@/app/actions/check-actions";
+import { updateCheckStatus, updateCheckDetails } from "@/app/actions/check-actions";
 import RecordPaymentModal from "./RecordPaymentModal";
 import {
     Drawer,
@@ -97,12 +98,34 @@ export default function ManagePaymentDetailClient({ shop, payments, totals }: Pr
     const [selectedCheck, setSelectedCheck] = useState<CheckInfo | null>(null);
     const [isCheckDrawerOpen, setIsCheckDrawerOpen] = useState(false);
     const [clearingCheckId, setClearingCheckId] = useState<number | null>(null);
+    const [editingCheck, setEditingCheck] = useState(false);
+    const [editForm, setEditForm] = useState({ bankname: "", username: "", type: "", amount: "", recordeddate: "" });
+    const [savingCheck, setSavingCheck] = useState(false);
     const [paymentPage, setPaymentPage] = useState(1);
     const perPage = 15;
 
     useEffect(() => {
         checkIsAdminUser().then(res => setIsAdmin(res.isAdmin));
     }, []);
+
+    const handleDeliverCheck = async (checkId: number) => {
+        setClearingCheckId(checkId);
+        try {
+            const res = await updateCheckStatus(checkId, "DELIVERED");
+            if (res.success) {
+                toast.success("Check marked as delivered");
+                setIsCheckDrawerOpen(false);
+                setSelectedCheck(null);
+                router.refresh();
+            } else {
+                toast.error(res.error);
+            }
+        } catch {
+            toast.error("Failed to mark check as delivered");
+        } finally {
+            setClearingCheckId(null);
+        }
+    };
 
     const handleClearCheck = async (checkId: number) => {
         setClearingCheckId(checkId);
@@ -126,7 +149,7 @@ export default function ManagePaymentDetailClient({ shop, payments, totals }: Pr
     const handleApprove = async (paymentId: number) => {
         const payment = payments.find(p => p.id === paymentId);
         if (payment?.payment_type === "CHECK" && payment?.check?.status !== "CLEARED") {
-            toast.error("Cannot approve this payment. Please approve the linked check first.");
+            toast.error("Cannot approve this payment. The linked check must be delivered and cleared first.");
             return;
         }
         setApprovingId(paymentId);
@@ -217,6 +240,47 @@ export default function ManagePaymentDetailClient({ shop, payments, totals }: Pr
                         </p>
                     </div>
                 </div>
+
+                {/* Check Summary Card */}
+                <div className="bg-white rounded-[2rem] border-2 border-primarycolor/5 p-6 shadow-xl space-y-4">
+                    <div className="flex items-center gap-2 text-primarycolor mb-1">
+                        <Banknote className="size-4" />
+                        <h3 className="text-[10px] font-black uppercase tracking-widest">Check Summary</h3>
+                    </div>
+                    {(() => {
+                        const checkPayments = payments.filter(p => p.check)
+                        const totalCheckAmount = checkPayments.reduce((sum, p) => sum + (parseFloat(p.check!.amount || "0") || 0), 0)
+                        const deliveredAmount = checkPayments
+                            .filter(p => p.check!.status === "DELIVERED")
+                            .reduce((sum, p) => sum + (parseFloat(p.check!.amount || "0") || 0), 0)
+                        const pendingAmount = checkPayments
+                            .filter(p => p.check!.status === "PENDING")
+                            .reduce((sum, p) => sum + (parseFloat(p.check!.amount || "0") || 0), 0)
+                        const clearedAmount = checkPayments
+                            .filter(p => p.check!.status === "CLEARED")
+                            .reduce((sum, p) => sum + (parseFloat(p.check!.amount || "0") || 0), 0)
+                        return (
+                            <div className="space-y-3">
+                                <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-primarycolor/5">
+                                    <span className="text-[10px] font-bold text-muted-foreground">Total on Checks</span>
+                                    <span className="text-sm font-black text-primarycolor">{totalCheckAmount.toLocaleString()} ETB</span>
+                                </div>
+                                <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-blue-50 border border-blue-100">
+                                    <span className="text-[10px] font-bold text-blue-600">Delivered</span>
+                                    <span className="text-sm font-black text-blue-700">{deliveredAmount.toLocaleString()} ETB</span>
+                                </div>
+                                <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-amber-50 border border-amber-100">
+                                    <span className="text-[10px] font-bold text-amber-600">Pending</span>
+                                    <span className="text-sm font-black text-amber-700">{pendingAmount.toLocaleString()} ETB</span>
+                                </div>
+                                <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-emerald-50 border border-emerald-100">
+                                    <span className="text-[10px] font-bold text-emerald-600">Cleared</span>
+                                    <span className="text-sm font-black text-emerald-700">{clearedAmount.toLocaleString()} ETB</span>
+                                </div>
+                            </div>
+                        )
+                    })()}
+                </div>
             </div>
 
             {/* Payments Section */}
@@ -278,9 +342,11 @@ export default function ManagePaymentDetailClient({ shop, payments, totals }: Pr
                                                         "px-1.5 py-0.5 rounded text-[7px] font-black uppercase tracking-widest",
                                                         payment.check.status === "CLEARED"
                                                             ? "bg-emerald-100 text-emerald-600"
+                                                            : payment.check.status === "DELIVERED"
+                                                            ? "bg-blue-100 text-blue-600"
                                                             : "bg-amber-100 text-amber-600"
                                                     )}>
-                                                        {payment.check.status === "CLEARED" ? "Cleared" : "Pending"}
+                                                        {payment.check.status === "CLEARED" ? "Cleared" : payment.check.status === "DELIVERED" ? "Delivered" : "Pending"}
                                                     </span>
                                                     <button
                                                         onClick={() => {
@@ -368,19 +434,49 @@ export default function ManagePaymentDetailClient({ shop, payments, totals }: Pr
             />
 
             {/* Check Detail Drawer */}
-            <Drawer open={isCheckDrawerOpen} onOpenChange={(o) => { if (!o) { setIsCheckDrawerOpen(false); setSelectedCheck(null); } }}>
+            <Drawer open={isCheckDrawerOpen} onOpenChange={(o) => { if (!o) { setIsCheckDrawerOpen(false); setSelectedCheck(null); setEditingCheck(false); } }}>
                 <DrawerContent className="rounded-t-[2rem] border-t-4 border-primarycolor/5">
                     <DrawerHeader className="text-left px-6 pt-6 pb-2">
-                        <DrawerTitle className="text-lg font-black text-primarycolor uppercase tracking-tight italic">
-                            Check <span className="text-secondarycolor not-italic">Details</span>
-                        </DrawerTitle>
-                        <DrawerDescription className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">
-                            {selectedCheck?.bankname} — {selectedCheck?.username}
-                        </DrawerDescription>
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <DrawerTitle className="text-lg font-black text-primarycolor uppercase tracking-tight italic">
+                                    Check <span className="text-secondarycolor not-italic">Details</span>
+                                </DrawerTitle>
+                                <DrawerDescription className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">
+                                    {selectedCheck?.bankname} — {selectedCheck?.username}
+                                </DrawerDescription>
+                            </div>
+                            {isAdmin && selectedCheck && (
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => {
+                                        if (editingCheck) {
+                                            setEditingCheck(false)
+                                        } else {
+                                            const d = selectedCheck.recordeddate
+                                                ? new Date(typeof selectedCheck.recordeddate === "string" ? parseISO(selectedCheck.recordeddate) : selectedCheck.recordeddate)
+                                                : null
+                                            setEditForm({
+                                                bankname: selectedCheck.bankname || "",
+                                                username: selectedCheck.username || "",
+                                                type: selectedCheck.type || "",
+                                                amount: selectedCheck.amount || "",
+                                                recordeddate: d ? d.toISOString().split("T")[0] : "",
+                                            })
+                                            setEditingCheck(true)
+                                        }
+                                    }}
+                                    className="rounded-xl text-[10px] font-black uppercase tracking-widest h-9"
+                                >
+                                    {editingCheck ? "Cancel" : "Edit"}
+                                </Button>
+                            )}
+                        </div>
                     </DrawerHeader>
 
                     <div className="px-6 py-4 space-y-4 overflow-y-auto max-h-[60vh]">
-                        {selectedCheck?.imageUrl && (
+                        {selectedCheck?.imageUrl && !editingCheck && (
                             <div className="rounded-2xl overflow-hidden border-2 border-slate-100 bg-slate-50">
                                 <img
                                     src={selectedCheck.imageUrl}
@@ -390,6 +486,86 @@ export default function ManagePaymentDetailClient({ shop, payments, totals }: Pr
                             </div>
                         )}
 
+                        {editingCheck ? (
+                            <div className="space-y-4">
+                                <div className="space-y-2">
+                                    <label className="text-[8px] font-black uppercase tracking-widest text-muted-foreground">Bank</label>
+                                    <input
+                                        value={editForm.bankname}
+                                        onChange={e => setEditForm(f => ({ ...f, bankname: e.target.value }))}
+                                        className="w-full h-12 px-4 rounded-2xl border-2 border-primarycolor/10 bg-white font-bold text-sm outline-none focus:border-primarycolor transition-colors"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[8px] font-black uppercase tracking-widest text-muted-foreground">Username</label>
+                                    <input
+                                        value={editForm.username}
+                                        onChange={e => setEditForm(f => ({ ...f, username: e.target.value }))}
+                                        className="w-full h-12 px-4 rounded-2xl border-2 border-primarycolor/10 bg-white font-bold text-sm outline-none focus:border-primarycolor transition-colors"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[8px] font-black uppercase tracking-widest text-muted-foreground">Type</label>
+                                    <select
+                                        value={editForm.type}
+                                        onChange={e => setEditForm(f => ({ ...f, type: e.target.value }))}
+                                        className="w-full h-12 px-4 rounded-2xl border-2 border-primarycolor/10 bg-white font-bold text-sm outline-none focus:border-primarycolor transition-colors"
+                                    >
+                                        <option value="">—</option>
+                                        <option value="COLLATERAL">COLLATERAL</option>
+                                        <option value="PAYMENT">PAYMENT</option>
+                                    </select>
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[8px] font-black uppercase tracking-widest text-muted-foreground">Amount</label>
+                                    <input
+                                        value={editForm.amount}
+                                        onChange={e => setEditForm(f => ({ ...f, amount: e.target.value }))}
+                                        readOnly={selectedCheck?.status === "CLEARED"}
+                                        className={cn(
+                                            "w-full h-12 px-4 rounded-2xl border-2 border-primarycolor/10 bg-white font-bold text-sm outline-none transition-colors",
+                                            selectedCheck?.status === "CLEARED"
+                                                ? "opacity-50 cursor-not-allowed"
+                                                : "focus:border-primarycolor"
+                                        )}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[8px] font-black uppercase tracking-widest text-muted-foreground">Date</label>
+                                    <input
+                                        type="date"
+                                        value={editForm.recordeddate}
+                                        onChange={e => setEditForm(f => ({ ...f, recordeddate: e.target.value }))}
+                                        className="w-full h-12 px-4 rounded-2xl border-2 border-primarycolor/10 bg-white font-bold text-sm outline-none focus:border-primarycolor transition-colors"
+                                    />
+                                </div>
+                                <Button
+                                    onClick={async () => {
+                                        if (!selectedCheck) return
+                                        setSavingCheck(true)
+                                        try {
+                                            const res = await updateCheckDetails(selectedCheck.id, editForm)
+                                            if (res.success) {
+                                                toast.success("Check updated")
+                                                setEditingCheck(false)
+                                                router.refresh()
+                                            } else {
+                                                toast.error(res.error)
+                                            }
+                                        } catch {
+                                            toast.error("Failed to save")
+                                        } finally {
+                                            setSavingCheck(false)
+                                        }
+                                    }}
+                                    disabled={savingCheck}
+                                    className="w-full h-12 rounded-2xl bg-primarycolor hover:bg-secondarycolor text-white font-black uppercase tracking-widest text-[10px] shadow-lg gap-2"
+                                >
+                                    {savingCheck ? "Saving..." : "Save Changes"}
+                                </Button>
+                            </div>
+                        ) : (
+                            <>
                         <div className="grid grid-cols-2 gap-4">
                             <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
                                 <div className="flex items-center gap-2">
@@ -445,6 +621,8 @@ export default function ManagePaymentDetailClient({ shop, payments, totals }: Pr
                                     "inline-block px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest",
                                     selectedCheck?.status === "CLEARED"
                                         ? "bg-emerald-100 text-emerald-700"
+                                        : selectedCheck?.status === "DELIVERED"
+                                        ? "bg-blue-100 text-blue-700"
                                         : selectedCheck?.status === "BOUNCED"
                                         ? "bg-red-100 text-red-700"
                                         : "bg-amber-100 text-amber-700"
@@ -463,6 +641,8 @@ export default function ManagePaymentDetailClient({ shop, payments, totals }: Pr
                                 <p className="font-bold text-primarycolor text-sm">{selectedCheck.memo}</p>
                             </div>
                         )}
+                            </>
+                        )}
                     </div>
 
                     <DrawerFooter className="px-6 pb-8 pt-2 flex-row gap-3">
@@ -472,7 +652,21 @@ export default function ManagePaymentDetailClient({ shop, payments, totals }: Pr
                                 Close
                             </Button>
                         </DrawerClose>
-                        {selectedCheck && selectedCheck.status !== "CLEARED" && isAdmin && (
+                        {!editingCheck && selectedCheck && selectedCheck.status === "PENDING" && isAdmin && (
+                            <Button
+                                onClick={() => handleDeliverCheck(selectedCheck.id)}
+                                disabled={clearingCheckId === selectedCheck.id}
+                                className="flex-[2] h-12 rounded-2xl bg-amber-600 hover:bg-amber-700 text-white font-black uppercase tracking-widest text-[10px] shadow-xl shadow-amber-600/20 gap-2"
+                            >
+                                {clearingCheckId === selectedCheck.id ? (
+                                    <Loader2 className="size-4 animate-spin" />
+                                ) : (
+                                    <Truck className="size-4" />
+                                )}
+                                {clearingCheckId === selectedCheck.id ? "Delivering..." : "Mark as Delivered"}
+                            </Button>
+                        )}
+                        {!editingCheck && selectedCheck && selectedCheck.status === "DELIVERED" && isAdmin && (
                             <Button
                                 onClick={() => handleClearCheck(selectedCheck.id)}
                                 disabled={clearingCheckId === selectedCheck.id}
@@ -483,7 +677,7 @@ export default function ManagePaymentDetailClient({ shop, payments, totals }: Pr
                                 ) : (
                                     <CheckCircle2 className="size-4" />
                                 )}
-                                {clearingCheckId === selectedCheck.id ? "Clearing..." : "Approve & Clear"}
+                                {clearingCheckId === selectedCheck.id ? "Clearing..." : "Clear Check"}
                             </Button>
                         )}
                     </DrawerFooter>

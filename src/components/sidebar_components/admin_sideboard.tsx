@@ -89,11 +89,6 @@ const menuItems = [
   },
   { title: "Statistics", icon: BarChart3, url: "/admin_dashboard/statistics" },
   {
-    title: "Manage Checks",
-    icon: FileCheck,
-    url: "/admin_dashboard/checks",
-  },
-  {
     title: "Retail Management",
     icon: ShoppingBag,
     url: "/admin_dashboard/retail_management",
@@ -111,6 +106,7 @@ export function AdminAppSidebar({ accountId }: { accountId?: number }) {
     useSidebarStore();
   const [pendingOrdersCount, setPendingOrdersCount] = React.useState(0);
   const [unreadNotifCount, setUnreadNotifCount] = React.useState(0);
+  const [pendingPaymentsCount, setPendingPaymentsCount] = React.useState(0);
   const accountRef = React.useRef(accountId);
 
   React.useEffect(() => {
@@ -126,17 +122,20 @@ export function AdminAppSidebar({ accountId }: { accountId?: number }) {
   React.useEffect(() => {
     const fetchCounts = async () => {
       try {
-        const [{ getPendingOrdersCount }, { getUnreadCount }] =
+        const [{ getPendingOrdersCount }, { getUnreadCount }, { getPendingPaymentsCount }] =
           await Promise.all([
             import("@/app/actions/order-actions"),
             import("@/app/actions/notification-actions"),
+            import("@/app/actions/payment-actions"),
           ]);
-        const [ordersRes, notifRes] = await Promise.all([
+        const [ordersRes, notifRes, paymentsRes] = await Promise.all([
           getPendingOrdersCount(),
           getUnreadCount(accountRef.current),
+          getPendingPaymentsCount(),
         ]);
         if (ordersRes.success) setPendingOrdersCount(ordersRes.count || 0);
         if (notifRes.success) setUnreadNotifCount(notifRes.count || 0);
+        if (paymentsRes.success) setPendingPaymentsCount(paymentsRes.count || 0);
       } catch (error) {
         console.error("Failed to fetch counts:", error);
       }
@@ -186,10 +185,12 @@ export function AdminAppSidebar({ accountId }: { accountId?: number }) {
                   const active = activeUrl === item.url;
                   const showBadge =
                     (item.title === "Manage Orders" && pendingOrdersCount > 0) ||
-                    (item.title === "Notifications" && unreadNotifCount > 0);
+                    (item.title === "Notifications" && unreadNotifCount > 0) ||
+                    (item.title === "Manage Payment" && pendingPaymentsCount > 0);
                   const badgeCount =
                     item.title === "Manage Orders" ? pendingOrdersCount :
-                    item.title === "Notifications" ? unreadNotifCount : 0;
+                    item.title === "Notifications" ? unreadNotifCount :
+                    item.title === "Manage Payment" ? pendingPaymentsCount : 0;
                   return (
                     <SidebarMenuItem key={item.title}>
                       <SidebarMenuButton
@@ -233,6 +234,113 @@ export function AdminAppSidebar({ accountId }: { accountId?: number }) {
                     </SidebarMenuItem>
                   );
                 })}
+
+                {/* Expandable Section: Manage Checks */}
+                <Collapsible
+                  asChild
+                  className="group/collapsible"
+                  defaultOpen={
+                    isMounted &&
+                    (activePath?.includes("/admin_dashboard/checks"))
+                  }
+                >
+                  <SidebarMenuItem>
+                    <CollapsibleTrigger asChild>
+                      <SidebarMenuButton
+                        tooltip="Manage Checks"
+                        className={cn(
+                          "transition-all duration-300 h-10 px-4",
+                          isMounted &&
+                            activePath?.includes("/admin_dashboard/checks")
+                            ? "bg-primarycolor/10 text-primarycolor font-black"
+                            : "hover:bg-primarycolor/5 text-foreground",
+                        )}
+                      >
+                        <FileCheck
+                          className={cn(
+                            "w-5 h-5",
+                            isMounted &&
+                              activePath?.includes("/admin_dashboard/checks")
+                              ? "text-primarycolor"
+                              : "text-primarycolor/70",
+                          )}
+                        />
+                        <span>Manage Checks</span>
+                        <ChevronRight className="ml-auto w-4 h-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                      </SidebarMenuButton>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <SidebarMenuSub>
+                        <SidebarMenuSubItem>
+                          <SidebarMenuSubButton
+                            asChild
+                            isActive={
+                              isMounted &&
+                              (activePath ===
+                                "/admin_dashboard/checks" ||
+                                (activePath.startsWith(
+                                  "/admin_dashboard/checks/",
+                                ) && !activePath.startsWith(
+                                  "/admin_dashboard/checks/follow-up",
+                                )))
+                            }
+                            className={cn(
+                              "transition-all duration-300 rounded-lg h-9 px-4",
+                              "data-[active=true]:bg-primarycolor data-[active=true]:text-white data-[active=true]:font-black data-[active=true]:shadow-md data-[active=true]:shadow-primarycolor/20",
+                              "hover:bg-primarycolor/10 hover:text-primarycolor",
+                            )}
+                          >
+                            <Link href="/admin_dashboard/checks">
+                              <FileCheck
+                                className={cn(
+                                  "w-4 h-4",
+                                  isMounted &&
+                                    activePath ===
+                                      "/admin_dashboard/checks"
+                                    ? "text-white"
+                                    : "text-primarycolor/70",
+                                )}
+                              />
+                              <span>List</span>
+                            </Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                        <SidebarMenuSubItem>
+                          <SidebarMenuSubButton
+                            asChild
+                            isActive={
+                              isMounted &&
+                              (activePath ===
+                                "/admin_dashboard/checks/follow-up" ||
+                                activePath.startsWith(
+                                  "/admin_dashboard/checks/follow-up/",
+                                ))
+                            }
+                            className={cn(
+                              "transition-all duration-300 rounded-lg h-9 px-4",
+                              "data-[active=true]:bg-primarycolor data-[active=true]:text-white data-[active=true]:font-black data-[active=true]:shadow-md data-[active=true]:shadow-primarycolor/20",
+                              "hover:bg-primarycolor/10 hover:text-primarycolor",
+                            )}
+                          >
+                            <Link href="/admin_dashboard/checks/follow-up">
+                              <FileCheck
+                                className={cn(
+                                  "w-4 h-4",
+                                  isMounted &&
+                                    activePath ===
+                                      "/admin_dashboard/checks/follow-up"
+                                    ? "text-white"
+                                    : "text-primarycolor/70",
+                                )}
+                              />
+                              <span>Follow Up</span>
+                            </Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      </SidebarMenuSub>
+                    </CollapsibleContent>
+                  </SidebarMenuItem>
+                </Collapsible>
 
                 {/* Expandable Section: Stores */}
                 <Collapsible

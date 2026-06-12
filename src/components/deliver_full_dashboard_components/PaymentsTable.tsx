@@ -42,6 +42,7 @@ export type ShopRow = {
   name: string;
   branch: string;
   remaining: number;
+  deliveredCheckAmount: number;
 };
 
 const columns: ColumnDef<ShopRow>[] = [
@@ -110,6 +111,34 @@ const columns: ColumnDef<ShopRow>[] = [
             <BadgeDollarSign className="size-3" />
             {remaining.toLocaleString()} <span className="text-[9px]">ETB</span>
           </span>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "deliveredCheckAmount",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="hover:bg-transparent p-0 font-black text-right w-full justify-end"
+      >
+        DELIVERED CHECKS
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => {
+      const amount = row.getValue("deliveredCheckAmount") as number;
+      return (
+        <div className="text-right">
+          {amount > 0 ? (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg font-black text-xs bg-blue-50 text-blue-600 border border-blue-100">
+              <Banknote className="size-3" />
+              {amount.toLocaleString()} <span className="text-[9px]">ETB</span>
+            </span>
+          ) : (
+            <span className="text-[10px] font-bold text-muted-foreground/40">—</span>
+          )}
         </div>
       );
     },
@@ -259,6 +288,19 @@ export default function PaymentsTable({ data }: PaymentsTableProps) {
                   </div>
                   <ChevronRightIcon className="size-5 text-muted-foreground/30 group-hover:text-primarycolor/50 transition-colors mt-1" />
                 </Link>
+
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest">Delivered Checks</span>
+                  <span className={cn(
+                    "inline-flex items-center gap-1.5 px-3 py-1 rounded-lg font-black text-xs border",
+                    shop.deliveredCheckAmount > 0
+                      ? "bg-blue-50 text-blue-600 border-blue-100"
+                      : "bg-slate-50 text-slate-400 border-slate-100"
+                  )}>
+                    <Banknote className="size-3" />
+                    {shop.deliveredCheckAmount > 0 ? `${shop.deliveredCheckAmount.toLocaleString()} ETB` : "—"}
+                  </span>
+                </div>
 
                 <div className="flex items-center justify-between pt-4 border-t border-primarycolor/5">
                   <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">

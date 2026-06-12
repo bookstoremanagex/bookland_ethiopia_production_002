@@ -678,6 +678,7 @@ enum check_types {
 enum check_status {
   PENDING
   CLEARED
+  DELIVERED
   BOUNCED
   CANCELLED
 }

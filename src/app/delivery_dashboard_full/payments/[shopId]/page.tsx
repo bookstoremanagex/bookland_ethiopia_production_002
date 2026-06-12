@@ -14,9 +14,9 @@ export default async function ShopPaymentDetailPage({
   const shop = await (prisma as any).bookshopes.findFirst({
     where: { id: parsedShopId, is_deleted: false },
     include: {
-      bookshopeditions: {
+      orders: {
         where: { is_deleted: false },
-        select: { remaining_amount: true },
+        select: { total_amount: true, amount_paid: true },
       },
       payments: {
         where: { is_deleted: false },
@@ -28,10 +28,15 @@ export default async function ShopPaymentDetailPage({
 
   if (!shop) notFound();
 
-  const remaining = (shop.bookshopeditions || []).reduce(
-    (sum: number, a: any) => sum + (a.remaining_amount || 0),
+  const totalDebt = (shop.orders || []).reduce(
+    (sum: number, o: any) => sum + (o.total_amount || 0),
     0
   );
+  const totalPaid = (shop.orders || []).reduce(
+    (sum: number, o: any) => sum + (o.amount_paid || 0),
+    0
+  );
+  const remaining = totalDebt - totalPaid;
 
   const serialized = JSON.parse(
     JSON.stringify({

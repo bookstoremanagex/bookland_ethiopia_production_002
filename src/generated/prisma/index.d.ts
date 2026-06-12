@@ -227,6 +227,7 @@ export type check_types = (typeof check_types)[keyof typeof check_types]
 export const check_status: {
   PENDING: 'PENDING',
   CLEARED: 'CLEARED',
+  DELIVERED: 'DELIVERED',
   BOUNCED: 'BOUNCED',
   CANCELLED: 'CANCELLED'
 };

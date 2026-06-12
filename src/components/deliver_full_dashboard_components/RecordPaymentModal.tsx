@@ -45,6 +45,10 @@ import {
   X,
   Wallet,
   ScrollText,
+  Upload,
+  ImageIcon,
+  Link,
+  Calendar,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -85,6 +89,9 @@ export default function RecordPaymentModal({ shopId, shopName, trigger }: Props)
     memo: "",
   });
   const [isCreatingCheck, setIsCreatingCheck] = useState(false);
+  const [checkImageUrl, setCheckImageUrl] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   const syncAmount = useCallback((val: string) => {
     setAmount(val);
@@ -104,6 +111,42 @@ export default function RecordPaymentModal({ shopId, shopName, trigger }: Props)
     }
   };
 
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    setUploadProgress(0);
+
+    const xhr = new XMLHttpRequest();
+    const formData = new FormData();
+    formData.append("file", file);
+
+    xhr.upload.onprogress = (event) => {
+      if (event.lengthComputable) {
+        setUploadProgress(Math.round((event.loaded / event.total) * 100));
+      }
+    };
+
+    xhr.onload = () => {
+      if (xhr.status === 200) {
+        const res = JSON.parse(xhr.responseText);
+        if (res.success) {
+          setCheckImageUrl(res.url);
+          setUploadProgress(100);
+        }
+      }
+      setUploading(false);
+    };
+
+    xhr.onerror = () => {
+      setUploading(false);
+      toast.error("Failed to upload image");
+    };
+
+    xhr.open("POST", "/api/upload-check-image");
+    xhr.send(formData);
+  };
+
   const handleCreateCheck = async () => {
     if (!newCheck.username || !newCheck.bankname || !newCheck.amount) {
       toast.error("Username and Bank Name are required");
@@ -118,11 +161,14 @@ export default function RecordPaymentModal({ shopId, shopName, trigger }: Props)
         amount: newCheck.amount,
         recordeddate: newCheck.recordeddate || new Date().toISOString().split("T")[0],
         memo: newCheck.memo || "",
+        imageUrl: checkImageUrl || undefined,
       });
       if (res.success) {
         toast.success("Check created successfully");
         setShowNewCheck(false);
         setNewCheck({ username: "", bankname: "", type: "PAYMENT", amount: "", recordeddate: "", memo: "" });
+        setCheckImageUrl("");
+        setUploadProgress(0);
         await loadChecks();
         setSelectedCheck(res.data);
       } else {
@@ -158,6 +204,8 @@ export default function RecordPaymentModal({ shopId, shopName, trigger }: Props)
         setSelectedCheck(null);
         setPaymentType("DIRECT");
         setShowNewCheck(false);
+        setCheckImageUrl("");
+        setUploadProgress(0);
         router.refresh();
       } else {
         toast.error(res.error);
@@ -365,7 +413,7 @@ export default function RecordPaymentModal({ shopId, shopName, trigger }: Props)
                   <div className="flex items-center justify-between">
                     <span className="text-[9px] font-black text-purple-700 uppercase tracking-widest">New Check Details</span>
                     <button
-                      onClick={() => setShowNewCheck(false)}
+                      onClick={() => { setShowNewCheck(false); setCheckImageUrl(""); setUploadProgress(0); }}
                       className="text-[9px] font-black uppercase tracking-widest text-purple-500 hover:text-purple-600 transition-colors"
                     >
                       Back
@@ -437,6 +485,19 @@ export default function RecordPaymentModal({ shopId, shopName, trigger }: Props)
                     </div>
 
                     <div className="space-y-1.5">
+                      <label className="text-[8px] font-black uppercase tracking-widest text-purple-700 ml-1">Check Date <span className="text-purple-400 font-normal normal-case">(optional)</span></label>
+                      <div className="relative">
+                        <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-purple-400" />
+                        <Input
+                          type="date"
+                          value={newCheck.recordeddate}
+                          onChange={(e) => setNewCheck({ ...newCheck, recordeddate: e.target.value })}
+                          className="h-12 pl-11 rounded-2xl border-2 border-purple-200 bg-white font-bold text-sm"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-1.5">
                       <label className="text-[8px] font-black uppercase tracking-widest text-purple-700 ml-1">Memo</label>
                       <div className="relative">
                         <FileText className="absolute left-4 top-3 size-4 text-purple-400" />
@@ -447,6 +508,84 @@ export default function RecordPaymentModal({ shopId, shopName, trigger }: Props)
                           placeholder="Additional notes..."
                         />
                       </div>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-[8px] font-black uppercase tracking-widest text-purple-700 ml-1">Check Image</label>
+                      <div className="space-y-2">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFileUpload}
+                          disabled={uploading}
+                          className="hidden"
+                          id="check-image-upload"
+                        />
+                        <label
+                          htmlFor="check-image-upload"
+                          className={cn(
+                            "flex items-center gap-3 h-12 px-4 rounded-2xl border-2 border-dashed bg-white font-bold text-sm cursor-pointer transition-all",
+                            checkImageUrl
+                              ? "border-emerald-300 bg-emerald-50/50"
+                              : uploading
+                                ? "border-purple-300 bg-purple-50/50"
+                                : "border-purple-200 hover:border-purple-300"
+                          )}
+                        >
+                          {checkImageUrl ? (
+                            <>
+                              <div className="size-8 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
+                                <CheckCircle2 className="size-4" />
+                              </div>
+                              <span className="text-emerald-700 text-xs font-bold truncate">Image uploaded</span>
+                            </>
+                          ) : uploading ? (
+                            <>
+                              <div className="size-8 rounded-xl bg-purple-100 flex items-center justify-center text-purple-600 shrink-0">
+                                <Loader2 className="size-4 animate-spin" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center justify-between mb-1">
+                                  <span className="text-purple-700 text-xs font-bold">Uploading...</span>
+                                  <span className="text-purple-600 text-[10px] font-black">{uploadProgress}%</span>
+                                </div>
+                                <div className="h-1.5 rounded-full bg-purple-200 overflow-hidden">
+                                  <div
+                                    className="h-full rounded-full bg-purple-600 transition-all duration-300"
+                                    style={{ width: `${uploadProgress}%` }}
+                                  />
+                                </div>
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <div className="size-8 rounded-xl bg-purple-100 flex items-center justify-center text-purple-600 shrink-0">
+                                <ImageIcon className="size-4" />
+                              </div>
+                              <span className="text-purple-700 text-xs font-bold">Upload check image</span>
+                            </>
+                          )}
+                        </label>
+
+                        <div className="relative">
+                          <Link className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-purple-400" />
+                          <Input
+                            value={checkImageUrl}
+                            onChange={(e) => setCheckImageUrl(e.target.value)}
+                            className="h-12 pl-11 rounded-2xl border-2 border-purple-200 bg-white font-bold text-sm"
+                            placeholder="Or paste image URL..."
+                          />
+                        </div>
+                      </div>
+                      {checkImageUrl && (
+                        <div className="mt-2 rounded-2xl overflow-hidden border-2 border-emerald-200 bg-emerald-50/50">
+                          <img
+                            src={checkImageUrl}
+                            alt="Check"
+                            className="w-full h-36 object-contain bg-white"
+                          />
+                        </div>
+                      )}
                     </div>
                   </div>
 

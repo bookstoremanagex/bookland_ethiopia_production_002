@@ -920,6 +920,7 @@ exports.check_types = exports.$Enums.check_types = {
 exports.check_status = exports.$Enums.check_status = {
   PENDING: 'PENDING',
   CLEARED: 'CLEARED',
+  DELIVERED: 'DELIVERED',
   BOUNCED: 'BOUNCED',
   CANCELLED: 'CANCELLED'
 };

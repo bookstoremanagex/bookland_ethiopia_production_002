@@ -5,23 +5,35 @@ export default async function PaymentsPage() {
   const shops = await (prisma as any).bookshopes.findMany({
     where: { is_deleted: false },
     include: {
-      bookshopeditions: {
+      orders: {
         where: { is_deleted: false },
-        select: { remaining_amount: true },
+        select: { total_amount: true, amount_paid: true },
+      },
+      payments: {
+        where: { is_deleted: false, payment_type: "CHECK" },
+        include: { check: true },
       },
     },
   });
 
   const shopData = (shops as any[]).map((shop: any) => {
-    const remaining = (shop.bookshopeditions || []).reduce(
-      (sum: number, a: any) => sum + (a.remaining_amount || 0),
+    const totalDebt = (shop.orders || []).reduce(
+      (sum: number, o: any) => sum + (o.total_amount || 0),
       0
     );
+    const totalPaid = (shop.orders || []).reduce(
+      (sum: number, o: any) => sum + (o.amount_paid || 0),
+      0
+    );
+    const deliveredCheckAmount = (shop.payments || [])
+      .filter((p: any) => p.check?.status === "DELIVERED")
+      .reduce((sum: number, p: any) => sum + (parseFloat(p.check?.amount || "0") || 0), 0);
     return {
       id: shop.id,
       name: shop.name,
       branch: shop.branch || shop.location || "",
-      remaining,
+      remaining: totalDebt - totalPaid,
+      deliveredCheckAmount,
     };
   });
 

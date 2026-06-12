@@ -5,6 +5,17 @@ import { revalidatePath } from "next/cache";
 import { getCurrentSession } from "./auth-actions";
 import { createNotification } from "./notification-actions";
 
+export async function getPendingPaymentsCount() {
+  try {
+    const count = await (prisma as any).payments.count({
+      where: { status: "PENDING", is_deleted: false },
+    });
+    return { success: true, count };
+  } catch (error) {
+    return { success: true, count: 0 };
+  }
+}
+
 export async function checkIsAdminUser() {
     try {
         const session = await getCurrentSession();
