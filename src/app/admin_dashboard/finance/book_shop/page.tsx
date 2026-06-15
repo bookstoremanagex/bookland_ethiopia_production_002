@@ -15,17 +15,24 @@ export default async function FinanceBookShopPage() {
     const shops = await (prisma as any).bookshopes.findMany({
         where: { is_deleted: false },
         include: {
-            bookshopeditions: {
+            orders: {
+                where: { is_deleted: false }
+            },
+            payments: {
                 where: { is_deleted: false }
             }
         }
     });
 
     const shopsWithFinance = (shops as any[]).map(shop => {
-        const totalValue = shop.bookshopeditions.reduce((acc: any, ed: any) => acc + (ed.total_price || 0), 0);
-        const totalPaid = shop.bookshopeditions.reduce((acc: any, ed: any) => acc + (ed.already_paid || 0), 0);
-        const totalDebt = shop.bookshopeditions.reduce((acc: any, ed: any) => acc + (ed.remaining_amount || 0), 0);
-        
+        const previousDebt = shop.previousDebt || 0;
+        const orderTotal = (shop.orders || []).reduce((acc: any, o: any) => acc + (o.total_amount || 0), 0);
+        const totalValue = orderTotal + previousDebt;
+        const totalPaid = (shop.payments || [])
+            .filter((p: any) => p.status === "APPROVED")
+            .reduce((acc: any, p: any) => acc + (p.amount || 0), 0);
+        const totalDebt = totalValue - totalPaid;
+
         return {
             ...shop,
             totalValue,

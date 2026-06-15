@@ -33,8 +33,10 @@ export default async function ShopPaymentDetailPage({
     (sum: number, o: any) => sum + (o.total_amount || 0),
     0
   ) + previousDebt;
-  const totalPaid = (shop.orders || []).reduce(
-    (sum: number, o: any) => sum + (o.amount_paid || 0),
+  const totalPaid = (shop.payments || []).filter(
+    (p: any) => p.status === "APPROVED"
+  ).reduce(
+    (sum: number, p: any) => sum + (p.amount || 0),
     0
   );
   const remaining = totalDebt - totalPaid;

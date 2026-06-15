@@ -10,7 +10,7 @@ export default async function PaymentsPage() {
         select: { total_amount: true, amount_paid: true },
       },
       payments: {
-        where: { is_deleted: false, payment_type: "CHECK" },
+        where: { is_deleted: false },
         include: { check: true },
       },
     },
@@ -22,12 +22,11 @@ export default async function PaymentsPage() {
       (sum: number, o: any) => sum + (o.total_amount || 0),
       0
     ) + previousDebt;
-    const totalPaid = (shop.orders || []).reduce(
-      (sum: number, o: any) => sum + (o.amount_paid || 0),
-      0
-    );
+    const totalPaid = (shop.payments || [])
+      .filter((p: any) => p.status === "APPROVED")
+      .reduce((sum: number, p: any) => sum + (p.amount || 0), 0);
     const deliveredCheckAmount = (shop.payments || [])
-      .filter((p: any) => p.check?.status === "DELIVERED")
+      .filter((p: any) => p.payment_type === "CHECK" && p.check?.status === "DELIVERED")
       .reduce((sum: number, p: any) => sum + (parseFloat(p.check?.amount || "0") || 0), 0);
     return {
       id: shop.id,
