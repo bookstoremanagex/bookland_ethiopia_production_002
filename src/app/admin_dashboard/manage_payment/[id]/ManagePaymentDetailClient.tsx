@@ -24,6 +24,8 @@ import {
     DollarSign,
     ImageIcon,
     Truck,
+    MoreHorizontal,
+    Trash2,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -32,7 +34,7 @@ import { parseISO } from "date-fns";
 import { useCalendar } from "@/lib/calendar-context";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { approvePayment, checkIsAdminUser } from "@/app/actions/payment-actions";
+import { approvePayment, checkIsAdminUser, rejectPayment, deletePayment, setPaymentPending } from "@/app/actions/payment-actions";
 import { updateCheckStatus, updateCheckDetails } from "@/app/actions/check-actions";
 import { updateShopPreviousDebt } from "@/app/actions/book-shop-actions";
 import {
@@ -104,6 +106,25 @@ interface Props {
     previousDebt: number;
 }
 
+function timeAgo(date: string | Date): string {
+    const now = Date.now();
+    const then = new Date(date).getTime();
+    const diffMs = now - then;
+    if (diffMs < 0) return "just now";
+    const seconds = Math.floor(diffMs / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+    const weeks = Math.floor(days / 7);
+    const months = Math.floor(days / 30);
+    if (months > 0) return `${months} month${months > 1 ? "s" : ""} ago`;
+    if (weeks > 0) return `${weeks} week${weeks > 1 ? "s" : ""} ago`;
+    if (days > 0) return `${days} day${days > 1 ? "s" : ""} ago`;
+    if (hours > 0) return `${hours} hour${hours > 1 ? "s" : ""} ago`;
+    if (minutes > 0) return `${minutes} minute${minutes > 1 ? "s" : ""} ago`;
+    return "just now";
+}
+
 export default function ManagePaymentDetailClient({ shop, payments, totals, previousDebt }: Props) {
     const { formatDate } = useCalendar();
     const router = useRouter();
@@ -124,6 +145,11 @@ export default function ManagePaymentDetailClient({ shop, payments, totals, prev
 
     const [paymentPage, setPaymentPage] = useState(1);
     const perPage = 15;
+    const [selectedActionPayment, setSelectedActionPayment] = useState<Payment | null>(null);
+    const [showActionDialog, setShowActionDialog] = useState(false);
+    const [confirmAction, setConfirmAction] = useState<"reject" | "delete" | "pending" | null>(null);
+    const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+    const [actionProcessing, setActionProcessing] = useState(false);
 
     useEffect(() => {
         checkIsAdminUser().then(res => setIsAdmin(res.isAdmin));
@@ -374,7 +400,13 @@ export default function ManagePaymentDetailClient({ shop, payments, totals, prev
                                             </span>
                                         </div>
                                         <div className="flex items-center gap-3 text-[10px] text-muted-foreground font-bold mt-0.5">
-                                            <span>{formatDate(new Date(payment.createdAt))}</span>
+                                            <span className="flex items-center gap-1.5">
+                                                <Calendar className="size-3" />
+                                                {formatDate(new Date(payment.createdAt), "MMM dd, yyyy HH:mm")}
+                                            </span>
+                                            <span className="text-xs text-muted-foreground/70 font-bold italic">
+                                                {timeAgo(payment.createdAt)}
+                                            </span>
                                             {payment.check && (
                                                 <span className="flex items-center gap-2">
                                                     <Store className="size-3" />
@@ -404,11 +436,13 @@ export default function ManagePaymentDetailClient({ shop, payments, totals, prev
                                     </div>
                                 </div>
 
-                                <div className="flex items-center gap-3 shrink-0">
+                                <div className="flex items-center gap-2 shrink-0">
                                     <span className={cn(
                                         "px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest",
                                         payment.status === "APPROVED"
                                             ? "bg-emerald-50 text-emerald-600 border border-emerald-200"
+                                            : payment.status === "REJECTED"
+                                            ? "bg-rose-50 text-rose-600 border border-rose-200"
                                             : "bg-amber-50 text-amber-600 border border-amber-200"
                                     )}>
                                         {payment.status}
@@ -423,6 +457,16 @@ export default function ManagePaymentDetailClient({ shop, payments, totals, prev
                                         >
                                             <CheckCircle2 className="size-3.5" />
                                             {approvingId === payment.id ? "..." : "Approve"}
+                                        </Button>
+                                    )}
+                                    {(payment.status === "PENDING" || payment.status === "REJECTED") && isAdmin && (
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => { setSelectedActionPayment(payment); setShowActionDialog(true); }}
+                                            className="h-9 w-9 p-0 rounded-xl hover:bg-slate-100 text-muted-foreground hover:text-primarycolor"
+                                        >
+                                            <MoreHorizontal className="size-4" />
                                         </Button>
                                     )}
                                 </div>
@@ -544,6 +588,131 @@ export default function ManagePaymentDetailClient({ shop, payments, totals, prev
                 shopId={shop.id}
                 shopName={shop.name}
             />
+
+            {/* Payment Action Dialog */}
+            <AlertDialog open={showActionDialog} onOpenChange={(o) => { if (!o) { setShowActionDialog(false); setSelectedActionPayment(null); } }}>
+                <AlertDialogContent className="rounded-[2rem] border-2 border-primarycolor/5 p-0 max-w-sm overflow-hidden">
+                    <AlertDialogHeader className="p-6 pb-4 border-b border-slate-100">
+                        <AlertDialogTitle className="text-lg font-black text-primarycolor uppercase tracking-tight italic">
+                            Payment Options
+                        </AlertDialogTitle>
+                        <AlertDialogDescription className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">
+                            {selectedActionPayment?.amount.toLocaleString()} ETB — {selectedActionPayment?.payment_type}
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <div className="p-4 space-y-2">
+                        {selectedActionPayment?.status === "PENDING" && (
+                            <Button
+                                variant="outline"
+                                className="w-full h-14 rounded-2xl border-2 border-rose-200 text-rose-600 hover:bg-rose-50 font-black uppercase tracking-widest text-[10px] gap-3 justify-start px-5"
+                                onClick={() => {
+                                    setShowActionDialog(false);
+                                    setTimeout(() => {
+                                        setConfirmAction("reject");
+                                        setShowConfirmDialog(true);
+                                    }, 200);
+                                }}
+                            >
+                                <X className="size-4" /> Reject Payment
+                            </Button>
+                        )}
+                        {selectedActionPayment?.status === "REJECTED" && (
+                            <Button
+                                variant="outline"
+                                className="w-full h-14 rounded-2xl border-2 border-amber-200 text-amber-600 hover:bg-amber-50 font-black uppercase tracking-widest text-[10px] gap-3 justify-start px-5"
+                                onClick={() => {
+                                    setShowActionDialog(false);
+                                    setTimeout(() => {
+                                        setConfirmAction("pending");
+                                        setShowConfirmDialog(true);
+                                    }, 200);
+                                }}
+                            >
+                                <Clock className="size-4" /> Set as Pending
+                            </Button>
+                        )}
+                        <Button
+                            variant="outline"
+                            className="w-full h-14 rounded-2xl border-2 border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-rose-600 hover:border-rose-200 font-black uppercase tracking-widest text-[10px] gap-3 justify-start px-5"
+                            onClick={() => {
+                                setShowActionDialog(false);
+                                setTimeout(() => {
+                                    setConfirmAction("delete");
+                                    setShowConfirmDialog(true);
+                                }, 200);
+                            }}
+                        >
+                            <Trash2 className="size-4" /> Remove Payment
+                        </Button>
+                    </div>
+                    <AlertDialogFooter className="p-4 pt-0">
+                        <AlertDialogCancel asChild>
+                            <Button variant="ghost" className="w-full h-12 rounded-2xl font-black uppercase tracking-widest text-[10px]">
+                                Cancel
+                            </Button>
+                        </AlertDialogCancel>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
+            {/* Confirm Action Dialog */}
+            <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+                <AlertDialogContent className="rounded-[2rem] border-2 border-primarycolor/5 p-6 max-w-sm">
+                    <AlertDialogHeader>
+                        <AlertDialogTitle className="text-lg font-black text-primarycolor uppercase tracking-tight italic">
+                            {confirmAction === "reject" ? "Reject Payment" : confirmAction === "pending" ? "Set as Pending" : "Remove Payment"}
+                        </AlertDialogTitle>
+                        <AlertDialogDescription className="text-[10px] font-bold text-muted-foreground">
+                            {confirmAction === "reject"
+                                ? `Are you sure you want to reject this payment of ${selectedActionPayment?.amount.toLocaleString()} ETB? This will change the status to REJECTED.`
+                                : confirmAction === "pending"
+                                ? `Are you sure you want to set this payment of ${selectedActionPayment?.amount.toLocaleString()} ETB back to PENDING?`
+                                : `Are you sure you want to permanently remove this payment of ${selectedActionPayment?.amount.toLocaleString()} ETB? This action cannot be undone.`
+                            }
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter className="gap-2 pt-2">
+                        <AlertDialogCancel asChild>
+                            <Button variant="outline" className="h-12 rounded-2xl border-2 font-black uppercase tracking-widest text-[10px] flex-1">
+                                Cancel
+                            </Button>
+                        </AlertDialogCancel>
+                        <AlertDialogAction asChild>
+                            <Button
+                                onClick={async () => {
+                                    if (!selectedActionPayment) return;
+                                    setActionProcessing(true);
+                                    try {
+                                        let res;
+                                        if (confirmAction === "reject") res = await rejectPayment(selectedActionPayment.id);
+                                        else if (confirmAction === "pending") res = await setPaymentPending(selectedActionPayment.id);
+                                        else res = await deletePayment(selectedActionPayment.id);
+                                        if (res.success) {
+                                            toast.success(confirmAction === "reject" ? "Payment rejected" : confirmAction === "pending" ? "Payment set to pending" : "Payment removed");
+                                            setShowConfirmDialog(false);
+                                            setSelectedActionPayment(null);
+                                            router.refresh();
+                                        } else {
+                                            toast.error(res.error);
+                                        }
+                                    } catch {
+                                        toast.error("Failed to process");
+                                    } finally {
+                                        setActionProcessing(false);
+                                    }
+                                }}
+                                disabled={actionProcessing}
+                                className={cn(
+                                    "h-12 rounded-2xl text-white font-black uppercase tracking-widest text-[10px] flex-1",
+                                    confirmAction === "reject" ? "bg-rose-600 hover:bg-rose-700" : confirmAction === "pending" ? "bg-amber-600 hover:bg-amber-700" : "bg-slate-700 hover:bg-slate-800"
+                                )}
+                            >
+                                {actionProcessing ? "Processing..." : confirmAction === "reject" ? "Reject" : confirmAction === "pending" ? "Set Pending" : "Remove"}
+                            </Button>
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
 
             {/* Check Detail Drawer */}
             <Drawer open={isCheckDrawerOpen} onOpenChange={(o) => { if (!o) { setIsCheckDrawerOpen(false); setSelectedCheck(null); setEditingCheck(false); } }}>

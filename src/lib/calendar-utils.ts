@@ -60,6 +60,11 @@ function formatGregorian(date: Date, pattern: string): string {
   const y = date.getFullYear()
   const m = date.getMonth() + 1
   const d = date.getDate()
+  const h = date.getHours()
+  const min = date.getMinutes()
+  const s = date.getSeconds()
+  const ampm = h >= 12 ? "PM" : "AM"
+  const h12 = h % 12 || 12
   const map: Record<string, string> = {
     yyyy: y.toString(),
     yy: y.toString().slice(-2),
@@ -69,6 +74,11 @@ function formatGregorian(date: Date, pattern: string): string {
     M: m.toString(),
     dd: pad(d),
     d: d.toString(),
+    HH: pad(h),
+    hh: pad(h12),
+    mm: pad(min),
+    ss: pad(s),
+    a: ampm,
     EEEE: gregorianWeekdayName(date, false),
     EEE: gregorianWeekdayName(date, true),
   }
@@ -81,6 +91,11 @@ function formatGregorian(date: Date, pattern: string): string {
 
 function formatEthiopian(date: Date, pattern: string): string {
   const eth = convertToEthiopian(date)
+  const h = date.getHours()
+  const min = date.getMinutes()
+  const s = date.getSeconds()
+  const ampm = h >= 12 ? "PM" : "AM"
+  const h12 = h % 12 || 12
   const map: Record<string, string> = {
     yyyy: eth.year.toString(),
     yy: eth.year.toString().slice(-2),
@@ -90,6 +105,11 @@ function formatEthiopian(date: Date, pattern: string): string {
     M: eth.month.toString(),
     dd: pad(eth.day),
     d: eth.day.toString(),
+    HH: pad(h),
+    hh: pad(h12),
+    mm: pad(min),
+    ss: pad(s),
+    a: ampm,
     EEEE: ETHIOPIAN_WEEKDAYS[date.getDay()],
     EEE: ETHIOPIAN_WEEKDAYS_SHORT[date.getDay()],
   }

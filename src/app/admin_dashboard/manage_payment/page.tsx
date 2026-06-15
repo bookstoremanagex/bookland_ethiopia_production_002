@@ -10,7 +10,7 @@ export default async function ManagePaymentPage() {
                 where: { is_deleted: false }
             },
             payments: {
-                where: { is_deleted: false, status: "APPROVED" }
+                where: { is_deleted: false }
             }
         }
     });
@@ -19,15 +19,24 @@ export default async function ManagePaymentPage() {
         const totalDebt = shop.orders.reduce((sum: number, order: any) => sum + (order.total_amount || 0), 0);
         const totalPaid = shop.orders.reduce((sum: number, order: any) => sum + (order.amount_paid || 0), 0);
         const totalRemaining = totalDebt - totalPaid;
+        const hasPendingPayments = shop.payments.some((p: any) => p.status === "PENDING");
+        const paymentDates = shop.payments
+            .map((p: any) => p.createdAt ? new Date(p.createdAt).getTime() : 0)
+            .filter((t: number) => t > 0);
+        const latestPaymentDate = paymentDates.length > 0 ? Math.max(...paymentDates) : 0;
         return {
             id: shop.id,
             name: shop.name,
             location: shop.location,
             totalDebt,
             totalPaid,
-            totalRemaining
+            totalRemaining,
+            hasPendingPayments,
+            latestPaymentDate,
         };
     });
+
+    data.sort((a: any, b: any) => b.latestPaymentDate - a.latestPaymentDate);
 
     return (
         <div className="p-4 md:p-10 space-y-6 md:space-y-8 bg-[#F8FAFC] min-h-screen">

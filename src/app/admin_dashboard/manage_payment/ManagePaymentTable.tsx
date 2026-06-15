@@ -42,6 +42,8 @@ export type ShopDebt = {
   totalDebt: number;
   totalPaid: number;
   totalRemaining: number;
+  hasPendingPayments: boolean;
+  latestPaymentDate: number;
 };
 
 const columns: ColumnDef<ShopDebt>[] = [
@@ -202,7 +204,12 @@ export default function ManagePaymentTable({ data }: ManagePaymentTableProps) {
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  className="group hover:bg-primarycolor/[0.02] transition-all duration-300 border-b border-primarycolor/5"
+                  className={cn(
+                    "group transition-all duration-300 border-b border-primarycolor/5",
+                    row.original.hasPendingPayments
+                      ? "bg-primarycolor/15 hover:bg-primarycolor/25"
+                      : "hover:bg-primarycolor/[0.02]"
+                  )}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="py-6 px-8">
@@ -229,7 +236,12 @@ export default function ManagePaymentTable({ data }: ManagePaymentTableProps) {
             return (
               <div
                 key={row.id}
-                className="bg-white rounded-3xl border-2 border-primarycolor/5 p-6 shadow-lg space-y-4"
+                className={cn(
+                  "rounded-3xl border-2 p-6 shadow-lg space-y-4",
+                    shop.hasPendingPayments
+                      ? "bg-primarycolor/15 border-primarycolor/30"
+                      : "bg-white border-primarycolor/5"
+                )}
               >
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
@@ -237,7 +249,14 @@ export default function ManagePaymentTable({ data }: ManagePaymentTableProps) {
                       <Store className="size-5" />
                     </div>
                     <div className="space-y-0.5">
-                      <p className="font-black text-gray-800 text-sm leading-none">{shop.name}</p>
+                      <div className="flex items-center gap-2">
+                        <p className="font-black text-gray-800 text-sm leading-none">{shop.name}</p>
+                        {shop.hasPendingPayments && (
+                          <span className="px-1.5 py-0.5 rounded text-[7px] font-black uppercase tracking-widest bg-primarycolor/20 text-primarycolor border border-primarycolor/30">
+                            Pending
+                          </span>
+                        )}
+                      </div>
                       <div className="flex items-center gap-1 text-[10px] text-gray-400 font-bold uppercase tracking-wider">
                         <MapPin className="size-3" />
                         {shop.location}

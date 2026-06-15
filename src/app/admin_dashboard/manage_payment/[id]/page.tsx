@@ -25,7 +25,9 @@ export default async function ManagePaymentDetailPage({ params }: { params: Prom
 
     const previousDebt = shop.previousDebt || 0;
     const orderDebt = shop.orders.reduce((sum: number, o: any) => sum + (o.total_amount || 0), 0);
-    const totalPaid = shop.orders.reduce((sum: number, o: any) => sum + (o.amount_paid || 0), 0);
+    const totalPaid = shop.payments
+        .filter((p: any) => p.status === "APPROVED")
+        .reduce((sum: number, p: any) => sum + (p.amount || 0), 0);
     const totalDebt = orderDebt + previousDebt;
     const totalRemaining = totalDebt - totalPaid;
 

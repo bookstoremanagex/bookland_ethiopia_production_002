@@ -14,6 +14,8 @@ import {
   BadgeDollarSign,
   ChevronLeft,
   ChevronRight,
+  MoreHorizontal,
+  Trash2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
@@ -24,6 +26,19 @@ import {
   getPaginationRowModel,
 } from "@tanstack/react-table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { deletePayment } from "@/app/actions/payment-actions";
 import RecordPaymentModal from "@/components/deliver_full_dashboard_components/RecordPaymentModal";
 
 type CheckInfo = {
@@ -55,6 +70,7 @@ type ShopData = {
 const statusConfig: Record<string, { icon: any; label: string; bg: string; text: string }> = {
   APPROVED: { icon: CheckCircle2, label: "Approved", bg: "bg-emerald-50", text: "text-emerald-700" },
   PENDING: { icon: Clock, label: "Pending", bg: "bg-amber-50", text: "text-amber-700" },
+  REJECTED: { icon: XCircle, label: "Rejected", bg: "bg-rose-50", text: "text-rose-700" },
 };
 
 function PaymentStatus({ status }: { status: string }) {
@@ -71,6 +87,10 @@ function PaymentStatus({ status }: { status: string }) {
 export default function PaymentDetail({ shop }: { shop: ShopData }) {
   const router = useRouter();
   const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
+  const [actionPayment, setActionPayment] = useState<Payment | null>(null);
+  const [showActionDialog, setShowActionDialog] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const columns = useMemo<ColumnDef<Payment>[]>(() => [
     {
@@ -216,7 +236,17 @@ export default function PaymentDetail({ shop }: { shop: ShopData }) {
                   >
                     <div className="flex items-center justify-between">
                       <span className="font-bold text-sm text-slate-800">{p.amount.toLocaleString()} ETB</span>
-                      <PaymentStatus status={p.status} />
+                      <div className="flex items-center gap-1.5">
+                        <PaymentStatus status={p.status} />
+                        {p.status === "PENDING" && (
+                          <button
+                            onClick={(e) => { e.stopPropagation(); setActionPayment(p); setShowActionDialog(true); }}
+                            className="size-8 rounded-xl hover:bg-slate-100 text-muted-foreground hover:text-primarycolor transition-all flex items-center justify-center"
+                          >
+                            <MoreHorizontal className="size-4" />
+                          </button>
+                        )}
+                      </div>
                     </div>
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="text-[9px] font-black text-muted-foreground uppercase tracking-wider">
@@ -269,6 +299,84 @@ export default function PaymentDetail({ shop }: { shop: ShopData }) {
           </>
         )}
       </div>
+
+      {/* Action Dialog */}
+      <AlertDialog open={showActionDialog} onOpenChange={(o) => { if (!o) { setShowActionDialog(false); setActionPayment(null); } }}>
+        <AlertDialogContent className="rounded-[2rem] border-2 border-primarycolor/5 p-0 max-w-sm overflow-hidden">
+          <AlertDialogHeader className="p-6 pb-4 border-b border-slate-100">
+            <AlertDialogTitle className="text-lg font-black text-primarycolor uppercase tracking-tight italic">
+              Payment Options
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">
+              {actionPayment?.amount.toLocaleString()} ETB — {actionPayment?.payment_type}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="p-4">
+            <Button
+              variant="outline"
+              className="w-full h-14 rounded-2xl border-2 border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-rose-600 hover:border-rose-200 font-black uppercase tracking-widest text-[10px] gap-3 justify-start px-5"
+              onClick={() => { setShowActionDialog(false); setTimeout(() => setShowDeleteConfirm(true), 200); }}
+            >
+              <Trash2 className="size-4" /> Remove Payment
+            </Button>
+          </div>
+          <AlertDialogFooter className="p-4 pt-0">
+            <AlertDialogCancel asChild>
+              <Button variant="ghost" className="w-full h-12 rounded-2xl font-black uppercase tracking-widest text-[10px]">
+                Cancel
+              </Button>
+            </AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete Confirmation */}
+      <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+        <AlertDialogContent className="rounded-[2rem] border-2 border-primarycolor/5 p-6 max-w-sm">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-lg font-black text-primarycolor uppercase tracking-tight italic">
+              Remove Payment
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-[10px] font-bold text-muted-foreground">
+              Are you sure you want to permanently remove this payment of {actionPayment?.amount.toLocaleString()} ETB? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="gap-2 pt-2">
+            <AlertDialogCancel asChild>
+              <Button variant="outline" className="h-12 rounded-2xl border-2 font-black uppercase tracking-widest text-[10px] flex-1 py-3">
+                Cancel
+              </Button>
+            </AlertDialogCancel>
+            <AlertDialogAction asChild>
+              <Button
+                onClick={async () => {
+                  if (!actionPayment) return;
+                  setDeleting(true);
+                  try {
+                    const res = await deletePayment(actionPayment.id);
+                    if (res.success) {
+                      toast.success("Payment removed");
+                      setShowDeleteConfirm(false);
+                      setActionPayment(null);
+                      router.refresh();
+                    } else {
+                      toast.error(res.error);
+                    }
+                  } catch {
+                    toast.error("Failed to delete payment");
+                  } finally {
+                    setDeleting(false);
+                  }
+                }}
+                disabled={deleting}
+                className="h-12 rounded-2xl bg-slate-700 hover:bg-slate-800 text-white font-black uppercase tracking-widest text-[10px] flex-1 py-3"
+              >
+                {deleting ? "Removing..." : "Remove"}
+              </Button>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <Dialog open={!!selectedPayment} onOpenChange={(o) => !o && setSelectedPayment(null)}>
         <DialogContent className="sm:max-w-lg w-[95vw] rounded-[2.5rem] border-4 border-primarycolor/5 bg-white p-0 overflow-hidden shadow-2xl max-h-[90vh] flex flex-col">

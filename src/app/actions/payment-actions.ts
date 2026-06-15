@@ -210,3 +210,115 @@ export async function approvePayment(paymentId: number) {
         return { success: false, error: "Failed to approve payment" };
     }
 }
+
+export async function rejectPayment(paymentId: number) {
+    try {
+        const session = await getCurrentSession();
+        if (!session) return { success: false, error: "Unauthorized" };
+
+        const payment = await (prisma as any).payments.findUnique({
+            where: { id: paymentId },
+            include: { shop: true }
+        });
+
+        if (!payment) return { success: false, error: "Payment not found" };
+        if (payment.status === "APPROVED") return { success: false, error: "Cannot reject an approved payment" };
+
+        await (prisma as any).payments.update({
+            where: { id: paymentId },
+            data: { status: "REJECTED" }
+        });
+
+        await createNotification({
+            title: `Payment Rejected - ${payment.shop?.name || "Unknown Shop"}`,
+            message: `Payment of ${payment.amount.toLocaleString()} ETB has been rejected.`,
+            details: JSON.stringify({ paymentId, shopName: payment.shop?.name, amount: payment.amount }),
+            type: "PAYMENT",
+            notification_to: "ADMIN",
+            notification_from: session?.name || "System",
+        });
+
+        await (prisma as any).activityLogs.create({
+            data: {
+                accountId: session.id,
+                action: `Rejected payment of ${payment.amount.toLocaleString()} ETB for ${payment.shop?.name || "shop"}`,
+                details: JSON.stringify({ paymentId, shopName: payment.shop?.name, amount: payment.amount }),
+                updatedAt: new Date(),
+            }
+        });
+
+        revalidatePath("/admin_dashboard", "layout");
+        return { success: true };
+    } catch (error) {
+        console.error("Error rejecting payment:", error);
+        return { success: false, error: "Failed to reject payment" };
+    }
+}
+
+export async function setPaymentPending(paymentId: number) {
+    try {
+        const session = await getCurrentSession();
+        if (!session) return { success: false, error: "Unauthorized" };
+
+        const payment = await (prisma as any).payments.findUnique({
+            where: { id: paymentId },
+            include: { shop: true }
+        });
+
+        if (!payment) return { success: false, error: "Payment not found" };
+
+        await (prisma as any).payments.update({
+            where: { id: paymentId },
+            data: { status: "PENDING" }
+        });
+
+        await (prisma as any).activityLogs.create({
+            data: {
+                accountId: session.id,
+                action: `Reset payment of ${payment.amount.toLocaleString()} ETB for ${payment.shop?.name || "shop"} back to PENDING`,
+                details: JSON.stringify({ paymentId, shopName: payment.shop?.name, amount: payment.amount }),
+                updatedAt: new Date(),
+            }
+        });
+
+        revalidatePath("/admin_dashboard", "layout");
+        return { success: true };
+    } catch (error) {
+        console.error("Error setting payment pending:", error);
+        return { success: false, error: "Failed to update payment" };
+    }
+}
+
+export async function deletePayment(paymentId: number) {
+    try {
+        const session = await getCurrentSession();
+        if (!session) return { success: false, error: "Unauthorized" };
+
+        const payment = await (prisma as any).payments.findUnique({
+            where: { id: paymentId },
+            include: { shop: true }
+        });
+
+        if (!payment) return { success: false, error: "Payment not found" };
+
+        await (prisma as any).payments.update({
+            where: { id: paymentId },
+            data: { is_deleted: true }
+        });
+
+        await (prisma as any).activityLogs.create({
+            data: {
+                accountId: session.id,
+                action: `Deleted payment of ${payment.amount.toLocaleString()} ETB for ${payment.shop?.name || "shop"}`,
+                details: JSON.stringify({ paymentId, shopName: payment.shop?.name, amount: payment.amount }),
+                updatedAt: new Date(),
+            }
+        });
+
+        revalidatePath("/admin_dashboard", "layout");
+        return { success: true };
+    } catch (error) {
+        console.error("Error deleting payment:", error);
+        return { success: false, error: "Failed to delete payment" };
+    }
+}
