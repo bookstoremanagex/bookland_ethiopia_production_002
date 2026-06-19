@@ -59,6 +59,9 @@ export async function createPrintOrder(formData: any) {
               bookedition: { connect: { id: parseInt(item.bookEditionId) } },
               quantity: parseInt(item.quantity),
               price_per_book: parseFloat(item.price_per_book) || 0,
+              total_price: item.total_price
+                ? parseFloat(item.total_price)
+                : (parseInt(item.quantity) * (parseFloat(item.price_per_book) || 0)),
               status: item.status || "NOT_STARTED",
             })) || [],
         },
@@ -113,6 +116,9 @@ export async function updatePrintOrder(id: number, formData: any) {
             bookEditionId: parseInt(item.bookEditionId),
             quantity: parseInt(item.quantity),
             price_per_book: parseFloat(item.price_per_book),
+            total_price: item.total_price
+              ? parseFloat(item.total_price)
+              : (parseInt(item.quantity) * (parseFloat(item.price_per_book) || 0)),
             status: item.status || "NOT_STARTED",
           })),
         });

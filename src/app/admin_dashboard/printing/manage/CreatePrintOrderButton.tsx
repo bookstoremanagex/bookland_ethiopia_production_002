@@ -56,6 +56,7 @@ interface PrintOrderItem {
     bookId: number;
     bookEditionId: number;
     quantity: string;
+    total_price: string;
     price_per_book: string;
     status: string;
 }
@@ -87,6 +88,7 @@ export default function CreatePrintOrderButton({ printers, editions, books }: Cr
     const [drawerEditionQty, setDrawerEditionQty] = useState('')
     const [drawerEditionPages, setDrawerEditionPages] = useState('')
     const [drawerEditionPrice, setDrawerEditionPrice] = useState('')
+    const [drawerEditionTotalPrice, setDrawerEditionTotalPrice] = useState('')
 
     // New book drawer: book fields + edition fields
     const [drawerBookTitle, setDrawerBookTitle] = useState('')
@@ -98,6 +100,7 @@ export default function CreatePrintOrderButton({ printers, editions, books }: Cr
     const [drawerBookEditionQty, setDrawerBookEditionQty] = useState('')
     const [drawerBookEditionPages, setDrawerBookEditionPages] = useState('')
     const [drawerBookEditionPrice, setDrawerBookEditionPrice] = useState('')
+    const [drawerBookEditionTotalPrice, setDrawerBookEditionTotalPrice] = useState('')
 
     const [formData, setFormData] = useState({
         project_name: "",
@@ -128,6 +131,8 @@ export default function CreatePrintOrderButton({ printers, editions, books }: Cr
     useEffect(() => {
         if (formData.auto_calculate) {
             const total = formData.items.reduce((sum, item) => {
+                const itemTotal = parseFloat(item.total_price);
+                if (itemTotal > 0) return sum + itemTotal;
                 const qty = parseFloat(item.quantity) || 0;
                 const price = parseFloat(item.price_per_book) || 0;
                 return sum + (qty * price);
@@ -152,6 +157,7 @@ export default function CreatePrintOrderButton({ printers, editions, books }: Cr
             bookId: selectedBookId!,
             bookEditionId: selectedEditionId,
             quantity: "",
+            total_price: "",
             price_per_book: "",
             status: "NOT_STARTED"
         }
@@ -201,6 +207,7 @@ export default function CreatePrintOrderButton({ printers, editions, books }: Cr
             setDrawerEditionQty('')
             setDrawerEditionPages('')
             setDrawerEditionPrice('')
+            setDrawerEditionTotalPrice('')
         } else {
             setDrawerBookTitle('')
             setDrawerBookAuthor('')
@@ -211,6 +218,7 @@ export default function CreatePrintOrderButton({ printers, editions, books }: Cr
             setDrawerBookEditionQty('')
             setDrawerBookEditionPages('')
             setDrawerBookEditionPrice('')
+            setDrawerBookEditionTotalPrice('')
         }
         setIsDrawerOpen(true)
     }
@@ -233,6 +241,7 @@ export default function CreatePrintOrderButton({ printers, editions, books }: Cr
             let qty: string
             let pages: string
             let price: string
+            let totalPrice: string
 
             if (additionMode === 'new-edition') {
                 if (!drawerSelectedBookId) {
@@ -250,6 +259,7 @@ export default function CreatePrintOrderButton({ printers, editions, books }: Cr
                 qty = drawerEditionQty
                 pages = drawerEditionPages
                 price = drawerEditionPrice
+                totalPrice = drawerEditionTotalPrice
             } else {
                 if (!drawerBookTitle.trim() || !drawerBookAuthor.trim() || !drawerBookCategory.trim() || !drawerBookYear.trim()) {
                     toast.error("Please fill in title, author, category, and publication year")
@@ -273,6 +283,7 @@ export default function CreatePrintOrderButton({ printers, editions, books }: Cr
                 qty = drawerBookEditionQty
                 pages = drawerBookEditionPages
                 price = drawerBookEditionPrice
+                totalPrice = drawerBookEditionTotalPrice
             }
 
             // Create the edition
@@ -296,6 +307,7 @@ export default function CreatePrintOrderButton({ printers, editions, books }: Cr
                 bookId: targetBookId,
                 bookEditionId: editionRes.data.id,
                 quantity: qty || "",
+                total_price: totalPrice || "",
                 price_per_book: price || "",
                 status: "NOT_STARTED"
             }
@@ -632,7 +644,7 @@ export default function CreatePrintOrderButton({ printers, editions, books }: Cr
                                             
                                             return (
                                                 <div key={item.id} className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center bg-white border-2 border-slate-100 p-4 rounded-2xl relative group">
-                                                    <div className="md:col-span-4 flex items-center gap-3">
+                                                    <div className="md:col-span-3 flex items-center gap-3">
                                                         <div className="size-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500 border-2 border-blue-100">
                                                             <BookOpen className="size-5" />
                                                         </div>
@@ -654,6 +666,19 @@ export default function CreatePrintOrderButton({ printers, editions, books }: Cr
                                                         />
                                                     </div>
 
+                                                    <div className="md:col-span-1 space-y-1">
+                                                        <label className="text-[9px] font-black uppercase tracking-widest text-slate-400">Total Price</label>
+                                                        <Input 
+                                                            type="number"
+                                                            min="0"
+                                                            step="0.01"
+                                                            placeholder="Total"
+                                                            value={item.total_price}
+                                                            onChange={(e) => updateItem(item.id, 'total_price', e.target.value)}
+                                                            className="h-10 rounded-lg font-bold"
+                                                        />
+                                                    </div>
+
                                                     <div className="md:col-span-2 space-y-1">
                                                         <label className="text-[9px] font-black uppercase tracking-widest text-slate-400">Unit Price</label>
                                                         <Input 
@@ -667,7 +692,20 @@ export default function CreatePrintOrderButton({ printers, editions, books }: Cr
                                                         />
                                                     </div>
 
-                                                    <div className="md:col-span-3 space-y-1">
+                                                    <div className="md:col-span-2 space-y-1">
+                                                        <label className="text-[9px] font-black uppercase tracking-widest text-slate-400">Cost of Edition</label>
+                                                        <div className="h-10 rounded-lg bg-emerald-50 border-2 border-emerald-100 flex items-center px-3 font-black text-emerald-700 text-sm">
+                                                            {(() => {
+                                                                const itemTotal = parseFloat(item.total_price);
+                                                                if (itemTotal > 0) return itemTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                                                                const qty = parseFloat(item.quantity) || 0;
+                                                                const price = parseFloat(item.price_per_book) || 0;
+                                                                return (qty * price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                                                            })()} ETB
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="md:col-span-1 space-y-1">
                                                         <label className="text-[9px] font-black uppercase tracking-widest text-slate-400">Status</label>
                                                         <select 
                                                             value={item.status}
@@ -973,6 +1011,21 @@ export default function CreatePrintOrderButton({ printers, editions, books }: Cr
                                             }}
                                             className="h-12 px-4 rounded-xl border-2 border-slate-200 font-bold"
                                             placeholder="e.g. 250"
+                                        />
+                                    </div>
+                                    <div className="space-y-2 sm:col-span-2">
+                                        <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">Total Price (ETB)</label>
+                                        <Input
+                                            type="number"
+                                            min="0"
+                                            step="0.01"
+                                            value={additionMode === 'new-edition' ? drawerEditionTotalPrice : drawerBookEditionTotalPrice}
+                                            onChange={(e) => {
+                                                if (additionMode === 'new-edition') setDrawerEditionTotalPrice(e.target.value)
+                                                else setDrawerBookEditionTotalPrice(e.target.value)
+                                            }}
+                                            className="h-12 px-4 rounded-xl border-2 border-slate-200 font-bold"
+                                            placeholder="e.g. 150000.00"
                                         />
                                     </div>
                                     <div className="space-y-2 sm:col-span-2">

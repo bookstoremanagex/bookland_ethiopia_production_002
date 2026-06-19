@@ -378,6 +378,7 @@ exports.Prisma.Printorder_paymentsScalarFieldEnum = {
   id: 'id',
   printorder_id: 'printorder_id',
   amount: 'amount',
+  bookEditionId: 'bookEditionId',
   payment_date: 'payment_date',
   reference: 'reference',
   createdAt: 'createdAt'
@@ -389,6 +390,7 @@ exports.Prisma.Printorder_itemsScalarFieldEnum = {
   bookEditionId: 'bookEditionId',
   quantity: 'quantity',
   price_per_book: 'price_per_book',
+  total_price: 'total_price',
   status: 'status',
   is_deleted: 'is_deleted',
   updatedAt: 'updatedAt',

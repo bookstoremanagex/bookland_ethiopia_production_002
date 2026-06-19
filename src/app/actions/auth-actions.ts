@@ -54,7 +54,7 @@ export async function loginAction(email: string, password: string) {
         redirectPath = "/delivery_sample_dashboard";
         break;
       case "Printer":
-        redirectPath = "/printer_dashboard";
+        redirectPath = "/printer_full";
         break;
       case "Viewer":
         redirectPath = "/viewer_dashboard";

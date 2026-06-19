@@ -27,7 +27,7 @@ export function middleware(request: NextRequest) {
         'Retail Manager': '/retail_manager_dashboard',
         'Delivery and Sales Management': '/delivery_and_sales_dashboard',
         'Delivery Sample': '/delivery_sample_dashboard',
-        'Printer': '/printer_dashboard',
+        'Printer': '/printer_full',
         'Viewer': '/viewer_dashboard',
         'Delivery Account': '/delivery_dashboard_full'
       };
@@ -73,7 +73,7 @@ export function middleware(request: NextRequest) {
         'Retail Manager': '/retail_manager_dashboard',
         'Delivery and Sales Management': '/delivery_and_sales_dashboard',
         'Delivery Sample': '/delivery_sample_dashboard',
-        'Printer': '/printer_dashboard',
+        'Printer': '/printer_full',
         'Viewer': '/viewer_dashboard',
         'Delivery Account': '/delivery_dashboard_full'
       };

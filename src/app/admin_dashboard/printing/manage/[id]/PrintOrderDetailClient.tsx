@@ -57,6 +57,7 @@ interface PrintOrderItem {
     bookId: number;
     bookEditionId: number;
     quantity: string;
+    total_price: string;
     price_per_book: string;
     status: string;
 }
@@ -98,6 +99,27 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
         reference: ""
     })
     const [isSubmittingPayment, setIsSubmittingPayment] = useState(false)
+    const [isEditingBooks, setIsEditingBooks] = useState(false)
+
+    // Payment edition selector
+    const [paymentEditionOpen, setPaymentEditionOpen] = useState(false)
+    const [selectedPaymentItemId, setSelectedPaymentItemId] = useState<number | null>(null)
+    const paymentEditionOptions = (order.printorder_items || []).map((item: any) => ({
+        value: item.id,
+        label: `${item.bookedition?.books?.title || "Unknown Book"} — ${item.bookedition?.edition_name || "Unknown Edition"}`
+    }))
+
+    // Per-edition paid amounts from payment records
+    const editionPaidMap = new Map<string, number>()
+    ;(order.printorder_payments || []).forEach((payment: any) => {
+        if (payment.reference) {
+            const match = payment.reference.match(/^\[([^\]]+)\]/)
+            if (match) {
+                const label = match[1]
+                editionPaidMap.set(label, (editionPaidMap.get(label) || 0) + payment.amount)
+            }
+        }
+    })
 
     // Parse initial items
     const initialItems: PrintOrderItem[] = (order.printorder_items || []).map((item: any) => ({
@@ -105,6 +127,7 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
         bookId: item.bookedition?.bookId || books.find((b: any) => editions.find((e: any) => e.id === item.bookEditionId)?.bookId === b.id)?.id,
         bookEditionId: item.bookEditionId,
         quantity: item.quantity.toString(),
+        total_price: item.total_price?.toString() || "",
         price_per_book: item.price_per_book.toString(),
         status: item.status
     }));
@@ -117,7 +140,7 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
         startDate: order.startDate ? format(new Date(order.startDate), "yyyy-MM-dd") : "",
         endDate: order.endDate ? format(new Date(order.endDate), "yyyy-MM-dd") : "",
         total_price: order.total_price?.toString() || "",
-        auto_calculate: false,
+        auto_calculate: true,
         items: initialItems
     })
 
@@ -130,6 +153,8 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
     useEffect(() => {
         if (formData.auto_calculate) {
             const total = formData.items.reduce((sum, item) => {
+                const itemTotal = parseFloat(item.total_price);
+                if (itemTotal > 0) return sum + itemTotal;
                 const qty = parseFloat(item.quantity) || 0;
                 const price = parseFloat(item.price_per_book) || 0;
                 return sum + (qty * price);
@@ -154,6 +179,7 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
             bookId: selectedBookId!,
             bookEditionId: selectedEditionId,
             quantity: "",
+            total_price: "",
             price_per_book: "",
             status: "NOT_STARTED"
         }
@@ -238,12 +264,19 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
             toast.error("Please enter a valid amount")
             return
         }
+        if (!selectedPaymentItemId) {
+            toast.error("Please select the edition this payment is for")
+            return
+        }
+        const selectedOption = paymentEditionOptions.find(o => o.value === selectedPaymentItemId)
+        const editionLabel = selectedOption?.label || ""
+        const reference = `[${editionLabel}] ${paymentForm.reference}`.trim()
         setIsSubmittingPayment(true)
         try {
             const response = await addPrintOrderPayment(order.id, {
                 amount: parseFloat(paymentForm.amount),
                 payment_date: paymentForm.payment_date,
-                reference: paymentForm.reference
+                reference
             })
             if (response.success) {
                 toast.success("Payment recorded successfully")
@@ -252,6 +285,7 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
                     payment_date: format(new Date(), "yyyy-MM-dd"),
                     reference: ""
                 })
+                setSelectedPaymentItemId(null)
                 setIsAddingPayment(false)
                 router.refresh()
             } else {
@@ -477,50 +511,96 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
                                     </div>
 
                                     {isAddingPayment && (
-                                        <form onSubmit={handleAddPayment} className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end bg-emerald-50/30 p-4 rounded-2xl border border-emerald-100">
-                                            <div className="md:col-span-4 space-y-2">
-                                                <label className="text-[9px] font-black uppercase tracking-widest text-emerald-600/60 ml-1">Amount</label>
+                                        <form onSubmit={handleAddPayment} className="bg-white rounded-2xl border-2 border-emerald-200 p-6 space-y-5 shadow-lg shadow-emerald-500/5">
+                                            <div className="space-y-2">
+                                                <label className="text-[10px] font-black uppercase tracking-widest text-emerald-600/70 ml-1">Amount (ETB) *</label>
                                                 <Input 
                                                     type="number"
                                                     step="0.01"
                                                     required
                                                     value={paymentForm.amount}
                                                     onChange={(e) => setPaymentForm({...paymentForm, amount: e.target.value})}
-                                                    className="h-12 rounded-xl border-emerald-200 focus-visible:ring-emerald-500 font-bold bg-white"
+                                                    className="h-14 px-5 rounded-xl border-2 border-emerald-200 focus-visible:ring-emerald-500 font-bold text-lg bg-white"
                                                     placeholder="0.00"
                                                 />
                                             </div>
-                                            <div className="md:col-span-3 space-y-2">
-                                                <label className="text-[9px] font-black uppercase tracking-widest text-emerald-600/60 ml-1">Date</label>
+                                            <div className="space-y-2">
+                                                <label className="text-[10px] font-black uppercase tracking-widest text-emerald-600/70 ml-1">Payment Date *</label>
                                                 <DateInput 
                                                     required
                                                     value={paymentForm.payment_date}
                                                     onChange={(e) => setPaymentForm({...paymentForm, payment_date: e.target.value})}
-                                                    className="h-12 rounded-xl border-emerald-200 focus-visible:ring-emerald-500 font-bold bg-white"
+                                                    className="h-14 px-5 rounded-xl border-2 border-emerald-200 focus-visible:ring-emerald-500 font-bold bg-white"
                                                 />
                                             </div>
-                                            <div className="md:col-span-3 space-y-2">
-                                                <label className="text-[9px] font-black uppercase tracking-widest text-emerald-600/60 ml-1">Reference (Optional)</label>
+                                            <div className="space-y-2">
+                                                <label className="text-[10px] font-black uppercase tracking-widest text-emerald-600/70 ml-1">Edition *</label>
+                                                <Popover open={paymentEditionOpen} onOpenChange={setPaymentEditionOpen}>
+                                                    <PopoverTrigger asChild>
+                                                        <Button
+                                                            type="button"
+                                                            variant="outline"
+                                                            role="combobox"
+                                                            className="w-full h-14 px-5 rounded-xl border-2 border-emerald-200 font-bold justify-between text-base bg-white text-slate-700"
+                                                        >
+                                                            <span className="truncate">
+                                                                {selectedPaymentItemId
+                                                                    ? paymentEditionOptions.find(o => o.value === selectedPaymentItemId)?.label
+                                                                    : "Select edition..."}
+                                                            </span>
+                                                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                                        </Button>
+                                                    </PopoverTrigger>
+                                                    <PopoverContent className="w-[400px] p-0 rounded-2xl border-2 shadow-2xl" align="start">
+                                                        <Command>
+                                                            <CommandInput placeholder="Search by book title or edition name..." className="h-12 font-bold" />
+                                                            <CommandList className="max-h-[220px] overflow-y-auto">
+                                                                <CommandEmpty className="p-4 text-xs font-bold text-muted-foreground uppercase tracking-widest text-center">
+                                                                    No edition found.
+                                                                </CommandEmpty>
+                                                                <CommandGroup>
+                                                                    {paymentEditionOptions.map((opt) => (
+                                                                        <CommandItem
+                                                                            key={opt.value}
+                                                                            value={opt.label}
+                                                                            onSelect={() => {
+                                                                                setSelectedPaymentItemId(opt.value)
+                                                                                setPaymentEditionOpen(false)
+                                                                            }}
+                                                                            className="h-12 px-4 font-bold text-sm text-slate-700 cursor-pointer data-[selected=true]:bg-emerald-50 data-[selected=true]:text-emerald-700"
+                                                                        >
+                                                                            <Check className={cn("mr-2 h-4 w-4 shrink-0", selectedPaymentItemId === opt.value ? "opacity-100" : "opacity-0")} />
+                                                                            <span>{opt.label}</span>
+                                                                        </CommandItem>
+                                                                    ))}
+                                                                </CommandGroup>
+                                                            </CommandList>
+                                                        </Command>
+                                                    </PopoverContent>
+                                                </Popover>
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-[10px] font-black uppercase tracking-widest text-emerald-600/70 ml-1">Reference (Optional)</label>
                                                 <Input 
                                                     value={paymentForm.reference}
                                                     onChange={(e) => setPaymentForm({...paymentForm, reference: e.target.value})}
-                                                    className="h-12 rounded-xl border-emerald-200 focus-visible:ring-emerald-500 font-bold bg-white"
-                                                    placeholder="Receipt # / Memo"
+                                                    className="h-14 px-5 rounded-xl border-2 border-emerald-200 focus-visible:ring-emerald-500 font-bold bg-white"
+                                                    placeholder="Receipt number, check number, or memo"
                                                 />
                                             </div>
-                                            <div className="md:col-span-2 flex gap-2">
+                                            <div className="flex gap-3 pt-2">
                                                 <Button 
                                                     type="submit"
                                                     disabled={isSubmittingPayment}
-                                                    className="flex-1 h-12 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-black uppercase tracking-widest text-[9px] shadow-lg shadow-emerald-500/20"
+                                                    className="flex-[2] h-12 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-black uppercase tracking-widest text-[11px] shadow-lg shadow-emerald-500/20"
                                                 >
-                                                    {isSubmittingPayment ? "..." : "Save"}
+                                                    {isSubmittingPayment ? "Saving..." : "Record Payment"}
                                                 </Button>
                                                 <Button 
                                                     type="button"
-                                                    variant="ghost"
+                                                    variant="outline"
                                                     onClick={() => setIsAddingPayment(false)}
-                                                    className="h-12 px-3 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100"
+                                                    className="flex-1 h-12 rounded-xl border-2 font-black uppercase tracking-widest text-[10px] text-slate-500"
                                                 >
                                                     Cancel
                                                 </Button>
@@ -538,7 +618,18 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
                                                         </div>
                                                         <div>
                                                             <p className="font-bold text-sm text-slate-800">{formatLong(new Date(payment.payment_date))}</p>
-                                                            {payment.reference && <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-0.5">Ref: {payment.reference}</p>}
+                                                            {payment.reference && (() => {
+                                                                const bracketMatch = payment.reference.match(/^\[([^\]]+)\]\s*(.*)/)
+                                                                if (bracketMatch) {
+                                                                    return (
+                                                                        <>
+                                                                            <p className="text-[10px] font-bold text-emerald-600 mt-0.5">{bracketMatch[1]}</p>
+                                                                            {bracketMatch[2] && <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Ref: {bracketMatch[2]}</p>}
+                                                                        </>
+                                                                    )
+                                                                }
+                                                                return <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-0.5">Ref: {payment.reference}</p>
+                                                            })()}
                                                         </div>
                                                     </div>
                                                     <div className="flex items-center gap-6">
@@ -562,331 +653,6 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
                                     )}
                                 </div>
                             </div>
-                        </div>
-
-                        {/* Project Configuration Card */}
-                        <div className="bg-white rounded-[3rem] p-10 md:p-12 border-2 border-primarycolor/10 shadow-2xl relative">
-                            <div className="flex items-center gap-3 mb-10 pb-6 border-b border-slate-100">
-                                <Settings className="size-5 text-secondarycolor" />
-                                <h3 className="text-[10px] font-black uppercase tracking-widest text-primarycolor">Project Configuration</h3>
-                            </div>
-
-                            <form onSubmit={handleUpdate} className="space-y-10">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
-                                    <div className="space-y-2 md:col-span-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor/40 ml-1">Project Name (Optional)</label>
-                                        <Input 
-                                            value={formData.project_name}
-                                            onChange={(e) => setFormData({...formData, project_name: e.target.value})}
-                                            className="h-14 px-6 rounded-2xl border-2 font-bold bg-white"
-                                            placeholder="e.g. Summer Batch 2026"
-                                        />
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor/40 ml-1">Assigned Printer</label>
-                                        <select 
-                                            value={formData.printerId}
-                                            onChange={(e) => setFormData({...formData, printerId: e.target.value})}
-                                            className="w-full h-14 px-6 rounded-2xl border-2 border-slate-100 bg-white font-bold focus:border-primarycolor outline-none transition-all appearance-none"
-                                        >
-                                            {printers.map(printer => (
-                                                <option key={printer.id} value={printer.id}>{printer.name}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor/40 ml-1">Overall Status</label>
-                                        <select 
-                                            value={formData.status}
-                                            onChange={(e) => setFormData({...formData, status: e.target.value})}
-                                            className="w-full h-14 px-6 rounded-2xl border-2 border-slate-100 bg-white font-bold focus:border-primarycolor outline-none transition-all appearance-none"
-                                        >
-                                            <option value="NOT_STARTED">Not Started / Waiting</option>
-                                            <option value="STARTED">Started</option>
-                                            <option value="ONPROGRESS">On Progress</option>
-                                            <option value="COMPLETED">Completed</option>
-                                        </select>
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor/40 ml-1">Start Date</label>
-                                        <DateInput 
-                                            value={formData.startDate}
-                                            onChange={(e) => setFormData({...formData, startDate: e.target.value})}
-                                            className="h-14 px-6 rounded-2xl border-2 font-bold bg-white"
-                                        />
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor/40 ml-1">Target Completion</label>
-                                        <DateInput 
-                                            value={formData.endDate}
-                                            onChange={(e) => setFormData({...formData, endDate: e.target.value})}
-                                            className="h-14 px-6 rounded-2xl border-2 font-bold bg-white"
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Books Section */}
-                                <div className="space-y-4 pt-6 border-t border-slate-100">
-                                    <div className="flex items-center justify-between">
-                                        <h4 className="font-black text-lg text-primarycolor uppercase tracking-widest">Books to Print</h4>
-                                    </div>
-
-                                    {/* Add Book Controls */}
-                                    <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end bg-slate-50 p-4 rounded-3xl border-2 border-slate-100">
-                                        <div className="md:col-span-5 space-y-2">
-                                            <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Select Book</label>
-                                            <Popover open={bookOpen} onOpenChange={setBookOpen}>
-                                                <PopoverTrigger asChild>
-                                                    <Button
-                                                        type="button"
-                                                        variant="outline"
-                                                        role="combobox"
-                                                        className="w-full h-12 px-4 rounded-xl border-2 border-slate-200 bg-white font-bold justify-between hover:bg-slate-100 transition-all text-slate-700"
-                                                    >
-                                                        <span className="truncate">{selectedBook?.title || "Choose Book..."}</span>
-                                                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                                    </Button>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="w-[300px] p-0 rounded-2xl border-2 shadow-2xl overflow-hidden" align="start">
-                                                    <Command>
-                                                        <CommandInput placeholder="Search books..." className="h-12 font-bold" />
-                                                        <CommandList className="max-h-[200px] overflow-y-auto custom-scrollbar">
-                                                            <CommandEmpty className="p-4 text-xs font-bold text-muted-foreground uppercase tracking-widest text-center">No book found.</CommandEmpty>
-                                                            <CommandGroup>
-                                                                {books.map((book) => (
-                                                                    <CommandItem
-                                                                        key={book.id}
-                                                                        value={book.title}
-                                                                        onSelect={() => {
-                                                                            setSelectedBookId(book.id)
-                                                                            setBookOpen(false)
-                                                                            setSelectedEditionId(null)
-                                                                        }}
-                                                                        className="h-12 px-4 font-bold text-sm text-primarycolor cursor-pointer data-[selected=true]:bg-primarycolor data-[selected=true]:text-white"
-                                                                    >
-                                                                        <Check className={cn("mr-2 h-4 w-4", selectedBookId === book.id ? "opacity-100" : "opacity-0")} />
-                                                                        <span className="truncate">{book.title}</span>
-                                                                    </CommandItem>
-                                                                ))}
-                                                            </CommandGroup>
-                                                        </CommandList>
-                                                    </Command>
-                                                </PopoverContent>
-                                            </Popover>
-                                        </div>
-
-                                        <div className="md:col-span-5 space-y-2">
-                                            <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Select Edition</label>
-                                            <Popover open={editionOpen} onOpenChange={setEditionOpen}>
-                                                <PopoverTrigger asChild>
-                                                    <Button
-                                                        type="button"
-                                                        variant="outline"
-                                                        role="combobox"
-                                                        disabled={!selectedBookId}
-                                                        className="w-full h-12 px-4 rounded-xl border-2 border-slate-200 bg-white font-bold justify-between hover:bg-slate-100 transition-all text-slate-700 disabled:opacity-50"
-                                                    >
-                                                        <span className="truncate">{editions.find(e => e.id === selectedEditionId)?.edition_name || (selectedBookId ? "Choose Edition..." : "Select book first")}</span>
-                                                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                                    </Button>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="w-[300px] p-0 rounded-2xl border-2 shadow-2xl overflow-hidden" align="start">
-                                                    <Command>
-                                                        <CommandInput placeholder="Search editions..." className="h-12 font-bold" />
-                                                        <CommandList className="max-h-[200px] overflow-y-auto custom-scrollbar">
-                                                            <CommandEmpty className="p-4 text-xs font-bold text-muted-foreground uppercase tracking-widest text-center">No edition found.</CommandEmpty>
-                                                            <CommandGroup>
-                                                                {filteredEditions.map((ed) => (
-                                                                    <CommandItem
-                                                                        key={ed.id}
-                                                                        value={ed.edition_name}
-                                                                        onSelect={() => {
-                                                                            setSelectedEditionId(ed.id)
-                                                                            setEditionOpen(false)
-                                                                        }}
-                                                                        className="h-12 px-4 font-bold text-sm text-primarycolor cursor-pointer data-[selected=true]:bg-primarycolor data-[selected=true]:text-white"
-                                                                    >
-                                                                        <Check className={cn("mr-2 h-4 w-4", selectedEditionId === ed.id ? "opacity-100" : "opacity-0")} />
-                                                                        <span className="truncate">{ed.edition_name}</span>
-                                                                    </CommandItem>
-                                                                ))}
-                                                            </CommandGroup>
-                                                        </CommandList>
-                                                    </Command>
-                                                </PopoverContent>
-                                            </Popover>
-                                        </div>
-
-                                        <div className="md:col-span-2">
-                                            <Button 
-                                                type="button"
-                                                onClick={handleAddBook}
-                                                disabled={!selectedEditionId}
-                                                className="w-full h-12 rounded-xl bg-primarycolor hover:bg-secondarycolor font-black uppercase tracking-widest text-[10px]"
-                                            >
-                                                Add Book
-                                            </Button>
-                                        </div>
-                                    </div>
-
-                                    {/* Items List */}
-                                    {formData.items.length > 0 ? (
-                                        <div className="space-y-3">
-                                            {formData.items.map((item, index) => {
-                                                const bookName = books.find(b => b.id === item.bookId)?.title;
-                                                const editionName = editions.find(e => e.id === item.bookEditionId)?.edition_name;
-                                                
-                                                return (
-                                                    <div key={item.id} className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center bg-white border-2 border-slate-100 p-4 rounded-2xl relative group">
-                                                        <div className="md:col-span-4 flex items-center gap-3">
-                                                            <div className="size-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500 border-2 border-blue-100 shrink-0">
-                                                                <BookOpen className="size-5" />
-                                                            </div>
-                                                            <div className="overflow-hidden min-w-0 flex-1">
-                                                                <p className="font-bold text-sm text-slate-800 truncate" title={bookName}>{bookName || "Unknown Book"}</p>
-                                                                <p className="font-bold text-[10px] text-muted-foreground uppercase tracking-widest truncate">{editionName || "Unknown Edition"}</p>
-                                                            </div>
-                                                        </div>
-
-                                                        <div className="md:col-span-2 space-y-1">
-                                                            <label className="text-[9px] font-black uppercase tracking-widest text-slate-400">Quantity</label>
-                                                            <Input 
-                                                                type="number"
-                                                                min="1"
-                                                                placeholder="Qty"
-                                                                value={item.quantity}
-                                                                onChange={(e) => updateItem(item.id, 'quantity', e.target.value)}
-                                                                className="h-10 rounded-lg font-bold bg-white"
-                                                            />
-                                                        </div>
-
-                                                        <div className="md:col-span-2 space-y-1">
-                                                            <label className="text-[9px] font-black uppercase tracking-widest text-slate-400">Unit Price</label>
-                                                            <Input 
-                                                                type="number"
-                                                                min="0"
-                                                                step="0.01"
-                                                                placeholder="Price"
-                                                                value={item.price_per_book}
-                                                                onChange={(e) => updateItem(item.id, 'price_per_book', e.target.value)}
-                                                                className="h-10 rounded-lg font-bold bg-white"
-                                                            />
-                                                        </div>
-
-                                                        <div className="md:col-span-3 space-y-1">
-                                                            <label className="text-[9px] font-black uppercase tracking-widest text-slate-400">Status</label>
-                                                            <select 
-                                                                value={item.status}
-                                                                onChange={(e) => updateItem(item.id, 'status', e.target.value)}
-                                                                className="w-full h-10 px-3 rounded-lg border border-slate-200 bg-white font-bold text-xs outline-none appearance-none"
-                                                            >
-                                                                <option value="NOT_STARTED">Waiting</option>
-                                                                <option value="STARTED">Started</option>
-                                                                <option value="ONPROGRESS">On Progress</option>
-                                                                <option value="COMPLETED">Completed</option>
-                                                            </select>
-                                                        </div>
-
-                                                        <div className="md:col-span-1 flex justify-end">
-                                                            <Button 
-                                                                type="button" 
-                                                                variant="ghost" 
-                                                                size="icon"
-                                                                onClick={() => handleRemoveItem(item.id)}
-                                                                className="text-red-400 hover:text-red-500 hover:bg-red-50"
-                                                            >
-                                                                <Trash2 className="size-5" />
-                                                            </Button>
-                                                        </div>
-                                                    </div>
-                                                )
-                                            })}
-                                        </div>
-                                    ) : (
-                                        <div className="py-12 border-2 border-dashed border-slate-200 rounded-3xl flex flex-col items-center justify-center text-center">
-                                            <div className="size-16 rounded-full bg-slate-50 flex items-center justify-center mb-4 text-slate-300">
-                                                <Layers className="size-8" />
-                                            </div>
-                                            <p className="font-bold text-slate-400">No books in this project.</p>
-                                        </div>
-                                    )}
-                                </div>
-
-                                {/* Totals & Memo */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 border-t-2 border-slate-100 pt-8">
-                                    <div className="space-y-4">
-                                        <div className="flex items-center justify-between">
-                                            <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">Total Project Amount</label>
-                                            <label className="flex items-center gap-2 cursor-pointer">
-                                                <input 
-                                                    type="checkbox" 
-                                                    checked={formData.auto_calculate}
-                                                    onChange={(e) => setFormData({...formData, auto_calculate: e.target.checked})}
-                                                    className="rounded border-slate-300 text-primarycolor focus:ring-primarycolor"
-                                                />
-                                                <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Auto Calculate</span>
-                                            </label>
-                                        </div>
-                                        <div className="relative">
-                                            <Calculator className="absolute left-4 top-1/2 -translate-y-1/2 size-5 text-muted-foreground" />
-                                            <Input 
-                                                disabled={formData.auto_calculate}
-                                                type="number"
-                                                step="0.01"
-                                                value={formData.total_price}
-                                                onChange={(e) => setFormData({...formData, total_price: e.target.value})}
-                                                className="h-16 pl-12 rounded-2xl border-2 font-black text-xl text-primarycolor bg-white"
-                                                placeholder="0.00"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor/40 ml-1">Production Memo</label>
-                                        <Textarea 
-                                            rows={3}
-                                            value={formData.memo}
-                                            onChange={(e) => setFormData({...formData, memo: e.target.value})}
-                                            className="p-6 rounded-[2rem] border-2 border-slate-100 font-bold text-sm bg-white transition-all resize-none"
-                                            placeholder="No instructions provided..."
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="pt-6 flex gap-4">
-                                    <Button 
-                                        type="submit"
-                                        disabled={isSubmitting}
-                                        className="flex-[2] h-16 rounded-[1.5rem] bg-primarycolor hover:bg-secondarycolor font-black uppercase tracking-widest shadow-2xl shadow-primarycolor/20"
-                                    >
-                                        {isSubmitting ? "Saving..." : "Commit Changes"}
-                                    </Button>
-                                    <Button 
-                                        type="button"
-                                        variant="outline"
-                                        onClick={() => {
-                                            setFormData({
-                                                project_name: order.project_name || "",
-                                                printerId: order.printerId?.toString() || "",
-                                                memo: order.memo || "",
-                                                status: order.status,
-                                                startDate: order.startDate ? format(new Date(order.startDate), "yyyy-MM-dd") : "",
-                                                endDate: order.endDate ? format(new Date(order.endDate), "yyyy-MM-dd") : "",
-                                                total_price: order.total_price?.toString() || "",
-                                                auto_calculate: false,
-                                                items: initialItems
-                                            })
-                                        }}
-                                        className="flex-1 h-16 rounded-[1.5rem] border-2 font-black uppercase tracking-widest"
-                                    >
-                                        Reset
-                                    </Button>
-                                </div>
-                            </form>
                         </div>
                     </div>
 
@@ -951,6 +717,409 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
                             </div>
                         </div>
                     </div>
+                </div>
+
+                {/* Project Configuration Card */}
+                <div className="bg-white rounded-[3rem] p-10 md:p-12 border-2 border-primarycolor/10 shadow-2xl relative">
+                    <div className="flex items-center gap-3 mb-10 pb-6 border-b border-slate-100">
+                        <Settings className="size-5 text-secondarycolor" />
+                        <h3 className="text-[10px] font-black uppercase tracking-widest text-primarycolor">Project Configuration</h3>
+                    </div>
+
+                    <form onSubmit={handleUpdate} className="space-y-10">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
+                            <div className="space-y-2 md:col-span-2">
+                                <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor/40 ml-1">Project Name (Optional)</label>
+                                <Input 
+                                    value={formData.project_name}
+                                    onChange={(e) => setFormData({...formData, project_name: e.target.value})}
+                                    className="h-14 px-6 rounded-2xl border-2 font-bold bg-white"
+                                    placeholder="e.g. Summer Batch 2026"
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor/40 ml-1">Assigned Printer</label>
+                                <select 
+                                    value={formData.printerId}
+                                    onChange={(e) => setFormData({...formData, printerId: e.target.value})}
+                                    className="w-full h-14 px-6 rounded-2xl border-2 border-slate-100 bg-white font-bold focus:border-primarycolor outline-none transition-all appearance-none"
+                                >
+                                    {printers.map(printer => (
+                                        <option key={printer.id} value={printer.id}>{printer.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor/40 ml-1">Overall Status</label>
+                                <select 
+                                    value={formData.status}
+                                    onChange={(e) => setFormData({...formData, status: e.target.value})}
+                                    className="w-full h-14 px-6 rounded-2xl border-2 border-slate-100 bg-white font-bold focus:border-primarycolor outline-none transition-all appearance-none"
+                                >
+                                    <option value="NOT_STARTED">Not Started / Waiting</option>
+                                    <option value="STARTED">Started</option>
+                                    <option value="ONPROGRESS">On Progress</option>
+                                    <option value="COMPLETED">Completed</option>
+                                </select>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor/40 ml-1">Start Date</label>
+                                <DateInput 
+                                    value={formData.startDate}
+                                    onChange={(e) => setFormData({...formData, startDate: e.target.value})}
+                                    className="h-14 px-6 rounded-2xl border-2 font-bold bg-white"
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor/40 ml-1">Target Completion</label>
+                                <DateInput 
+                                    value={formData.endDate}
+                                    onChange={(e) => setFormData({...formData, endDate: e.target.value})}
+                                    className="h-14 px-6 rounded-2xl border-2 font-bold bg-white"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Books Section */}
+                        <div className="space-y-4 pt-6 border-t border-slate-100">
+                            <div className="flex items-center justify-between">
+                                <h4 className="font-black text-lg text-primarycolor uppercase tracking-widest">Books to Print</h4>
+                            </div>
+
+                            {/* Add Book Controls */}
+                            <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end bg-slate-50 p-4 rounded-3xl border-2 border-slate-100">
+                                <div className="md:col-span-5 space-y-2">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Select Book</label>
+                                    <Popover open={bookOpen} onOpenChange={setBookOpen}>
+                                        <PopoverTrigger asChild>
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                role="combobox"
+                                                className="w-full h-12 px-4 rounded-xl border-2 border-slate-200 bg-white font-bold justify-between hover:bg-slate-100 transition-all text-slate-700"
+                                            >
+                                                <span className="truncate">{selectedBook?.title || "Choose Book..."}</span>
+                                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                            </Button>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-[300px] p-0 rounded-2xl border-2 shadow-2xl overflow-hidden" align="start">
+                                            <Command>
+                                                <CommandInput placeholder="Search books..." className="h-12 font-bold" />
+                                                <CommandList className="max-h-[200px] overflow-y-auto custom-scrollbar">
+                                                    <CommandEmpty className="p-4 text-xs font-bold text-muted-foreground uppercase tracking-widest text-center">No book found.</CommandEmpty>
+                                                    <CommandGroup>
+                                                        {books.map((book) => (
+                                                            <CommandItem
+                                                                key={book.id}
+                                                                value={book.title}
+                                                                onSelect={() => {
+                                                                    setSelectedBookId(book.id)
+                                                                    setBookOpen(false)
+                                                                    setSelectedEditionId(null)
+                                                                }}
+                                                                className="h-12 px-4 font-bold text-sm text-primarycolor cursor-pointer data-[selected=true]:bg-primarycolor data-[selected=true]:text-white"
+                                                            >
+                                                                <Check className={cn("mr-2 h-4 w-4", selectedBookId === book.id ? "opacity-100" : "opacity-0")} />
+                                                                <span className="truncate">{book.title}</span>
+                                                            </CommandItem>
+                                                        ))}
+                                                    </CommandGroup>
+                                                </CommandList>
+                                            </Command>
+                                        </PopoverContent>
+                                    </Popover>
+                                </div>
+
+                                <div className="md:col-span-5 space-y-2">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Select Edition</label>
+                                    <Popover open={editionOpen} onOpenChange={setEditionOpen}>
+                                        <PopoverTrigger asChild>
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                role="combobox"
+                                                disabled={!selectedBookId}
+                                                className="w-full h-12 px-4 rounded-xl border-2 border-slate-200 bg-white font-bold justify-between hover:bg-slate-100 transition-all text-slate-700 disabled:opacity-50"
+                                            >
+                                                <span className="truncate">{editions.find(e => e.id === selectedEditionId)?.edition_name || (selectedBookId ? "Choose Edition..." : "Select book first")}</span>
+                                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                            </Button>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-[300px] p-0 rounded-2xl border-2 shadow-2xl overflow-hidden" align="start">
+                                            <Command>
+                                                <CommandInput placeholder="Search editions..." className="h-12 font-bold" />
+                                                <CommandList className="max-h-[200px] overflow-y-auto custom-scrollbar">
+                                                    <CommandEmpty className="p-4 text-xs font-bold text-muted-foreground uppercase tracking-widest text-center">No edition found.</CommandEmpty>
+                                                    <CommandGroup>
+                                                        {filteredEditions.map((ed) => (
+                                                            <CommandItem
+                                                                key={ed.id}
+                                                                value={ed.edition_name}
+                                                                onSelect={() => {
+                                                                    setSelectedEditionId(ed.id)
+                                                                    setEditionOpen(false)
+                                                                }}
+                                                                className="h-12 px-4 font-bold text-sm text-primarycolor cursor-pointer data-[selected=true]:bg-primarycolor data-[selected=true]:text-white"
+                                                            >
+                                                                <Check className={cn("mr-2 h-4 w-4", selectedEditionId === ed.id ? "opacity-100" : "opacity-0")} />
+                                                                <span className="truncate">{ed.edition_name}</span>
+                                                            </CommandItem>
+                                                        ))}
+                                                    </CommandGroup>
+                                                </CommandList>
+                                            </Command>
+                                        </PopoverContent>
+                                    </Popover>
+                                </div>
+
+                                <div className="md:col-span-2">
+                                    <Button 
+                                        type="button"
+                                        onClick={handleAddBook}
+                                        disabled={!selectedEditionId}
+                                        className="w-full h-12 rounded-xl bg-primarycolor hover:bg-secondarycolor font-black uppercase tracking-widest text-[10px]"
+                                    >
+                                        Add Book
+                                    </Button>
+                                </div>
+                            </div>
+
+                            {/* Items Table */}
+                            <div className="flex items-center justify-end gap-3 pb-2">
+                                {!isEditingBooks && formData.items.length > 0 && (
+                                    <Button
+                                        type="button"
+                                        onClick={() => setIsEditingBooks(true)}
+                                        className="h-9 px-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-black uppercase tracking-widest text-[10px] shadow-lg shadow-amber-500/20 gap-2"
+                                    >
+                                        <Settings className="size-3.5" /> Edit
+                                    </Button>
+                                )}
+                                {isEditingBooks && (
+                                    <Button
+                                        type="button"
+                                        onClick={() => setIsEditingBooks(false)}
+                                        className="h-9 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-black uppercase tracking-widest text-[10px] shadow-lg shadow-emerald-500/20 gap-2"
+                                    >
+                                        <Check className="size-3.5" /> Done
+                                    </Button>
+                                )}
+                            </div>
+                            {formData.items.length > 0 ? (
+                                <div className="overflow-x-auto rounded-2xl border-2 border-slate-100 bg-white">
+                                    <table className="w-full text-sm">
+                                        <thead>
+                                            <tr className="border-b-2 border-slate-100 bg-slate-50/80">
+                                                <th className="text-left py-3.5 px-4 text-[10px] font-black uppercase tracking-widest text-slate-500">#</th>
+                                                <th className="text-left py-3.5 px-4 text-[10px] font-black uppercase tracking-widest text-slate-500">Book & Edition</th>
+                                                <th className="text-right py-3.5 px-4 text-[10px] font-black uppercase tracking-widest text-slate-500">Quantity</th>
+                                                <th className="text-right py-3.5 px-4 text-[10px] font-black uppercase tracking-widest text-slate-500">Remaining</th>
+                                                <th className="text-right py-3.5 px-4 text-[10px] font-black uppercase tracking-widest text-slate-500">Paid</th>
+                                                <th className="text-right py-3.5 px-4 text-[10px] font-black uppercase tracking-widest text-slate-500">Total Price</th>
+                                                <th className="text-center py-3.5 px-4 text-[10px] font-black uppercase tracking-widest text-slate-500">Status</th>
+                                                {isEditingBooks && <th className="text-center py-3.5 px-4 text-[10px] font-black uppercase tracking-widest text-slate-500">Action</th>}
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {formData.items.map((item, index) => {
+                                                const bookName = books.find(b => b.id === item.bookId)?.title;
+                                                const editionName = editions.find(e => e.id === item.bookEditionId)?.edition_name;
+                                                const qty = parseFloat(item.quantity) || 0;
+                                                const price = parseFloat(item.price_per_book) || 0;
+                                                const storedTotal = parseFloat(item.total_price);
+                                                const totalPrice = storedTotal > 0 ? storedTotal : (qty * price);
+                                                const itemLabel = `${bookName || "Unknown Book"} — ${editionName || "Unknown Edition"}`
+                                                const paidAmount = editionPaidMap.get(itemLabel) || 0
+                                                const paidPct = totalPrice > 0 ? (paidAmount / totalPrice) * 100 : 0
+                                                const remainingCount = editions.find((e: any) => e.id === item.bookEditionId)?.count_remening_for_transfer
+                                                
+                                                return (
+                                                    <tr key={item.id} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
+                                                        <td className="py-3.5 px-4 text-xs font-bold text-slate-400">{index + 1}</td>
+                                                        <td className="py-3.5 px-4">
+                                                            <div className="flex items-center gap-3">
+                                                                <div className="size-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500 border border-blue-100 shrink-0">
+                                                                    <BookOpen className="size-4" />
+                                                                </div>
+                                                                <div>
+                                                                    <p className="font-bold text-sm text-slate-800 truncate max-w-[200px]" title={bookName}>{bookName || "Unknown Book"}</p>
+                                                                    <p className="font-bold text-[10px] text-muted-foreground uppercase tracking-widest">{editionName || "Unknown Edition"}</p>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td className="py-3.5 px-4 text-right">
+                                                            {isEditingBooks ? (
+                                                                <Input 
+                                                                    type="number"
+                                                                    min="1"
+                                                                    value={item.quantity}
+                                                                    onChange={(e) => updateItem(item.id, 'quantity', e.target.value)}
+                                                                    className="h-9 w-24 ml-auto rounded-xl font-bold text-right text-sm bg-white border-slate-200"
+                                                                />
+                                                            ) : (
+                                                                <span className="font-bold text-slate-800">{item.quantity}</span>
+                                                            )}
+                                                        </td>
+                                                        <td className="py-3.5 px-4 text-right">
+                                                            <span className={cn(
+                                                                "font-bold",
+                                                                remainingCount != null && remainingCount > 0
+                                                                    ? "text-amber-600"
+                                                                    : "text-slate-300",
+                                                            )}>
+                                                                {remainingCount != null ? remainingCount.toLocaleString() : "—"}
+                                                            </span>
+                                                        </td>
+                                                        <td className="py-3.5 px-4 text-right">
+                                                            {paidAmount > 0 ? (
+                                                                <div className="flex flex-col items-end gap-0.5">
+                                                                    <span className="font-bold text-slate-800">{paidAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                                                    <span className={cn(
+                                                                        "text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md",
+                                                                        paidPct >= 100
+                                                                            ? "bg-emerald-50 text-emerald-600"
+                                                                            : paidPct > 50
+                                                                                ? "bg-amber-50 text-amber-600"
+                                                                                : "bg-rose-50 text-rose-600",
+                                                                    )}>
+                                                                        {paidPct.toFixed(0)}%
+                                                                    </span>
+                                                                </div>
+                                                            ) : (
+                                                                <span className="font-bold text-slate-300">—</span>
+                                                            )}
+                                                        </td>
+                                                        <td className="py-3.5 px-4 text-right">
+                                                            <span className="font-black text-emerald-600">{totalPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                                                        </td>
+                                                        <td className="py-3.5 px-4 text-center">
+                                                            {isEditingBooks ? (
+                                                                <select 
+                                                                    value={item.status}
+                                                                    onChange={(e) => updateItem(item.id, 'status', e.target.value)}
+                                                                    className="h-9 px-3 rounded-xl border border-slate-200 bg-white font-bold text-xs outline-none"
+                                                                >
+                                                                    <option value="NOT_STARTED">Waiting</option>
+                                                                    <option value="STARTED">Started</option>
+                                                                    <option value="ONPROGRESS">On Progress</option>
+                                                                    <option value="COMPLETED">Completed</option>
+                                                                </select>
+                                                            ) : (
+                                                                <span className={cn(
+                                                                    "inline-block px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest",
+                                                                    item.status === "COMPLETED" ? "bg-emerald-50 text-emerald-600" :
+                                                                    item.status === "ONPROGRESS" ? "bg-amber-50 text-amber-600" :
+                                                                    item.status === "STARTED" ? "bg-blue-50 text-blue-600" :
+                                                                    "bg-slate-50 text-slate-400"
+                                                                )}>
+                                                                    {item.status.replace("_", " ")}
+                                                                </span>
+                                                            )}
+                                                        </td>
+                                                        {isEditingBooks && (
+                                                            <td className="py-3.5 px-4 text-center">
+                                                                <Button 
+                                                                    type="button" 
+                                                                    variant="ghost" 
+                                                                    size="icon"
+                                                                    onClick={() => handleRemoveItem(item.id)}
+                                                                    className="text-red-400 hover:text-red-500 hover:bg-red-50 size-8 rounded-xl"
+                                                                >
+                                                                    <Trash2 className="size-3.5" />
+                                                                </Button>
+                                                            </td>
+                                                        )}
+                                                    </tr>
+                                                )
+                                            })}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            ) : (
+                                <div className="py-12 border-2 border-dashed border-slate-200 rounded-3xl flex flex-col items-center justify-center text-center">
+                                    <div className="size-16 rounded-full bg-slate-50 flex items-center justify-center mb-4 text-slate-300">
+                                        <Layers className="size-8" />
+                                    </div>
+                                    <p className="font-bold text-slate-400">No books in this project.</p>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Totals & Memo */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 border-t-2 border-slate-100 pt-8">
+                            <div className="space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">Total Project Amount</label>
+                                    <label className="flex items-center gap-2 cursor-pointer">
+                                        <input 
+                                            type="checkbox" 
+                                            checked={formData.auto_calculate}
+                                            onChange={(e) => setFormData({...formData, auto_calculate: e.target.checked})}
+                                            className="rounded border-slate-300 text-primarycolor focus:ring-primarycolor"
+                                        />
+                                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Auto Calculate</span>
+                                    </label>
+                                </div>
+                                <div className="relative">
+                                    <Calculator className="absolute left-4 top-1/2 -translate-y-1/2 size-5 text-muted-foreground" />
+                                    <Input 
+                                        disabled={formData.auto_calculate}
+                                        type="number"
+                                        step="0.01"
+                                        value={formData.total_price}
+                                        onChange={(e) => setFormData({...formData, total_price: e.target.value})}
+                                        className="h-16 pl-12 rounded-2xl border-2 font-black text-xl text-primarycolor bg-white"
+                                        placeholder="0.00"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor/40 ml-1">Production Memo</label>
+                                <Textarea 
+                                    rows={3}
+                                    value={formData.memo}
+                                    onChange={(e) => setFormData({...formData, memo: e.target.value})}
+                                    className="p-6 rounded-[2rem] border-2 border-slate-100 font-bold text-sm bg-white transition-all resize-none"
+                                    placeholder="No instructions provided..."
+                                />
+                            </div>
+                        </div>
+
+                        <div className="pt-6 flex gap-4">
+                            <Button 
+                                type="submit"
+                                disabled={isSubmitting}
+                                className="flex-[2] h-16 rounded-[1.5rem] bg-primarycolor hover:bg-secondarycolor font-black uppercase tracking-widest shadow-2xl shadow-primarycolor/20"
+                            >
+                                {isSubmitting ? "Saving..." : "Commit Changes"}
+                            </Button>
+                            <Button 
+                                type="button"
+                                variant="outline"
+                                onClick={() => {
+                                    setFormData({
+                                        project_name: order.project_name || "",
+                                        printerId: order.printerId?.toString() || "",
+                                        memo: order.memo || "",
+                                        status: order.status,
+                                        startDate: order.startDate ? format(new Date(order.startDate), "yyyy-MM-dd") : "",
+                                        endDate: order.endDate ? format(new Date(order.endDate), "yyyy-MM-dd") : "",
+                                        total_price: order.total_price?.toString() || "",
+                                        auto_calculate: true,
+                                        items: initialItems
+                                    })
+                                }}
+                                className="flex-1 h-16 rounded-[1.5rem] border-2 font-black uppercase tracking-widest"
+                            >
+                                Reset
+                            </Button>
+                        </div>
+                    </form>
                 </div>
 
                 {/* Delete Confirmation Dialog */}

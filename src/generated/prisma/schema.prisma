@@ -359,6 +359,7 @@ model printorder_payments {
   id            Int        @id @default(autoincrement())
   printorder_id Int
   amount        Float
+  bookEditionId Int?
   payment_date  DateTime
   reference     String?
   createdAt     DateTime   @default(now())
@@ -373,6 +374,7 @@ model printorder_items {
   bookEditionId  Int
   quantity       Int               @default(0)
   price_per_book Float             @default(0)
+  total_price    Float             @default(0)
   status         printorder_status @default(NOT_STARTED)
   is_deleted     Boolean           @default(false)
   updatedAt      DateTime          @updatedAt

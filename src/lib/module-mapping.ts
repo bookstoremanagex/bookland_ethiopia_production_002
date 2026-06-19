@@ -18,6 +18,7 @@ export const MODULE_MAP: Record<string, any> = {
     "production/translation_work": dynamic(() => import("@/app/admin_dashboard/production/translation_work/page")),
     "printing/printers": dynamic(() => import("@/app/admin_dashboard/printing/printers/page")),
     "printing/manage": dynamic(() => import("@/app/admin_dashboard/printing/manage/page")),
+    "printing/list": dynamic(() => import("@/app/admin_dashboard/printing/list/page")),
     "document_management/contracts": dynamic(() => import("@/app/admin_dashboard/document_management/contracts/page")),
     "document_management/print_agreements": dynamic(() => import("@/app/admin_dashboard/document_management/print_agreements/page")),
     "document_management/delivery_notes": dynamic(() => import("@/app/admin_dashboard/document_management/delivery_notes/page")),
