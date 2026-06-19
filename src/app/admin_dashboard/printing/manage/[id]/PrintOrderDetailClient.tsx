@@ -268,7 +268,7 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
             toast.error("Please select the edition this payment is for")
             return
         }
-        const selectedOption = paymentEditionOptions.find(o => o.value === selectedPaymentItemId)
+        const selectedOption = paymentEditionOptions.find((o: any) => o.value === selectedPaymentItemId)
         const editionLabel = selectedOption?.label || ""
         const reference = `[${editionLabel}] ${paymentForm.reference}`.trim()
         setIsSubmittingPayment(true)
@@ -545,7 +545,7 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
                                                         >
                                                             <span className="truncate">
                                                                 {selectedPaymentItemId
-                                                                    ? paymentEditionOptions.find(o => o.value === selectedPaymentItemId)?.label
+                                                                     ? paymentEditionOptions.find((o: any) => o.value === selectedPaymentItemId)?.label
                                                                     : "Select edition..."}
                                                             </span>
                                                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -559,7 +559,7 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
                                                                     No edition found.
                                                                 </CommandEmpty>
                                                                 <CommandGroup>
-                                                                    {paymentEditionOptions.map((opt) => (
+                                                                     {paymentEditionOptions.map((opt: any) => (
                                                                         <CommandItem
                                                                             key={opt.value}
                                                                             value={opt.label}
