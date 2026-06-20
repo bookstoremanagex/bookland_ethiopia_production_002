@@ -5,6 +5,7 @@ import {
   Home,
   User,
   FileText,
+  Banknote,
   X,
   Menu,
 } from "lucide-react";
@@ -32,6 +33,7 @@ const menuItems = [
   { title: "Home", icon: Home, url: "/printer_full" },
   { title: "Profile", icon: User, url: "/printer_full/profile" },
   { title: "Notes", icon: FileText, url: "/printer_full/notes" },
+  { title: "Payments", icon: Banknote, url: "/printer_full/payments" },
 ];
 
 export function PrinterFullSidebar() {

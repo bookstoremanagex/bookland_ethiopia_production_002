@@ -340,6 +340,7 @@ model printorder {
   quality             String?
   count               Int?
   total_price         Float?
+  additional_price Float?
   status              printorder_status     @default(NOT_STARTED)
   memo                String?
   tracking            printorder_tracking   @default(NOT_SET)

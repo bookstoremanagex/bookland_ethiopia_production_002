@@ -17,6 +17,7 @@ import {
   ExternalLink,
   Edit3,
   Store,
+  Printer,
 } from "lucide-react";
 import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
@@ -195,7 +196,7 @@ export default function EditionsInfo({ book }: EditionsInfoProps) {
                   Central Inventory
                 </th>
                 <th className="p-6 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground text-center">
-                  Market Pricing
+                  Printer
                 </th>
                 <th className="p-6 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground text-right">
                   Actions
@@ -246,7 +247,7 @@ export default function EditionsInfo({ book }: EditionsInfoProps) {
                         </div>
                       </div>
                     </td>
-                    <td className="p-6">
+                      <td className="p-6">
                       <div className="flex flex-col items-center gap-1.5">
                         <div className="flex items-center gap-2 px-4 py-1.5 rounded-xl bg-secondarycolor/10 text-secondarycolor border border-secondarycolor/20">
                           <Store className="size-3" />
@@ -262,13 +263,33 @@ export default function EditionsInfo({ book }: EditionsInfoProps) {
                       </div>
                     </td>
                     <td className="p-6">
-                      <div className="flex flex-col items-center gap-1">
-                        <div className="text-xl font-black text-secondarycolor italic">
-                          ${edition.selling_price || 0}
-                        </div>
-                        <div className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">
-                          Cost: ${edition.production_price || 0}
-                        </div>
+                      <div className="flex flex-col items-center gap-1.5">
+                        {(() => {
+                          const bep = (edition.bookeditionprinters?.length > 0)
+                            ? edition.bookeditionprinters[0]
+                            : null;
+                          const printerName = bep
+                            ? bep.printer?.name
+                            : edition.printorder_items?.[0]?.printorder?.printer?.name;
+                          if (printerName) {
+                            return (
+                              <div className="flex items-center gap-2 px-4 py-1.5 rounded-xl bg-primarycolor/5 text-primarycolor border border-primarycolor/10">
+                                <Printer className="size-3" />
+                                <span className="text-[10px] font-black whitespace-nowrap">
+                                  {printerName}
+                                </span>
+                              </div>
+                            );
+                          }
+                          return (
+                            <div className="flex items-center gap-2 px-4 py-1.5 rounded-xl bg-slate-50 text-slate-400 border border-slate-200">
+                              <Printer className="size-3" />
+                              <span className="text-[10px] font-black">
+                                Not Assigned
+                              </span>
+                            </div>
+                          );
+                        })()}
                       </div>
                     </td>
                     <td className="p-6 text-right">

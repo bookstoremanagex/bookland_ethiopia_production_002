@@ -8,7 +8,18 @@ export default async function ManagePrintingPage() {
             where: { is_deleted: false },
             include: {
                 printer: true,
-                printorder_items: true
+                printorder_items: {
+                    include: {
+                        bookedition: {
+                            include: {
+                                bookeditionprinters: {
+                                    where: { is_deleted: false },
+                                    include: { printer: true }
+                                }
+                            }
+                        }
+                    }
+                }
             },
             orderBy: { createdAt: 'desc' }
         }),

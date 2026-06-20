@@ -36,7 +36,7 @@ import { toast } from 'sonner'
 import Link from 'next/link'
 import { format } from 'date-fns'
 import { useCalendar } from "@/lib/calendar-context"
-import { updatePrintOrder, deletePrintOrder, addPrintOrderPayment, deletePrintOrderPayment } from '@/app/actions/print-order-actions'
+import { updatePrintOrder, deletePrintOrder, addPrintOrderPayment, updatePrintOrderPayment, deletePrintOrderPayment } from '@/app/actions/print-order-actions'
 import {
     Command,
     CommandEmpty,
@@ -99,27 +99,12 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
         reference: ""
     })
     const [isSubmittingPayment, setIsSubmittingPayment] = useState(false)
+    const [editingPaymentRef, setEditingPaymentRef] = useState<number | null>(null)
+    const [editRefValue, setEditRefValue] = useState("")
+    const [isSavingRef, setIsSavingRef] = useState(false)
     const [isEditingBooks, setIsEditingBooks] = useState(false)
 
-    // Payment edition selector
-    const [paymentEditionOpen, setPaymentEditionOpen] = useState(false)
-    const [selectedPaymentItemId, setSelectedPaymentItemId] = useState<number | null>(null)
-    const paymentEditionOptions = (order.printorder_items || []).map((item: any) => ({
-        value: item.id,
-        label: `${item.bookedition?.books?.title || "Unknown Book"} — ${item.bookedition?.edition_name || "Unknown Edition"}`
-    }))
 
-    // Per-edition paid amounts from payment records
-    const editionPaidMap = new Map<string, number>()
-    ;(order.printorder_payments || []).forEach((payment: any) => {
-        if (payment.reference) {
-            const match = payment.reference.match(/^\[([^\]]+)\]/)
-            if (match) {
-                const label = match[1]
-                editionPaidMap.set(label, (editionPaidMap.get(label) || 0) + payment.amount)
-            }
-        }
-    })
 
     // Parse initial items
     const initialItems: PrintOrderItem[] = (order.printorder_items || []).map((item: any) => ({
@@ -140,7 +125,7 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
         startDate: order.startDate ? format(new Date(order.startDate), "yyyy-MM-dd") : "",
         endDate: order.endDate ? format(new Date(order.endDate), "yyyy-MM-dd") : "",
         total_price: order.total_price?.toString() || "",
-        auto_calculate: true,
+        auto_calculate: false,
         items: initialItems
     })
 
@@ -264,19 +249,12 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
             toast.error("Please enter a valid amount")
             return
         }
-        if (!selectedPaymentItemId) {
-            toast.error("Please select the edition this payment is for")
-            return
-        }
-        const selectedOption = paymentEditionOptions.find((o: any) => o.value === selectedPaymentItemId)
-        const editionLabel = selectedOption?.label || ""
-        const reference = `[${editionLabel}] ${paymentForm.reference}`.trim()
         setIsSubmittingPayment(true)
         try {
             const response = await addPrintOrderPayment(order.id, {
                 amount: parseFloat(paymentForm.amount),
                 payment_date: paymentForm.payment_date,
-                reference
+                reference: paymentForm.reference || undefined
             })
             if (response.success) {
                 toast.success("Payment recorded successfully")
@@ -285,7 +263,6 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
                     payment_date: format(new Date(), "yyyy-MM-dd"),
                     reference: ""
                 })
-                setSelectedPaymentItemId(null)
                 setIsAddingPayment(false)
                 router.refresh()
             } else {
@@ -310,6 +287,24 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
             }
         } catch (error) {
             toast.error("An error occurred")
+        }
+    }
+
+    const handleSaveReference = async (paymentId: number) => {
+        setIsSavingRef(true)
+        try {
+            const response = await updatePrintOrderPayment(paymentId, order.id, { reference: editRefValue || null })
+            if (response.success) {
+                toast.success("Memo updated")
+                setEditingPaymentRef(null)
+                router.refresh()
+            } else {
+                toast.error(response.error || "Failed to update memo")
+            }
+        } catch {
+            toast.error("An error occurred")
+        } finally {
+            setIsSavingRef(false)
         }
     }
 
@@ -533,52 +528,7 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
                                                     className="h-14 px-5 rounded-xl border-2 border-emerald-200 focus-visible:ring-emerald-500 font-bold bg-white"
                                                 />
                                             </div>
-                                            <div className="space-y-2">
-                                                <label className="text-[10px] font-black uppercase tracking-widest text-emerald-600/70 ml-1">Edition *</label>
-                                                <Popover open={paymentEditionOpen} onOpenChange={setPaymentEditionOpen}>
-                                                    <PopoverTrigger asChild>
-                                                        <Button
-                                                            type="button"
-                                                            variant="outline"
-                                                            role="combobox"
-                                                            className="w-full h-14 px-5 rounded-xl border-2 border-emerald-200 font-bold justify-between text-base bg-white text-slate-700"
-                                                        >
-                                                            <span className="truncate">
-                                                                {selectedPaymentItemId
-                                                                     ? paymentEditionOptions.find((o: any) => o.value === selectedPaymentItemId)?.label
-                                                                    : "Select edition..."}
-                                                            </span>
-                                                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                                        </Button>
-                                                    </PopoverTrigger>
-                                                    <PopoverContent className="w-[400px] p-0 rounded-2xl border-2 shadow-2xl" align="start">
-                                                        <Command>
-                                                            <CommandInput placeholder="Search by book title or edition name..." className="h-12 font-bold" />
-                                                            <CommandList className="max-h-[220px] overflow-y-auto">
-                                                                <CommandEmpty className="p-4 text-xs font-bold text-muted-foreground uppercase tracking-widest text-center">
-                                                                    No edition found.
-                                                                </CommandEmpty>
-                                                                <CommandGroup>
-                                                                     {paymentEditionOptions.map((opt: any) => (
-                                                                        <CommandItem
-                                                                            key={opt.value}
-                                                                            value={opt.label}
-                                                                            onSelect={() => {
-                                                                                setSelectedPaymentItemId(opt.value)
-                                                                                setPaymentEditionOpen(false)
-                                                                            }}
-                                                                            className="h-12 px-4 font-bold text-sm text-slate-700 cursor-pointer data-[selected=true]:bg-emerald-50 data-[selected=true]:text-emerald-700"
-                                                                        >
-                                                                            <Check className={cn("mr-2 h-4 w-4 shrink-0", selectedPaymentItemId === opt.value ? "opacity-100" : "opacity-0")} />
-                                                                            <span>{opt.label}</span>
-                                                                        </CommandItem>
-                                                                    ))}
-                                                                </CommandGroup>
-                                                            </CommandList>
-                                                        </Command>
-                                                    </PopoverContent>
-                                                </Popover>
-                                            </div>
+
                                             <div className="space-y-2">
                                                 <label className="text-[10px] font-black uppercase tracking-widest text-emerald-600/70 ml-1">Reference (Optional)</label>
                                                 <Input 
@@ -608,31 +558,65 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
                                         </form>
                                     )}
 
-                                    {order.printorder_payments && order.printorder_payments.length > 0 ? (
+                                            {order.printorder_payments && order.printorder_payments.length > 0 ? (
                                         <div className="space-y-3">
                                             {order.printorder_payments.map((payment: any) => (
                                                 <div key={payment.id} className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl group">
-                                                    <div className="flex items-center gap-4">
-                                                        <div className="size-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400">
+                                                    <div className="flex items-center gap-4 flex-1 min-w-0">
+                                                        <div className="size-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 shrink-0">
                                                             <Receipt className="size-4" />
                                                         </div>
-                                                        <div>
+                                                        <div className="min-w-0 flex-1">
                                                             <p className="font-bold text-sm text-slate-800">{formatLong(new Date(payment.payment_date))}</p>
-                                                            {payment.reference && (() => {
-                                                                const bracketMatch = payment.reference.match(/^\[([^\]]+)\]\s*(.*)/)
-                                                                if (bracketMatch) {
-                                                                    return (
-                                                                        <>
-                                                                            <p className="text-[10px] font-bold text-emerald-600 mt-0.5">{bracketMatch[1]}</p>
-                                                                            {bracketMatch[2] && <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Ref: {bracketMatch[2]}</p>}
-                                                                        </>
-                                                                    )
-                                                                }
-                                                                return <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-0.5">Ref: {payment.reference}</p>
-                                                            })()}
+                                                            {editingPaymentRef === payment.id ? (
+                                                                <div className="flex items-center gap-2 mt-1">
+                                                                    <Input
+                                                                        value={editRefValue}
+                                                                        onChange={(e) => setEditRefValue(e.target.value)}
+                                                                        className="h-8 px-3 rounded-lg border-2 font-bold text-xs flex-1 min-w-0"
+                                                                        placeholder="Receipt, check, or memo"
+                                                                        autoFocus
+                                                                    />
+                                                                    <Button
+                                                                        size="sm"
+                                                                        onClick={() => handleSaveReference(payment.id)}
+                                                                        disabled={isSavingRef}
+                                                                        className="h-8 px-3 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white font-black text-[9px] uppercase tracking-widest shrink-0"
+                                                                    >
+                                                                        {isSavingRef ? "..." : "Save"}
+                                                                    </Button>
+                                                                    <Button
+                                                                        size="sm"
+                                                                        variant="ghost"
+                                                                        onClick={() => setEditingPaymentRef(null)}
+                                                                        className="h-8 px-3 rounded-lg text-slate-400 hover:text-slate-600 font-black text-[9px] uppercase tracking-widest shrink-0"
+                                                                    >
+                                                                        Cancel
+                                                                    </Button>
+                                                                </div>
+                                                            ) : payment.reference ? (
+                                                                <p className="flex items-center gap-1.5">
+                                                                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Ref: {payment.reference}</span>
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={() => { setEditRefValue(payment.reference || ""); setEditingPaymentRef(payment.id) }}
+                                                                        className="opacity-0 group-hover:opacity-100 text-[9px] font-black uppercase tracking-widest text-primarycolor hover:text-primarycolor/70 transition-all cursor-pointer"
+                                                                    >
+                                                                        Edit
+                                                                    </button>
+                                                                </p>
+                                                            ) : (
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => { setEditRefValue(""); setEditingPaymentRef(payment.id) }}
+                                                                    className="text-[10px] font-black uppercase tracking-widest text-slate-300 hover:text-primarycolor transition-all cursor-pointer"
+                                                                >
+                                                                    + Add memo
+                                                                </button>
+                                                            )}
                                                         </div>
                                                     </div>
-                                                    <div className="flex items-center gap-6">
+                                                    <div className="flex items-center gap-6 shrink-0">
                                                         <span className="font-black text-emerald-600">+{payment.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                                                         <Button 
                                                             variant="ghost"
@@ -918,7 +902,6 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
                                                 <th className="text-left py-3.5 px-4 text-[10px] font-black uppercase tracking-widest text-slate-500">Book & Edition</th>
                                                 <th className="text-right py-3.5 px-4 text-[10px] font-black uppercase tracking-widest text-slate-500">Quantity</th>
                                                 <th className="text-right py-3.5 px-4 text-[10px] font-black uppercase tracking-widest text-slate-500">Remaining</th>
-                                                <th className="text-right py-3.5 px-4 text-[10px] font-black uppercase tracking-widest text-slate-500">Paid</th>
                                                 <th className="text-right py-3.5 px-4 text-[10px] font-black uppercase tracking-widest text-slate-500">Total Price</th>
                                                 <th className="text-center py-3.5 px-4 text-[10px] font-black uppercase tracking-widest text-slate-500">Status</th>
                                                 {isEditingBooks && <th className="text-center py-3.5 px-4 text-[10px] font-black uppercase tracking-widest text-slate-500">Action</th>}
@@ -932,9 +915,6 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
                                                 const price = parseFloat(item.price_per_book) || 0;
                                                 const storedTotal = parseFloat(item.total_price);
                                                 const totalPrice = storedTotal > 0 ? storedTotal : (qty * price);
-                                                const itemLabel = `${bookName || "Unknown Book"} — ${editionName || "Unknown Edition"}`
-                                                const paidAmount = editionPaidMap.get(itemLabel) || 0
-                                                const paidPct = totalPrice > 0 ? (paidAmount / totalPrice) * 100 : 0
                                                 const remainingCount = editions.find((e: any) => e.id === item.bookEditionId)?.count_remening_for_transfer
                                                 
                                                 return (
@@ -973,25 +953,6 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
                                                             )}>
                                                                 {remainingCount != null ? remainingCount.toLocaleString() : "—"}
                                                             </span>
-                                                        </td>
-                                                        <td className="py-3.5 px-4 text-right">
-                                                            {paidAmount > 0 ? (
-                                                                <div className="flex flex-col items-end gap-0.5">
-                                                                    <span className="font-bold text-slate-800">{paidAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
-                                                                    <span className={cn(
-                                                                        "text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md",
-                                                                        paidPct >= 100
-                                                                            ? "bg-emerald-50 text-emerald-600"
-                                                                            : paidPct > 50
-                                                                                ? "bg-amber-50 text-amber-600"
-                                                                                : "bg-rose-50 text-rose-600",
-                                                                    )}>
-                                                                        {paidPct.toFixed(0)}%
-                                                                    </span>
-                                                                </div>
-                                                            ) : (
-                                                                <span className="font-bold text-slate-300">—</span>
-                                                            )}
                                                         </td>
                                                         <td className="py-3.5 px-4 text-right">
                                                             <span className="font-black text-emerald-600">{totalPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>

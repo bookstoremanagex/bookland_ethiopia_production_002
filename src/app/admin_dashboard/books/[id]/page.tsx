@@ -32,6 +32,19 @@ export default async function BookDetailsPage({ params }: { params: Promise<{ id
                         bookshopeditions: {
                             where: { is_deleted: false },
                             include: { bookshopes: true }
+                        },
+                        printorder_items: {
+                            where: { printorder: { is_deleted: false } },
+                            include: {
+                                printorder: {
+                                    include: { printer: true }
+                                }
+                            },
+                            take: 1
+                        },
+                        bookeditionprinters: {
+                            where: { is_deleted: false },
+                            include: { printer: true }
                         }
                     },
                     orderBy: { createdAt: 'desc' }

@@ -85,7 +85,7 @@ export async function updatePrintOrder(id: number, formData: any) {
       where: { id },
       data: {
         project_name: formData.project_name || null,
-        printerId: parseInt(formData.printerId),
+        printer: { connect: { id: parseInt(formData.printerId) } },
         memo: formData.memo,
         status: formData.status,
         total_price: formData.total_price
@@ -259,6 +259,22 @@ export async function addPrintOrderPayment(orderId: number, data: { amount: numb
     } catch (error: any) {
         console.error("Add Payment Error:", error)
         return { success: false, error: "Failed to add payment" }
+    }
+}
+
+export async function updatePrintOrderPayment(paymentId: number, orderId: number, data: { reference?: string | null }) {
+    try {
+        const updateData: any = {}
+        if (data.reference !== undefined) updateData.reference = data.reference || null
+        await (prisma as any).printorder_payments.update({
+            where: { id: paymentId },
+            data: updateData
+        })
+        revalidatePath(`/admin_dashboard/printing/manage/${orderId}`)
+        return { success: true }
+    } catch (error: any) {
+        console.error("Update Payment Error:", error)
+        return { success: false, error: "Failed to update payment" }
     }
 }
 

@@ -27,8 +27,17 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { DateInput } from '@/components/ui/date-input'
 import { Textarea } from '@/components/ui/textarea'
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+    DialogFooter,
+} from "@/components/ui/dialog"
 import { toast } from 'sonner'
 import { createPrintOrder, quickCreateBook, quickCreateEdition } from '@/app/actions/print-order-actions'
+import { updateEditionPrintCount } from '@/app/actions/edition-actions'
 import {
     Command,
     CommandEmpty,
@@ -59,6 +68,7 @@ interface PrintOrderItem {
     total_price: string;
     price_per_book: string;
     status: string;
+    isExistingEdition?: boolean;
 }
 
 type AdditionMode = 'existing' | 'new-edition' | 'new-book';
@@ -101,6 +111,11 @@ export default function CreatePrintOrderButton({ printers, editions, books }: Cr
     const [drawerBookEditionPages, setDrawerBookEditionPages] = useState('')
     const [drawerBookEditionPrice, setDrawerBookEditionPrice] = useState('')
     const [drawerBookEditionTotalPrice, setDrawerBookEditionTotalPrice] = useState('')
+
+    const [settingsOpen, setSettingsOpen] = useState(false)
+    const [settingsItem, setSettingsItem] = useState<PrintOrderItem | null>(null)
+    const [settingsValue, setSettingsValue] = useState("")
+    const [isSettingsSubmitting, setIsSettingsSubmitting] = useState(false)
 
     const [formData, setFormData] = useState({
         project_name: "",
@@ -152,11 +167,13 @@ export default function CreatePrintOrderButton({ printers, editions, books }: Cr
             return
         }
 
+        const edition = editions.find((e: any) => e.id === selectedEditionId);
         const newItem: PrintOrderItem = {
             id: Date.now(),
             bookId: selectedBookId!,
             bookEditionId: selectedEditionId,
-            quantity: "",
+            quantity: String(edition?.total_print_count ?? ""),
+            isExistingEdition: true,
             total_price: "",
             price_per_book: "",
             status: "NOT_STARTED"
@@ -638,97 +655,121 @@ export default function CreatePrintOrderButton({ printers, editions, books }: Cr
                                 {/* Items List */}
                                 {formData.items.length > 0 ? (
                                     <div className="space-y-3">
-                                        {formData.items.map((item, index) => {
+                                        {formData.items.map((item) => {
                                             const bookName = books.find(b => b.id === item.bookId)?.title || `Book #${item.bookId}`;
                                             const editionName = editions.find(e => e.id === item.bookEditionId)?.edition_name || `Edition #${item.bookEditionId}`;
                                             
                                             return (
-                                                <div key={item.id} className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center bg-white border-2 border-slate-100 p-4 rounded-2xl relative group">
-                                                    <div className="md:col-span-3 flex items-center gap-3">
-                                                        <div className="size-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500 border-2 border-blue-100">
-                                                            <BookOpen className="size-5" />
+                                                <div key={item.id} className="bg-white border-2 border-slate-100 p-4 rounded-2xl relative group">
+                                                    <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+                                                        <div className="md:col-span-4 flex items-center gap-3">
+                                                            <div className="size-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500 border-2 border-blue-100 shrink-0">
+                                                                <BookOpen className="size-5" />
+                                                            </div>
+                                                            <div className="min-w-0">
+                                                                <p className="font-bold text-sm text-slate-800 leading-tight">{bookName}</p>
+                                                                <p className="font-bold text-[10px] text-muted-foreground uppercase tracking-widest leading-tight break-words">{editionName}</p>
+                                                            </div>
                                                         </div>
-                                                        <div className="overflow-hidden">
-                                                            <p className="font-bold text-sm text-slate-800 truncate">{bookName}</p>
-                                                            <p className="font-bold text-[10px] text-muted-foreground uppercase tracking-widest truncate">{editionName}</p>
+
+                                                        <div className="md:col-span-3 space-y-1">
+                                                            <label className="text-[9px] font-black uppercase tracking-widest text-slate-400">Quantity</label>
+                                                            <Input 
+                                                                type="number"
+                                                                min="1"
+                                                                placeholder="Qty"
+                                                                value={item.quantity}
+                                                                onChange={(e) => updateItem(item.id, 'quantity', e.target.value)}
+                                                                disabled={item.isExistingEdition}
+                                                                onWheel={(e) => e.currentTarget.blur()}
+                                                                className="h-10 rounded-lg font-bold disabled:opacity-60 disabled:cursor-not-allowed"
+                                                            />
                                                         </div>
-                                                    </div>
 
-                                                    <div className="md:col-span-2 space-y-1">
-                                                        <label className="text-[9px] font-black uppercase tracking-widest text-slate-400">Quantity</label>
-                                                        <Input 
-                                                            type="number"
-                                                            min="1"
-                                                            placeholder="Qty"
-                                                            value={item.quantity}
-                                                            onChange={(e) => updateItem(item.id, 'quantity', e.target.value)}
-                                                            className="h-10 rounded-lg font-bold"
-                                                        />
-                                                    </div>
+                                                        <div className="md:col-span-2 space-y-1">
+                                                            <label className="text-[9px] font-black uppercase tracking-widest text-slate-400">Total Price</label>
+                                                            <Input 
+                                                                type="number"
+                                                                min="0"
+                                                                step="0.01"
+                                                                placeholder="Total"
+                                                                value={item.total_price}
+                                                                onChange={(e) => updateItem(item.id, 'total_price', e.target.value)}
+                                                                onWheel={(e) => e.currentTarget.blur()}
+                                                                className="h-10 rounded-lg font-bold"
+                                                            />
+                                                        </div>
 
-                                                    <div className="md:col-span-1 space-y-1">
-                                                        <label className="text-[9px] font-black uppercase tracking-widest text-slate-400">Total Price</label>
-                                                        <Input 
-                                                            type="number"
-                                                            min="0"
-                                                            step="0.01"
-                                                            placeholder="Total"
-                                                            value={item.total_price}
-                                                            onChange={(e) => updateItem(item.id, 'total_price', e.target.value)}
-                                                            className="h-10 rounded-lg font-bold"
-                                                        />
-                                                    </div>
-
-                                                    <div className="md:col-span-2 space-y-1">
-                                                        <label className="text-[9px] font-black uppercase tracking-widest text-slate-400">Unit Price</label>
-                                                        <Input 
-                                                            type="number"
-                                                            min="0"
-                                                            step="0.01"
-                                                            placeholder="Price"
-                                                            value={item.price_per_book}
-                                                            onChange={(e) => updateItem(item.id, 'price_per_book', e.target.value)}
-                                                            className="h-10 rounded-lg font-bold"
-                                                        />
-                                                    </div>
-
-                                                    <div className="md:col-span-2 space-y-1">
-                                                        <label className="text-[9px] font-black uppercase tracking-widest text-slate-400">Cost of Edition</label>
-                                                        <div className="h-10 rounded-lg bg-emerald-50 border-2 border-emerald-100 flex items-center px-3 font-black text-emerald-700 text-sm">
-                                                            {(() => {
-                                                                const itemTotal = parseFloat(item.total_price);
-                                                                if (itemTotal > 0) return itemTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                                                                const qty = parseFloat(item.quantity) || 0;
-                                                                const price = parseFloat(item.price_per_book) || 0;
-                                                                return (qty * price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                                                            })()} ETB
+                                                        <div className="md:col-span-3 space-y-1">
+                                                            <label className="text-[9px] font-black uppercase tracking-widest text-slate-400">Unit Price</label>
+                                                            <Input 
+                                                                type="number"
+                                                                min="0"
+                                                                step="0.01"
+                                                                placeholder="Price"
+                                                                value={item.price_per_book}
+                                                                onChange={(e) => updateItem(item.id, 'price_per_book', e.target.value)}
+                                                                onWheel={(e) => e.currentTarget.blur()}
+                                                                className="h-10 rounded-lg font-bold"
+                                                            />
                                                         </div>
                                                     </div>
 
-                                                    <div className="md:col-span-1 space-y-1">
-                                                        <label className="text-[9px] font-black uppercase tracking-widest text-slate-400">Status</label>
-                                                        <select 
-                                                            value={item.status}
-                                                            onChange={(e) => updateItem(item.id, 'status', e.target.value)}
-                                                            className="w-full h-10 px-3 rounded-lg border border-slate-200 bg-white font-bold text-xs outline-none"
-                                                        >
-                                                            <option value="NOT_STARTED">Waiting</option>
-                                                            <option value="STARTED">Started</option>
-                                                            <option value="ONPROGRESS">On Progress</option>
-                                                            <option value="COMPLETED">Completed</option>
-                                                        </select>
-                                                    </div>
+                                                    <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center mt-4 pt-4 border-t border-slate-100">
+                                                        <div className="md:col-span-3 space-y-1">
+                                                            <label className="text-[9px] font-black uppercase tracking-widest text-slate-400">Cost of Edition</label>
+                                                            <div className="h-10 rounded-lg bg-emerald-50 border-2 border-emerald-100 flex items-center px-3 font-black text-emerald-700 text-sm">
+                                                                {(() => {
+                                                                    const itemTotal = parseFloat(item.total_price);
+                                                                    if (itemTotal > 0) return itemTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                                                                    const qty = parseFloat(item.quantity) || 0;
+                                                                    const price = parseFloat(item.price_per_book) || 0;
+                                                                    return (qty * price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                                                                })()} ETB
+                                                            </div>
+                                                        </div>
 
-                                                    <div className="md:col-span-1 flex justify-end">
-                                                        <Button 
-                                                            type="button" 
-                                                            variant="ghost" 
-                                                            size="icon"
-                                                            onClick={() => handleRemoveItem(item.id)}
-                                                            className="text-red-400 hover:text-red-500 hover:bg-red-50"
-                                                        >
-                                                            <Trash2 className="size-5" />
-                                                        </Button>
+                                                        <div className="md:col-span-3 space-y-1">
+                                                            <label className="text-[9px] font-black uppercase tracking-widest text-slate-400">Status</label>
+                                                            <select 
+                                                                value={item.status}
+                                                                onChange={(e) => updateItem(item.id, 'status', e.target.value)}
+                                                                className="w-full h-10 px-3 rounded-lg border border-slate-200 bg-white font-bold text-xs outline-none"
+                                                            >
+                                                                <option value="NOT_STARTED">Waiting</option>
+                                                                <option value="STARTED">Started</option>
+                                                                <option value="ONPROGRESS">On Progress</option>
+                                                                <option value="COMPLETED">Completed</option>
+                                                            </select>
+                                                        </div>
+
+                                                        <div className="md:col-span-6 flex items-end justify-end gap-2">
+                                                            <Button 
+                                                                type="button" 
+                                                                variant="outline"
+                                                                size="sm"
+                                                                onClick={() => {
+                                                                    setSettingsItem(item);
+                                                                    const edition = editions.find((e: any) => e.id === item.bookEditionId);
+                                                                    setSettingsValue(String(edition?.total_print_count ?? ""));
+                                                                    setSettingsOpen(true);
+                                                                }}
+                                                                className="h-10 px-4 rounded-lg font-bold text-[10px] uppercase tracking-widest border-2"
+                                                            >
+                                                                <Settings className="size-4 mr-1.5" />
+                                                                Settings
+                                                            </Button>
+                                                            <Button 
+                                                                type="button" 
+                                                                variant="outline"
+                                                                size="sm"
+                                                                onClick={() => handleRemoveItem(item.id)}
+                                                                className="h-10 px-4 rounded-lg font-bold text-[10px] uppercase tracking-widest border-2 text-red-500 border-red-200 hover:bg-red-50"
+                                                            >
+                                                                <Trash2 className="size-4 mr-1.5" />
+                                                                Remove
+                                                            </Button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             )
@@ -772,6 +813,7 @@ export default function CreatePrintOrderButton({ printers, editions, books }: Cr
                                             disabled={formData.auto_calculate}
                                             value={formData.total_price}
                                             onChange={(e) => setFormData({...formData, total_price: e.target.value})}
+                                            onWheel={(e) => e.currentTarget.blur()}
                                             className="h-16 pl-12 rounded-2xl border-2 font-black text-xl text-primarycolor bg-slate-50 disabled:opacity-100"
                                             placeholder="0.00"
                                         />
@@ -814,6 +856,83 @@ export default function CreatePrintOrderButton({ printers, editions, books }: Cr
                     </div>
                 </div>
             )}
+
+            {/* Settings Dialog for existing editions */}
+            {settingsOpen && (() => {
+                const edition = editions.find((e: any) => e.id === settingsItem?.bookEditionId);
+                const alreadyTransferred = (edition?.total_print_count || 0) - (edition?.count_remening_for_transfer || 0);
+                const minCount = Math.max(0, alreadyTransferred);
+                return (
+                    <Dialog open={settingsOpen} onOpenChange={(open) => { if (!open) setSettingsOpen(false); }}>
+                        <DialogContent className="sm:max-w-sm">
+                            <DialogHeader>
+                                <DialogTitle>Edition Settings</DialogTitle>
+                                <DialogDescription>
+                                    {edition?.edition_name || ""}
+                                </DialogDescription>
+                            </DialogHeader>
+                            <div className="space-y-4 py-2">
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">
+                                        Total Print Count
+                                    </label>
+                                    <Input
+                                        type="number"
+                                        min={minCount}
+                                        value={settingsValue}
+                                        onChange={(e) => setSettingsValue(e.target.value)}
+                                        onWheel={(e) => e.currentTarget.blur()}
+                                        className="h-12 px-5 rounded-xl border-2 font-bold"
+                                    />
+                                    <p className="text-[9px] font-bold text-muted-foreground ml-1">
+                                        Minimum: {minCount.toLocaleString()} (already transferred)
+                                    </p>
+                                </div>
+                            </div>
+                            <DialogFooter>
+                                <Button
+                                    variant="outline"
+                                    onClick={() => setSettingsOpen(false)}
+                                    className="rounded-xl font-bold"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    onClick={async () => {
+                                        if (!edition || !settingsItem) return;
+                                        const newVal = Number(settingsValue);
+                                        if (newVal < minCount) {
+                                            toast.error(`Total print count cannot be less than ${minCount}`);
+                                            return;
+                                        }
+                                        setIsSettingsSubmitting(true);
+                                        const res = await updateEditionPrintCount(edition.id, newVal);
+                                        setIsSettingsSubmitting(false);
+                                        if (res.success) {
+                                            setFormData(prev => ({
+                                                ...prev,
+                                                items: prev.items.map(it =>
+                                                    it.id === settingsItem.id
+                                                        ? { ...it, quantity: String(newVal) }
+                                                        : it
+                                                )
+                                            }));
+                                            toast.success("Edition updated successfully");
+                                            setSettingsOpen(false);
+                                        } else {
+                                            toast.error(res.error || "Failed to update edition");
+                                        }
+                                    }}
+                                    disabled={isSettingsSubmitting}
+                                    className="rounded-xl font-black uppercase tracking-widest bg-primarycolor hover:bg-secondarycolor"
+                                >
+                                    {isSettingsSubmitting ? "Saving..." : "Save"}
+                                </Button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
+                );
+            })()}
 
             {/* Drawer for New Edition / New Book */}
             {isDrawerOpen && (
@@ -944,12 +1063,14 @@ export default function CreatePrintOrderButton({ printers, editions, books }: Cr
                                         </div>
                                         <div className="space-y-2">
                                             <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">Publication Year *</label>
-                                            <Input
-                                                value={drawerBookYear}
-                                                onChange={(e) => setDrawerBookYear(e.target.value)}
-                                                className="h-12 px-4 rounded-xl border-2 border-slate-200 font-bold"
-                                                placeholder="e.g. 2026"
-                                            />
+                                        <Input
+                                            type="number"
+                                            value={drawerBookYear}
+                                            onChange={(e) => setDrawerBookYear(e.target.value)}
+                                            onWheel={(e) => e.currentTarget.blur()}
+                                            className="h-12 px-4 rounded-xl border-2 border-slate-200 font-bold"
+                                            placeholder="e.g. 2026"
+                                        />
                                         </div>
                                         <div className="space-y-2">
                                             <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">Language</label>
@@ -995,6 +1116,7 @@ export default function CreatePrintOrderButton({ printers, editions, books }: Cr
                                                 if (additionMode === 'new-edition') setDrawerEditionQty(e.target.value)
                                                 else setDrawerBookEditionQty(e.target.value)
                                             }}
+                                            onWheel={(e) => e.currentTarget.blur()}
                                             className="h-12 px-4 rounded-xl border-2 border-slate-200 font-bold"
                                             placeholder="e.g. 1000"
                                         />
@@ -1009,6 +1131,7 @@ export default function CreatePrintOrderButton({ printers, editions, books }: Cr
                                                 if (additionMode === 'new-edition') setDrawerEditionPages(e.target.value)
                                                 else setDrawerBookEditionPages(e.target.value)
                                             }}
+                                            onWheel={(e) => e.currentTarget.blur()}
                                             className="h-12 px-4 rounded-xl border-2 border-slate-200 font-bold"
                                             placeholder="e.g. 250"
                                         />
@@ -1024,6 +1147,7 @@ export default function CreatePrintOrderButton({ printers, editions, books }: Cr
                                                 if (additionMode === 'new-edition') setDrawerEditionTotalPrice(e.target.value)
                                                 else setDrawerBookEditionTotalPrice(e.target.value)
                                             }}
+                                            onWheel={(e) => e.currentTarget.blur()}
                                             className="h-12 px-4 rounded-xl border-2 border-slate-200 font-bold"
                                             placeholder="e.g. 150000.00"
                                         />
@@ -1039,6 +1163,7 @@ export default function CreatePrintOrderButton({ printers, editions, books }: Cr
                                                 if (additionMode === 'new-edition') setDrawerEditionPrice(e.target.value)
                                                 else setDrawerBookEditionPrice(e.target.value)
                                             }}
+                                            onWheel={(e) => e.currentTarget.blur()}
                                             className="h-12 px-4 rounded-xl border-2 border-slate-200 font-bold"
                                             placeholder="e.g. 150.00"
                                         />

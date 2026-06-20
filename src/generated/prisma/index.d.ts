@@ -21333,6 +21333,7 @@ export namespace Prisma {
     id: number | null
     count: number | null
     total_price: number | null
+    additional_price: number | null
     printerId: number | null
   }
 
@@ -21340,6 +21341,7 @@ export namespace Prisma {
     id: number | null
     count: number | null
     total_price: number | null
+    additional_price: number | null
     printerId: number | null
   }
 
@@ -21349,6 +21351,7 @@ export namespace Prisma {
     quality: string | null
     count: number | null
     total_price: number | null
+    additional_price: number | null
     status: $Enums.printorder_status | null
     memo: string | null
     tracking: $Enums.printorder_tracking | null
@@ -21368,6 +21371,7 @@ export namespace Prisma {
     quality: string | null
     count: number | null
     total_price: number | null
+    additional_price: number | null
     status: $Enums.printorder_status | null
     memo: string | null
     tracking: $Enums.printorder_tracking | null
@@ -21387,6 +21391,7 @@ export namespace Prisma {
     quality: number
     count: number
     total_price: number
+    additional_price: number
     status: number
     memo: number
     tracking: number
@@ -21406,6 +21411,7 @@ export namespace Prisma {
     id?: true
     count?: true
     total_price?: true
+    additional_price?: true
     printerId?: true
   }
 
@@ -21413,6 +21419,7 @@ export namespace Prisma {
     id?: true
     count?: true
     total_price?: true
+    additional_price?: true
     printerId?: true
   }
 
@@ -21422,6 +21429,7 @@ export namespace Prisma {
     quality?: true
     count?: true
     total_price?: true
+    additional_price?: true
     status?: true
     memo?: true
     tracking?: true
@@ -21441,6 +21449,7 @@ export namespace Prisma {
     quality?: true
     count?: true
     total_price?: true
+    additional_price?: true
     status?: true
     memo?: true
     tracking?: true
@@ -21460,6 +21469,7 @@ export namespace Prisma {
     quality?: true
     count?: true
     total_price?: true
+    additional_price?: true
     status?: true
     memo?: true
     tracking?: true
@@ -21566,6 +21576,7 @@ export namespace Prisma {
     quality: string | null
     count: number | null
     total_price: number | null
+    additional_price: number | null
     status: $Enums.printorder_status
     memo: string | null
     tracking: $Enums.printorder_tracking
@@ -21604,6 +21615,7 @@ export namespace Prisma {
     quality?: boolean
     count?: boolean
     total_price?: boolean
+    additional_price?: boolean
     status?: boolean
     memo?: boolean
     tracking?: boolean
@@ -21629,6 +21641,7 @@ export namespace Prisma {
     quality?: boolean
     count?: boolean
     total_price?: boolean
+    additional_price?: boolean
     status?: boolean
     memo?: boolean
     tracking?: boolean
@@ -21642,7 +21655,7 @@ export namespace Prisma {
     deletedAt?: boolean
   }
 
-  export type printorderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "project_name" | "quality" | "count" | "total_price" | "status" | "memo" | "tracking" | "startDate" | "endDate" | "printerId" | "edition" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt", ExtArgs["result"]["printorder"]>
+  export type printorderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "project_name" | "quality" | "count" | "total_price" | "additional_price" | "status" | "memo" | "tracking" | "startDate" | "endDate" | "printerId" | "edition" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt", ExtArgs["result"]["printorder"]>
   export type printorderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     printer?: boolean | printerDefaultArgs<ExtArgs>
     printorder_items?: boolean | printorder$printorder_itemsArgs<ExtArgs>
@@ -21663,6 +21676,7 @@ export namespace Prisma {
       quality: string | null
       count: number | null
       total_price: number | null
+      additional_price: number | null
       status: $Enums.printorder_status
       memo: string | null
       tracking: $Enums.printorder_tracking
@@ -22051,6 +22065,7 @@ export namespace Prisma {
     readonly quality: FieldRef<"printorder", 'String'>
     readonly count: FieldRef<"printorder", 'Int'>
     readonly total_price: FieldRef<"printorder", 'Float'>
+    readonly additional_price: FieldRef<"printorder", 'Float'>
     readonly status: FieldRef<"printorder", 'printorder_status'>
     readonly memo: FieldRef<"printorder", 'String'>
     readonly tracking: FieldRef<"printorder", 'printorder_tracking'>
@@ -43209,6 +43224,7 @@ export namespace Prisma {
     quality: 'quality',
     count: 'count',
     total_price: 'total_price',
+    additional_price: 'additional_price',
     status: 'status',
     memo: 'memo',
     tracking: 'tracking',
@@ -45506,6 +45522,7 @@ export namespace Prisma {
     quality?: StringNullableFilter<"printorder"> | string | null
     count?: IntNullableFilter<"printorder"> | number | null
     total_price?: FloatNullableFilter<"printorder"> | number | null
+    additional_price?: FloatNullableFilter<"printorder"> | number | null
     status?: Enumprintorder_statusFilter<"printorder"> | $Enums.printorder_status
     memo?: StringNullableFilter<"printorder"> | string | null
     tracking?: Enumprintorder_trackingFilter<"printorder"> | $Enums.printorder_tracking
@@ -45528,6 +45545,7 @@ export namespace Prisma {
     quality?: SortOrderInput | SortOrder
     count?: SortOrderInput | SortOrder
     total_price?: SortOrderInput | SortOrder
+    additional_price?: SortOrderInput | SortOrder
     status?: SortOrder
     memo?: SortOrderInput | SortOrder
     tracking?: SortOrder
@@ -45554,6 +45572,7 @@ export namespace Prisma {
     quality?: StringNullableFilter<"printorder"> | string | null
     count?: IntNullableFilter<"printorder"> | number | null
     total_price?: FloatNullableFilter<"printorder"> | number | null
+    additional_price?: FloatNullableFilter<"printorder"> | number | null
     status?: Enumprintorder_statusFilter<"printorder"> | $Enums.printorder_status
     memo?: StringNullableFilter<"printorder"> | string | null
     tracking?: Enumprintorder_trackingFilter<"printorder"> | $Enums.printorder_tracking
@@ -45576,6 +45595,7 @@ export namespace Prisma {
     quality?: SortOrderInput | SortOrder
     count?: SortOrderInput | SortOrder
     total_price?: SortOrderInput | SortOrder
+    additional_price?: SortOrderInput | SortOrder
     status?: SortOrder
     memo?: SortOrderInput | SortOrder
     tracking?: SortOrder
@@ -45603,6 +45623,7 @@ export namespace Prisma {
     quality?: StringNullableWithAggregatesFilter<"printorder"> | string | null
     count?: IntNullableWithAggregatesFilter<"printorder"> | number | null
     total_price?: FloatNullableWithAggregatesFilter<"printorder"> | number | null
+    additional_price?: FloatNullableWithAggregatesFilter<"printorder"> | number | null
     status?: Enumprintorder_statusWithAggregatesFilter<"printorder"> | $Enums.printorder_status
     memo?: StringNullableWithAggregatesFilter<"printorder"> | string | null
     tracking?: Enumprintorder_trackingWithAggregatesFilter<"printorder"> | $Enums.printorder_tracking
@@ -48975,6 +48996,7 @@ export namespace Prisma {
     quality?: string | null
     count?: number | null
     total_price?: number | null
+    additional_price?: number | null
     status?: $Enums.printorder_status
     memo?: string | null
     tracking?: $Enums.printorder_tracking
@@ -48996,6 +49018,7 @@ export namespace Prisma {
     quality?: string | null
     count?: number | null
     total_price?: number | null
+    additional_price?: number | null
     status?: $Enums.printorder_status
     memo?: string | null
     tracking?: $Enums.printorder_tracking
@@ -49016,6 +49039,7 @@ export namespace Prisma {
     quality?: NullableStringFieldUpdateOperationsInput | string | null
     count?: NullableIntFieldUpdateOperationsInput | number | null
     total_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    additional_price?: NullableFloatFieldUpdateOperationsInput | number | null
     status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     tracking?: Enumprintorder_trackingFieldUpdateOperationsInput | $Enums.printorder_tracking
@@ -49037,6 +49061,7 @@ export namespace Prisma {
     quality?: NullableStringFieldUpdateOperationsInput | string | null
     count?: NullableIntFieldUpdateOperationsInput | number | null
     total_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    additional_price?: NullableFloatFieldUpdateOperationsInput | number | null
     status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     tracking?: Enumprintorder_trackingFieldUpdateOperationsInput | $Enums.printorder_tracking
@@ -49058,6 +49083,7 @@ export namespace Prisma {
     quality?: string | null
     count?: number | null
     total_price?: number | null
+    additional_price?: number | null
     status?: $Enums.printorder_status
     memo?: string | null
     tracking?: $Enums.printorder_tracking
@@ -49076,6 +49102,7 @@ export namespace Prisma {
     quality?: NullableStringFieldUpdateOperationsInput | string | null
     count?: NullableIntFieldUpdateOperationsInput | number | null
     total_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    additional_price?: NullableFloatFieldUpdateOperationsInput | number | null
     status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     tracking?: Enumprintorder_trackingFieldUpdateOperationsInput | $Enums.printorder_tracking
@@ -49094,6 +49121,7 @@ export namespace Prisma {
     quality?: NullableStringFieldUpdateOperationsInput | string | null
     count?: NullableIntFieldUpdateOperationsInput | number | null
     total_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    additional_price?: NullableFloatFieldUpdateOperationsInput | number | null
     status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     tracking?: Enumprintorder_trackingFieldUpdateOperationsInput | $Enums.printorder_tracking
@@ -52513,6 +52541,7 @@ export namespace Prisma {
     quality?: SortOrder
     count?: SortOrder
     total_price?: SortOrder
+    additional_price?: SortOrder
     status?: SortOrder
     memo?: SortOrder
     tracking?: SortOrder
@@ -52530,6 +52559,7 @@ export namespace Prisma {
     id?: SortOrder
     count?: SortOrder
     total_price?: SortOrder
+    additional_price?: SortOrder
     printerId?: SortOrder
   }
 
@@ -52539,6 +52569,7 @@ export namespace Prisma {
     quality?: SortOrder
     count?: SortOrder
     total_price?: SortOrder
+    additional_price?: SortOrder
     status?: SortOrder
     memo?: SortOrder
     tracking?: SortOrder
@@ -52558,6 +52589,7 @@ export namespace Prisma {
     quality?: SortOrder
     count?: SortOrder
     total_price?: SortOrder
+    additional_price?: SortOrder
     status?: SortOrder
     memo?: SortOrder
     tracking?: SortOrder
@@ -52575,6 +52607,7 @@ export namespace Prisma {
     id?: SortOrder
     count?: SortOrder
     total_price?: SortOrder
+    additional_price?: SortOrder
     printerId?: SortOrder
   }
 
@@ -60050,6 +60083,7 @@ export namespace Prisma {
     quality?: string | null
     count?: number | null
     total_price?: number | null
+    additional_price?: number | null
     status?: $Enums.printorder_status
     memo?: string | null
     tracking?: $Enums.printorder_tracking
@@ -60070,6 +60104,7 @@ export namespace Prisma {
     quality?: string | null
     count?: number | null
     total_price?: number | null
+    additional_price?: number | null
     status?: $Enums.printorder_status
     memo?: string | null
     tracking?: $Enums.printorder_tracking
@@ -60187,6 +60222,7 @@ export namespace Prisma {
     quality?: StringNullableFilter<"printorder"> | string | null
     count?: IntNullableFilter<"printorder"> | number | null
     total_price?: FloatNullableFilter<"printorder"> | number | null
+    additional_price?: FloatNullableFilter<"printorder"> | number | null
     status?: Enumprintorder_statusFilter<"printorder"> | $Enums.printorder_status
     memo?: StringNullableFilter<"printorder"> | string | null
     tracking?: Enumprintorder_trackingFilter<"printorder"> | $Enums.printorder_tracking
@@ -60416,6 +60452,7 @@ export namespace Prisma {
     quality?: string | null
     count?: number | null
     total_price?: number | null
+    additional_price?: number | null
     status?: $Enums.printorder_status
     memo?: string | null
     tracking?: $Enums.printorder_tracking
@@ -60436,6 +60473,7 @@ export namespace Prisma {
     quality?: string | null
     count?: number | null
     total_price?: number | null
+    additional_price?: number | null
     status?: $Enums.printorder_status
     memo?: string | null
     tracking?: $Enums.printorder_tracking
@@ -60471,6 +60509,7 @@ export namespace Prisma {
     quality?: NullableStringFieldUpdateOperationsInput | string | null
     count?: NullableIntFieldUpdateOperationsInput | number | null
     total_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    additional_price?: NullableFloatFieldUpdateOperationsInput | number | null
     status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     tracking?: Enumprintorder_trackingFieldUpdateOperationsInput | $Enums.printorder_tracking
@@ -60491,6 +60530,7 @@ export namespace Prisma {
     quality?: NullableStringFieldUpdateOperationsInput | string | null
     count?: NullableIntFieldUpdateOperationsInput | number | null
     total_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    additional_price?: NullableFloatFieldUpdateOperationsInput | number | null
     status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     tracking?: Enumprintorder_trackingFieldUpdateOperationsInput | $Enums.printorder_tracking
@@ -60510,6 +60550,7 @@ export namespace Prisma {
     quality?: string | null
     count?: number | null
     total_price?: number | null
+    additional_price?: number | null
     status?: $Enums.printorder_status
     memo?: string | null
     tracking?: $Enums.printorder_tracking
@@ -60530,6 +60571,7 @@ export namespace Prisma {
     quality?: string | null
     count?: number | null
     total_price?: number | null
+    additional_price?: number | null
     status?: $Enums.printorder_status
     memo?: string | null
     tracking?: $Enums.printorder_tracking
@@ -60651,6 +60693,7 @@ export namespace Prisma {
     quality?: NullableStringFieldUpdateOperationsInput | string | null
     count?: NullableIntFieldUpdateOperationsInput | number | null
     total_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    additional_price?: NullableFloatFieldUpdateOperationsInput | number | null
     status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     tracking?: Enumprintorder_trackingFieldUpdateOperationsInput | $Enums.printorder_tracking
@@ -60671,6 +60714,7 @@ export namespace Prisma {
     quality?: NullableStringFieldUpdateOperationsInput | string | null
     count?: NullableIntFieldUpdateOperationsInput | number | null
     total_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    additional_price?: NullableFloatFieldUpdateOperationsInput | number | null
     status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     tracking?: Enumprintorder_trackingFieldUpdateOperationsInput | $Enums.printorder_tracking
@@ -63198,6 +63242,7 @@ export namespace Prisma {
     quality?: string | null
     count?: number | null
     total_price?: number | null
+    additional_price?: number | null
     status?: $Enums.printorder_status
     memo?: string | null
     tracking?: $Enums.printorder_tracking
@@ -63240,6 +63285,7 @@ export namespace Prisma {
     quality?: NullableStringFieldUpdateOperationsInput | string | null
     count?: NullableIntFieldUpdateOperationsInput | number | null
     total_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    additional_price?: NullableFloatFieldUpdateOperationsInput | number | null
     status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     tracking?: Enumprintorder_trackingFieldUpdateOperationsInput | $Enums.printorder_tracking
@@ -63260,6 +63306,7 @@ export namespace Prisma {
     quality?: NullableStringFieldUpdateOperationsInput | string | null
     count?: NullableIntFieldUpdateOperationsInput | number | null
     total_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    additional_price?: NullableFloatFieldUpdateOperationsInput | number | null
     status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     tracking?: Enumprintorder_trackingFieldUpdateOperationsInput | $Enums.printorder_tracking
@@ -63280,6 +63327,7 @@ export namespace Prisma {
     quality?: NullableStringFieldUpdateOperationsInput | string | null
     count?: NullableIntFieldUpdateOperationsInput | number | null
     total_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    additional_price?: NullableFloatFieldUpdateOperationsInput | number | null
     status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     tracking?: Enumprintorder_trackingFieldUpdateOperationsInput | $Enums.printorder_tracking

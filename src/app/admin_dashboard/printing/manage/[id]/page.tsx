@@ -34,7 +34,13 @@ export default async function PrintOrderDetailPage({
         (prisma as any).printer.findMany({ where: { is_deleted: false } }),
         (prisma as any).bookedition.findMany({
             where: { is_deleted: false },
-            include: { books: true }
+            include: {
+                books: true,
+                bookeditionprinters: {
+                    where: { is_deleted: false },
+                    take: 1
+                }
+            }
         }),
         (prisma as any).books.findMany({
             where: { is_deleted: false }

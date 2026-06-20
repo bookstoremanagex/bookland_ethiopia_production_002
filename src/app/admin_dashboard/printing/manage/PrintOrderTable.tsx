@@ -57,6 +57,15 @@ function createColumns(formatDate: (date: Date, pattern?: string) => string): Co
         cell: ({ row }) => {
             const itemsCount = row.original.printorder_items?.length || 0;
             const projectName = row.getValue("project_name") || `Project #${row.original.id}`;
+            const items = row.original.printorder_items || [];
+            const editionPrinters = new Set<string>();
+            items.forEach((item: any) => {
+                (item.bookedition?.bookeditionprinters || []).forEach((bp: any) => {
+                    if (bp.printer?.name) editionPrinters.add(bp.printer.name);
+                });
+            });
+            const hasExtraPrinters = editionPrinters.size > 0 &&
+                !(editionPrinters.size === 1 && editionPrinters.has(row.original.printer?.name));
 
             return (
                 <div className="flex items-center gap-4">
@@ -80,6 +89,14 @@ function createColumns(formatDate: (date: Date, pattern?: string) => string): Co
                                     {itemsCount} Books
                                 </span>
                             </div>
+                            {hasExtraPrinters && (
+                                <div className="flex items-center gap-1.5 border-l border-amber-200 pl-3">
+                                    <Printer className="size-3 text-amber-500" />
+                                    <span className="text-[9px] font-bold text-amber-600 uppercase tracking-widest">
+                                        {editionPrinters.size} edition printer{editionPrinters.size > 1 ? 's' : ''}
+                                    </span>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -272,6 +289,24 @@ export default function PrintOrderTable({ data }: { data: any[] }) {
                                                     {items.length} Books
                                                 </span>
                                             </div>
+                                            {(() => {
+                                                const edPrinters = new Set<string>();
+                                                (items || []).forEach((i: any) => {
+                                                    (i.bookedition?.bookeditionprinters || []).forEach((bp: any) => {
+                                                        if (bp.printer?.name) edPrinters.add(bp.printer.name);
+                                                    });
+                                                });
+                                                const hasExtra = edPrinters.size > 0 &&
+                                                    !(edPrinters.size === 1 && edPrinters.has(item.printer?.name));
+                                                return hasExtra ? (
+                                                    <div className="flex items-center gap-1 border-l border-amber-200 pl-2">
+                                                        <Printer className="size-2.5 text-amber-500" />
+                                                        <span className="text-[8px] font-bold text-amber-600 uppercase tracking-widest whitespace-nowrap">
+                                                            +{edPrinters.size}
+                                                        </span>
+                                                    </div>
+                                                ) : null;
+                                            })()}
                                         </div>
                                     </div>
                                     <div className={cn("px-2.5 py-0.5 rounded-full border shrink-0 self-start", statusStyles[status] || statusStyles.NOT_STARTED)}>

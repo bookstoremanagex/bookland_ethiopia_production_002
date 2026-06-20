@@ -361,6 +361,7 @@ exports.Prisma.PrintorderScalarFieldEnum = {
   quality: 'quality',
   count: 'count',
   total_price: 'total_price',
+  additional_price: 'additional_price',
   status: 'status',
   memo: 'memo',
   tracking: 'tracking',

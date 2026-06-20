@@ -119,6 +119,96 @@ export async function updateEdition(id: number, data: any) {
     }
 }
 
+export async function assignPrinterToEdition(data: {
+    editionId: number;
+    totalPrintCount: number;
+    printerId: number | null;
+    bookUniqueCode: string;
+}) {
+    try {
+        const edition = await (prisma as any).bookedition.findUnique({
+            where: { id: data.editionId },
+            select: { total_print_count: true, count_remening_for_transfer: true }
+        });
+        if (!edition) return { success: false, error: "Edition not found" };
+
+        const oldTotal = edition.total_print_count || 0;
+        const alreadyTransferred = oldTotal - (edition.count_remening_for_transfer || 0);
+        if (data.totalPrintCount < alreadyTransferred) {
+            return { success: false, error: `Total print count cannot be less than ${alreadyTransferred} (already transferred)` };
+        }
+
+        const diff = data.totalPrintCount - oldTotal;
+        const newRemaining = (edition.count_remening_for_transfer || 0) + diff;
+
+        await (prisma as any).$transaction(async (tx: any) => {
+            await tx.bookedition.update({
+                where: { id: data.editionId },
+                data: {
+                    total_print_count: data.totalPrintCount,
+                    count_remening_for_transfer: newRemaining,
+                    updatedAt: new Date()
+                }
+            });
+
+            await tx.bookeditionprinters.updateMany({
+                where: { editionId: data.editionId, is_deleted: false },
+                data: { is_deleted: true, updatedAt: new Date() }
+            });
+
+            if (data.printerId != null) {
+                await tx.bookeditionprinters.create({
+                    data: {
+                        editionId: data.editionId,
+                        printerId: data.printerId,
+                        quantity: data.totalPrintCount,
+                        updatedAt: new Date()
+                    }
+                });
+            }
+        }, { timeout: 15000 });
+
+        revalidatePath(`/admin_dashboard/books/${data.bookUniqueCode}`);
+        return { success: true };
+    } catch (error: any) {
+        console.error("Assign printer error:", error);
+        return { success: false, error: error.message || "Failed to assign printer" };
+    }
+}
+
+export async function updateEditionPrintCount(id: number, totalPrintCount: number) {
+    try {
+        const edition = await (prisma as any).bookedition.findUnique({
+            where: { id },
+            select: { total_print_count: true, count_remening_for_transfer: true }
+        });
+        if (!edition) return { success: false, error: "Edition not found" };
+
+        const oldTotal = edition.total_print_count || 0;
+        const alreadyTransferred = oldTotal - (edition.count_remening_for_transfer || 0);
+        if (totalPrintCount < alreadyTransferred) {
+            return { success: false, error: `Total print count cannot be less than ${alreadyTransferred} (already transferred)` };
+        }
+
+        const diff = totalPrintCount - oldTotal;
+        const newRemaining = (edition.count_remening_for_transfer || 0) + diff;
+
+        await (prisma as any).bookedition.update({
+            where: { id },
+            data: {
+                total_print_count: totalPrintCount,
+                count_remening_for_transfer: newRemaining,
+                updatedAt: new Date()
+            }
+        });
+
+        return { success: true };
+    } catch (error: any) {
+        console.error("Failed to update edition print count:", error);
+        return { success: false, error: error.message || "Failed to update edition print count" };
+    }
+}
+
 export async function deleteEdition(id: number, bookUniqueCode: string) {
     try {
         await (prisma as any).bookedition.update({
