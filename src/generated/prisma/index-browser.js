@@ -613,7 +613,9 @@ exports.Prisma.PaymentsScalarFieldEnum = {
   is_deleted: 'is_deleted',
   updatedAt: 'updatedAt',
   createdAt: 'createdAt',
-  deletedAt: 'deletedAt'
+  deletedAt: 'deletedAt',
+  orderid: 'orderid',
+  memo: 'memo'
 };
 
 exports.Prisma.Retail_purchasesScalarFieldEnum = {
@@ -842,7 +844,9 @@ exports.Prisma.checksOrderByRelevanceFieldEnum = {
 
 exports.Prisma.paymentsOrderByRelevanceFieldEnum = {
   payment_type: 'payment_type',
-  status: 'status'
+  status: 'status',
+  orderid: 'orderid',
+  memo: 'memo'
 };
 
 exports.Prisma.retail_purchasesOrderByRelevanceFieldEnum = {

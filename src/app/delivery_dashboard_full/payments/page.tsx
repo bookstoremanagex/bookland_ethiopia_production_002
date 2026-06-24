@@ -25,15 +25,11 @@ export default async function PaymentsPage() {
     const totalPaid = (shop.payments || [])
       .filter((p: any) => p.status === "APPROVED")
       .reduce((sum: number, p: any) => sum + (p.amount || 0), 0);
-    const deliveredCheckAmount = (shop.payments || [])
-      .filter((p: any) => p.payment_type === "CHECK" && p.check?.status === "DELIVERED")
-      .reduce((sum: number, p: any) => sum + (parseFloat(p.check?.amount || "0") || 0), 0);
     return {
       id: shop.id,
       name: shop.name,
       branch: shop.branch || shop.location || "",
       remaining: totalDebt - totalPaid,
-      deliveredCheckAmount,
     };
   });
 

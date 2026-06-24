@@ -44,6 +44,8 @@ export async function createPayment(data: {
     amount: number;
     payment_type: "DIRECT" | "CHECK";
     checkId?: number | null;
+    orderid?: string | null;
+    memo?: string | null;
 }) {
     try {
         const session = await getCurrentSession();
@@ -55,6 +57,8 @@ export async function createPayment(data: {
                 amount: data.amount,
                 payment_type: data.payment_type,
                 checkId: data.checkId || null,
+                orderid: data.orderid || null,
+                memo: data.memo || null,
                 status: "PENDING",
             }
         });
@@ -320,5 +324,23 @@ export async function deletePayment(paymentId: number) {
     } catch (error) {
         console.error("Error deleting payment:", error);
         return { success: false, error: "Failed to delete payment" };
+    }
+}
+
+export async function updatePaymentMemo(paymentId: number, memo: string) {
+    try {
+        const session = await getCurrentSession();
+        if (!session) return { success: false, error: "Not authenticated" };
+
+        await (prisma as any).payments.update({
+            where: { id: paymentId },
+            data: { memo: memo || null },
+        });
+
+        revalidatePath("/admin_dashboard", "layout");
+        return { success: true };
+    } catch (error) {
+        console.error("Error updating payment memo:", error);
+        return { success: false, error: "Failed to update memo" };
     }
 }

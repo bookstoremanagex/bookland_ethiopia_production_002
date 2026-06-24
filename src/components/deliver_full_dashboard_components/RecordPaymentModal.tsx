@@ -45,6 +45,7 @@ import {
   X,
   Wallet,
   ScrollText,
+  ShoppingBag,
   Upload,
   ImageIcon,
   Link,
@@ -60,6 +61,7 @@ interface Props {
   shopId: number;
   shopName: string;
   trigger: React.ReactNode;
+  orderId?: number | null;
 }
 
 const paymentOptions = [
@@ -67,11 +69,12 @@ const paymentOptions = [
   { value: "CHECK", label: "Check", icon: ScrollText, desc: "Pay using a bank check" },
 ];
 
-export default function RecordPaymentModal({ shopId, shopName, trigger }: Props) {
+export default function RecordPaymentModal({ shopId, shopName, trigger, orderId }: Props) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [paymentType, setPaymentType] = useState<string>("DIRECT");
   const [amount, setAmount] = useState("");
+  const [memo, setMemo] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [checks, setChecks] = useState<any[]>([]);
@@ -195,12 +198,15 @@ export default function RecordPaymentModal({ shopId, shopName, trigger }: Props)
         amount: parsedAmount,
         payment_type: paymentType as "DIRECT" | "CHECK",
         checkId: paymentType === "CHECK" ? selectedCheck?.id || null : null,
+        orderid: orderId ? String(orderId) : null,
+        memo: memo || null,
       });
 
       if (res.success) {
         toast.success("Payment recorded successfully");
         setOpen(false);
         setAmount("");
+        setMemo("");
         setSelectedCheck(null);
         setPaymentType("DIRECT");
         setShowNewCheck(false);
@@ -284,6 +290,22 @@ export default function RecordPaymentModal({ shopId, shopName, trigger }: Props)
             </div>
           </div>
 
+          {orderId ? (
+            <div className="space-y-3">
+              <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Order</p>
+              <div className="flex items-center gap-3 h-16 px-4 rounded-2xl border-2 border-primarycolor/10 bg-primarycolor/5">
+                <ShoppingBag className="size-5 text-primarycolor/40" />
+                <span className="font-black text-primarycolor text-lg">#ORD-{orderId}</span>
+              </div>
+            </div>
+          ) : (
+            <div className="p-4 rounded-2xl bg-rose-50 border-2 border-rose-200">
+              <p className="text-[10px] font-black text-rose-600 uppercase tracking-widest text-center">
+                ⚠ You are recording a payment out of orders
+              </p>
+            </div>
+          )}
+
           <div className="space-y-3">
             <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Amount (ETB)</p>
             <div className="relative">
@@ -298,6 +320,16 @@ export default function RecordPaymentModal({ shopId, shopName, trigger }: Props)
                 placeholder="0.00"
               />
             </div>
+          </div>
+
+          <div className="space-y-3">
+            <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Memo (optional)</p>
+            <textarea
+              value={memo}
+              onChange={(e) => setMemo(e.target.value)}
+              className="w-full h-24 px-4 py-3 rounded-2xl border-2 border-slate-100 bg-white font-bold text-sm resize-none focus:border-primarycolor outline-none transition-all"
+              placeholder="Add a note about this payment..."
+            />
           </div>
 
           {paymentType === "CHECK" && (

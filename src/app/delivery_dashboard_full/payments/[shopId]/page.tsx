@@ -16,7 +16,17 @@ export default async function ShopPaymentDetailPage({
     include: {
       orders: {
         where: { is_deleted: false },
-        select: { total_amount: true, amount_paid: true },
+        include: {
+          bookshopes: true,
+          order_items: {
+            include: {
+              bookedition: {
+                include: { books: true },
+              },
+            },
+          },
+          checks: true,
+        },
       },
       payments: {
         where: { is_deleted: false },
@@ -48,6 +58,54 @@ export default async function ShopPaymentDetailPage({
       branch: shop.branch || shop.location || "",
       remaining,
       payments: shop.payments,
+      orders: shop.orders.map((o: any) => ({
+        id: o.id,
+        order_type: o.order_type,
+        total_amount: o.total_amount,
+        amount_paid: o.amount_paid,
+        payment_type: o.payment_type,
+        check_id: o.check_id,
+        status: o.status,
+        is_approved: o.is_approved,
+        memo: o.memo,
+        allocation_summary: o.allocation_summary,
+        delivery: o.delivery,
+        delivered_by: o.delivered_by,
+        createdAt: o.createdAt,
+        bookShopId: o.bookShopId,
+        bookshopes: o.bookshopes ? {
+          id: o.bookshopes.id,
+          name: o.bookshopes.name,
+          location: o.bookshopes.location,
+          branch: o.bookshopes.branch,
+          phone: o.bookshopes.phone,
+          email: o.bookshopes.email,
+        } : { id: 0, name: "", location: "", branch: null, phone: null, email: null },
+        checks: o.checks ? {
+          id: o.checks.id,
+          bankname: o.checks.bankname,
+          username: o.checks.username,
+          amount: o.checks.amount,
+          type: o.checks.type,
+          status: o.checks.status,
+          imageUrl: o.checks.imageUrl,
+        } : null,
+        order_items: o.order_items?.map((item: any) => ({
+          id: item.id,
+          quantity: item.quantity,
+          price_at_order: item.price_at_order,
+          bookEditionId: item.bookEditionId,
+          bookedition: item.bookedition ? {
+            edition_name: item.bookedition.edition_name,
+            bookId: item.bookedition.bookId,
+            book_image_url: item.bookedition.book_image_url,
+            books: item.bookedition.books ? {
+              title: item.bookedition.books.title,
+              book_image_url: item.bookedition.books.book_image_url,
+            } : { title: "", book_image_url: null },
+          } : { edition_name: "", bookId: 0, book_image_url: null, books: { title: "", book_image_url: null } },
+        })) || [],
+      })),
     })
   );
 

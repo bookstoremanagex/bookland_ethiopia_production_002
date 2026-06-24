@@ -39837,6 +39837,8 @@ export namespace Prisma {
     updatedAt: Date | null
     createdAt: Date | null
     deletedAt: Date | null
+    orderid: string | null
+    memo: string | null
   }
 
   export type PaymentsMaxAggregateOutputType = {
@@ -39850,6 +39852,8 @@ export namespace Prisma {
     updatedAt: Date | null
     createdAt: Date | null
     deletedAt: Date | null
+    orderid: string | null
+    memo: string | null
   }
 
   export type PaymentsCountAggregateOutputType = {
@@ -39863,6 +39867,8 @@ export namespace Prisma {
     updatedAt: number
     createdAt: number
     deletedAt: number
+    orderid: number
+    memo: number
     _all: number
   }
 
@@ -39892,6 +39898,8 @@ export namespace Prisma {
     updatedAt?: true
     createdAt?: true
     deletedAt?: true
+    orderid?: true
+    memo?: true
   }
 
   export type PaymentsMaxAggregateInputType = {
@@ -39905,6 +39913,8 @@ export namespace Prisma {
     updatedAt?: true
     createdAt?: true
     deletedAt?: true
+    orderid?: true
+    memo?: true
   }
 
   export type PaymentsCountAggregateInputType = {
@@ -39918,6 +39928,8 @@ export namespace Prisma {
     updatedAt?: true
     createdAt?: true
     deletedAt?: true
+    orderid?: true
+    memo?: true
     _all?: true
   }
 
@@ -40018,6 +40030,8 @@ export namespace Prisma {
     updatedAt: Date
     createdAt: Date
     deletedAt: Date
+    orderid: string | null
+    memo: string | null
     _count: PaymentsCountAggregateOutputType | null
     _avg: PaymentsAvgAggregateOutputType | null
     _sum: PaymentsSumAggregateOutputType | null
@@ -40050,6 +40064,8 @@ export namespace Prisma {
     updatedAt?: boolean
     createdAt?: boolean
     deletedAt?: boolean
+    orderid?: boolean
+    memo?: boolean
     shop?: boolean | bookshopesDefaultArgs<ExtArgs>
     check?: boolean | payments$checkArgs<ExtArgs>
   }, ExtArgs["result"]["payments"]>
@@ -40067,9 +40083,11 @@ export namespace Prisma {
     updatedAt?: boolean
     createdAt?: boolean
     deletedAt?: boolean
+    orderid?: boolean
+    memo?: boolean
   }
 
-  export type paymentsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "shopId" | "amount" | "payment_type" | "checkId" | "status" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt", ExtArgs["result"]["payments"]>
+  export type paymentsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "shopId" | "amount" | "payment_type" | "checkId" | "status" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt" | "orderid" | "memo", ExtArgs["result"]["payments"]>
   export type paymentsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     shop?: boolean | bookshopesDefaultArgs<ExtArgs>
     check?: boolean | payments$checkArgs<ExtArgs>
@@ -40092,6 +40110,8 @@ export namespace Prisma {
       updatedAt: Date
       createdAt: Date
       deletedAt: Date
+      orderid: string | null
+      memo: string | null
     }, ExtArgs["result"]["payments"]>
     composites: {}
   }
@@ -40473,6 +40493,8 @@ export namespace Prisma {
     readonly updatedAt: FieldRef<"payments", 'DateTime'>
     readonly createdAt: FieldRef<"payments", 'DateTime'>
     readonly deletedAt: FieldRef<"payments", 'DateTime'>
+    readonly orderid: FieldRef<"payments", 'String'>
+    readonly memo: FieldRef<"payments", 'String'>
   }
     
 
@@ -43530,7 +43552,9 @@ export namespace Prisma {
     is_deleted: 'is_deleted',
     updatedAt: 'updatedAt',
     createdAt: 'createdAt',
-    deletedAt: 'deletedAt'
+    deletedAt: 'deletedAt',
+    orderid: 'orderid',
+    memo: 'memo'
   };
 
   export type PaymentsScalarFieldEnum = (typeof PaymentsScalarFieldEnum)[keyof typeof PaymentsScalarFieldEnum]
@@ -43852,7 +43876,9 @@ export namespace Prisma {
 
   export const paymentsOrderByRelevanceFieldEnum: {
     payment_type: 'payment_type',
-    status: 'status'
+    status: 'status',
+    orderid: 'orderid',
+    memo: 'memo'
   };
 
   export type paymentsOrderByRelevanceFieldEnum = (typeof paymentsOrderByRelevanceFieldEnum)[keyof typeof paymentsOrderByRelevanceFieldEnum]
@@ -47088,6 +47114,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"payments"> | Date | string
     createdAt?: DateTimeFilter<"payments"> | Date | string
     deletedAt?: DateTimeFilter<"payments"> | Date | string
+    orderid?: StringNullableFilter<"payments"> | string | null
+    memo?: StringNullableFilter<"payments"> | string | null
     shop?: XOR<BookshopesScalarRelationFilter, bookshopesWhereInput>
     check?: XOR<ChecksNullableScalarRelationFilter, checksWhereInput> | null
   }
@@ -47103,6 +47131,8 @@ export namespace Prisma {
     updatedAt?: SortOrder
     createdAt?: SortOrder
     deletedAt?: SortOrder
+    orderid?: SortOrderInput | SortOrder
+    memo?: SortOrderInput | SortOrder
     shop?: bookshopesOrderByWithRelationInput
     check?: checksOrderByWithRelationInput
     _relevance?: paymentsOrderByRelevanceInput
@@ -47122,6 +47152,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"payments"> | Date | string
     createdAt?: DateTimeFilter<"payments"> | Date | string
     deletedAt?: DateTimeFilter<"payments"> | Date | string
+    orderid?: StringNullableFilter<"payments"> | string | null
+    memo?: StringNullableFilter<"payments"> | string | null
     shop?: XOR<BookshopesScalarRelationFilter, bookshopesWhereInput>
     check?: XOR<ChecksNullableScalarRelationFilter, checksWhereInput> | null
   }, "id">
@@ -47137,6 +47169,8 @@ export namespace Prisma {
     updatedAt?: SortOrder
     createdAt?: SortOrder
     deletedAt?: SortOrder
+    orderid?: SortOrderInput | SortOrder
+    memo?: SortOrderInput | SortOrder
     _count?: paymentsCountOrderByAggregateInput
     _avg?: paymentsAvgOrderByAggregateInput
     _max?: paymentsMaxOrderByAggregateInput
@@ -47158,6 +47192,8 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"payments"> | Date | string
     createdAt?: DateTimeWithAggregatesFilter<"payments"> | Date | string
     deletedAt?: DateTimeWithAggregatesFilter<"payments"> | Date | string
+    orderid?: StringNullableWithAggregatesFilter<"payments"> | string | null
+    memo?: StringNullableWithAggregatesFilter<"payments"> | string | null
   }
 
   export type retail_purchasesWhereInput = {
@@ -50703,6 +50739,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+    orderid?: string | null
+    memo?: string | null
     shop: bookshopesCreateNestedOneWithoutPaymentsInput
     check?: checksCreateNestedOneWithoutPaymentsInput
   }
@@ -50718,6 +50756,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+    orderid?: string | null
+    memo?: string | null
   }
 
   export type paymentsUpdateInput = {
@@ -50728,6 +50768,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orderid?: NullableStringFieldUpdateOperationsInput | string | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
     shop?: bookshopesUpdateOneRequiredWithoutPaymentsNestedInput
     check?: checksUpdateOneWithoutPaymentsNestedInput
   }
@@ -50743,6 +50785,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orderid?: NullableStringFieldUpdateOperationsInput | string | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type paymentsCreateManyInput = {
@@ -50756,6 +50800,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+    orderid?: string | null
+    memo?: string | null
   }
 
   export type paymentsUpdateManyMutationInput = {
@@ -50766,6 +50812,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orderid?: NullableStringFieldUpdateOperationsInput | string | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type paymentsUncheckedUpdateManyInput = {
@@ -50779,6 +50827,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orderid?: NullableStringFieldUpdateOperationsInput | string | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type retail_purchasesCreateInput = {
@@ -53715,6 +53765,8 @@ export namespace Prisma {
     updatedAt?: SortOrder
     createdAt?: SortOrder
     deletedAt?: SortOrder
+    orderid?: SortOrder
+    memo?: SortOrder
   }
 
   export type paymentsAvgOrderByAggregateInput = {
@@ -53735,6 +53787,8 @@ export namespace Prisma {
     updatedAt?: SortOrder
     createdAt?: SortOrder
     deletedAt?: SortOrder
+    orderid?: SortOrder
+    memo?: SortOrder
   }
 
   export type paymentsMinOrderByAggregateInput = {
@@ -53748,6 +53802,8 @@ export namespace Prisma {
     updatedAt?: SortOrder
     createdAt?: SortOrder
     deletedAt?: SortOrder
+    orderid?: SortOrder
+    memo?: SortOrder
   }
 
   export type paymentsSumOrderByAggregateInput = {
@@ -58632,6 +58688,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+    orderid?: string | null
+    memo?: string | null
     check?: checksCreateNestedOneWithoutPaymentsInput
   }
 
@@ -58645,6 +58703,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+    orderid?: string | null
+    memo?: string | null
   }
 
   export type paymentsCreateOrConnectWithoutShopInput = {
@@ -58741,6 +58801,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"payments"> | Date | string
     createdAt?: DateTimeFilter<"payments"> | Date | string
     deletedAt?: DateTimeFilter<"payments"> | Date | string
+    orderid?: StringNullableFilter<"payments"> | string | null
+    memo?: StringNullableFilter<"payments"> | string | null
   }
 
   export type locked_editionsCreateWithoutOrdersInput = {
@@ -61555,6 +61617,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+    orderid?: string | null
+    memo?: string | null
     shop: bookshopesCreateNestedOneWithoutPaymentsInput
   }
 
@@ -61568,6 +61632,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+    orderid?: string | null
+    memo?: string | null
   }
 
   export type paymentsCreateOrConnectWithoutCheckInput = {
@@ -62950,6 +63016,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+    orderid?: string | null
+    memo?: string | null
   }
 
   export type bookshopeditionsUpdateWithoutBookshopesInput = {
@@ -63061,6 +63129,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orderid?: NullableStringFieldUpdateOperationsInput | string | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
     check?: checksUpdateOneWithoutPaymentsNestedInput
   }
 
@@ -63074,6 +63144,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orderid?: NullableStringFieldUpdateOperationsInput | string | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type paymentsUncheckedUpdateManyWithoutShopInput = {
@@ -63086,6 +63158,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orderid?: NullableStringFieldUpdateOperationsInput | string | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type locked_editionsCreateManyOrdersInput = {
@@ -63705,6 +63779,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+    orderid?: string | null
+    memo?: string | null
   }
 
   export type ordersCreateManyChecksInput = {
@@ -63733,6 +63809,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orderid?: NullableStringFieldUpdateOperationsInput | string | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
     shop?: bookshopesUpdateOneRequiredWithoutPaymentsNestedInput
   }
 
@@ -63746,6 +63824,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orderid?: NullableStringFieldUpdateOperationsInput | string | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type paymentsUncheckedUpdateManyWithoutCheckInput = {
@@ -63758,6 +63838,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orderid?: NullableStringFieldUpdateOperationsInput | string | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ordersUpdateWithoutChecksInput = {

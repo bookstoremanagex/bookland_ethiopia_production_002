@@ -44,6 +44,7 @@ import {
     Printer,
     BookOpen,
     Settings2,
+    CalendarDays,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCalendar } from "@/lib/calendar-context";
@@ -95,9 +96,18 @@ interface Props {
     onClose: () => void;
     order: AdminOrder | null;
     onApproved: (order: AdminOrder) => void;
+    payments?: Array<{
+        id: number;
+        amount: number;
+        payment_type: string;
+        status: string;
+        createdAt: string | Date;
+        memo: string | null;
+        orderid: string | null;
+    }>;
 }
 
-export default function ManageOrderDetailsModal({ isOpen, onClose, order, onApproved }: Props) {
+export default function ManageOrderDetailsModal({ isOpen, onClose, order, onApproved, payments }: Props) {
     const { formatDate, formatDateTime } = useCalendar();
     const [bookBreakdowns, setBookBreakdowns] = useState<BookBreakdown[]>([]);
     const [isLoadingStock, setIsLoadingStock] = useState(false);
@@ -562,6 +572,9 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
 
     const remainingBalance = order.total_amount - order.amount_paid;
     const paymentPct = order.total_amount > 0 ? Math.round((order.amount_paid / order.total_amount) * 100) : 0;
+    const filteredPayments = (payments || []).filter(
+        (p) => p.orderid?.replace(/^ORD-/i, "") === String(order.id)
+    );
 
     // Calculate totals per book and per edition
     const bookTotals = bookAllocations.map(ba => {
@@ -1150,6 +1163,70 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                             </div>
                         )}
                         </>
+                    )}
+
+                    {/* Payments linked to this order */}
+                    {filteredPayments.length > 0 && (
+                        <div className="bg-white rounded-[2rem] border-2 border-primarycolor/5 shadow-sm overflow-hidden">
+                            <div className="p-5 border-b border-slate-100">
+                                <div className="flex items-center gap-2 text-primarycolor">
+                                    <Banknote className="size-4" />
+                                    <h4 className="font-black uppercase tracking-widest text-xs italic">
+                                        Payments ({filteredPayments.length})
+                                    </h4>
+                                </div>
+                            </div>
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr className="bg-slate-50 border-b border-slate-100">
+                                            <th className="p-3 text-[9px] font-black uppercase tracking-widest text-primarycolor/60">Amount</th>
+                                            <th className="p-3 text-[9px] font-black uppercase tracking-widest text-primarycolor/60">Type</th>
+                                            <th className="p-3 text-[9px] font-black uppercase tracking-widest text-primarycolor/60">Status</th>
+                                            <th className="p-3 text-[9px] font-black uppercase tracking-widest text-primarycolor/60">Date</th>
+                                            <th className="p-3 text-[9px] font-black uppercase tracking-widest text-primarycolor/60">Memo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {filteredPayments.map((payment) => (
+                                            <tr key={payment.id} className="border-b border-slate-50 hover:bg-slate-50/50">
+                                                <td className="p-3 font-black text-primarycolor text-sm">
+                                                    {payment.amount.toLocaleString()} ETB
+                                                </td>
+                                                <td className="p-3">
+                                                    <span className={cn(
+                                                        "px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest",
+                                                        payment.payment_type === "CHECK"
+                                                            ? "bg-purple-100 text-purple-600"
+                                                            : "bg-blue-100 text-blue-600"
+                                                    )}>
+                                                        {payment.payment_type}
+                                                    </span>
+                                                </td>
+                                                <td className="p-3">
+                                                    <span className={cn(
+                                                        "px-2 py-1 rounded text-[8px] font-black uppercase tracking-widest",
+                                                        payment.status === "APPROVED"
+                                                            ? "bg-emerald-100 text-emerald-700"
+                                                            : payment.status === "PENDING"
+                                                            ? "bg-amber-100 text-amber-700"
+                                                            : "bg-rose-100 text-rose-700"
+                                                    )}>
+                                                        {payment.status}
+                                                    </span>
+                                                </td>
+                                                <td className="p-3 text-[10px] font-bold text-muted-foreground">
+                                                    {formatDate(new Date(payment.createdAt), "MMM dd, yyyy")}
+                                                </td>
+                                                <td className="p-3 text-[10px] text-muted-foreground/70 italic max-w-[200px] truncate">
+                                                    {payment.memo || "—"}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     )}
                 </div>
 

@@ -26,6 +26,8 @@ import {
     Truck,
     MoreHorizontal,
     Trash2,
+    ListOrdered,
+    ShoppingBag,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -34,7 +36,7 @@ import { parseISO } from "date-fns";
 import { useCalendar } from "@/lib/calendar-context";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { approvePayment, checkIsAdminUser, rejectPayment, deletePayment, setPaymentPending } from "@/app/actions/payment-actions";
+import { approvePayment, checkIsAdminUser, rejectPayment, deletePayment, setPaymentPending, updatePaymentMemo } from "@/app/actions/payment-actions";
 import { updateCheckStatus, updateCheckDetails } from "@/app/actions/check-actions";
 import { updateShopPreviousDebt } from "@/app/actions/book-shop-actions";
 import {
@@ -48,6 +50,14 @@ import {
     AlertDialogAction,
 } from "@/components/ui/alert-dialog";
 
+import {
+    Tabs,
+    TabsContent,
+    TabsList,
+    TabsTrigger,
+} from "@/components/ui/tabs";
+import ManageOrderDetailsModal from "@/app/admin_dashboard/manage_orders/ManageOrderDetailsModal";
+import type { AdminOrder } from "@/app/admin_dashboard/manage_orders/ManageOrdersPageContent";
 import RecordPaymentModal from "./RecordPaymentModal";
 import {
     Drawer,
@@ -80,6 +90,8 @@ interface Payment {
     checkId: number | null;
     check: CheckInfo | null;
     createdAt: string | Date;
+    orderid: string | null;
+    memo: string | null;
 }
 
 interface ShopInfo {
@@ -102,6 +114,7 @@ interface Totals {
 interface Props {
     shop: ShopInfo;
     payments: Payment[];
+    orders: AdminOrder[];
     totals: Totals;
     previousDebt: number;
 }
@@ -125,7 +138,7 @@ function timeAgo(date: string | Date): string {
     return "just now";
 }
 
-export default function ManagePaymentDetailClient({ shop, payments, totals, previousDebt }: Props) {
+export default function ManagePaymentDetailClient({ shop, payments, orders, totals, previousDebt }: Props) {
     const { formatDate } = useCalendar();
     const router = useRouter();
     const [isAdmin, setIsAdmin] = useState(false);
@@ -143,6 +156,9 @@ export default function ManagePaymentDetailClient({ shop, payments, totals, prev
     const [debtInputValue, setDebtInputValue] = useState(previousDebt.toString());
     const [savingDebt, setSavingDebt] = useState(false);
 
+    const [selectedOrder, setSelectedOrder] = useState<AdminOrder | null>(null);
+    const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+
     const [paymentPage, setPaymentPage] = useState(1);
     const perPage = 15;
     const [selectedActionPayment, setSelectedActionPayment] = useState<Payment | null>(null);
@@ -150,10 +166,19 @@ export default function ManagePaymentDetailClient({ shop, payments, totals, prev
     const [confirmAction, setConfirmAction] = useState<"reject" | "delete" | "pending" | null>(null);
     const [showConfirmDialog, setShowConfirmDialog] = useState(false);
     const [actionProcessing, setActionProcessing] = useState(false);
+    const [editingMemoId, setEditingMemoId] = useState<number | null>(null);
+    const [editingMemoValue, setEditingMemoValue] = useState("");
+    const [savingMemoId, setSavingMemoId] = useState<number | null>(null);
 
     useEffect(() => {
         checkIsAdminUser().then(res => setIsAdmin(res.isAdmin));
     }, []);
+
+    const handleOrderApproved = (updatedOrder: AdminOrder) => {
+        setSelectedOrder(null);
+        setIsOrderModalOpen(false);
+        router.refresh();
+    };
 
     const handleDeliverCheck = async (checkId: number) => {
         setClearingCheckId(checkId);
@@ -350,165 +375,384 @@ export default function ManagePaymentDetailClient({ shop, payments, totals, prev
                 </div>
             </div>
 
-            {/* Payments Section */}
-            <div className="bg-white rounded-[2rem] border-2 border-primarycolor/5 p-6 md:p-8 shadow-xl space-y-6">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <div className="flex items-center gap-3 text-primarycolor">
-                        <Banknote className="size-5 md:size-6" />
-                        <h2 className="text-lg md:text-xl font-black uppercase tracking-tight italic">
-                            Payment <span className="text-secondarycolor not-italic">History</span>
-                        </h2>
-                    </div>
-                    <Button
-                        onClick={() => setIsPaymentModalOpen(true)}
-                        className="bg-primarycolor hover:bg-secondarycolor text-white rounded-xl h-10 px-5 font-black uppercase tracking-widest text-[10px] shadow-lg shadow-primarycolor/20 gap-2"
-                    >
-                        <Plus className="size-4" /> Record Payment
-                    </Button>
-                </div>
+            {/* Tabs: Payment History / Orders */}
+            <div className="bg-white rounded-[2rem] border-2 border-primarycolor/5 p-6 md:p-8 shadow-xl">
+                <Tabs defaultValue="payments">
+                    <TabsList className="w-full justify-start gap-0 border-b border-slate-100 rounded-none bg-transparent h-auto pb-0">
+                        <TabsTrigger
+                            value="payments"
+                            className="pb-3 px-1 mr-6 rounded-none bg-transparent data-[state=active]:bg-transparent data-[state=active]:text-primarycolor font-black uppercase tracking-widest text-[10px] text-muted-foreground after:opacity-0 data-[state=active]:after:opacity-100 after:bg-primarycolor after:h-0.5 after:absolute after:inset-x-0 after:bottom-0"
+                        >
+                            <Banknote className="size-3.5 mr-2" />
+                            Payment History
+                            {payments.length > 0 && (
+                                <span className="ml-2 text-[8px] px-1.5 py-0.5 rounded-full bg-primarycolor/10 text-primarycolor font-black">
+                                    {payments.length}
+                                </span>
+                            )}
+                        </TabsTrigger>
+                        <TabsTrigger
+                            value="orders"
+                            className="pb-3 px-1 mr-6 rounded-none bg-transparent data-[state=active]:bg-transparent data-[state=active]:text-primarycolor font-black uppercase tracking-widest text-[10px] text-muted-foreground after:opacity-0 data-[state=active]:after:opacity-100 after:bg-primarycolor after:h-0.5 after:absolute after:inset-x-0 after:bottom-0"
+                        >
+                            <ListOrdered className="size-3.5 mr-2" />
+                            Orders
+                            {orders.length > 0 && (
+                                <span className="ml-2 text-[8px] px-1.5 py-0.5 rounded-full bg-primarycolor/10 text-primarycolor font-black">
+                                    {orders.length}
+                                </span>
+                            )}
+                        </TabsTrigger>
+                    </TabsList>
 
-                {payments.length > 0 ? (
-                    <div className="space-y-3">
-                        {payments
-                            .slice((paymentPage - 1) * perPage, paymentPage * perPage)
-                            .map((payment) => (
-                            <div
-                                key={payment.id}
-                                className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl border-2 border-slate-100 bg-slate-50/50 hover:bg-white hover:border-primarycolor/20 transition-all"
+                    <TabsContent value="payments" className="mt-6 space-y-6">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                            <div className="flex items-center gap-3 text-primarycolor">
+                                <Banknote className="size-5 md:size-6" />
+                                <h2 className="text-lg md:text-xl font-black uppercase tracking-tight italic">
+                                    Payment <span className="text-secondarycolor not-italic">History</span>
+                                </h2>
+                            </div>
+                            <Button
+                                onClick={() => setIsPaymentModalOpen(true)}
+                                className="bg-primarycolor hover:bg-secondarycolor text-white rounded-xl h-10 px-5 font-black uppercase tracking-widest text-[10px] shadow-lg shadow-primarycolor/20 gap-2"
                             >
-                                <div className="flex items-center gap-4">
-                                    <div className={cn(
-                                        "size-11 rounded-xl flex items-center justify-center shrink-0",
-                                        payment.status === "APPROVED"
-                                            ? "bg-emerald-100 text-emerald-600"
-                                            : "bg-amber-100 text-amber-600"
-                                    )}>
-                                        {payment.status === "APPROVED" ? <CheckCircle2 className="size-5" /> : <Clock className="size-5" />}
-                                    </div>
-                                    <div>
-                                        <div className="flex items-center gap-2">
-                                            <span className="font-black text-primarycolor">
-                                                {payment.amount.toLocaleString()} ETB
-                                            </span>
-                                            <span className={cn(
-                                                "px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest",
-                                                payment.payment_type === "DIRECT"
-                                                    ? "bg-blue-100 text-blue-600"
-                                                    : "bg-purple-100 text-purple-600"
-                                            )}>
-                                                {payment.payment_type}
-                                            </span>
+                                <Plus className="size-4" /> Record Payment
+                            </Button>
+                        </div>
+
+                        {payments.length > 0 ? (
+                            <div className="space-y-3">
+                                {payments
+                                    .slice((paymentPage - 1) * perPage, paymentPage * perPage)
+                                    .map((payment) => (
+                                <div
+                                    key={payment.id}
+                                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl border-2 border-slate-100 bg-slate-50/50 hover:bg-white hover:border-primarycolor/20 transition-all"
+                                >
+                                    <div className="flex items-center gap-4">
+                                        <div className={cn(
+                                            "size-11 rounded-xl flex items-center justify-center shrink-0",
+                                            payment.status === "APPROVED"
+                                                ? "bg-emerald-100 text-emerald-600"
+                                                : "bg-amber-100 text-amber-600"
+                                        )}>
+                                            {payment.status === "APPROVED" ? <CheckCircle2 className="size-5" /> : <Clock className="size-5" />}
                                         </div>
-                                        <div className="flex items-center gap-3 text-[10px] text-muted-foreground font-bold mt-0.5">
-                                            <span className="flex items-center gap-1.5">
-                                                <Calendar className="size-3" />
-                                                {formatDate(new Date(payment.createdAt), "MMM dd, yyyy HH:mm")}
-                                            </span>
-                                            <span className="text-xs text-muted-foreground/70 font-bold italic">
-                                                {timeAgo(payment.createdAt)}
-                                            </span>
-                                            {payment.check && (
-                                                <span className="flex items-center gap-2">
-                                                    <Store className="size-3" />
-                                                    <span>{payment.check.bankname} - {payment.check.username}</span>
-                                                    <span className={cn(
-                                                        "px-1.5 py-0.5 rounded text-[7px] font-black uppercase tracking-widest",
-                                                        payment.check.status === "CLEARED"
-                                                            ? "bg-emerald-100 text-emerald-600"
-                                                            : payment.check.status === "DELIVERED"
-                                                            ? "bg-blue-100 text-blue-600"
-                                                            : "bg-amber-100 text-amber-600"
-                                                    )}>
-                                                        {payment.check.status === "CLEARED" ? "Cleared" : payment.check.status === "DELIVERED" ? "Delivered" : "Pending"}
-                                                    </span>
-                                                    <button
-                                                        onClick={() => {
-                                                            setSelectedCheck(payment.check!);
-                                                            setIsCheckDrawerOpen(true);
-                                                        }}
-                                                        className="p-1 rounded-lg hover:bg-slate-100 text-muted-foreground hover:text-primarycolor transition-all cursor-pointer"
-                                                    >
-                                                        <Eye className="size-3.5" />
-                                                    </button>
+                                        <div>
+                                            <div className="flex items-center gap-2">
+                                                <span className="font-black text-primarycolor">
+                                                    {payment.amount.toLocaleString()} ETB
                                                 </span>
+                                                <span className={cn(
+                                                    "px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest",
+                                                    payment.payment_type === "DIRECT"
+                                                        ? "bg-blue-100 text-blue-600"
+                                                        : "bg-purple-100 text-purple-600"
+                                                )}>
+                                                    {payment.payment_type}
+                                                </span>
+                                            </div>
+                                            <div className="flex items-center gap-3 text-[10px] text-muted-foreground font-bold mt-0.5">
+                                                <span className="flex items-center gap-1.5">
+                                                    <Calendar className="size-3" />
+                                                    {formatDate(new Date(payment.createdAt), "MMM dd, yyyy HH:mm")}
+                                                </span>
+                                                <span className="text-xs text-muted-foreground/70 font-bold italic">
+                                                    {timeAgo(payment.createdAt)}
+                                                </span>
+                                                {payment.orderid ? (() => {
+                                                    const rawId = payment.orderid.replace(/^ORD-/i, "");
+                                                    const matchedOrder = orders.find((o) => String(o.id) === rawId || String(o.id) === payment.orderid);
+                                                    return matchedOrder ? (
+                                                        <button
+                                                            onClick={() => { setSelectedOrder(matchedOrder); setIsOrderModalOpen(true); }}
+                                                            className="flex items-center gap-1.5 text-indigo-600 hover:text-indigo-800 hover:underline underline-offset-2 transition-all font-black cursor-pointer"
+                                                        >
+                                                            <ListOrdered className="size-3" />
+                                                            #ORD-{rawId}
+                                                        </button>
+                                                    ) : (
+                                                        <span className="flex items-center gap-1.5 text-muted-foreground/50">
+                                                            <ListOrdered className="size-3" />
+                                                            #ORD-{rawId}
+                                                        </span>
+                                                    );
+                                                })() : (
+                                                    <span className="flex items-center gap-1.5 text-muted-foreground/30">
+                                                        <ListOrdered className="size-3" />
+                                                        No Order
+                                                    </span>
+                                                )}
+                                                {payment.check && (
+                                                    <span className="flex items-center gap-2">
+                                                        <Store className="size-3" />
+                                                        <span>{payment.check.bankname} - {payment.check.username}</span>
+                                                        <span className={cn(
+                                                            "px-1.5 py-0.5 rounded text-[7px] font-black uppercase tracking-widest",
+                                                            payment.check.status === "CLEARED"
+                                                                ? "bg-emerald-100 text-emerald-600"
+                                                                : payment.check.status === "DELIVERED"
+                                                                ? "bg-blue-100 text-blue-600"
+                                                                : "bg-amber-100 text-amber-600"
+                                                        )}>
+                                                            {payment.check.status === "CLEARED" ? "Cleared" : payment.check.status === "DELIVERED" ? "Delivered" : "Pending"}
+                                                        </span>
+                                                        <button
+                                                            onClick={() => {
+                                                                setSelectedCheck(payment.check!);
+                                                                setIsCheckDrawerOpen(true);
+                                                            }}
+                                                            className="p-1 rounded-lg hover:bg-slate-100 text-muted-foreground hover:text-primarycolor transition-all cursor-pointer"
+                                                        >
+                                                            <Eye className="size-3.5" />
+                                                        </button>
+                                                    </span>
+                                                )}
+                                            </div>
+                                            {payment.memo && editingMemoId !== payment.id && (
+                                                <div className="flex items-center gap-2 mt-2">
+                                                    <span className="text-sm font-medium text-muted-foreground/80 leading-relaxed">"{payment.memo}"</span>
+                                                    {isAdmin && (
+                                                        <button
+                                                            onClick={() => { setEditingMemoId(payment.id); setEditingMemoValue(payment.memo || ""); }}
+                                                            className="text-[8px] font-black uppercase tracking-widest text-primarycolor/50 hover:text-primarycolor transition-colors cursor-pointer"
+                                                        >
+                                                            Edit
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            )}
+                                            {!payment.memo && editingMemoId !== payment.id && isAdmin && (
+                                                <button
+                                                    onClick={() => { setEditingMemoId(payment.id); setEditingMemoValue(""); }}
+                                                    className="mt-1.5 text-[8px] font-black uppercase tracking-widest text-primarycolor/30 hover:text-primarycolor transition-colors cursor-pointer"
+                                                >
+                                                    + Add Memo
+                                                </button>
+                                            )}
+                                            {editingMemoId === payment.id && (
+                                                <div className="flex items-center gap-2 mt-2">
+                                                    <input
+                                                        type="text"
+                                                        value={editingMemoValue}
+                                                        onChange={(e) => setEditingMemoValue(e.target.value)}
+                                                        className="flex-1 h-9 px-3 rounded-xl border-2 border-primarycolor/20 text-sm font-medium outline-none focus:border-primarycolor transition-colors bg-white"
+                                                        placeholder="Add a memo..."
+                                                        autoFocus
+                                                    />
+                                                    <button
+                                                        onClick={async () => {
+                                                            setSavingMemoId(payment.id);
+                                                            try {
+                                                                const res = await updatePaymentMemo(payment.id, editingMemoValue);
+                                                                if (res.success) {
+                                                                    toast.success("Memo updated");
+                                                                    setEditingMemoId(null);
+                                                                    router.refresh();
+                                                                } else {
+                                                                    toast.error(res.error);
+                                                                }
+                                                            } catch {
+                                                                toast.error("Failed to update memo");
+                                                            } finally {
+                                                                setSavingMemoId(null);
+                                                            }
+                                                        }}
+                                                        disabled={savingMemoId === payment.id}
+                                                        className="h-9 px-3 rounded-xl bg-primarycolor text-white font-black text-[9px] uppercase tracking-widest hover:bg-secondarycolor transition-all disabled:opacity-40"
+                                                    >
+                                                        {savingMemoId === payment.id ? "..." : "Save"}
+                                                    </button>
+                                                    <button
+                                                        onClick={() => setEditingMemoId(null)}
+                                                        className="h-9 px-3 rounded-xl border-2 border-slate-200 text-muted-foreground font-black text-[9px] uppercase tracking-widest hover:bg-slate-50 transition-all"
+                                                    >
+                                                        Cancel
+                                                    </button>
+                                                </div>
                                             )}
                                         </div>
                                     </div>
-                                </div>
 
-                                <div className="flex items-center gap-2 shrink-0">
-                                    <span className={cn(
-                                        "px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest",
-                                        payment.status === "APPROVED"
-                                            ? "bg-emerald-50 text-emerald-600 border border-emerald-200"
-                                            : payment.status === "REJECTED"
-                                            ? "bg-rose-50 text-rose-600 border border-rose-200"
-                                            : "bg-amber-50 text-amber-600 border border-amber-200"
-                                    )}>
-                                        {payment.status}
+                                    <div className="flex items-center gap-2 shrink-0">
+                                        <span className={cn(
+                                            "px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest",
+                                            payment.status === "APPROVED"
+                                                ? "bg-emerald-50 text-emerald-600 border border-emerald-200"
+                                                : payment.status === "REJECTED"
+                                                ? "bg-rose-50 text-rose-600 border border-rose-200"
+                                                : "bg-amber-50 text-amber-600 border border-amber-200"
+                                        )}>
+                                            {payment.status}
+                                        </span>
+                                        {payment.status === "PENDING" && isAdmin && (
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => handleApprove(payment.id)}
+                                                disabled={approvingId === payment.id}
+                                                className="h-9 px-4 rounded-xl border-emerald-200 text-emerald-600 hover:bg-emerald-50 font-black text-[10px] uppercase tracking-widest gap-1.5"
+                                            >
+                                                <CheckCircle2 className="size-3.5" />
+                                                {approvingId === payment.id ? "..." : "Approve"}
+                                            </Button>
+                                        )}
+                                        {(payment.status === "PENDING" || payment.status === "REJECTED") && isAdmin && (
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() => { setSelectedActionPayment(payment); setShowActionDialog(true); }}
+                                                className="h-9 w-9 p-0 rounded-xl hover:bg-slate-100 text-muted-foreground hover:text-primarycolor"
+                                            >
+                                                <MoreHorizontal className="size-4" />
+                                            </Button>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                            {payments.length > perPage && (
+                                <div className="flex items-center justify-between pt-4">
+                                    <span className="text-[10px] font-black text-muted-foreground/50 uppercase tracking-widest">
+                                        {payments.length} total
                                     </span>
-                                    {payment.status === "PENDING" && isAdmin && (
+                                    <div className="flex items-center gap-2">
                                         <Button
                                             variant="outline"
                                             size="sm"
-                                            onClick={() => handleApprove(payment.id)}
-                                            disabled={approvingId === payment.id}
-                                            className="h-9 px-4 rounded-xl border-emerald-200 text-emerald-600 hover:bg-emerald-50 font-black text-[10px] uppercase tracking-widest gap-1.5"
+                                            onClick={() => setPaymentPage(p => Math.max(1, p - 1))}
+                                            disabled={paymentPage === 1}
+                                            className="h-8 px-3 rounded-lg border-2 border-slate-100 font-black text-[9px] uppercase tracking-widest"
                                         >
-                                            <CheckCircle2 className="size-3.5" />
-                                            {approvingId === payment.id ? "..." : "Approve"}
+                                            <ChevronLeft className="size-3 mr-1" /> Prev
                                         </Button>
-                                    )}
-                                    {(payment.status === "PENDING" || payment.status === "REJECTED") && isAdmin && (
+                                        <span className="text-[10px] font-black text-muted-foreground/50 px-2">
+                                            {paymentPage} / {Math.ceil(payments.length / perPage)}
+                                        </span>
                                         <Button
-                                            variant="ghost"
+                                            variant="outline"
                                             size="sm"
-                                            onClick={() => { setSelectedActionPayment(payment); setShowActionDialog(true); }}
-                                            className="h-9 w-9 p-0 rounded-xl hover:bg-slate-100 text-muted-foreground hover:text-primarycolor"
+                                            onClick={() => setPaymentPage(p => Math.min(Math.ceil(payments.length / perPage), p + 1))}
+                                            disabled={paymentPage >= Math.ceil(payments.length / perPage)}
+                                            className="h-8 px-3 rounded-lg border-2 border-slate-100 font-black text-[9px] uppercase tracking-widest"
                                         >
-                                            <MoreHorizontal className="size-4" />
+                                            Next <ChevronRight className="size-3 ml-1" />
                                         </Button>
-                                    )}
+                                    </div>
                                 </div>
+                            )}
                             </div>
-                        ))}
-                    {payments.length > perPage && (
-                        <div className="flex items-center justify-between pt-4">
-                            <span className="text-[10px] font-black text-muted-foreground/50 uppercase tracking-widest">
-                                {payments.length} total
-                            </span>
-                            <div className="flex items-center gap-2">
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => setPaymentPage(p => Math.max(1, p - 1))}
-                                    disabled={paymentPage === 1}
-                                    className="h-8 px-3 rounded-lg border-2 border-slate-100 font-black text-[9px] uppercase tracking-widest"
-                                >
-                                    <ChevronLeft className="size-3 mr-1" /> Prev
-                                </Button>
-                                <span className="text-[10px] font-black text-muted-foreground/50 px-2">
-                                    {paymentPage} / {Math.ceil(payments.length / perPage)}
-                                </span>
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => setPaymentPage(p => Math.min(Math.ceil(payments.length / perPage), p + 1))}
-                                    disabled={paymentPage >= Math.ceil(payments.length / perPage)}
-                                    className="h-8 px-3 rounded-lg border-2 border-slate-100 font-black text-[9px] uppercase tracking-widest"
-                                >
-                                    Next <ChevronRight className="size-3 ml-1" />
-                                </Button>
+                        ) : (
+                            <div className="py-16 text-center border-2 border-dashed border-slate-100 rounded-[2rem] bg-slate-50/50">
+                                <Banknote className="size-10 mx-auto text-slate-200 mb-3" />
+                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">No payments recorded yet</p>
                             </div>
+                        )}
+                    </TabsContent>
+
+                    <TabsContent value="orders" className="mt-6 space-y-6">
+                        <div className="flex items-center gap-3 text-primarycolor">
+                            <ListOrdered className="size-5 md:size-6" />
+                            <h2 className="text-lg md:text-xl font-black uppercase tracking-tight italic">
+                                Shop <span className="text-secondarycolor not-italic">Orders</span>
+                            </h2>
                         </div>
-                    )}
-                    </div>
-                ) : (
-                    <div className="py-16 text-center border-2 border-dashed border-slate-100 rounded-[2rem] bg-slate-50/50">
-                        <Banknote className="size-10 mx-auto text-slate-200 mb-3" />
-                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">No payments recorded yet</p>
-                    </div>
-                )}
+
+                        {orders.length > 0 ? (
+                            <div className="space-y-3">
+                                {orders.map((order) => {
+                                    const itemCount = order.order_items?.length || 0;
+                                    const totalBooks = order.order_items?.reduce((sum, item) => sum + (item.quantity || 0), 0) || 0;
+                                    const remaining = (order.total_amount || 0) - (order.amount_paid || 0);
+                                    return (
+                                        <div
+                                            key={order.id}
+                                            onClick={() => {
+                                                setSelectedOrder(order);
+                                                setIsOrderModalOpen(true);
+                                            }}
+                                            className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl border-2 border-slate-100 bg-slate-50/50 hover:bg-white hover:border-primarycolor/20 transition-all cursor-pointer"
+                                        >
+                                            <div className="flex items-center gap-4 min-w-0">
+                                                <div className={cn(
+                                                    "size-11 rounded-xl flex items-center justify-center shrink-0",
+                                                    order.status === "Approved"
+                                                        ? "bg-emerald-100 text-emerald-600"
+                                                        : order.status === "Delivered"
+                                                        ? "bg-blue-100 text-blue-600"
+                                                        : "bg-amber-100 text-amber-600"
+                                                )}>
+                                                    <ShoppingBag className="size-5" />
+                                                </div>
+                                                <div className="min-w-0">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="font-black text-primarycolor">
+                                                            #ORD-{order.id}
+                                                        </span>
+                                                        <span className={cn(
+                                                            "px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest",
+                                                            order.order_type === "on round"
+                                                                ? "bg-indigo-100 text-indigo-600"
+                                                                : "bg-teal-100 text-teal-600"
+                                                        )}>
+                                                            {order.order_type === "on round" ? "On Round" : "Requested"}
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex items-center gap-3 text-[10px] text-muted-foreground font-bold mt-0.5 flex-wrap">
+                                                        <span className="flex items-center gap-1.5">
+                                                            <Calendar className="size-3" />
+                                                            {formatDate(new Date(order.createdAt), "MMM dd, yyyy HH:mm")}
+                                                        </span>
+                                                        <span className="flex items-center gap-1">
+                                                            <ShoppingBag className="size-3" />
+                                                            {itemCount} item{itemCount !== 1 ? "s" : ""} ({totalBooks} book{totalBooks !== 1 ? "s" : ""})
+                                                        </span>
+                                                        {order.order_items?.[0]?.bookedition?.books && (
+                                                            <span className="truncate max-w-[200px] text-muted-foreground/60">
+                                                                "{order.order_items[0].bookedition.books.title}"
+                                                                {itemCount > 1 && " + more"}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-center gap-3 shrink-0 flex-wrap">
+                                                <div className="text-right">
+                                                    <p className="font-black text-primarycolor text-sm">
+                                                        {(order.total_amount || 0).toLocaleString()} ETB
+                                                    </p>
+                                                    {remaining > 0 && (
+                                                        <p className="text-[9px] font-bold text-rose-500">
+                                                            {remaining.toLocaleString()} ETB remaining
+                                                        </p>
+                                                    )}
+                                                </div>
+                                                <span className={cn(
+                                                    "px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest",
+                                                    order.status === "Approved"
+                                                        ? "bg-emerald-50 text-emerald-600 border border-emerald-200"
+                                                        : order.status === "Delivered"
+                                                        ? "bg-blue-50 text-blue-600 border border-blue-200"
+                                                        : order.status === "Pending"
+                                                        ? "bg-amber-50 text-amber-600 border border-amber-200"
+                                                        : "bg-slate-50 text-slate-600 border border-slate-200"
+                                                )}>
+                                                    {order.status}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        ) : (
+                            <div className="py-16 text-center border-2 border-dashed border-slate-100 rounded-[2rem] bg-slate-50/50">
+                                <ListOrdered className="size-10 mx-auto text-slate-200 mb-3" />
+                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">No orders found for this shop</p>
+                            </div>
+                        )}
+                    </TabsContent>
+                </Tabs>
             </div>
 
             {/* Previous Debt Edit Warning Dialog */}
@@ -713,6 +957,15 @@ export default function ManagePaymentDetailClient({ shop, payments, totals, prev
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
+
+            {/* Order Detail Modal */}
+            <ManageOrderDetailsModal
+                isOpen={isOrderModalOpen}
+                onClose={() => { setIsOrderModalOpen(false); setSelectedOrder(null); }}
+                order={selectedOrder}
+                onApproved={handleOrderApproved}
+                payments={payments}
+            />
 
             {/* Check Detail Drawer */}
             <Drawer open={isCheckDrawerOpen} onOpenChange={(o) => { if (!o) { setIsCheckDrawerOpen(false); setSelectedCheck(null); setEditingCheck(false); } }}>
