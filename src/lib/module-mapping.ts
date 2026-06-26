@@ -28,7 +28,6 @@ export const MODULE_MAP: Record<string, any> = {
     "finance/shop_table": dynamic(() => import("@/app/admin_dashboard/finance/shop_table/page")),
     "finance/edition_table": dynamic(() => import("@/app/admin_dashboard/finance/edition_table/page")),
     "finance/costs": dynamic(() => import("@/app/admin_dashboard/finance/costs/page")),
-    "finance/revenue_analysis": dynamic(() => import("@/app/admin_dashboard/finance/revenue_analysis/page")),
     "reports/completed_deliveries": dynamic(() => import("@/app/admin_dashboard/reports/completed_deliveries/page")),
     "reports/pending_deliveries": dynamic(() => import("@/app/admin_dashboard/reports/pending_deliveries/page")),
     "profile": dynamic(() => import("@/app/admin_dashboard/profile/page")),

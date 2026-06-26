@@ -26,7 +26,6 @@ import {
     Receipt,
     FileCheck,
     Palette,
-    TrendingUp,
     Settings,
     List,
 } from "lucide-react"
@@ -131,8 +130,7 @@ export const ALL_DASHBOARD_MENUS: MenuItem[] = [
             { title: "Books", icon: BookOpen, path: "finance/books", menuName: "Finance - Books" },
             { title: "Shop Table", icon: TableProperties, path: "finance/shop_table", menuName: "Finance - Shop Table" },
             { title: "Edition Table", icon: BookCopy, path: "finance/edition_table", menuName: "Finance - Edition Table" },
-            { title: "Costs", icon: FileText, path: "finance/costs", menuName: "Finance - Costs" },
-            { title: "Revenue Analysis", icon: TrendingUp, path: "finance/revenue_analysis", menuName: "Finance - Revenue Analysis" }
+            { title: "Costs", icon: FileText, path: "finance/costs", menuName: "Finance - Costs" }
         ]
     },
     { 
