@@ -46,6 +46,7 @@ import {
     Calendar,
     FileText,
     X,
+    ListOrdered,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -57,12 +58,14 @@ interface Props {
     onClose: () => void;
     shopId: number;
     shopName: string;
+    orderId?: number | null;
 }
 
-export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName }: Props) {
+export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName, orderId }: Props) {
     const router = useRouter();
     const [paymentType, setPaymentType] = useState<string>("DIRECT");
     const [amount, setAmount] = useState<string>("");
+    const [memo, setMemo] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const [checks, setChecks] = useState<any[]>([]);
@@ -139,12 +142,15 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName }
                 amount: parsedAmount,
                 payment_type: paymentType as "DIRECT" | "CHECK",
                 checkId: paymentType === "CHECK" ? selectedCheck?.id || null : null,
+                orderid: orderId ? String(orderId) : null,
+                memo: memo || null,
             });
 
             if (res.success) {
                 toast.success("Payment recorded successfully");
                 onClose();
                 setAmount("");
+                setMemo("");
                 setSelectedCheck(null);
                 setPaymentType("DIRECT");
                 setShowNewCheck(false);
@@ -180,6 +186,12 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName }
                             <DialogDescription className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground truncate">
                                 {shopName}
                             </DialogDescription>
+                            {orderId && (
+                                <p className="text-[8px] font-black text-indigo-600 uppercase tracking-widest mt-0.5">
+                                    <ListOrdered className="size-2.5 inline mr-1" />
+                                    #ORD-{orderId}
+                                </p>
+                            )}
                         </div>
                     </div>
                 </DialogHeader>
@@ -212,6 +224,21 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName }
                                 onChange={(e) => setAmount(e.target.value)}
                                 className="h-12 md:h-14 pl-14 md:pl-16 rounded-xl md:rounded-2xl border-2 border-slate-100 font-bold text-base md:text-lg focus:border-primarycolor"
                                 placeholder="0.00"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">
+                            Memo <span className="text-muted-foreground/40">(optional)</span>
+                        </label>
+                        <div className="relative">
+                            <FileText className="absolute left-3 md:left-4 top-3 md:top-3.5 size-3.5 md:size-4 text-muted-foreground" />
+                            <textarea
+                                value={memo}
+                                onChange={(e) => setMemo(e.target.value)}
+                                className="h-16 md:h-20 w-full pl-9 md:pl-10 pt-2.5 rounded-xl border-2 border-slate-100 font-bold text-xs resize-none focus:outline-none focus:ring-2 focus:ring-primarycolor/20"
+                                placeholder="Add a note or reference..."
                             />
                         </div>
                     </div>

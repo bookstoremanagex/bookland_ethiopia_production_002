@@ -158,6 +158,8 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, tota
 
     const [selectedOrder, setSelectedOrder] = useState<AdminOrder | null>(null);
     const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+    const [paymentOrderId, setPaymentOrderId] = useState<number | null>(null);
+    const [isOrderPaymentModalOpen, setIsOrderPaymentModalOpen] = useState(false);
 
     const [paymentPage, setPaymentPage] = useState(1);
     const perPage = 15;
@@ -740,6 +742,12 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, tota
                                                 )}>
                                                     {order.status}
                                                 </span>
+                                                <Button
+                                                    onClick={(e) => { e.stopPropagation(); setPaymentOrderId(order.id); setIsOrderPaymentModalOpen(true); }}
+                                                    className="h-9 px-4 rounded-xl bg-primarycolor hover:bg-secondarycolor text-white font-black text-[8px] uppercase tracking-widest gap-1.5 shadow-lg shadow-primarycolor/20"
+                                                >
+                                                    <Plus className="size-3" /> Record Payment
+                                                </Button>
                                             </div>
                                         </div>
                                     );
@@ -831,6 +839,14 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, tota
                 onClose={() => setIsPaymentModalOpen(false)}
                 shopId={shop.id}
                 shopName={shop.name}
+            />
+
+            <RecordPaymentModal
+                isOpen={isOrderPaymentModalOpen}
+                onClose={() => { setIsOrderPaymentModalOpen(false); setPaymentOrderId(null); }}
+                shopId={shop.id}
+                shopName={shop.name}
+                orderId={paymentOrderId}
             />
 
             {/* Payment Action Dialog */}
