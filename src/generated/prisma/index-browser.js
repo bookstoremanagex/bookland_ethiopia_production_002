@@ -517,6 +517,61 @@ exports.Prisma.ContractsScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.RoundbooksScalarFieldEnum = {
+  id: 'id',
+  status: 'status',
+  bookId: 'bookId',
+  starting_amount: 'starting_amount',
+  returned_amount: 'returned_amount',
+  allocated: 'allocated',
+  is_deleted: 'is_deleted',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.RoundrecordsScalarFieldEnum = {
+  id: 'id',
+  status: 'status',
+  roundbookId: 'roundbookId',
+  bookshop_id: 'bookshop_id',
+  totalprice: 'totalprice',
+  is_deleted: 'is_deleted',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.Round_paymentsScalarFieldEnum = {
+  id: 'id',
+  shopId: 'shopId',
+  amount: 'amount',
+  payment_type: 'payment_type',
+  checkId: 'checkId',
+  status: 'status',
+  is_deleted: 'is_deleted',
+  updatedAt: 'updatedAt',
+  createdAt: 'createdAt',
+  deletedAt: 'deletedAt',
+  orderid: 'orderid',
+  roundrecordId: 'roundrecordId',
+  memo: 'memo'
+};
+
+exports.Prisma.Round_checksScalarFieldEnum = {
+  id: 'id',
+  username: 'username',
+  bankname: 'bankname',
+  type: 'type',
+  amount: 'amount',
+  recordeddate: 'recordeddate',
+  memo: 'memo',
+  imageUrl: 'imageUrl',
+  status: 'status',
+  is_deleted: 'is_deleted',
+  deletedAt: 'deletedAt',
+  updatedAt: 'updatedAt',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.Print_agreementsScalarFieldEnum = {
   id: 'id',
   bookTitle: 'bookTitle',
@@ -791,6 +846,25 @@ exports.Prisma.contractsOrderByRelevanceFieldEnum = {
   memo: 'memo'
 };
 
+exports.Prisma.roundrecordsOrderByRelevanceFieldEnum = {
+  status: 'status'
+};
+
+exports.Prisma.round_paymentsOrderByRelevanceFieldEnum = {
+  payment_type: 'payment_type',
+  status: 'status',
+  orderid: 'orderid',
+  memo: 'memo'
+};
+
+exports.Prisma.round_checksOrderByRelevanceFieldEnum = {
+  username: 'username',
+  bankname: 'bankname',
+  amount: 'amount',
+  memo: 'memo',
+  imageUrl: 'imageUrl'
+};
+
 exports.Prisma.print_agreementsOrderByRelevanceFieldEnum = {
   bookTitle: 'bookTitle',
   printerName: 'printerName',
@@ -968,6 +1042,10 @@ exports.Prisma.ModelName = {
   activityLogs: 'activityLogs',
   notes: 'notes',
   contracts: 'contracts',
+  roundbooks: 'roundbooks',
+  roundrecords: 'roundrecords',
+  round_payments: 'round_payments',
+  round_checks: 'round_checks',
   print_agreements: 'print_agreements',
   delivery_notes: 'delivery_notes',
   invoices: 'invoices',

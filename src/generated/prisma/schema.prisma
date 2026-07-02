@@ -134,6 +134,7 @@ model books {
   createdAt                     DateTime                @default(now())
   deletedAt                     DateTime                @default(now())
   productionstatus              books_productionstatus? @default(ON_PRODUCTION)
+  round_book                    roundbooks[]
   default_edition_id            String?
   pen_name                      String?
   translator_cost               Float?
@@ -212,6 +213,7 @@ model bookshopes {
   bookshopeditions bookshopeditions[]
   orders           orders[]
   payments         payments[]
+  roundrecords     roundrecords[]
 }
 
 model orders {
@@ -529,6 +531,71 @@ model contracts {
   is_deleted Boolean   @default(false)
   updatedAt  DateTime  @default(now())
   createdAt  DateTime  @default(now())
+}
+
+model roundbooks {
+  id              Int            @id @default(autoincrement())
+  status          Boolean        @default(true)
+  bookId          Int
+  book            books          @relation(fields: [bookId], references: [id])
+  round_records   roundrecords[]
+  starting_amount Int?
+  returned_amount Int?
+  allocated       Boolean        @default(false)
+  is_deleted      Boolean        @default(false)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @default(now())
+}
+
+model roundrecords {
+  id             Int              @id @default(autoincrement())
+  RoundBooks     roundbooks       @relation(fields: [roundbookId], references: [id])
+  status         String           @default("PENDING")
+  roundbookId    Int
+  bookshop_id    Int?
+  totalprice     Float?
+  round_payments round_payments[]
+  bookshop       bookshopes?      @relation(fields: [bookshop_id], references: [id])
+  is_deleted     Boolean          @default(false)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @default(now())
+}
+
+model round_payments {
+  id            Int          @id @default(autoincrement())
+  shopId        Int
+  amount        Float
+  payment_type  String // "DIRECT" | "CHECK"
+  checkId       Int?
+  status        String       @default("PENDING") // "PENDING" | "APPROVED"
+  is_deleted    Boolean      @default(false)
+  updatedAt     DateTime     @default(now())
+  createdAt     DateTime     @default(now())
+  deletedAt     DateTime     @default(now())
+  orderid       String?
+  roundrecord   roundrecords @relation(fields: [roundrecordId], references: [id])
+  roundrecordId Int
+  memo          String?      @db.Text
+
+  check round_checks? @relation(fields: [checkId], references: [id])
+}
+
+model round_checks {
+  id           Int          @id @default(autoincrement())
+  username     String?
+  bankname     String?
+  type         check_types?
+  amount       String?
+  recordeddate DateTime?
+  memo         String?
+  imageUrl     String?      @db.Text
+  status       check_status @default(PENDING)
+  is_deleted   Boolean      @default(false)
+  deletedAt    DateTime     @default(now())
+  updatedAt    DateTime     @default(now())
+  createdAt    DateTime     @default(now())
+
+  round_payments round_payments[]
 }
 
 model print_agreements {

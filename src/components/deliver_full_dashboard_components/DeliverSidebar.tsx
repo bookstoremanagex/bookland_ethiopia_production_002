@@ -21,6 +21,7 @@ import {
   ListOrdered,
   PackageOpen,
   Menu,
+  RefreshCw,
 } from "lucide-react";
 
 import {
@@ -260,6 +261,42 @@ export function DeliverSidebar() {
                     </CollapsibleContent>
                   </SidebarMenuItem>
                 </Collapsible>
+
+                {/* Round Books */}
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    asChild
+                    tooltip="Round Books"
+                    isActive={isMounted && (activePath === "/delivery_dashboard_full/round-books" || activePath.startsWith("/delivery_dashboard_full/round-books/"))}
+                    className={cn(
+                      "transition-all duration-300 rounded-lg h-12 px-4 relative my-1",
+                      "hover:bg-primarycolor/10 hover:text-primarycolor",
+                      "data-[active=true]:bg-primarycolor data-[active=true]:text-white data-[active=true]:font-black data-[active=true]:shadow-lg data-[active=true]:shadow-primarycolor/30",
+                    )}
+                  >
+                    <Link
+                      href="/delivery_dashboard_full/round-books"
+                      onClick={() => setOpenMobile(false)}
+                      className="flex items-center justify-between w-full"
+                    >
+                      <div className="flex items-center gap-3">
+                        <RefreshCw
+                          className={cn(
+                            "w-5 h-5",
+                            isMounted && (activePath === "/delivery_dashboard_full/round-books" || activePath.startsWith("/delivery_dashboard_full/round-books/")) ? "text-white" : "text-primarycolor",
+                          )}
+                        />
+                        <span
+                          className={cn(
+                            isMounted && (activePath === "/delivery_dashboard_full/round-books" || activePath.startsWith("/delivery_dashboard_full/round-books/")) ? "text-white" : "text-foreground",
+                          )}
+                        >
+                          Round Books
+                        </span>
+                      </div>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
 
                 {menuItemsAfter.map((item) => {
                   const active = activeUrl === item.url;

@@ -23,6 +23,7 @@ import {
     ClipboardList,
     List,
     FileText,
+    Repeat,
   CheckCircle2,
   Clock,
   User,
@@ -81,6 +82,11 @@ const menuItems = [
     title: "Manage Orders",
     icon: ClipboardList,
     url: "/admin_dashboard/manage_orders",
+  },
+  {
+    title: "Manage Rounds",
+    icon: Repeat,
+    url: "/admin_dashboard/round-books",
   },
   {
     title: "Manage Payment",

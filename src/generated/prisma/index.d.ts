@@ -149,6 +149,26 @@ export type notes = $Result.DefaultSelection<Prisma.$notesPayload>
  */
 export type contracts = $Result.DefaultSelection<Prisma.$contractsPayload>
 /**
+ * Model roundbooks
+ * 
+ */
+export type roundbooks = $Result.DefaultSelection<Prisma.$roundbooksPayload>
+/**
+ * Model roundrecords
+ * 
+ */
+export type roundrecords = $Result.DefaultSelection<Prisma.$roundrecordsPayload>
+/**
+ * Model round_payments
+ * 
+ */
+export type round_payments = $Result.DefaultSelection<Prisma.$round_paymentsPayload>
+/**
+ * Model round_checks
+ * 
+ */
+export type round_checks = $Result.DefaultSelection<Prisma.$round_checksPayload>
+/**
  * Model print_agreements
  * 
  */
@@ -752,6 +772,46 @@ export class PrismaClient<
   get contracts(): Prisma.contractsDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.roundbooks`: Exposes CRUD operations for the **roundbooks** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Roundbooks
+    * const roundbooks = await prisma.roundbooks.findMany()
+    * ```
+    */
+  get roundbooks(): Prisma.roundbooksDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.roundrecords`: Exposes CRUD operations for the **roundrecords** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Roundrecords
+    * const roundrecords = await prisma.roundrecords.findMany()
+    * ```
+    */
+  get roundrecords(): Prisma.roundrecordsDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.round_payments`: Exposes CRUD operations for the **round_payments** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Round_payments
+    * const round_payments = await prisma.round_payments.findMany()
+    * ```
+    */
+  get round_payments(): Prisma.round_paymentsDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.round_checks`: Exposes CRUD operations for the **round_checks** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Round_checks
+    * const round_checks = await prisma.round_checks.findMany()
+    * ```
+    */
+  get round_checks(): Prisma.round_checksDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.print_agreements`: Exposes CRUD operations for the **print_agreements** model.
     * Example usage:
     * ```ts
@@ -1308,6 +1368,10 @@ export namespace Prisma {
     activityLogs: 'activityLogs',
     notes: 'notes',
     contracts: 'contracts',
+    roundbooks: 'roundbooks',
+    roundrecords: 'roundrecords',
+    round_payments: 'round_payments',
+    round_checks: 'round_checks',
     print_agreements: 'print_agreements',
     delivery_notes: 'delivery_notes',
     invoices: 'invoices',
@@ -1335,7 +1399,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "accounts" | "bookedition" | "bookeditionstores" | "bookeditionprinters" | "books" | "locked_editions" | "bookshopeditions" | "bookshopes" | "orders" | "order_items" | "damagedbooks" | "dashboardmenu" | "menus" | "menu_management" | "printer" | "printorder" | "printorder_payments" | "printorder_items" | "roletypes" | "roles" | "stores" | "translator" | "translatorbook" | "notification" | "activityLogs" | "notes" | "contracts" | "print_agreements" | "delivery_notes" | "invoices" | "approval_documents" | "settings" | "checks" | "payments" | "retail_purchases" | "retail_purchase_items"
+      modelProps: "accounts" | "bookedition" | "bookeditionstores" | "bookeditionprinters" | "books" | "locked_editions" | "bookshopeditions" | "bookshopes" | "orders" | "order_items" | "damagedbooks" | "dashboardmenu" | "menus" | "menu_management" | "printer" | "printorder" | "printorder_payments" | "printorder_items" | "roletypes" | "roles" | "stores" | "translator" | "translatorbook" | "notification" | "activityLogs" | "notes" | "contracts" | "roundbooks" | "roundrecords" | "round_payments" | "round_checks" | "print_agreements" | "delivery_notes" | "invoices" | "approval_documents" | "settings" | "checks" | "payments" | "retail_purchases" | "retail_purchase_items"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3121,6 +3185,270 @@ export namespace Prisma {
           }
         }
       }
+      roundbooks: {
+        payload: Prisma.$roundbooksPayload<ExtArgs>
+        fields: Prisma.roundbooksFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.roundbooksFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$roundbooksPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.roundbooksFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$roundbooksPayload>
+          }
+          findFirst: {
+            args: Prisma.roundbooksFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$roundbooksPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.roundbooksFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$roundbooksPayload>
+          }
+          findMany: {
+            args: Prisma.roundbooksFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$roundbooksPayload>[]
+          }
+          create: {
+            args: Prisma.roundbooksCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$roundbooksPayload>
+          }
+          createMany: {
+            args: Prisma.roundbooksCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.roundbooksDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$roundbooksPayload>
+          }
+          update: {
+            args: Prisma.roundbooksUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$roundbooksPayload>
+          }
+          deleteMany: {
+            args: Prisma.roundbooksDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.roundbooksUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.roundbooksUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$roundbooksPayload>
+          }
+          aggregate: {
+            args: Prisma.RoundbooksAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRoundbooks>
+          }
+          groupBy: {
+            args: Prisma.roundbooksGroupByArgs<ExtArgs>
+            result: $Utils.Optional<RoundbooksGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.roundbooksCountArgs<ExtArgs>
+            result: $Utils.Optional<RoundbooksCountAggregateOutputType> | number
+          }
+        }
+      }
+      roundrecords: {
+        payload: Prisma.$roundrecordsPayload<ExtArgs>
+        fields: Prisma.roundrecordsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.roundrecordsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$roundrecordsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.roundrecordsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$roundrecordsPayload>
+          }
+          findFirst: {
+            args: Prisma.roundrecordsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$roundrecordsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.roundrecordsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$roundrecordsPayload>
+          }
+          findMany: {
+            args: Prisma.roundrecordsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$roundrecordsPayload>[]
+          }
+          create: {
+            args: Prisma.roundrecordsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$roundrecordsPayload>
+          }
+          createMany: {
+            args: Prisma.roundrecordsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.roundrecordsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$roundrecordsPayload>
+          }
+          update: {
+            args: Prisma.roundrecordsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$roundrecordsPayload>
+          }
+          deleteMany: {
+            args: Prisma.roundrecordsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.roundrecordsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.roundrecordsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$roundrecordsPayload>
+          }
+          aggregate: {
+            args: Prisma.RoundrecordsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRoundrecords>
+          }
+          groupBy: {
+            args: Prisma.roundrecordsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<RoundrecordsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.roundrecordsCountArgs<ExtArgs>
+            result: $Utils.Optional<RoundrecordsCountAggregateOutputType> | number
+          }
+        }
+      }
+      round_payments: {
+        payload: Prisma.$round_paymentsPayload<ExtArgs>
+        fields: Prisma.round_paymentsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.round_paymentsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$round_paymentsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.round_paymentsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$round_paymentsPayload>
+          }
+          findFirst: {
+            args: Prisma.round_paymentsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$round_paymentsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.round_paymentsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$round_paymentsPayload>
+          }
+          findMany: {
+            args: Prisma.round_paymentsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$round_paymentsPayload>[]
+          }
+          create: {
+            args: Prisma.round_paymentsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$round_paymentsPayload>
+          }
+          createMany: {
+            args: Prisma.round_paymentsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.round_paymentsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$round_paymentsPayload>
+          }
+          update: {
+            args: Prisma.round_paymentsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$round_paymentsPayload>
+          }
+          deleteMany: {
+            args: Prisma.round_paymentsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.round_paymentsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.round_paymentsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$round_paymentsPayload>
+          }
+          aggregate: {
+            args: Prisma.Round_paymentsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRound_payments>
+          }
+          groupBy: {
+            args: Prisma.round_paymentsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Round_paymentsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.round_paymentsCountArgs<ExtArgs>
+            result: $Utils.Optional<Round_paymentsCountAggregateOutputType> | number
+          }
+        }
+      }
+      round_checks: {
+        payload: Prisma.$round_checksPayload<ExtArgs>
+        fields: Prisma.round_checksFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.round_checksFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$round_checksPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.round_checksFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$round_checksPayload>
+          }
+          findFirst: {
+            args: Prisma.round_checksFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$round_checksPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.round_checksFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$round_checksPayload>
+          }
+          findMany: {
+            args: Prisma.round_checksFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$round_checksPayload>[]
+          }
+          create: {
+            args: Prisma.round_checksCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$round_checksPayload>
+          }
+          createMany: {
+            args: Prisma.round_checksCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.round_checksDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$round_checksPayload>
+          }
+          update: {
+            args: Prisma.round_checksUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$round_checksPayload>
+          }
+          deleteMany: {
+            args: Prisma.round_checksDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.round_checksUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.round_checksUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$round_checksPayload>
+          }
+          aggregate: {
+            args: Prisma.Round_checksAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRound_checks>
+          }
+          groupBy: {
+            args: Prisma.round_checksGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Round_checksGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.round_checksCountArgs<ExtArgs>
+            result: $Utils.Optional<Round_checksCountAggregateOutputType> | number
+          }
+        }
+      }
       print_agreements: {
         payload: Prisma.$print_agreementsPayload<ExtArgs>
         fields: Prisma.print_agreementsFieldRefs
@@ -3838,6 +4166,10 @@ export namespace Prisma {
     activityLogs?: activityLogsOmit
     notes?: notesOmit
     contracts?: contractsOmit
+    roundbooks?: roundbooksOmit
+    roundrecords?: roundrecordsOmit
+    round_payments?: round_paymentsOmit
+    round_checks?: round_checksOmit
     print_agreements?: print_agreementsOmit
     delivery_notes?: delivery_notesOmit
     invoices?: invoicesOmit
@@ -4079,12 +4411,14 @@ export namespace Prisma {
    */
 
   export type BooksCountOutputType = {
+    round_book: number
     bookedition: number
     damagedbooks: number
     translatorbook: number
   }
 
   export type BooksCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    round_book?: boolean | BooksCountOutputTypeCountRound_bookArgs
     bookedition?: boolean | BooksCountOutputTypeCountBookeditionArgs
     damagedbooks?: boolean | BooksCountOutputTypeCountDamagedbooksArgs
     translatorbook?: boolean | BooksCountOutputTypeCountTranslatorbookArgs
@@ -4099,6 +4433,13 @@ export namespace Prisma {
      * Select specific fields to fetch from the BooksCountOutputType
      */
     select?: BooksCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * BooksCountOutputType without action
+   */
+  export type BooksCountOutputTypeCountRound_bookArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: roundbooksWhereInput
   }
 
   /**
@@ -4131,12 +4472,14 @@ export namespace Prisma {
     bookshopeditions: number
     orders: number
     payments: number
+    roundrecords: number
   }
 
   export type BookshopesCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     bookshopeditions?: boolean | BookshopesCountOutputTypeCountBookshopeditionsArgs
     orders?: boolean | BookshopesCountOutputTypeCountOrdersArgs
     payments?: boolean | BookshopesCountOutputTypeCountPaymentsArgs
+    roundrecords?: boolean | BookshopesCountOutputTypeCountRoundrecordsArgs
   }
 
   // Custom InputTypes
@@ -4169,6 +4512,13 @@ export namespace Prisma {
    */
   export type BookshopesCountOutputTypeCountPaymentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: paymentsWhereInput
+  }
+
+  /**
+   * BookshopesCountOutputType without action
+   */
+  export type BookshopesCountOutputTypeCountRoundrecordsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: roundrecordsWhereInput
   }
 
 
@@ -4440,6 +4790,99 @@ export namespace Prisma {
    */
   export type TranslatorCountOutputTypeCountTranslatorbookArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: translatorbookWhereInput
+  }
+
+
+  /**
+   * Count Type RoundbooksCountOutputType
+   */
+
+  export type RoundbooksCountOutputType = {
+    round_records: number
+  }
+
+  export type RoundbooksCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    round_records?: boolean | RoundbooksCountOutputTypeCountRound_recordsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * RoundbooksCountOutputType without action
+   */
+  export type RoundbooksCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoundbooksCountOutputType
+     */
+    select?: RoundbooksCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * RoundbooksCountOutputType without action
+   */
+  export type RoundbooksCountOutputTypeCountRound_recordsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: roundrecordsWhereInput
+  }
+
+
+  /**
+   * Count Type RoundrecordsCountOutputType
+   */
+
+  export type RoundrecordsCountOutputType = {
+    round_payments: number
+  }
+
+  export type RoundrecordsCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    round_payments?: boolean | RoundrecordsCountOutputTypeCountRound_paymentsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * RoundrecordsCountOutputType without action
+   */
+  export type RoundrecordsCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoundrecordsCountOutputType
+     */
+    select?: RoundrecordsCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * RoundrecordsCountOutputType without action
+   */
+  export type RoundrecordsCountOutputTypeCountRound_paymentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: round_paymentsWhereInput
+  }
+
+
+  /**
+   * Count Type Round_checksCountOutputType
+   */
+
+  export type Round_checksCountOutputType = {
+    round_payments: number
+  }
+
+  export type Round_checksCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    round_payments?: boolean | Round_checksCountOutputTypeCountRound_paymentsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * Round_checksCountOutputType without action
+   */
+  export type Round_checksCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Round_checksCountOutputType
+     */
+    select?: Round_checksCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * Round_checksCountOutputType without action
+   */
+  export type Round_checksCountOutputTypeCountRound_paymentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: round_paymentsWhereInput
   }
 
 
@@ -9719,6 +10162,7 @@ export namespace Prisma {
     distribution_cost?: boolean
     advertisement_cost?: boolean
     purchasing_right_cost?: boolean
+    round_book?: boolean | books$round_bookArgs<ExtArgs>
     bookedition?: boolean | books$bookeditionArgs<ExtArgs>
     damagedbooks?: boolean | books$damagedbooksArgs<ExtArgs>
     translatorbook?: boolean | books$translatorbookArgs<ExtArgs>
@@ -9767,6 +10211,7 @@ export namespace Prisma {
 
   export type booksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "book_sort_index" | "unique_identification_code" | "isbn" | "title" | "author" | "translator" | "designer" | "language" | "edition" | "category" | "publication_year" | "copyright_registration_number" | "print_batch_id" | "book_sku" | "number_of_pages" | "info" | "book_image_url" | "status" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt" | "productionstatus" | "default_edition_id" | "pen_name" | "translator_cost" | "cover_design_cost" | "text_design_cost" | "editor_cost" | "typewriting_cost" | "store_cost" | "distribution_cost" | "advertisement_cost" | "purchasing_right_cost", ExtArgs["result"]["books"]>
   export type booksInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    round_book?: boolean | books$round_bookArgs<ExtArgs>
     bookedition?: boolean | books$bookeditionArgs<ExtArgs>
     damagedbooks?: boolean | books$damagedbooksArgs<ExtArgs>
     translatorbook?: boolean | books$translatorbookArgs<ExtArgs>
@@ -9776,6 +10221,7 @@ export namespace Prisma {
   export type $booksPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "books"
     objects: {
+      round_book: Prisma.$roundbooksPayload<ExtArgs>[]
       bookedition: Prisma.$bookeditionPayload<ExtArgs>[]
       damagedbooks: Prisma.$damagedbooksPayload<ExtArgs>[]
       translatorbook: Prisma.$translatorbookPayload<ExtArgs>[]
@@ -10156,6 +10602,7 @@ export namespace Prisma {
    */
   export interface Prisma__booksClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    round_book<T extends books$round_bookArgs<ExtArgs> = {}>(args?: Subset<T, books$round_bookArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$roundbooksPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     bookedition<T extends books$bookeditionArgs<ExtArgs> = {}>(args?: Subset<T, books$bookeditionArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$bookeditionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     damagedbooks<T extends books$damagedbooksArgs<ExtArgs> = {}>(args?: Subset<T, books$damagedbooksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$damagedbooksPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     translatorbook<T extends books$translatorbookArgs<ExtArgs> = {}>(args?: Subset<T, books$translatorbookArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$translatorbookPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -10563,6 +11010,30 @@ export namespace Prisma {
      * Limit how many books to delete.
      */
     limit?: number
+  }
+
+  /**
+   * books.round_book
+   */
+  export type books$round_bookArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the roundbooks
+     */
+    select?: roundbooksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the roundbooks
+     */
+    omit?: roundbooksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: roundbooksInclude<ExtArgs> | null
+    where?: roundbooksWhereInput
+    orderBy?: roundbooksOrderByWithRelationInput | roundbooksOrderByWithRelationInput[]
+    cursor?: roundbooksWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: RoundbooksScalarFieldEnum | RoundbooksScalarFieldEnum[]
   }
 
   /**
@@ -13015,6 +13486,7 @@ export namespace Prisma {
     bookshopeditions?: boolean | bookshopes$bookshopeditionsArgs<ExtArgs>
     orders?: boolean | bookshopes$ordersArgs<ExtArgs>
     payments?: boolean | bookshopes$paymentsArgs<ExtArgs>
+    roundrecords?: boolean | bookshopes$roundrecordsArgs<ExtArgs>
     _count?: boolean | BookshopesCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["bookshopes"]>
 
@@ -13039,6 +13511,7 @@ export namespace Prisma {
     bookshopeditions?: boolean | bookshopes$bookshopeditionsArgs<ExtArgs>
     orders?: boolean | bookshopes$ordersArgs<ExtArgs>
     payments?: boolean | bookshopes$paymentsArgs<ExtArgs>
+    roundrecords?: boolean | bookshopes$roundrecordsArgs<ExtArgs>
     _count?: boolean | BookshopesCountOutputTypeDefaultArgs<ExtArgs>
   }
 
@@ -13048,6 +13521,7 @@ export namespace Prisma {
       bookshopeditions: Prisma.$bookshopeditionsPayload<ExtArgs>[]
       orders: Prisma.$ordersPayload<ExtArgs>[]
       payments: Prisma.$paymentsPayload<ExtArgs>[]
+      roundrecords: Prisma.$roundrecordsPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -13404,6 +13878,7 @@ export namespace Prisma {
     bookshopeditions<T extends bookshopes$bookshopeditionsArgs<ExtArgs> = {}>(args?: Subset<T, bookshopes$bookshopeditionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$bookshopeditionsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     orders<T extends bookshopes$ordersArgs<ExtArgs> = {}>(args?: Subset<T, bookshopes$ordersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ordersPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     payments<T extends bookshopes$paymentsArgs<ExtArgs> = {}>(args?: Subset<T, bookshopes$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$paymentsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    roundrecords<T extends bookshopes$roundrecordsArgs<ExtArgs> = {}>(args?: Subset<T, bookshopes$roundrecordsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$roundrecordsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -13856,6 +14331,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: PaymentsScalarFieldEnum | PaymentsScalarFieldEnum[]
+  }
+
+  /**
+   * bookshopes.roundrecords
+   */
+  export type bookshopes$roundrecordsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the roundrecords
+     */
+    select?: roundrecordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the roundrecords
+     */
+    omit?: roundrecordsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: roundrecordsInclude<ExtArgs> | null
+    where?: roundrecordsWhereInput
+    orderBy?: roundrecordsOrderByWithRelationInput | roundrecordsOrderByWithRelationInput[]
+    cursor?: roundrecordsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: RoundrecordsScalarFieldEnum | RoundrecordsScalarFieldEnum[]
   }
 
   /**
@@ -33774,6 +34273,4283 @@ export namespace Prisma {
 
 
   /**
+   * Model roundbooks
+   */
+
+  export type AggregateRoundbooks = {
+    _count: RoundbooksCountAggregateOutputType | null
+    _avg: RoundbooksAvgAggregateOutputType | null
+    _sum: RoundbooksSumAggregateOutputType | null
+    _min: RoundbooksMinAggregateOutputType | null
+    _max: RoundbooksMaxAggregateOutputType | null
+  }
+
+  export type RoundbooksAvgAggregateOutputType = {
+    id: number | null
+    bookId: number | null
+    starting_amount: number | null
+    returned_amount: number | null
+  }
+
+  export type RoundbooksSumAggregateOutputType = {
+    id: number | null
+    bookId: number | null
+    starting_amount: number | null
+    returned_amount: number | null
+  }
+
+  export type RoundbooksMinAggregateOutputType = {
+    id: number | null
+    status: boolean | null
+    bookId: number | null
+    starting_amount: number | null
+    returned_amount: number | null
+    allocated: boolean | null
+    is_deleted: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type RoundbooksMaxAggregateOutputType = {
+    id: number | null
+    status: boolean | null
+    bookId: number | null
+    starting_amount: number | null
+    returned_amount: number | null
+    allocated: boolean | null
+    is_deleted: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type RoundbooksCountAggregateOutputType = {
+    id: number
+    status: number
+    bookId: number
+    starting_amount: number
+    returned_amount: number
+    allocated: number
+    is_deleted: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type RoundbooksAvgAggregateInputType = {
+    id?: true
+    bookId?: true
+    starting_amount?: true
+    returned_amount?: true
+  }
+
+  export type RoundbooksSumAggregateInputType = {
+    id?: true
+    bookId?: true
+    starting_amount?: true
+    returned_amount?: true
+  }
+
+  export type RoundbooksMinAggregateInputType = {
+    id?: true
+    status?: true
+    bookId?: true
+    starting_amount?: true
+    returned_amount?: true
+    allocated?: true
+    is_deleted?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type RoundbooksMaxAggregateInputType = {
+    id?: true
+    status?: true
+    bookId?: true
+    starting_amount?: true
+    returned_amount?: true
+    allocated?: true
+    is_deleted?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type RoundbooksCountAggregateInputType = {
+    id?: true
+    status?: true
+    bookId?: true
+    starting_amount?: true
+    returned_amount?: true
+    allocated?: true
+    is_deleted?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type RoundbooksAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which roundbooks to aggregate.
+     */
+    where?: roundbooksWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of roundbooks to fetch.
+     */
+    orderBy?: roundbooksOrderByWithRelationInput | roundbooksOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: roundbooksWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` roundbooks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` roundbooks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned roundbooks
+    **/
+    _count?: true | RoundbooksCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: RoundbooksAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: RoundbooksSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: RoundbooksMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: RoundbooksMaxAggregateInputType
+  }
+
+  export type GetRoundbooksAggregateType<T extends RoundbooksAggregateArgs> = {
+        [P in keyof T & keyof AggregateRoundbooks]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRoundbooks[P]>
+      : GetScalarType<T[P], AggregateRoundbooks[P]>
+  }
+
+
+
+
+  export type roundbooksGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: roundbooksWhereInput
+    orderBy?: roundbooksOrderByWithAggregationInput | roundbooksOrderByWithAggregationInput[]
+    by: RoundbooksScalarFieldEnum[] | RoundbooksScalarFieldEnum
+    having?: roundbooksScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: RoundbooksCountAggregateInputType | true
+    _avg?: RoundbooksAvgAggregateInputType
+    _sum?: RoundbooksSumAggregateInputType
+    _min?: RoundbooksMinAggregateInputType
+    _max?: RoundbooksMaxAggregateInputType
+  }
+
+  export type RoundbooksGroupByOutputType = {
+    id: number
+    status: boolean
+    bookId: number
+    starting_amount: number | null
+    returned_amount: number | null
+    allocated: boolean
+    is_deleted: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: RoundbooksCountAggregateOutputType | null
+    _avg: RoundbooksAvgAggregateOutputType | null
+    _sum: RoundbooksSumAggregateOutputType | null
+    _min: RoundbooksMinAggregateOutputType | null
+    _max: RoundbooksMaxAggregateOutputType | null
+  }
+
+  type GetRoundbooksGroupByPayload<T extends roundbooksGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<RoundbooksGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof RoundbooksGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], RoundbooksGroupByOutputType[P]>
+            : GetScalarType<T[P], RoundbooksGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type roundbooksSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    status?: boolean
+    bookId?: boolean
+    starting_amount?: boolean
+    returned_amount?: boolean
+    allocated?: boolean
+    is_deleted?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    book?: boolean | booksDefaultArgs<ExtArgs>
+    round_records?: boolean | roundbooks$round_recordsArgs<ExtArgs>
+    _count?: boolean | RoundbooksCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["roundbooks"]>
+
+
+
+  export type roundbooksSelectScalar = {
+    id?: boolean
+    status?: boolean
+    bookId?: boolean
+    starting_amount?: boolean
+    returned_amount?: boolean
+    allocated?: boolean
+    is_deleted?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type roundbooksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "status" | "bookId" | "starting_amount" | "returned_amount" | "allocated" | "is_deleted" | "createdAt" | "updatedAt", ExtArgs["result"]["roundbooks"]>
+  export type roundbooksInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    book?: boolean | booksDefaultArgs<ExtArgs>
+    round_records?: boolean | roundbooks$round_recordsArgs<ExtArgs>
+    _count?: boolean | RoundbooksCountOutputTypeDefaultArgs<ExtArgs>
+  }
+
+  export type $roundbooksPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "roundbooks"
+    objects: {
+      book: Prisma.$booksPayload<ExtArgs>
+      round_records: Prisma.$roundrecordsPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      status: boolean
+      bookId: number
+      starting_amount: number | null
+      returned_amount: number | null
+      allocated: boolean
+      is_deleted: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["roundbooks"]>
+    composites: {}
+  }
+
+  type roundbooksGetPayload<S extends boolean | null | undefined | roundbooksDefaultArgs> = $Result.GetResult<Prisma.$roundbooksPayload, S>
+
+  type roundbooksCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<roundbooksFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: RoundbooksCountAggregateInputType | true
+    }
+
+  export interface roundbooksDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['roundbooks'], meta: { name: 'roundbooks' } }
+    /**
+     * Find zero or one Roundbooks that matches the filter.
+     * @param {roundbooksFindUniqueArgs} args - Arguments to find a Roundbooks
+     * @example
+     * // Get one Roundbooks
+     * const roundbooks = await prisma.roundbooks.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends roundbooksFindUniqueArgs>(args: SelectSubset<T, roundbooksFindUniqueArgs<ExtArgs>>): Prisma__roundbooksClient<$Result.GetResult<Prisma.$roundbooksPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Roundbooks that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {roundbooksFindUniqueOrThrowArgs} args - Arguments to find a Roundbooks
+     * @example
+     * // Get one Roundbooks
+     * const roundbooks = await prisma.roundbooks.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends roundbooksFindUniqueOrThrowArgs>(args: SelectSubset<T, roundbooksFindUniqueOrThrowArgs<ExtArgs>>): Prisma__roundbooksClient<$Result.GetResult<Prisma.$roundbooksPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Roundbooks that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {roundbooksFindFirstArgs} args - Arguments to find a Roundbooks
+     * @example
+     * // Get one Roundbooks
+     * const roundbooks = await prisma.roundbooks.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends roundbooksFindFirstArgs>(args?: SelectSubset<T, roundbooksFindFirstArgs<ExtArgs>>): Prisma__roundbooksClient<$Result.GetResult<Prisma.$roundbooksPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Roundbooks that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {roundbooksFindFirstOrThrowArgs} args - Arguments to find a Roundbooks
+     * @example
+     * // Get one Roundbooks
+     * const roundbooks = await prisma.roundbooks.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends roundbooksFindFirstOrThrowArgs>(args?: SelectSubset<T, roundbooksFindFirstOrThrowArgs<ExtArgs>>): Prisma__roundbooksClient<$Result.GetResult<Prisma.$roundbooksPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Roundbooks that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {roundbooksFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Roundbooks
+     * const roundbooks = await prisma.roundbooks.findMany()
+     * 
+     * // Get first 10 Roundbooks
+     * const roundbooks = await prisma.roundbooks.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const roundbooksWithIdOnly = await prisma.roundbooks.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends roundbooksFindManyArgs>(args?: SelectSubset<T, roundbooksFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$roundbooksPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Roundbooks.
+     * @param {roundbooksCreateArgs} args - Arguments to create a Roundbooks.
+     * @example
+     * // Create one Roundbooks
+     * const Roundbooks = await prisma.roundbooks.create({
+     *   data: {
+     *     // ... data to create a Roundbooks
+     *   }
+     * })
+     * 
+     */
+    create<T extends roundbooksCreateArgs>(args: SelectSubset<T, roundbooksCreateArgs<ExtArgs>>): Prisma__roundbooksClient<$Result.GetResult<Prisma.$roundbooksPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Roundbooks.
+     * @param {roundbooksCreateManyArgs} args - Arguments to create many Roundbooks.
+     * @example
+     * // Create many Roundbooks
+     * const roundbooks = await prisma.roundbooks.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends roundbooksCreateManyArgs>(args?: SelectSubset<T, roundbooksCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Roundbooks.
+     * @param {roundbooksDeleteArgs} args - Arguments to delete one Roundbooks.
+     * @example
+     * // Delete one Roundbooks
+     * const Roundbooks = await prisma.roundbooks.delete({
+     *   where: {
+     *     // ... filter to delete one Roundbooks
+     *   }
+     * })
+     * 
+     */
+    delete<T extends roundbooksDeleteArgs>(args: SelectSubset<T, roundbooksDeleteArgs<ExtArgs>>): Prisma__roundbooksClient<$Result.GetResult<Prisma.$roundbooksPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Roundbooks.
+     * @param {roundbooksUpdateArgs} args - Arguments to update one Roundbooks.
+     * @example
+     * // Update one Roundbooks
+     * const roundbooks = await prisma.roundbooks.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends roundbooksUpdateArgs>(args: SelectSubset<T, roundbooksUpdateArgs<ExtArgs>>): Prisma__roundbooksClient<$Result.GetResult<Prisma.$roundbooksPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Roundbooks.
+     * @param {roundbooksDeleteManyArgs} args - Arguments to filter Roundbooks to delete.
+     * @example
+     * // Delete a few Roundbooks
+     * const { count } = await prisma.roundbooks.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends roundbooksDeleteManyArgs>(args?: SelectSubset<T, roundbooksDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Roundbooks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {roundbooksUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Roundbooks
+     * const roundbooks = await prisma.roundbooks.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends roundbooksUpdateManyArgs>(args: SelectSubset<T, roundbooksUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Roundbooks.
+     * @param {roundbooksUpsertArgs} args - Arguments to update or create a Roundbooks.
+     * @example
+     * // Update or create a Roundbooks
+     * const roundbooks = await prisma.roundbooks.upsert({
+     *   create: {
+     *     // ... data to create a Roundbooks
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Roundbooks we want to update
+     *   }
+     * })
+     */
+    upsert<T extends roundbooksUpsertArgs>(args: SelectSubset<T, roundbooksUpsertArgs<ExtArgs>>): Prisma__roundbooksClient<$Result.GetResult<Prisma.$roundbooksPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Roundbooks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {roundbooksCountArgs} args - Arguments to filter Roundbooks to count.
+     * @example
+     * // Count the number of Roundbooks
+     * const count = await prisma.roundbooks.count({
+     *   where: {
+     *     // ... the filter for the Roundbooks we want to count
+     *   }
+     * })
+    **/
+    count<T extends roundbooksCountArgs>(
+      args?: Subset<T, roundbooksCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], RoundbooksCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Roundbooks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoundbooksAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends RoundbooksAggregateArgs>(args: Subset<T, RoundbooksAggregateArgs>): Prisma.PrismaPromise<GetRoundbooksAggregateType<T>>
+
+    /**
+     * Group by Roundbooks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {roundbooksGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends roundbooksGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: roundbooksGroupByArgs['orderBy'] }
+        : { orderBy?: roundbooksGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, roundbooksGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRoundbooksGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the roundbooks model
+   */
+  readonly fields: roundbooksFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for roundbooks.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__roundbooksClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    book<T extends booksDefaultArgs<ExtArgs> = {}>(args?: Subset<T, booksDefaultArgs<ExtArgs>>): Prisma__booksClient<$Result.GetResult<Prisma.$booksPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    round_records<T extends roundbooks$round_recordsArgs<ExtArgs> = {}>(args?: Subset<T, roundbooks$round_recordsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$roundrecordsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the roundbooks model
+   */
+  interface roundbooksFieldRefs {
+    readonly id: FieldRef<"roundbooks", 'Int'>
+    readonly status: FieldRef<"roundbooks", 'Boolean'>
+    readonly bookId: FieldRef<"roundbooks", 'Int'>
+    readonly starting_amount: FieldRef<"roundbooks", 'Int'>
+    readonly returned_amount: FieldRef<"roundbooks", 'Int'>
+    readonly allocated: FieldRef<"roundbooks", 'Boolean'>
+    readonly is_deleted: FieldRef<"roundbooks", 'Boolean'>
+    readonly createdAt: FieldRef<"roundbooks", 'DateTime'>
+    readonly updatedAt: FieldRef<"roundbooks", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * roundbooks findUnique
+   */
+  export type roundbooksFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the roundbooks
+     */
+    select?: roundbooksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the roundbooks
+     */
+    omit?: roundbooksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: roundbooksInclude<ExtArgs> | null
+    /**
+     * Filter, which roundbooks to fetch.
+     */
+    where: roundbooksWhereUniqueInput
+  }
+
+  /**
+   * roundbooks findUniqueOrThrow
+   */
+  export type roundbooksFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the roundbooks
+     */
+    select?: roundbooksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the roundbooks
+     */
+    omit?: roundbooksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: roundbooksInclude<ExtArgs> | null
+    /**
+     * Filter, which roundbooks to fetch.
+     */
+    where: roundbooksWhereUniqueInput
+  }
+
+  /**
+   * roundbooks findFirst
+   */
+  export type roundbooksFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the roundbooks
+     */
+    select?: roundbooksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the roundbooks
+     */
+    omit?: roundbooksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: roundbooksInclude<ExtArgs> | null
+    /**
+     * Filter, which roundbooks to fetch.
+     */
+    where?: roundbooksWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of roundbooks to fetch.
+     */
+    orderBy?: roundbooksOrderByWithRelationInput | roundbooksOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for roundbooks.
+     */
+    cursor?: roundbooksWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` roundbooks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` roundbooks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of roundbooks.
+     */
+    distinct?: RoundbooksScalarFieldEnum | RoundbooksScalarFieldEnum[]
+  }
+
+  /**
+   * roundbooks findFirstOrThrow
+   */
+  export type roundbooksFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the roundbooks
+     */
+    select?: roundbooksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the roundbooks
+     */
+    omit?: roundbooksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: roundbooksInclude<ExtArgs> | null
+    /**
+     * Filter, which roundbooks to fetch.
+     */
+    where?: roundbooksWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of roundbooks to fetch.
+     */
+    orderBy?: roundbooksOrderByWithRelationInput | roundbooksOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for roundbooks.
+     */
+    cursor?: roundbooksWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` roundbooks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` roundbooks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of roundbooks.
+     */
+    distinct?: RoundbooksScalarFieldEnum | RoundbooksScalarFieldEnum[]
+  }
+
+  /**
+   * roundbooks findMany
+   */
+  export type roundbooksFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the roundbooks
+     */
+    select?: roundbooksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the roundbooks
+     */
+    omit?: roundbooksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: roundbooksInclude<ExtArgs> | null
+    /**
+     * Filter, which roundbooks to fetch.
+     */
+    where?: roundbooksWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of roundbooks to fetch.
+     */
+    orderBy?: roundbooksOrderByWithRelationInput | roundbooksOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing roundbooks.
+     */
+    cursor?: roundbooksWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` roundbooks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` roundbooks.
+     */
+    skip?: number
+    distinct?: RoundbooksScalarFieldEnum | RoundbooksScalarFieldEnum[]
+  }
+
+  /**
+   * roundbooks create
+   */
+  export type roundbooksCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the roundbooks
+     */
+    select?: roundbooksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the roundbooks
+     */
+    omit?: roundbooksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: roundbooksInclude<ExtArgs> | null
+    /**
+     * The data needed to create a roundbooks.
+     */
+    data: XOR<roundbooksCreateInput, roundbooksUncheckedCreateInput>
+  }
+
+  /**
+   * roundbooks createMany
+   */
+  export type roundbooksCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many roundbooks.
+     */
+    data: roundbooksCreateManyInput | roundbooksCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * roundbooks update
+   */
+  export type roundbooksUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the roundbooks
+     */
+    select?: roundbooksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the roundbooks
+     */
+    omit?: roundbooksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: roundbooksInclude<ExtArgs> | null
+    /**
+     * The data needed to update a roundbooks.
+     */
+    data: XOR<roundbooksUpdateInput, roundbooksUncheckedUpdateInput>
+    /**
+     * Choose, which roundbooks to update.
+     */
+    where: roundbooksWhereUniqueInput
+  }
+
+  /**
+   * roundbooks updateMany
+   */
+  export type roundbooksUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update roundbooks.
+     */
+    data: XOR<roundbooksUpdateManyMutationInput, roundbooksUncheckedUpdateManyInput>
+    /**
+     * Filter which roundbooks to update
+     */
+    where?: roundbooksWhereInput
+    /**
+     * Limit how many roundbooks to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * roundbooks upsert
+   */
+  export type roundbooksUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the roundbooks
+     */
+    select?: roundbooksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the roundbooks
+     */
+    omit?: roundbooksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: roundbooksInclude<ExtArgs> | null
+    /**
+     * The filter to search for the roundbooks to update in case it exists.
+     */
+    where: roundbooksWhereUniqueInput
+    /**
+     * In case the roundbooks found by the `where` argument doesn't exist, create a new roundbooks with this data.
+     */
+    create: XOR<roundbooksCreateInput, roundbooksUncheckedCreateInput>
+    /**
+     * In case the roundbooks was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<roundbooksUpdateInput, roundbooksUncheckedUpdateInput>
+  }
+
+  /**
+   * roundbooks delete
+   */
+  export type roundbooksDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the roundbooks
+     */
+    select?: roundbooksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the roundbooks
+     */
+    omit?: roundbooksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: roundbooksInclude<ExtArgs> | null
+    /**
+     * Filter which roundbooks to delete.
+     */
+    where: roundbooksWhereUniqueInput
+  }
+
+  /**
+   * roundbooks deleteMany
+   */
+  export type roundbooksDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which roundbooks to delete
+     */
+    where?: roundbooksWhereInput
+    /**
+     * Limit how many roundbooks to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * roundbooks.round_records
+   */
+  export type roundbooks$round_recordsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the roundrecords
+     */
+    select?: roundrecordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the roundrecords
+     */
+    omit?: roundrecordsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: roundrecordsInclude<ExtArgs> | null
+    where?: roundrecordsWhereInput
+    orderBy?: roundrecordsOrderByWithRelationInput | roundrecordsOrderByWithRelationInput[]
+    cursor?: roundrecordsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: RoundrecordsScalarFieldEnum | RoundrecordsScalarFieldEnum[]
+  }
+
+  /**
+   * roundbooks without action
+   */
+  export type roundbooksDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the roundbooks
+     */
+    select?: roundbooksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the roundbooks
+     */
+    omit?: roundbooksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: roundbooksInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model roundrecords
+   */
+
+  export type AggregateRoundrecords = {
+    _count: RoundrecordsCountAggregateOutputType | null
+    _avg: RoundrecordsAvgAggregateOutputType | null
+    _sum: RoundrecordsSumAggregateOutputType | null
+    _min: RoundrecordsMinAggregateOutputType | null
+    _max: RoundrecordsMaxAggregateOutputType | null
+  }
+
+  export type RoundrecordsAvgAggregateOutputType = {
+    id: number | null
+    roundbookId: number | null
+    bookshop_id: number | null
+    totalprice: number | null
+  }
+
+  export type RoundrecordsSumAggregateOutputType = {
+    id: number | null
+    roundbookId: number | null
+    bookshop_id: number | null
+    totalprice: number | null
+  }
+
+  export type RoundrecordsMinAggregateOutputType = {
+    id: number | null
+    status: string | null
+    roundbookId: number | null
+    bookshop_id: number | null
+    totalprice: number | null
+    is_deleted: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type RoundrecordsMaxAggregateOutputType = {
+    id: number | null
+    status: string | null
+    roundbookId: number | null
+    bookshop_id: number | null
+    totalprice: number | null
+    is_deleted: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type RoundrecordsCountAggregateOutputType = {
+    id: number
+    status: number
+    roundbookId: number
+    bookshop_id: number
+    totalprice: number
+    is_deleted: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type RoundrecordsAvgAggregateInputType = {
+    id?: true
+    roundbookId?: true
+    bookshop_id?: true
+    totalprice?: true
+  }
+
+  export type RoundrecordsSumAggregateInputType = {
+    id?: true
+    roundbookId?: true
+    bookshop_id?: true
+    totalprice?: true
+  }
+
+  export type RoundrecordsMinAggregateInputType = {
+    id?: true
+    status?: true
+    roundbookId?: true
+    bookshop_id?: true
+    totalprice?: true
+    is_deleted?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type RoundrecordsMaxAggregateInputType = {
+    id?: true
+    status?: true
+    roundbookId?: true
+    bookshop_id?: true
+    totalprice?: true
+    is_deleted?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type RoundrecordsCountAggregateInputType = {
+    id?: true
+    status?: true
+    roundbookId?: true
+    bookshop_id?: true
+    totalprice?: true
+    is_deleted?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type RoundrecordsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which roundrecords to aggregate.
+     */
+    where?: roundrecordsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of roundrecords to fetch.
+     */
+    orderBy?: roundrecordsOrderByWithRelationInput | roundrecordsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: roundrecordsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` roundrecords from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` roundrecords.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned roundrecords
+    **/
+    _count?: true | RoundrecordsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: RoundrecordsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: RoundrecordsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: RoundrecordsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: RoundrecordsMaxAggregateInputType
+  }
+
+  export type GetRoundrecordsAggregateType<T extends RoundrecordsAggregateArgs> = {
+        [P in keyof T & keyof AggregateRoundrecords]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRoundrecords[P]>
+      : GetScalarType<T[P], AggregateRoundrecords[P]>
+  }
+
+
+
+
+  export type roundrecordsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: roundrecordsWhereInput
+    orderBy?: roundrecordsOrderByWithAggregationInput | roundrecordsOrderByWithAggregationInput[]
+    by: RoundrecordsScalarFieldEnum[] | RoundrecordsScalarFieldEnum
+    having?: roundrecordsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: RoundrecordsCountAggregateInputType | true
+    _avg?: RoundrecordsAvgAggregateInputType
+    _sum?: RoundrecordsSumAggregateInputType
+    _min?: RoundrecordsMinAggregateInputType
+    _max?: RoundrecordsMaxAggregateInputType
+  }
+
+  export type RoundrecordsGroupByOutputType = {
+    id: number
+    status: string
+    roundbookId: number
+    bookshop_id: number | null
+    totalprice: number | null
+    is_deleted: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: RoundrecordsCountAggregateOutputType | null
+    _avg: RoundrecordsAvgAggregateOutputType | null
+    _sum: RoundrecordsSumAggregateOutputType | null
+    _min: RoundrecordsMinAggregateOutputType | null
+    _max: RoundrecordsMaxAggregateOutputType | null
+  }
+
+  type GetRoundrecordsGroupByPayload<T extends roundrecordsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<RoundrecordsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof RoundrecordsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], RoundrecordsGroupByOutputType[P]>
+            : GetScalarType<T[P], RoundrecordsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type roundrecordsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    status?: boolean
+    roundbookId?: boolean
+    bookshop_id?: boolean
+    totalprice?: boolean
+    is_deleted?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    RoundBooks?: boolean | roundbooksDefaultArgs<ExtArgs>
+    round_payments?: boolean | roundrecords$round_paymentsArgs<ExtArgs>
+    bookshop?: boolean | roundrecords$bookshopArgs<ExtArgs>
+    _count?: boolean | RoundrecordsCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["roundrecords"]>
+
+
+
+  export type roundrecordsSelectScalar = {
+    id?: boolean
+    status?: boolean
+    roundbookId?: boolean
+    bookshop_id?: boolean
+    totalprice?: boolean
+    is_deleted?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type roundrecordsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "status" | "roundbookId" | "bookshop_id" | "totalprice" | "is_deleted" | "createdAt" | "updatedAt", ExtArgs["result"]["roundrecords"]>
+  export type roundrecordsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    RoundBooks?: boolean | roundbooksDefaultArgs<ExtArgs>
+    round_payments?: boolean | roundrecords$round_paymentsArgs<ExtArgs>
+    bookshop?: boolean | roundrecords$bookshopArgs<ExtArgs>
+    _count?: boolean | RoundrecordsCountOutputTypeDefaultArgs<ExtArgs>
+  }
+
+  export type $roundrecordsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "roundrecords"
+    objects: {
+      RoundBooks: Prisma.$roundbooksPayload<ExtArgs>
+      round_payments: Prisma.$round_paymentsPayload<ExtArgs>[]
+      bookshop: Prisma.$bookshopesPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      status: string
+      roundbookId: number
+      bookshop_id: number | null
+      totalprice: number | null
+      is_deleted: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["roundrecords"]>
+    composites: {}
+  }
+
+  type roundrecordsGetPayload<S extends boolean | null | undefined | roundrecordsDefaultArgs> = $Result.GetResult<Prisma.$roundrecordsPayload, S>
+
+  type roundrecordsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<roundrecordsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: RoundrecordsCountAggregateInputType | true
+    }
+
+  export interface roundrecordsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['roundrecords'], meta: { name: 'roundrecords' } }
+    /**
+     * Find zero or one Roundrecords that matches the filter.
+     * @param {roundrecordsFindUniqueArgs} args - Arguments to find a Roundrecords
+     * @example
+     * // Get one Roundrecords
+     * const roundrecords = await prisma.roundrecords.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends roundrecordsFindUniqueArgs>(args: SelectSubset<T, roundrecordsFindUniqueArgs<ExtArgs>>): Prisma__roundrecordsClient<$Result.GetResult<Prisma.$roundrecordsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Roundrecords that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {roundrecordsFindUniqueOrThrowArgs} args - Arguments to find a Roundrecords
+     * @example
+     * // Get one Roundrecords
+     * const roundrecords = await prisma.roundrecords.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends roundrecordsFindUniqueOrThrowArgs>(args: SelectSubset<T, roundrecordsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__roundrecordsClient<$Result.GetResult<Prisma.$roundrecordsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Roundrecords that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {roundrecordsFindFirstArgs} args - Arguments to find a Roundrecords
+     * @example
+     * // Get one Roundrecords
+     * const roundrecords = await prisma.roundrecords.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends roundrecordsFindFirstArgs>(args?: SelectSubset<T, roundrecordsFindFirstArgs<ExtArgs>>): Prisma__roundrecordsClient<$Result.GetResult<Prisma.$roundrecordsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Roundrecords that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {roundrecordsFindFirstOrThrowArgs} args - Arguments to find a Roundrecords
+     * @example
+     * // Get one Roundrecords
+     * const roundrecords = await prisma.roundrecords.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends roundrecordsFindFirstOrThrowArgs>(args?: SelectSubset<T, roundrecordsFindFirstOrThrowArgs<ExtArgs>>): Prisma__roundrecordsClient<$Result.GetResult<Prisma.$roundrecordsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Roundrecords that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {roundrecordsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Roundrecords
+     * const roundrecords = await prisma.roundrecords.findMany()
+     * 
+     * // Get first 10 Roundrecords
+     * const roundrecords = await prisma.roundrecords.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const roundrecordsWithIdOnly = await prisma.roundrecords.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends roundrecordsFindManyArgs>(args?: SelectSubset<T, roundrecordsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$roundrecordsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Roundrecords.
+     * @param {roundrecordsCreateArgs} args - Arguments to create a Roundrecords.
+     * @example
+     * // Create one Roundrecords
+     * const Roundrecords = await prisma.roundrecords.create({
+     *   data: {
+     *     // ... data to create a Roundrecords
+     *   }
+     * })
+     * 
+     */
+    create<T extends roundrecordsCreateArgs>(args: SelectSubset<T, roundrecordsCreateArgs<ExtArgs>>): Prisma__roundrecordsClient<$Result.GetResult<Prisma.$roundrecordsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Roundrecords.
+     * @param {roundrecordsCreateManyArgs} args - Arguments to create many Roundrecords.
+     * @example
+     * // Create many Roundrecords
+     * const roundrecords = await prisma.roundrecords.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends roundrecordsCreateManyArgs>(args?: SelectSubset<T, roundrecordsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Roundrecords.
+     * @param {roundrecordsDeleteArgs} args - Arguments to delete one Roundrecords.
+     * @example
+     * // Delete one Roundrecords
+     * const Roundrecords = await prisma.roundrecords.delete({
+     *   where: {
+     *     // ... filter to delete one Roundrecords
+     *   }
+     * })
+     * 
+     */
+    delete<T extends roundrecordsDeleteArgs>(args: SelectSubset<T, roundrecordsDeleteArgs<ExtArgs>>): Prisma__roundrecordsClient<$Result.GetResult<Prisma.$roundrecordsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Roundrecords.
+     * @param {roundrecordsUpdateArgs} args - Arguments to update one Roundrecords.
+     * @example
+     * // Update one Roundrecords
+     * const roundrecords = await prisma.roundrecords.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends roundrecordsUpdateArgs>(args: SelectSubset<T, roundrecordsUpdateArgs<ExtArgs>>): Prisma__roundrecordsClient<$Result.GetResult<Prisma.$roundrecordsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Roundrecords.
+     * @param {roundrecordsDeleteManyArgs} args - Arguments to filter Roundrecords to delete.
+     * @example
+     * // Delete a few Roundrecords
+     * const { count } = await prisma.roundrecords.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends roundrecordsDeleteManyArgs>(args?: SelectSubset<T, roundrecordsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Roundrecords.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {roundrecordsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Roundrecords
+     * const roundrecords = await prisma.roundrecords.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends roundrecordsUpdateManyArgs>(args: SelectSubset<T, roundrecordsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Roundrecords.
+     * @param {roundrecordsUpsertArgs} args - Arguments to update or create a Roundrecords.
+     * @example
+     * // Update or create a Roundrecords
+     * const roundrecords = await prisma.roundrecords.upsert({
+     *   create: {
+     *     // ... data to create a Roundrecords
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Roundrecords we want to update
+     *   }
+     * })
+     */
+    upsert<T extends roundrecordsUpsertArgs>(args: SelectSubset<T, roundrecordsUpsertArgs<ExtArgs>>): Prisma__roundrecordsClient<$Result.GetResult<Prisma.$roundrecordsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Roundrecords.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {roundrecordsCountArgs} args - Arguments to filter Roundrecords to count.
+     * @example
+     * // Count the number of Roundrecords
+     * const count = await prisma.roundrecords.count({
+     *   where: {
+     *     // ... the filter for the Roundrecords we want to count
+     *   }
+     * })
+    **/
+    count<T extends roundrecordsCountArgs>(
+      args?: Subset<T, roundrecordsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], RoundrecordsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Roundrecords.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoundrecordsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends RoundrecordsAggregateArgs>(args: Subset<T, RoundrecordsAggregateArgs>): Prisma.PrismaPromise<GetRoundrecordsAggregateType<T>>
+
+    /**
+     * Group by Roundrecords.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {roundrecordsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends roundrecordsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: roundrecordsGroupByArgs['orderBy'] }
+        : { orderBy?: roundrecordsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, roundrecordsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRoundrecordsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the roundrecords model
+   */
+  readonly fields: roundrecordsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for roundrecords.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__roundrecordsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    RoundBooks<T extends roundbooksDefaultArgs<ExtArgs> = {}>(args?: Subset<T, roundbooksDefaultArgs<ExtArgs>>): Prisma__roundbooksClient<$Result.GetResult<Prisma.$roundbooksPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    round_payments<T extends roundrecords$round_paymentsArgs<ExtArgs> = {}>(args?: Subset<T, roundrecords$round_paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$round_paymentsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    bookshop<T extends roundrecords$bookshopArgs<ExtArgs> = {}>(args?: Subset<T, roundrecords$bookshopArgs<ExtArgs>>): Prisma__bookshopesClient<$Result.GetResult<Prisma.$bookshopesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the roundrecords model
+   */
+  interface roundrecordsFieldRefs {
+    readonly id: FieldRef<"roundrecords", 'Int'>
+    readonly status: FieldRef<"roundrecords", 'String'>
+    readonly roundbookId: FieldRef<"roundrecords", 'Int'>
+    readonly bookshop_id: FieldRef<"roundrecords", 'Int'>
+    readonly totalprice: FieldRef<"roundrecords", 'Float'>
+    readonly is_deleted: FieldRef<"roundrecords", 'Boolean'>
+    readonly createdAt: FieldRef<"roundrecords", 'DateTime'>
+    readonly updatedAt: FieldRef<"roundrecords", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * roundrecords findUnique
+   */
+  export type roundrecordsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the roundrecords
+     */
+    select?: roundrecordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the roundrecords
+     */
+    omit?: roundrecordsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: roundrecordsInclude<ExtArgs> | null
+    /**
+     * Filter, which roundrecords to fetch.
+     */
+    where: roundrecordsWhereUniqueInput
+  }
+
+  /**
+   * roundrecords findUniqueOrThrow
+   */
+  export type roundrecordsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the roundrecords
+     */
+    select?: roundrecordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the roundrecords
+     */
+    omit?: roundrecordsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: roundrecordsInclude<ExtArgs> | null
+    /**
+     * Filter, which roundrecords to fetch.
+     */
+    where: roundrecordsWhereUniqueInput
+  }
+
+  /**
+   * roundrecords findFirst
+   */
+  export type roundrecordsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the roundrecords
+     */
+    select?: roundrecordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the roundrecords
+     */
+    omit?: roundrecordsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: roundrecordsInclude<ExtArgs> | null
+    /**
+     * Filter, which roundrecords to fetch.
+     */
+    where?: roundrecordsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of roundrecords to fetch.
+     */
+    orderBy?: roundrecordsOrderByWithRelationInput | roundrecordsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for roundrecords.
+     */
+    cursor?: roundrecordsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` roundrecords from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` roundrecords.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of roundrecords.
+     */
+    distinct?: RoundrecordsScalarFieldEnum | RoundrecordsScalarFieldEnum[]
+  }
+
+  /**
+   * roundrecords findFirstOrThrow
+   */
+  export type roundrecordsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the roundrecords
+     */
+    select?: roundrecordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the roundrecords
+     */
+    omit?: roundrecordsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: roundrecordsInclude<ExtArgs> | null
+    /**
+     * Filter, which roundrecords to fetch.
+     */
+    where?: roundrecordsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of roundrecords to fetch.
+     */
+    orderBy?: roundrecordsOrderByWithRelationInput | roundrecordsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for roundrecords.
+     */
+    cursor?: roundrecordsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` roundrecords from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` roundrecords.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of roundrecords.
+     */
+    distinct?: RoundrecordsScalarFieldEnum | RoundrecordsScalarFieldEnum[]
+  }
+
+  /**
+   * roundrecords findMany
+   */
+  export type roundrecordsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the roundrecords
+     */
+    select?: roundrecordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the roundrecords
+     */
+    omit?: roundrecordsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: roundrecordsInclude<ExtArgs> | null
+    /**
+     * Filter, which roundrecords to fetch.
+     */
+    where?: roundrecordsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of roundrecords to fetch.
+     */
+    orderBy?: roundrecordsOrderByWithRelationInput | roundrecordsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing roundrecords.
+     */
+    cursor?: roundrecordsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` roundrecords from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` roundrecords.
+     */
+    skip?: number
+    distinct?: RoundrecordsScalarFieldEnum | RoundrecordsScalarFieldEnum[]
+  }
+
+  /**
+   * roundrecords create
+   */
+  export type roundrecordsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the roundrecords
+     */
+    select?: roundrecordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the roundrecords
+     */
+    omit?: roundrecordsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: roundrecordsInclude<ExtArgs> | null
+    /**
+     * The data needed to create a roundrecords.
+     */
+    data: XOR<roundrecordsCreateInput, roundrecordsUncheckedCreateInput>
+  }
+
+  /**
+   * roundrecords createMany
+   */
+  export type roundrecordsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many roundrecords.
+     */
+    data: roundrecordsCreateManyInput | roundrecordsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * roundrecords update
+   */
+  export type roundrecordsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the roundrecords
+     */
+    select?: roundrecordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the roundrecords
+     */
+    omit?: roundrecordsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: roundrecordsInclude<ExtArgs> | null
+    /**
+     * The data needed to update a roundrecords.
+     */
+    data: XOR<roundrecordsUpdateInput, roundrecordsUncheckedUpdateInput>
+    /**
+     * Choose, which roundrecords to update.
+     */
+    where: roundrecordsWhereUniqueInput
+  }
+
+  /**
+   * roundrecords updateMany
+   */
+  export type roundrecordsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update roundrecords.
+     */
+    data: XOR<roundrecordsUpdateManyMutationInput, roundrecordsUncheckedUpdateManyInput>
+    /**
+     * Filter which roundrecords to update
+     */
+    where?: roundrecordsWhereInput
+    /**
+     * Limit how many roundrecords to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * roundrecords upsert
+   */
+  export type roundrecordsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the roundrecords
+     */
+    select?: roundrecordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the roundrecords
+     */
+    omit?: roundrecordsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: roundrecordsInclude<ExtArgs> | null
+    /**
+     * The filter to search for the roundrecords to update in case it exists.
+     */
+    where: roundrecordsWhereUniqueInput
+    /**
+     * In case the roundrecords found by the `where` argument doesn't exist, create a new roundrecords with this data.
+     */
+    create: XOR<roundrecordsCreateInput, roundrecordsUncheckedCreateInput>
+    /**
+     * In case the roundrecords was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<roundrecordsUpdateInput, roundrecordsUncheckedUpdateInput>
+  }
+
+  /**
+   * roundrecords delete
+   */
+  export type roundrecordsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the roundrecords
+     */
+    select?: roundrecordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the roundrecords
+     */
+    omit?: roundrecordsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: roundrecordsInclude<ExtArgs> | null
+    /**
+     * Filter which roundrecords to delete.
+     */
+    where: roundrecordsWhereUniqueInput
+  }
+
+  /**
+   * roundrecords deleteMany
+   */
+  export type roundrecordsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which roundrecords to delete
+     */
+    where?: roundrecordsWhereInput
+    /**
+     * Limit how many roundrecords to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * roundrecords.round_payments
+   */
+  export type roundrecords$round_paymentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the round_payments
+     */
+    select?: round_paymentsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the round_payments
+     */
+    omit?: round_paymentsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: round_paymentsInclude<ExtArgs> | null
+    where?: round_paymentsWhereInput
+    orderBy?: round_paymentsOrderByWithRelationInput | round_paymentsOrderByWithRelationInput[]
+    cursor?: round_paymentsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Round_paymentsScalarFieldEnum | Round_paymentsScalarFieldEnum[]
+  }
+
+  /**
+   * roundrecords.bookshop
+   */
+  export type roundrecords$bookshopArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the bookshopes
+     */
+    select?: bookshopesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the bookshopes
+     */
+    omit?: bookshopesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: bookshopesInclude<ExtArgs> | null
+    where?: bookshopesWhereInput
+  }
+
+  /**
+   * roundrecords without action
+   */
+  export type roundrecordsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the roundrecords
+     */
+    select?: roundrecordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the roundrecords
+     */
+    omit?: roundrecordsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: roundrecordsInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model round_payments
+   */
+
+  export type AggregateRound_payments = {
+    _count: Round_paymentsCountAggregateOutputType | null
+    _avg: Round_paymentsAvgAggregateOutputType | null
+    _sum: Round_paymentsSumAggregateOutputType | null
+    _min: Round_paymentsMinAggregateOutputType | null
+    _max: Round_paymentsMaxAggregateOutputType | null
+  }
+
+  export type Round_paymentsAvgAggregateOutputType = {
+    id: number | null
+    shopId: number | null
+    amount: number | null
+    checkId: number | null
+    roundrecordId: number | null
+  }
+
+  export type Round_paymentsSumAggregateOutputType = {
+    id: number | null
+    shopId: number | null
+    amount: number | null
+    checkId: number | null
+    roundrecordId: number | null
+  }
+
+  export type Round_paymentsMinAggregateOutputType = {
+    id: number | null
+    shopId: number | null
+    amount: number | null
+    payment_type: string | null
+    checkId: number | null
+    status: string | null
+    is_deleted: boolean | null
+    updatedAt: Date | null
+    createdAt: Date | null
+    deletedAt: Date | null
+    orderid: string | null
+    roundrecordId: number | null
+    memo: string | null
+  }
+
+  export type Round_paymentsMaxAggregateOutputType = {
+    id: number | null
+    shopId: number | null
+    amount: number | null
+    payment_type: string | null
+    checkId: number | null
+    status: string | null
+    is_deleted: boolean | null
+    updatedAt: Date | null
+    createdAt: Date | null
+    deletedAt: Date | null
+    orderid: string | null
+    roundrecordId: number | null
+    memo: string | null
+  }
+
+  export type Round_paymentsCountAggregateOutputType = {
+    id: number
+    shopId: number
+    amount: number
+    payment_type: number
+    checkId: number
+    status: number
+    is_deleted: number
+    updatedAt: number
+    createdAt: number
+    deletedAt: number
+    orderid: number
+    roundrecordId: number
+    memo: number
+    _all: number
+  }
+
+
+  export type Round_paymentsAvgAggregateInputType = {
+    id?: true
+    shopId?: true
+    amount?: true
+    checkId?: true
+    roundrecordId?: true
+  }
+
+  export type Round_paymentsSumAggregateInputType = {
+    id?: true
+    shopId?: true
+    amount?: true
+    checkId?: true
+    roundrecordId?: true
+  }
+
+  export type Round_paymentsMinAggregateInputType = {
+    id?: true
+    shopId?: true
+    amount?: true
+    payment_type?: true
+    checkId?: true
+    status?: true
+    is_deleted?: true
+    updatedAt?: true
+    createdAt?: true
+    deletedAt?: true
+    orderid?: true
+    roundrecordId?: true
+    memo?: true
+  }
+
+  export type Round_paymentsMaxAggregateInputType = {
+    id?: true
+    shopId?: true
+    amount?: true
+    payment_type?: true
+    checkId?: true
+    status?: true
+    is_deleted?: true
+    updatedAt?: true
+    createdAt?: true
+    deletedAt?: true
+    orderid?: true
+    roundrecordId?: true
+    memo?: true
+  }
+
+  export type Round_paymentsCountAggregateInputType = {
+    id?: true
+    shopId?: true
+    amount?: true
+    payment_type?: true
+    checkId?: true
+    status?: true
+    is_deleted?: true
+    updatedAt?: true
+    createdAt?: true
+    deletedAt?: true
+    orderid?: true
+    roundrecordId?: true
+    memo?: true
+    _all?: true
+  }
+
+  export type Round_paymentsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which round_payments to aggregate.
+     */
+    where?: round_paymentsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of round_payments to fetch.
+     */
+    orderBy?: round_paymentsOrderByWithRelationInput | round_paymentsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: round_paymentsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` round_payments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` round_payments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned round_payments
+    **/
+    _count?: true | Round_paymentsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: Round_paymentsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: Round_paymentsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Round_paymentsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Round_paymentsMaxAggregateInputType
+  }
+
+  export type GetRound_paymentsAggregateType<T extends Round_paymentsAggregateArgs> = {
+        [P in keyof T & keyof AggregateRound_payments]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRound_payments[P]>
+      : GetScalarType<T[P], AggregateRound_payments[P]>
+  }
+
+
+
+
+  export type round_paymentsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: round_paymentsWhereInput
+    orderBy?: round_paymentsOrderByWithAggregationInput | round_paymentsOrderByWithAggregationInput[]
+    by: Round_paymentsScalarFieldEnum[] | Round_paymentsScalarFieldEnum
+    having?: round_paymentsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Round_paymentsCountAggregateInputType | true
+    _avg?: Round_paymentsAvgAggregateInputType
+    _sum?: Round_paymentsSumAggregateInputType
+    _min?: Round_paymentsMinAggregateInputType
+    _max?: Round_paymentsMaxAggregateInputType
+  }
+
+  export type Round_paymentsGroupByOutputType = {
+    id: number
+    shopId: number
+    amount: number
+    payment_type: string
+    checkId: number | null
+    status: string
+    is_deleted: boolean
+    updatedAt: Date
+    createdAt: Date
+    deletedAt: Date
+    orderid: string | null
+    roundrecordId: number
+    memo: string | null
+    _count: Round_paymentsCountAggregateOutputType | null
+    _avg: Round_paymentsAvgAggregateOutputType | null
+    _sum: Round_paymentsSumAggregateOutputType | null
+    _min: Round_paymentsMinAggregateOutputType | null
+    _max: Round_paymentsMaxAggregateOutputType | null
+  }
+
+  type GetRound_paymentsGroupByPayload<T extends round_paymentsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Round_paymentsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Round_paymentsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Round_paymentsGroupByOutputType[P]>
+            : GetScalarType<T[P], Round_paymentsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type round_paymentsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    shopId?: boolean
+    amount?: boolean
+    payment_type?: boolean
+    checkId?: boolean
+    status?: boolean
+    is_deleted?: boolean
+    updatedAt?: boolean
+    createdAt?: boolean
+    deletedAt?: boolean
+    orderid?: boolean
+    roundrecordId?: boolean
+    memo?: boolean
+    roundrecord?: boolean | roundrecordsDefaultArgs<ExtArgs>
+    check?: boolean | round_payments$checkArgs<ExtArgs>
+  }, ExtArgs["result"]["round_payments"]>
+
+
+
+  export type round_paymentsSelectScalar = {
+    id?: boolean
+    shopId?: boolean
+    amount?: boolean
+    payment_type?: boolean
+    checkId?: boolean
+    status?: boolean
+    is_deleted?: boolean
+    updatedAt?: boolean
+    createdAt?: boolean
+    deletedAt?: boolean
+    orderid?: boolean
+    roundrecordId?: boolean
+    memo?: boolean
+  }
+
+  export type round_paymentsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "shopId" | "amount" | "payment_type" | "checkId" | "status" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt" | "orderid" | "roundrecordId" | "memo", ExtArgs["result"]["round_payments"]>
+  export type round_paymentsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    roundrecord?: boolean | roundrecordsDefaultArgs<ExtArgs>
+    check?: boolean | round_payments$checkArgs<ExtArgs>
+  }
+
+  export type $round_paymentsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "round_payments"
+    objects: {
+      roundrecord: Prisma.$roundrecordsPayload<ExtArgs>
+      check: Prisma.$round_checksPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      shopId: number
+      amount: number
+      payment_type: string
+      checkId: number | null
+      status: string
+      is_deleted: boolean
+      updatedAt: Date
+      createdAt: Date
+      deletedAt: Date
+      orderid: string | null
+      roundrecordId: number
+      memo: string | null
+    }, ExtArgs["result"]["round_payments"]>
+    composites: {}
+  }
+
+  type round_paymentsGetPayload<S extends boolean | null | undefined | round_paymentsDefaultArgs> = $Result.GetResult<Prisma.$round_paymentsPayload, S>
+
+  type round_paymentsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<round_paymentsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Round_paymentsCountAggregateInputType | true
+    }
+
+  export interface round_paymentsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['round_payments'], meta: { name: 'round_payments' } }
+    /**
+     * Find zero or one Round_payments that matches the filter.
+     * @param {round_paymentsFindUniqueArgs} args - Arguments to find a Round_payments
+     * @example
+     * // Get one Round_payments
+     * const round_payments = await prisma.round_payments.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends round_paymentsFindUniqueArgs>(args: SelectSubset<T, round_paymentsFindUniqueArgs<ExtArgs>>): Prisma__round_paymentsClient<$Result.GetResult<Prisma.$round_paymentsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Round_payments that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {round_paymentsFindUniqueOrThrowArgs} args - Arguments to find a Round_payments
+     * @example
+     * // Get one Round_payments
+     * const round_payments = await prisma.round_payments.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends round_paymentsFindUniqueOrThrowArgs>(args: SelectSubset<T, round_paymentsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__round_paymentsClient<$Result.GetResult<Prisma.$round_paymentsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Round_payments that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {round_paymentsFindFirstArgs} args - Arguments to find a Round_payments
+     * @example
+     * // Get one Round_payments
+     * const round_payments = await prisma.round_payments.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends round_paymentsFindFirstArgs>(args?: SelectSubset<T, round_paymentsFindFirstArgs<ExtArgs>>): Prisma__round_paymentsClient<$Result.GetResult<Prisma.$round_paymentsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Round_payments that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {round_paymentsFindFirstOrThrowArgs} args - Arguments to find a Round_payments
+     * @example
+     * // Get one Round_payments
+     * const round_payments = await prisma.round_payments.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends round_paymentsFindFirstOrThrowArgs>(args?: SelectSubset<T, round_paymentsFindFirstOrThrowArgs<ExtArgs>>): Prisma__round_paymentsClient<$Result.GetResult<Prisma.$round_paymentsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Round_payments that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {round_paymentsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Round_payments
+     * const round_payments = await prisma.round_payments.findMany()
+     * 
+     * // Get first 10 Round_payments
+     * const round_payments = await prisma.round_payments.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const round_paymentsWithIdOnly = await prisma.round_payments.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends round_paymentsFindManyArgs>(args?: SelectSubset<T, round_paymentsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$round_paymentsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Round_payments.
+     * @param {round_paymentsCreateArgs} args - Arguments to create a Round_payments.
+     * @example
+     * // Create one Round_payments
+     * const Round_payments = await prisma.round_payments.create({
+     *   data: {
+     *     // ... data to create a Round_payments
+     *   }
+     * })
+     * 
+     */
+    create<T extends round_paymentsCreateArgs>(args: SelectSubset<T, round_paymentsCreateArgs<ExtArgs>>): Prisma__round_paymentsClient<$Result.GetResult<Prisma.$round_paymentsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Round_payments.
+     * @param {round_paymentsCreateManyArgs} args - Arguments to create many Round_payments.
+     * @example
+     * // Create many Round_payments
+     * const round_payments = await prisma.round_payments.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends round_paymentsCreateManyArgs>(args?: SelectSubset<T, round_paymentsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Round_payments.
+     * @param {round_paymentsDeleteArgs} args - Arguments to delete one Round_payments.
+     * @example
+     * // Delete one Round_payments
+     * const Round_payments = await prisma.round_payments.delete({
+     *   where: {
+     *     // ... filter to delete one Round_payments
+     *   }
+     * })
+     * 
+     */
+    delete<T extends round_paymentsDeleteArgs>(args: SelectSubset<T, round_paymentsDeleteArgs<ExtArgs>>): Prisma__round_paymentsClient<$Result.GetResult<Prisma.$round_paymentsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Round_payments.
+     * @param {round_paymentsUpdateArgs} args - Arguments to update one Round_payments.
+     * @example
+     * // Update one Round_payments
+     * const round_payments = await prisma.round_payments.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends round_paymentsUpdateArgs>(args: SelectSubset<T, round_paymentsUpdateArgs<ExtArgs>>): Prisma__round_paymentsClient<$Result.GetResult<Prisma.$round_paymentsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Round_payments.
+     * @param {round_paymentsDeleteManyArgs} args - Arguments to filter Round_payments to delete.
+     * @example
+     * // Delete a few Round_payments
+     * const { count } = await prisma.round_payments.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends round_paymentsDeleteManyArgs>(args?: SelectSubset<T, round_paymentsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Round_payments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {round_paymentsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Round_payments
+     * const round_payments = await prisma.round_payments.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends round_paymentsUpdateManyArgs>(args: SelectSubset<T, round_paymentsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Round_payments.
+     * @param {round_paymentsUpsertArgs} args - Arguments to update or create a Round_payments.
+     * @example
+     * // Update or create a Round_payments
+     * const round_payments = await prisma.round_payments.upsert({
+     *   create: {
+     *     // ... data to create a Round_payments
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Round_payments we want to update
+     *   }
+     * })
+     */
+    upsert<T extends round_paymentsUpsertArgs>(args: SelectSubset<T, round_paymentsUpsertArgs<ExtArgs>>): Prisma__round_paymentsClient<$Result.GetResult<Prisma.$round_paymentsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Round_payments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {round_paymentsCountArgs} args - Arguments to filter Round_payments to count.
+     * @example
+     * // Count the number of Round_payments
+     * const count = await prisma.round_payments.count({
+     *   where: {
+     *     // ... the filter for the Round_payments we want to count
+     *   }
+     * })
+    **/
+    count<T extends round_paymentsCountArgs>(
+      args?: Subset<T, round_paymentsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Round_paymentsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Round_payments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Round_paymentsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Round_paymentsAggregateArgs>(args: Subset<T, Round_paymentsAggregateArgs>): Prisma.PrismaPromise<GetRound_paymentsAggregateType<T>>
+
+    /**
+     * Group by Round_payments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {round_paymentsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends round_paymentsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: round_paymentsGroupByArgs['orderBy'] }
+        : { orderBy?: round_paymentsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, round_paymentsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRound_paymentsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the round_payments model
+   */
+  readonly fields: round_paymentsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for round_payments.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__round_paymentsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    roundrecord<T extends roundrecordsDefaultArgs<ExtArgs> = {}>(args?: Subset<T, roundrecordsDefaultArgs<ExtArgs>>): Prisma__roundrecordsClient<$Result.GetResult<Prisma.$roundrecordsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    check<T extends round_payments$checkArgs<ExtArgs> = {}>(args?: Subset<T, round_payments$checkArgs<ExtArgs>>): Prisma__round_checksClient<$Result.GetResult<Prisma.$round_checksPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the round_payments model
+   */
+  interface round_paymentsFieldRefs {
+    readonly id: FieldRef<"round_payments", 'Int'>
+    readonly shopId: FieldRef<"round_payments", 'Int'>
+    readonly amount: FieldRef<"round_payments", 'Float'>
+    readonly payment_type: FieldRef<"round_payments", 'String'>
+    readonly checkId: FieldRef<"round_payments", 'Int'>
+    readonly status: FieldRef<"round_payments", 'String'>
+    readonly is_deleted: FieldRef<"round_payments", 'Boolean'>
+    readonly updatedAt: FieldRef<"round_payments", 'DateTime'>
+    readonly createdAt: FieldRef<"round_payments", 'DateTime'>
+    readonly deletedAt: FieldRef<"round_payments", 'DateTime'>
+    readonly orderid: FieldRef<"round_payments", 'String'>
+    readonly roundrecordId: FieldRef<"round_payments", 'Int'>
+    readonly memo: FieldRef<"round_payments", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * round_payments findUnique
+   */
+  export type round_paymentsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the round_payments
+     */
+    select?: round_paymentsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the round_payments
+     */
+    omit?: round_paymentsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: round_paymentsInclude<ExtArgs> | null
+    /**
+     * Filter, which round_payments to fetch.
+     */
+    where: round_paymentsWhereUniqueInput
+  }
+
+  /**
+   * round_payments findUniqueOrThrow
+   */
+  export type round_paymentsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the round_payments
+     */
+    select?: round_paymentsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the round_payments
+     */
+    omit?: round_paymentsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: round_paymentsInclude<ExtArgs> | null
+    /**
+     * Filter, which round_payments to fetch.
+     */
+    where: round_paymentsWhereUniqueInput
+  }
+
+  /**
+   * round_payments findFirst
+   */
+  export type round_paymentsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the round_payments
+     */
+    select?: round_paymentsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the round_payments
+     */
+    omit?: round_paymentsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: round_paymentsInclude<ExtArgs> | null
+    /**
+     * Filter, which round_payments to fetch.
+     */
+    where?: round_paymentsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of round_payments to fetch.
+     */
+    orderBy?: round_paymentsOrderByWithRelationInput | round_paymentsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for round_payments.
+     */
+    cursor?: round_paymentsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` round_payments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` round_payments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of round_payments.
+     */
+    distinct?: Round_paymentsScalarFieldEnum | Round_paymentsScalarFieldEnum[]
+  }
+
+  /**
+   * round_payments findFirstOrThrow
+   */
+  export type round_paymentsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the round_payments
+     */
+    select?: round_paymentsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the round_payments
+     */
+    omit?: round_paymentsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: round_paymentsInclude<ExtArgs> | null
+    /**
+     * Filter, which round_payments to fetch.
+     */
+    where?: round_paymentsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of round_payments to fetch.
+     */
+    orderBy?: round_paymentsOrderByWithRelationInput | round_paymentsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for round_payments.
+     */
+    cursor?: round_paymentsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` round_payments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` round_payments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of round_payments.
+     */
+    distinct?: Round_paymentsScalarFieldEnum | Round_paymentsScalarFieldEnum[]
+  }
+
+  /**
+   * round_payments findMany
+   */
+  export type round_paymentsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the round_payments
+     */
+    select?: round_paymentsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the round_payments
+     */
+    omit?: round_paymentsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: round_paymentsInclude<ExtArgs> | null
+    /**
+     * Filter, which round_payments to fetch.
+     */
+    where?: round_paymentsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of round_payments to fetch.
+     */
+    orderBy?: round_paymentsOrderByWithRelationInput | round_paymentsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing round_payments.
+     */
+    cursor?: round_paymentsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` round_payments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` round_payments.
+     */
+    skip?: number
+    distinct?: Round_paymentsScalarFieldEnum | Round_paymentsScalarFieldEnum[]
+  }
+
+  /**
+   * round_payments create
+   */
+  export type round_paymentsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the round_payments
+     */
+    select?: round_paymentsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the round_payments
+     */
+    omit?: round_paymentsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: round_paymentsInclude<ExtArgs> | null
+    /**
+     * The data needed to create a round_payments.
+     */
+    data: XOR<round_paymentsCreateInput, round_paymentsUncheckedCreateInput>
+  }
+
+  /**
+   * round_payments createMany
+   */
+  export type round_paymentsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many round_payments.
+     */
+    data: round_paymentsCreateManyInput | round_paymentsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * round_payments update
+   */
+  export type round_paymentsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the round_payments
+     */
+    select?: round_paymentsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the round_payments
+     */
+    omit?: round_paymentsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: round_paymentsInclude<ExtArgs> | null
+    /**
+     * The data needed to update a round_payments.
+     */
+    data: XOR<round_paymentsUpdateInput, round_paymentsUncheckedUpdateInput>
+    /**
+     * Choose, which round_payments to update.
+     */
+    where: round_paymentsWhereUniqueInput
+  }
+
+  /**
+   * round_payments updateMany
+   */
+  export type round_paymentsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update round_payments.
+     */
+    data: XOR<round_paymentsUpdateManyMutationInput, round_paymentsUncheckedUpdateManyInput>
+    /**
+     * Filter which round_payments to update
+     */
+    where?: round_paymentsWhereInput
+    /**
+     * Limit how many round_payments to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * round_payments upsert
+   */
+  export type round_paymentsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the round_payments
+     */
+    select?: round_paymentsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the round_payments
+     */
+    omit?: round_paymentsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: round_paymentsInclude<ExtArgs> | null
+    /**
+     * The filter to search for the round_payments to update in case it exists.
+     */
+    where: round_paymentsWhereUniqueInput
+    /**
+     * In case the round_payments found by the `where` argument doesn't exist, create a new round_payments with this data.
+     */
+    create: XOR<round_paymentsCreateInput, round_paymentsUncheckedCreateInput>
+    /**
+     * In case the round_payments was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<round_paymentsUpdateInput, round_paymentsUncheckedUpdateInput>
+  }
+
+  /**
+   * round_payments delete
+   */
+  export type round_paymentsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the round_payments
+     */
+    select?: round_paymentsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the round_payments
+     */
+    omit?: round_paymentsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: round_paymentsInclude<ExtArgs> | null
+    /**
+     * Filter which round_payments to delete.
+     */
+    where: round_paymentsWhereUniqueInput
+  }
+
+  /**
+   * round_payments deleteMany
+   */
+  export type round_paymentsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which round_payments to delete
+     */
+    where?: round_paymentsWhereInput
+    /**
+     * Limit how many round_payments to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * round_payments.check
+   */
+  export type round_payments$checkArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the round_checks
+     */
+    select?: round_checksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the round_checks
+     */
+    omit?: round_checksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: round_checksInclude<ExtArgs> | null
+    where?: round_checksWhereInput
+  }
+
+  /**
+   * round_payments without action
+   */
+  export type round_paymentsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the round_payments
+     */
+    select?: round_paymentsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the round_payments
+     */
+    omit?: round_paymentsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: round_paymentsInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model round_checks
+   */
+
+  export type AggregateRound_checks = {
+    _count: Round_checksCountAggregateOutputType | null
+    _avg: Round_checksAvgAggregateOutputType | null
+    _sum: Round_checksSumAggregateOutputType | null
+    _min: Round_checksMinAggregateOutputType | null
+    _max: Round_checksMaxAggregateOutputType | null
+  }
+
+  export type Round_checksAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type Round_checksSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type Round_checksMinAggregateOutputType = {
+    id: number | null
+    username: string | null
+    bankname: string | null
+    type: $Enums.check_types | null
+    amount: string | null
+    recordeddate: Date | null
+    memo: string | null
+    imageUrl: string | null
+    status: $Enums.check_status | null
+    is_deleted: boolean | null
+    deletedAt: Date | null
+    updatedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type Round_checksMaxAggregateOutputType = {
+    id: number | null
+    username: string | null
+    bankname: string | null
+    type: $Enums.check_types | null
+    amount: string | null
+    recordeddate: Date | null
+    memo: string | null
+    imageUrl: string | null
+    status: $Enums.check_status | null
+    is_deleted: boolean | null
+    deletedAt: Date | null
+    updatedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type Round_checksCountAggregateOutputType = {
+    id: number
+    username: number
+    bankname: number
+    type: number
+    amount: number
+    recordeddate: number
+    memo: number
+    imageUrl: number
+    status: number
+    is_deleted: number
+    deletedAt: number
+    updatedAt: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type Round_checksAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type Round_checksSumAggregateInputType = {
+    id?: true
+  }
+
+  export type Round_checksMinAggregateInputType = {
+    id?: true
+    username?: true
+    bankname?: true
+    type?: true
+    amount?: true
+    recordeddate?: true
+    memo?: true
+    imageUrl?: true
+    status?: true
+    is_deleted?: true
+    deletedAt?: true
+    updatedAt?: true
+    createdAt?: true
+  }
+
+  export type Round_checksMaxAggregateInputType = {
+    id?: true
+    username?: true
+    bankname?: true
+    type?: true
+    amount?: true
+    recordeddate?: true
+    memo?: true
+    imageUrl?: true
+    status?: true
+    is_deleted?: true
+    deletedAt?: true
+    updatedAt?: true
+    createdAt?: true
+  }
+
+  export type Round_checksCountAggregateInputType = {
+    id?: true
+    username?: true
+    bankname?: true
+    type?: true
+    amount?: true
+    recordeddate?: true
+    memo?: true
+    imageUrl?: true
+    status?: true
+    is_deleted?: true
+    deletedAt?: true
+    updatedAt?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type Round_checksAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which round_checks to aggregate.
+     */
+    where?: round_checksWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of round_checks to fetch.
+     */
+    orderBy?: round_checksOrderByWithRelationInput | round_checksOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: round_checksWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` round_checks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` round_checks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned round_checks
+    **/
+    _count?: true | Round_checksCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: Round_checksAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: Round_checksSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Round_checksMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Round_checksMaxAggregateInputType
+  }
+
+  export type GetRound_checksAggregateType<T extends Round_checksAggregateArgs> = {
+        [P in keyof T & keyof AggregateRound_checks]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRound_checks[P]>
+      : GetScalarType<T[P], AggregateRound_checks[P]>
+  }
+
+
+
+
+  export type round_checksGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: round_checksWhereInput
+    orderBy?: round_checksOrderByWithAggregationInput | round_checksOrderByWithAggregationInput[]
+    by: Round_checksScalarFieldEnum[] | Round_checksScalarFieldEnum
+    having?: round_checksScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Round_checksCountAggregateInputType | true
+    _avg?: Round_checksAvgAggregateInputType
+    _sum?: Round_checksSumAggregateInputType
+    _min?: Round_checksMinAggregateInputType
+    _max?: Round_checksMaxAggregateInputType
+  }
+
+  export type Round_checksGroupByOutputType = {
+    id: number
+    username: string | null
+    bankname: string | null
+    type: $Enums.check_types | null
+    amount: string | null
+    recordeddate: Date | null
+    memo: string | null
+    imageUrl: string | null
+    status: $Enums.check_status
+    is_deleted: boolean
+    deletedAt: Date
+    updatedAt: Date
+    createdAt: Date
+    _count: Round_checksCountAggregateOutputType | null
+    _avg: Round_checksAvgAggregateOutputType | null
+    _sum: Round_checksSumAggregateOutputType | null
+    _min: Round_checksMinAggregateOutputType | null
+    _max: Round_checksMaxAggregateOutputType | null
+  }
+
+  type GetRound_checksGroupByPayload<T extends round_checksGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Round_checksGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Round_checksGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Round_checksGroupByOutputType[P]>
+            : GetScalarType<T[P], Round_checksGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type round_checksSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    username?: boolean
+    bankname?: boolean
+    type?: boolean
+    amount?: boolean
+    recordeddate?: boolean
+    memo?: boolean
+    imageUrl?: boolean
+    status?: boolean
+    is_deleted?: boolean
+    deletedAt?: boolean
+    updatedAt?: boolean
+    createdAt?: boolean
+    round_payments?: boolean | round_checks$round_paymentsArgs<ExtArgs>
+    _count?: boolean | Round_checksCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["round_checks"]>
+
+
+
+  export type round_checksSelectScalar = {
+    id?: boolean
+    username?: boolean
+    bankname?: boolean
+    type?: boolean
+    amount?: boolean
+    recordeddate?: boolean
+    memo?: boolean
+    imageUrl?: boolean
+    status?: boolean
+    is_deleted?: boolean
+    deletedAt?: boolean
+    updatedAt?: boolean
+    createdAt?: boolean
+  }
+
+  export type round_checksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "username" | "bankname" | "type" | "amount" | "recordeddate" | "memo" | "imageUrl" | "status" | "is_deleted" | "deletedAt" | "updatedAt" | "createdAt", ExtArgs["result"]["round_checks"]>
+  export type round_checksInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    round_payments?: boolean | round_checks$round_paymentsArgs<ExtArgs>
+    _count?: boolean | Round_checksCountOutputTypeDefaultArgs<ExtArgs>
+  }
+
+  export type $round_checksPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "round_checks"
+    objects: {
+      round_payments: Prisma.$round_paymentsPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      username: string | null
+      bankname: string | null
+      type: $Enums.check_types | null
+      amount: string | null
+      recordeddate: Date | null
+      memo: string | null
+      imageUrl: string | null
+      status: $Enums.check_status
+      is_deleted: boolean
+      deletedAt: Date
+      updatedAt: Date
+      createdAt: Date
+    }, ExtArgs["result"]["round_checks"]>
+    composites: {}
+  }
+
+  type round_checksGetPayload<S extends boolean | null | undefined | round_checksDefaultArgs> = $Result.GetResult<Prisma.$round_checksPayload, S>
+
+  type round_checksCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<round_checksFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Round_checksCountAggregateInputType | true
+    }
+
+  export interface round_checksDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['round_checks'], meta: { name: 'round_checks' } }
+    /**
+     * Find zero or one Round_checks that matches the filter.
+     * @param {round_checksFindUniqueArgs} args - Arguments to find a Round_checks
+     * @example
+     * // Get one Round_checks
+     * const round_checks = await prisma.round_checks.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends round_checksFindUniqueArgs>(args: SelectSubset<T, round_checksFindUniqueArgs<ExtArgs>>): Prisma__round_checksClient<$Result.GetResult<Prisma.$round_checksPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Round_checks that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {round_checksFindUniqueOrThrowArgs} args - Arguments to find a Round_checks
+     * @example
+     * // Get one Round_checks
+     * const round_checks = await prisma.round_checks.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends round_checksFindUniqueOrThrowArgs>(args: SelectSubset<T, round_checksFindUniqueOrThrowArgs<ExtArgs>>): Prisma__round_checksClient<$Result.GetResult<Prisma.$round_checksPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Round_checks that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {round_checksFindFirstArgs} args - Arguments to find a Round_checks
+     * @example
+     * // Get one Round_checks
+     * const round_checks = await prisma.round_checks.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends round_checksFindFirstArgs>(args?: SelectSubset<T, round_checksFindFirstArgs<ExtArgs>>): Prisma__round_checksClient<$Result.GetResult<Prisma.$round_checksPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Round_checks that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {round_checksFindFirstOrThrowArgs} args - Arguments to find a Round_checks
+     * @example
+     * // Get one Round_checks
+     * const round_checks = await prisma.round_checks.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends round_checksFindFirstOrThrowArgs>(args?: SelectSubset<T, round_checksFindFirstOrThrowArgs<ExtArgs>>): Prisma__round_checksClient<$Result.GetResult<Prisma.$round_checksPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Round_checks that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {round_checksFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Round_checks
+     * const round_checks = await prisma.round_checks.findMany()
+     * 
+     * // Get first 10 Round_checks
+     * const round_checks = await prisma.round_checks.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const round_checksWithIdOnly = await prisma.round_checks.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends round_checksFindManyArgs>(args?: SelectSubset<T, round_checksFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$round_checksPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Round_checks.
+     * @param {round_checksCreateArgs} args - Arguments to create a Round_checks.
+     * @example
+     * // Create one Round_checks
+     * const Round_checks = await prisma.round_checks.create({
+     *   data: {
+     *     // ... data to create a Round_checks
+     *   }
+     * })
+     * 
+     */
+    create<T extends round_checksCreateArgs>(args: SelectSubset<T, round_checksCreateArgs<ExtArgs>>): Prisma__round_checksClient<$Result.GetResult<Prisma.$round_checksPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Round_checks.
+     * @param {round_checksCreateManyArgs} args - Arguments to create many Round_checks.
+     * @example
+     * // Create many Round_checks
+     * const round_checks = await prisma.round_checks.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends round_checksCreateManyArgs>(args?: SelectSubset<T, round_checksCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Round_checks.
+     * @param {round_checksDeleteArgs} args - Arguments to delete one Round_checks.
+     * @example
+     * // Delete one Round_checks
+     * const Round_checks = await prisma.round_checks.delete({
+     *   where: {
+     *     // ... filter to delete one Round_checks
+     *   }
+     * })
+     * 
+     */
+    delete<T extends round_checksDeleteArgs>(args: SelectSubset<T, round_checksDeleteArgs<ExtArgs>>): Prisma__round_checksClient<$Result.GetResult<Prisma.$round_checksPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Round_checks.
+     * @param {round_checksUpdateArgs} args - Arguments to update one Round_checks.
+     * @example
+     * // Update one Round_checks
+     * const round_checks = await prisma.round_checks.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends round_checksUpdateArgs>(args: SelectSubset<T, round_checksUpdateArgs<ExtArgs>>): Prisma__round_checksClient<$Result.GetResult<Prisma.$round_checksPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Round_checks.
+     * @param {round_checksDeleteManyArgs} args - Arguments to filter Round_checks to delete.
+     * @example
+     * // Delete a few Round_checks
+     * const { count } = await prisma.round_checks.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends round_checksDeleteManyArgs>(args?: SelectSubset<T, round_checksDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Round_checks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {round_checksUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Round_checks
+     * const round_checks = await prisma.round_checks.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends round_checksUpdateManyArgs>(args: SelectSubset<T, round_checksUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Round_checks.
+     * @param {round_checksUpsertArgs} args - Arguments to update or create a Round_checks.
+     * @example
+     * // Update or create a Round_checks
+     * const round_checks = await prisma.round_checks.upsert({
+     *   create: {
+     *     // ... data to create a Round_checks
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Round_checks we want to update
+     *   }
+     * })
+     */
+    upsert<T extends round_checksUpsertArgs>(args: SelectSubset<T, round_checksUpsertArgs<ExtArgs>>): Prisma__round_checksClient<$Result.GetResult<Prisma.$round_checksPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Round_checks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {round_checksCountArgs} args - Arguments to filter Round_checks to count.
+     * @example
+     * // Count the number of Round_checks
+     * const count = await prisma.round_checks.count({
+     *   where: {
+     *     // ... the filter for the Round_checks we want to count
+     *   }
+     * })
+    **/
+    count<T extends round_checksCountArgs>(
+      args?: Subset<T, round_checksCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Round_checksCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Round_checks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Round_checksAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Round_checksAggregateArgs>(args: Subset<T, Round_checksAggregateArgs>): Prisma.PrismaPromise<GetRound_checksAggregateType<T>>
+
+    /**
+     * Group by Round_checks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {round_checksGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends round_checksGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: round_checksGroupByArgs['orderBy'] }
+        : { orderBy?: round_checksGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, round_checksGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRound_checksGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the round_checks model
+   */
+  readonly fields: round_checksFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for round_checks.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__round_checksClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    round_payments<T extends round_checks$round_paymentsArgs<ExtArgs> = {}>(args?: Subset<T, round_checks$round_paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$round_paymentsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the round_checks model
+   */
+  interface round_checksFieldRefs {
+    readonly id: FieldRef<"round_checks", 'Int'>
+    readonly username: FieldRef<"round_checks", 'String'>
+    readonly bankname: FieldRef<"round_checks", 'String'>
+    readonly type: FieldRef<"round_checks", 'check_types'>
+    readonly amount: FieldRef<"round_checks", 'String'>
+    readonly recordeddate: FieldRef<"round_checks", 'DateTime'>
+    readonly memo: FieldRef<"round_checks", 'String'>
+    readonly imageUrl: FieldRef<"round_checks", 'String'>
+    readonly status: FieldRef<"round_checks", 'check_status'>
+    readonly is_deleted: FieldRef<"round_checks", 'Boolean'>
+    readonly deletedAt: FieldRef<"round_checks", 'DateTime'>
+    readonly updatedAt: FieldRef<"round_checks", 'DateTime'>
+    readonly createdAt: FieldRef<"round_checks", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * round_checks findUnique
+   */
+  export type round_checksFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the round_checks
+     */
+    select?: round_checksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the round_checks
+     */
+    omit?: round_checksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: round_checksInclude<ExtArgs> | null
+    /**
+     * Filter, which round_checks to fetch.
+     */
+    where: round_checksWhereUniqueInput
+  }
+
+  /**
+   * round_checks findUniqueOrThrow
+   */
+  export type round_checksFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the round_checks
+     */
+    select?: round_checksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the round_checks
+     */
+    omit?: round_checksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: round_checksInclude<ExtArgs> | null
+    /**
+     * Filter, which round_checks to fetch.
+     */
+    where: round_checksWhereUniqueInput
+  }
+
+  /**
+   * round_checks findFirst
+   */
+  export type round_checksFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the round_checks
+     */
+    select?: round_checksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the round_checks
+     */
+    omit?: round_checksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: round_checksInclude<ExtArgs> | null
+    /**
+     * Filter, which round_checks to fetch.
+     */
+    where?: round_checksWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of round_checks to fetch.
+     */
+    orderBy?: round_checksOrderByWithRelationInput | round_checksOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for round_checks.
+     */
+    cursor?: round_checksWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` round_checks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` round_checks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of round_checks.
+     */
+    distinct?: Round_checksScalarFieldEnum | Round_checksScalarFieldEnum[]
+  }
+
+  /**
+   * round_checks findFirstOrThrow
+   */
+  export type round_checksFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the round_checks
+     */
+    select?: round_checksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the round_checks
+     */
+    omit?: round_checksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: round_checksInclude<ExtArgs> | null
+    /**
+     * Filter, which round_checks to fetch.
+     */
+    where?: round_checksWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of round_checks to fetch.
+     */
+    orderBy?: round_checksOrderByWithRelationInput | round_checksOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for round_checks.
+     */
+    cursor?: round_checksWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` round_checks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` round_checks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of round_checks.
+     */
+    distinct?: Round_checksScalarFieldEnum | Round_checksScalarFieldEnum[]
+  }
+
+  /**
+   * round_checks findMany
+   */
+  export type round_checksFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the round_checks
+     */
+    select?: round_checksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the round_checks
+     */
+    omit?: round_checksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: round_checksInclude<ExtArgs> | null
+    /**
+     * Filter, which round_checks to fetch.
+     */
+    where?: round_checksWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of round_checks to fetch.
+     */
+    orderBy?: round_checksOrderByWithRelationInput | round_checksOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing round_checks.
+     */
+    cursor?: round_checksWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` round_checks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` round_checks.
+     */
+    skip?: number
+    distinct?: Round_checksScalarFieldEnum | Round_checksScalarFieldEnum[]
+  }
+
+  /**
+   * round_checks create
+   */
+  export type round_checksCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the round_checks
+     */
+    select?: round_checksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the round_checks
+     */
+    omit?: round_checksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: round_checksInclude<ExtArgs> | null
+    /**
+     * The data needed to create a round_checks.
+     */
+    data?: XOR<round_checksCreateInput, round_checksUncheckedCreateInput>
+  }
+
+  /**
+   * round_checks createMany
+   */
+  export type round_checksCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many round_checks.
+     */
+    data: round_checksCreateManyInput | round_checksCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * round_checks update
+   */
+  export type round_checksUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the round_checks
+     */
+    select?: round_checksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the round_checks
+     */
+    omit?: round_checksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: round_checksInclude<ExtArgs> | null
+    /**
+     * The data needed to update a round_checks.
+     */
+    data: XOR<round_checksUpdateInput, round_checksUncheckedUpdateInput>
+    /**
+     * Choose, which round_checks to update.
+     */
+    where: round_checksWhereUniqueInput
+  }
+
+  /**
+   * round_checks updateMany
+   */
+  export type round_checksUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update round_checks.
+     */
+    data: XOR<round_checksUpdateManyMutationInput, round_checksUncheckedUpdateManyInput>
+    /**
+     * Filter which round_checks to update
+     */
+    where?: round_checksWhereInput
+    /**
+     * Limit how many round_checks to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * round_checks upsert
+   */
+  export type round_checksUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the round_checks
+     */
+    select?: round_checksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the round_checks
+     */
+    omit?: round_checksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: round_checksInclude<ExtArgs> | null
+    /**
+     * The filter to search for the round_checks to update in case it exists.
+     */
+    where: round_checksWhereUniqueInput
+    /**
+     * In case the round_checks found by the `where` argument doesn't exist, create a new round_checks with this data.
+     */
+    create: XOR<round_checksCreateInput, round_checksUncheckedCreateInput>
+    /**
+     * In case the round_checks was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<round_checksUpdateInput, round_checksUncheckedUpdateInput>
+  }
+
+  /**
+   * round_checks delete
+   */
+  export type round_checksDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the round_checks
+     */
+    select?: round_checksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the round_checks
+     */
+    omit?: round_checksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: round_checksInclude<ExtArgs> | null
+    /**
+     * Filter which round_checks to delete.
+     */
+    where: round_checksWhereUniqueInput
+  }
+
+  /**
+   * round_checks deleteMany
+   */
+  export type round_checksDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which round_checks to delete
+     */
+    where?: round_checksWhereInput
+    /**
+     * Limit how many round_checks to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * round_checks.round_payments
+   */
+  export type round_checks$round_paymentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the round_payments
+     */
+    select?: round_paymentsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the round_payments
+     */
+    omit?: round_paymentsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: round_paymentsInclude<ExtArgs> | null
+    where?: round_paymentsWhereInput
+    orderBy?: round_paymentsOrderByWithRelationInput | round_paymentsOrderByWithRelationInput[]
+    cursor?: round_paymentsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Round_paymentsScalarFieldEnum | Round_paymentsScalarFieldEnum[]
+  }
+
+  /**
+   * round_checks without action
+   */
+  export type round_checksDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the round_checks
+     */
+    select?: round_checksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the round_checks
+     */
+    omit?: round_checksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: round_checksInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model print_agreements
    */
 
@@ -43438,6 +48214,73 @@ export namespace Prisma {
   export type ContractsScalarFieldEnum = (typeof ContractsScalarFieldEnum)[keyof typeof ContractsScalarFieldEnum]
 
 
+  export const RoundbooksScalarFieldEnum: {
+    id: 'id',
+    status: 'status',
+    bookId: 'bookId',
+    starting_amount: 'starting_amount',
+    returned_amount: 'returned_amount',
+    allocated: 'allocated',
+    is_deleted: 'is_deleted',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type RoundbooksScalarFieldEnum = (typeof RoundbooksScalarFieldEnum)[keyof typeof RoundbooksScalarFieldEnum]
+
+
+  export const RoundrecordsScalarFieldEnum: {
+    id: 'id',
+    status: 'status',
+    roundbookId: 'roundbookId',
+    bookshop_id: 'bookshop_id',
+    totalprice: 'totalprice',
+    is_deleted: 'is_deleted',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type RoundrecordsScalarFieldEnum = (typeof RoundrecordsScalarFieldEnum)[keyof typeof RoundrecordsScalarFieldEnum]
+
+
+  export const Round_paymentsScalarFieldEnum: {
+    id: 'id',
+    shopId: 'shopId',
+    amount: 'amount',
+    payment_type: 'payment_type',
+    checkId: 'checkId',
+    status: 'status',
+    is_deleted: 'is_deleted',
+    updatedAt: 'updatedAt',
+    createdAt: 'createdAt',
+    deletedAt: 'deletedAt',
+    orderid: 'orderid',
+    roundrecordId: 'roundrecordId',
+    memo: 'memo'
+  };
+
+  export type Round_paymentsScalarFieldEnum = (typeof Round_paymentsScalarFieldEnum)[keyof typeof Round_paymentsScalarFieldEnum]
+
+
+  export const Round_checksScalarFieldEnum: {
+    id: 'id',
+    username: 'username',
+    bankname: 'bankname',
+    type: 'type',
+    amount: 'amount',
+    recordeddate: 'recordeddate',
+    memo: 'memo',
+    imageUrl: 'imageUrl',
+    status: 'status',
+    is_deleted: 'is_deleted',
+    deletedAt: 'deletedAt',
+    updatedAt: 'updatedAt',
+    createdAt: 'createdAt'
+  };
+
+  export type Round_checksScalarFieldEnum = (typeof Round_checksScalarFieldEnum)[keyof typeof Round_checksScalarFieldEnum]
+
+
   export const Print_agreementsScalarFieldEnum: {
     id: 'id',
     bookTitle: 'bookTitle',
@@ -43803,6 +48646,34 @@ export namespace Prisma {
   };
 
   export type contractsOrderByRelevanceFieldEnum = (typeof contractsOrderByRelevanceFieldEnum)[keyof typeof contractsOrderByRelevanceFieldEnum]
+
+
+  export const roundrecordsOrderByRelevanceFieldEnum: {
+    status: 'status'
+  };
+
+  export type roundrecordsOrderByRelevanceFieldEnum = (typeof roundrecordsOrderByRelevanceFieldEnum)[keyof typeof roundrecordsOrderByRelevanceFieldEnum]
+
+
+  export const round_paymentsOrderByRelevanceFieldEnum: {
+    payment_type: 'payment_type',
+    status: 'status',
+    orderid: 'orderid',
+    memo: 'memo'
+  };
+
+  export type round_paymentsOrderByRelevanceFieldEnum = (typeof round_paymentsOrderByRelevanceFieldEnum)[keyof typeof round_paymentsOrderByRelevanceFieldEnum]
+
+
+  export const round_checksOrderByRelevanceFieldEnum: {
+    username: 'username',
+    bankname: 'bankname',
+    amount: 'amount',
+    memo: 'memo',
+    imageUrl: 'imageUrl'
+  };
+
+  export type round_checksOrderByRelevanceFieldEnum = (typeof round_checksOrderByRelevanceFieldEnum)[keyof typeof round_checksOrderByRelevanceFieldEnum]
 
 
   export const print_agreementsOrderByRelevanceFieldEnum: {
@@ -44505,6 +49376,7 @@ export namespace Prisma {
     distribution_cost?: FloatNullableFilter<"books"> | number | null
     advertisement_cost?: FloatNullableFilter<"books"> | number | null
     purchasing_right_cost?: FloatNullableFilter<"books"> | number | null
+    round_book?: RoundbooksListRelationFilter
     bookedition?: BookeditionListRelationFilter
     damagedbooks?: DamagedbooksListRelationFilter
     translatorbook?: TranslatorbookListRelationFilter
@@ -44546,6 +49418,7 @@ export namespace Prisma {
     distribution_cost?: SortOrderInput | SortOrder
     advertisement_cost?: SortOrderInput | SortOrder
     purchasing_right_cost?: SortOrderInput | SortOrder
+    round_book?: roundbooksOrderByRelationAggregateInput
     bookedition?: bookeditionOrderByRelationAggregateInput
     damagedbooks?: damagedbooksOrderByRelationAggregateInput
     translatorbook?: translatorbookOrderByRelationAggregateInput
@@ -44591,6 +49464,7 @@ export namespace Prisma {
     distribution_cost?: FloatNullableFilter<"books"> | number | null
     advertisement_cost?: FloatNullableFilter<"books"> | number | null
     purchasing_right_cost?: FloatNullableFilter<"books"> | number | null
+    round_book?: RoundbooksListRelationFilter
     bookedition?: BookeditionListRelationFilter
     damagedbooks?: DamagedbooksListRelationFilter
     translatorbook?: TranslatorbookListRelationFilter
@@ -44879,6 +49753,7 @@ export namespace Prisma {
     bookshopeditions?: BookshopeditionsListRelationFilter
     orders?: OrdersListRelationFilter
     payments?: PaymentsListRelationFilter
+    roundrecords?: RoundrecordsListRelationFilter
   }
 
   export type bookshopesOrderByWithRelationInput = {
@@ -44896,6 +49771,7 @@ export namespace Prisma {
     bookshopeditions?: bookshopeditionsOrderByRelationAggregateInput
     orders?: ordersOrderByRelationAggregateInput
     payments?: paymentsOrderByRelationAggregateInput
+    roundrecords?: roundrecordsOrderByRelationAggregateInput
     _relevance?: bookshopesOrderByRelevanceInput
   }
 
@@ -44917,6 +49793,7 @@ export namespace Prisma {
     bookshopeditions?: BookshopeditionsListRelationFilter
     orders?: OrdersListRelationFilter
     payments?: PaymentsListRelationFilter
+    roundrecords?: RoundrecordsListRelationFilter
   }, "id">
 
   export type bookshopesOrderByWithAggregationInput = {
@@ -46574,6 +51451,364 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"contracts"> | Date | string
   }
 
+  export type roundbooksWhereInput = {
+    AND?: roundbooksWhereInput | roundbooksWhereInput[]
+    OR?: roundbooksWhereInput[]
+    NOT?: roundbooksWhereInput | roundbooksWhereInput[]
+    id?: IntFilter<"roundbooks"> | number
+    status?: BoolFilter<"roundbooks"> | boolean
+    bookId?: IntFilter<"roundbooks"> | number
+    starting_amount?: IntNullableFilter<"roundbooks"> | number | null
+    returned_amount?: IntNullableFilter<"roundbooks"> | number | null
+    allocated?: BoolFilter<"roundbooks"> | boolean
+    is_deleted?: BoolFilter<"roundbooks"> | boolean
+    createdAt?: DateTimeFilter<"roundbooks"> | Date | string
+    updatedAt?: DateTimeFilter<"roundbooks"> | Date | string
+    book?: XOR<BooksScalarRelationFilter, booksWhereInput>
+    round_records?: RoundrecordsListRelationFilter
+  }
+
+  export type roundbooksOrderByWithRelationInput = {
+    id?: SortOrder
+    status?: SortOrder
+    bookId?: SortOrder
+    starting_amount?: SortOrderInput | SortOrder
+    returned_amount?: SortOrderInput | SortOrder
+    allocated?: SortOrder
+    is_deleted?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    book?: booksOrderByWithRelationInput
+    round_records?: roundrecordsOrderByRelationAggregateInput
+  }
+
+  export type roundbooksWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: roundbooksWhereInput | roundbooksWhereInput[]
+    OR?: roundbooksWhereInput[]
+    NOT?: roundbooksWhereInput | roundbooksWhereInput[]
+    status?: BoolFilter<"roundbooks"> | boolean
+    bookId?: IntFilter<"roundbooks"> | number
+    starting_amount?: IntNullableFilter<"roundbooks"> | number | null
+    returned_amount?: IntNullableFilter<"roundbooks"> | number | null
+    allocated?: BoolFilter<"roundbooks"> | boolean
+    is_deleted?: BoolFilter<"roundbooks"> | boolean
+    createdAt?: DateTimeFilter<"roundbooks"> | Date | string
+    updatedAt?: DateTimeFilter<"roundbooks"> | Date | string
+    book?: XOR<BooksScalarRelationFilter, booksWhereInput>
+    round_records?: RoundrecordsListRelationFilter
+  }, "id">
+
+  export type roundbooksOrderByWithAggregationInput = {
+    id?: SortOrder
+    status?: SortOrder
+    bookId?: SortOrder
+    starting_amount?: SortOrderInput | SortOrder
+    returned_amount?: SortOrderInput | SortOrder
+    allocated?: SortOrder
+    is_deleted?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: roundbooksCountOrderByAggregateInput
+    _avg?: roundbooksAvgOrderByAggregateInput
+    _max?: roundbooksMaxOrderByAggregateInput
+    _min?: roundbooksMinOrderByAggregateInput
+    _sum?: roundbooksSumOrderByAggregateInput
+  }
+
+  export type roundbooksScalarWhereWithAggregatesInput = {
+    AND?: roundbooksScalarWhereWithAggregatesInput | roundbooksScalarWhereWithAggregatesInput[]
+    OR?: roundbooksScalarWhereWithAggregatesInput[]
+    NOT?: roundbooksScalarWhereWithAggregatesInput | roundbooksScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"roundbooks"> | number
+    status?: BoolWithAggregatesFilter<"roundbooks"> | boolean
+    bookId?: IntWithAggregatesFilter<"roundbooks"> | number
+    starting_amount?: IntNullableWithAggregatesFilter<"roundbooks"> | number | null
+    returned_amount?: IntNullableWithAggregatesFilter<"roundbooks"> | number | null
+    allocated?: BoolWithAggregatesFilter<"roundbooks"> | boolean
+    is_deleted?: BoolWithAggregatesFilter<"roundbooks"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"roundbooks"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"roundbooks"> | Date | string
+  }
+
+  export type roundrecordsWhereInput = {
+    AND?: roundrecordsWhereInput | roundrecordsWhereInput[]
+    OR?: roundrecordsWhereInput[]
+    NOT?: roundrecordsWhereInput | roundrecordsWhereInput[]
+    id?: IntFilter<"roundrecords"> | number
+    status?: StringFilter<"roundrecords"> | string
+    roundbookId?: IntFilter<"roundrecords"> | number
+    bookshop_id?: IntNullableFilter<"roundrecords"> | number | null
+    totalprice?: FloatNullableFilter<"roundrecords"> | number | null
+    is_deleted?: BoolFilter<"roundrecords"> | boolean
+    createdAt?: DateTimeFilter<"roundrecords"> | Date | string
+    updatedAt?: DateTimeFilter<"roundrecords"> | Date | string
+    RoundBooks?: XOR<RoundbooksScalarRelationFilter, roundbooksWhereInput>
+    round_payments?: Round_paymentsListRelationFilter
+    bookshop?: XOR<BookshopesNullableScalarRelationFilter, bookshopesWhereInput> | null
+  }
+
+  export type roundrecordsOrderByWithRelationInput = {
+    id?: SortOrder
+    status?: SortOrder
+    roundbookId?: SortOrder
+    bookshop_id?: SortOrderInput | SortOrder
+    totalprice?: SortOrderInput | SortOrder
+    is_deleted?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    RoundBooks?: roundbooksOrderByWithRelationInput
+    round_payments?: round_paymentsOrderByRelationAggregateInput
+    bookshop?: bookshopesOrderByWithRelationInput
+    _relevance?: roundrecordsOrderByRelevanceInput
+  }
+
+  export type roundrecordsWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: roundrecordsWhereInput | roundrecordsWhereInput[]
+    OR?: roundrecordsWhereInput[]
+    NOT?: roundrecordsWhereInput | roundrecordsWhereInput[]
+    status?: StringFilter<"roundrecords"> | string
+    roundbookId?: IntFilter<"roundrecords"> | number
+    bookshop_id?: IntNullableFilter<"roundrecords"> | number | null
+    totalprice?: FloatNullableFilter<"roundrecords"> | number | null
+    is_deleted?: BoolFilter<"roundrecords"> | boolean
+    createdAt?: DateTimeFilter<"roundrecords"> | Date | string
+    updatedAt?: DateTimeFilter<"roundrecords"> | Date | string
+    RoundBooks?: XOR<RoundbooksScalarRelationFilter, roundbooksWhereInput>
+    round_payments?: Round_paymentsListRelationFilter
+    bookshop?: XOR<BookshopesNullableScalarRelationFilter, bookshopesWhereInput> | null
+  }, "id">
+
+  export type roundrecordsOrderByWithAggregationInput = {
+    id?: SortOrder
+    status?: SortOrder
+    roundbookId?: SortOrder
+    bookshop_id?: SortOrderInput | SortOrder
+    totalprice?: SortOrderInput | SortOrder
+    is_deleted?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: roundrecordsCountOrderByAggregateInput
+    _avg?: roundrecordsAvgOrderByAggregateInput
+    _max?: roundrecordsMaxOrderByAggregateInput
+    _min?: roundrecordsMinOrderByAggregateInput
+    _sum?: roundrecordsSumOrderByAggregateInput
+  }
+
+  export type roundrecordsScalarWhereWithAggregatesInput = {
+    AND?: roundrecordsScalarWhereWithAggregatesInput | roundrecordsScalarWhereWithAggregatesInput[]
+    OR?: roundrecordsScalarWhereWithAggregatesInput[]
+    NOT?: roundrecordsScalarWhereWithAggregatesInput | roundrecordsScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"roundrecords"> | number
+    status?: StringWithAggregatesFilter<"roundrecords"> | string
+    roundbookId?: IntWithAggregatesFilter<"roundrecords"> | number
+    bookshop_id?: IntNullableWithAggregatesFilter<"roundrecords"> | number | null
+    totalprice?: FloatNullableWithAggregatesFilter<"roundrecords"> | number | null
+    is_deleted?: BoolWithAggregatesFilter<"roundrecords"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"roundrecords"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"roundrecords"> | Date | string
+  }
+
+  export type round_paymentsWhereInput = {
+    AND?: round_paymentsWhereInput | round_paymentsWhereInput[]
+    OR?: round_paymentsWhereInput[]
+    NOT?: round_paymentsWhereInput | round_paymentsWhereInput[]
+    id?: IntFilter<"round_payments"> | number
+    shopId?: IntFilter<"round_payments"> | number
+    amount?: FloatFilter<"round_payments"> | number
+    payment_type?: StringFilter<"round_payments"> | string
+    checkId?: IntNullableFilter<"round_payments"> | number | null
+    status?: StringFilter<"round_payments"> | string
+    is_deleted?: BoolFilter<"round_payments"> | boolean
+    updatedAt?: DateTimeFilter<"round_payments"> | Date | string
+    createdAt?: DateTimeFilter<"round_payments"> | Date | string
+    deletedAt?: DateTimeFilter<"round_payments"> | Date | string
+    orderid?: StringNullableFilter<"round_payments"> | string | null
+    roundrecordId?: IntFilter<"round_payments"> | number
+    memo?: StringNullableFilter<"round_payments"> | string | null
+    roundrecord?: XOR<RoundrecordsScalarRelationFilter, roundrecordsWhereInput>
+    check?: XOR<Round_checksNullableScalarRelationFilter, round_checksWhereInput> | null
+  }
+
+  export type round_paymentsOrderByWithRelationInput = {
+    id?: SortOrder
+    shopId?: SortOrder
+    amount?: SortOrder
+    payment_type?: SortOrder
+    checkId?: SortOrderInput | SortOrder
+    status?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+    deletedAt?: SortOrder
+    orderid?: SortOrderInput | SortOrder
+    roundrecordId?: SortOrder
+    memo?: SortOrderInput | SortOrder
+    roundrecord?: roundrecordsOrderByWithRelationInput
+    check?: round_checksOrderByWithRelationInput
+    _relevance?: round_paymentsOrderByRelevanceInput
+  }
+
+  export type round_paymentsWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: round_paymentsWhereInput | round_paymentsWhereInput[]
+    OR?: round_paymentsWhereInput[]
+    NOT?: round_paymentsWhereInput | round_paymentsWhereInput[]
+    shopId?: IntFilter<"round_payments"> | number
+    amount?: FloatFilter<"round_payments"> | number
+    payment_type?: StringFilter<"round_payments"> | string
+    checkId?: IntNullableFilter<"round_payments"> | number | null
+    status?: StringFilter<"round_payments"> | string
+    is_deleted?: BoolFilter<"round_payments"> | boolean
+    updatedAt?: DateTimeFilter<"round_payments"> | Date | string
+    createdAt?: DateTimeFilter<"round_payments"> | Date | string
+    deletedAt?: DateTimeFilter<"round_payments"> | Date | string
+    orderid?: StringNullableFilter<"round_payments"> | string | null
+    roundrecordId?: IntFilter<"round_payments"> | number
+    memo?: StringNullableFilter<"round_payments"> | string | null
+    roundrecord?: XOR<RoundrecordsScalarRelationFilter, roundrecordsWhereInput>
+    check?: XOR<Round_checksNullableScalarRelationFilter, round_checksWhereInput> | null
+  }, "id">
+
+  export type round_paymentsOrderByWithAggregationInput = {
+    id?: SortOrder
+    shopId?: SortOrder
+    amount?: SortOrder
+    payment_type?: SortOrder
+    checkId?: SortOrderInput | SortOrder
+    status?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+    deletedAt?: SortOrder
+    orderid?: SortOrderInput | SortOrder
+    roundrecordId?: SortOrder
+    memo?: SortOrderInput | SortOrder
+    _count?: round_paymentsCountOrderByAggregateInput
+    _avg?: round_paymentsAvgOrderByAggregateInput
+    _max?: round_paymentsMaxOrderByAggregateInput
+    _min?: round_paymentsMinOrderByAggregateInput
+    _sum?: round_paymentsSumOrderByAggregateInput
+  }
+
+  export type round_paymentsScalarWhereWithAggregatesInput = {
+    AND?: round_paymentsScalarWhereWithAggregatesInput | round_paymentsScalarWhereWithAggregatesInput[]
+    OR?: round_paymentsScalarWhereWithAggregatesInput[]
+    NOT?: round_paymentsScalarWhereWithAggregatesInput | round_paymentsScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"round_payments"> | number
+    shopId?: IntWithAggregatesFilter<"round_payments"> | number
+    amount?: FloatWithAggregatesFilter<"round_payments"> | number
+    payment_type?: StringWithAggregatesFilter<"round_payments"> | string
+    checkId?: IntNullableWithAggregatesFilter<"round_payments"> | number | null
+    status?: StringWithAggregatesFilter<"round_payments"> | string
+    is_deleted?: BoolWithAggregatesFilter<"round_payments"> | boolean
+    updatedAt?: DateTimeWithAggregatesFilter<"round_payments"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"round_payments"> | Date | string
+    deletedAt?: DateTimeWithAggregatesFilter<"round_payments"> | Date | string
+    orderid?: StringNullableWithAggregatesFilter<"round_payments"> | string | null
+    roundrecordId?: IntWithAggregatesFilter<"round_payments"> | number
+    memo?: StringNullableWithAggregatesFilter<"round_payments"> | string | null
+  }
+
+  export type round_checksWhereInput = {
+    AND?: round_checksWhereInput | round_checksWhereInput[]
+    OR?: round_checksWhereInput[]
+    NOT?: round_checksWhereInput | round_checksWhereInput[]
+    id?: IntFilter<"round_checks"> | number
+    username?: StringNullableFilter<"round_checks"> | string | null
+    bankname?: StringNullableFilter<"round_checks"> | string | null
+    type?: Enumcheck_typesNullableFilter<"round_checks"> | $Enums.check_types | null
+    amount?: StringNullableFilter<"round_checks"> | string | null
+    recordeddate?: DateTimeNullableFilter<"round_checks"> | Date | string | null
+    memo?: StringNullableFilter<"round_checks"> | string | null
+    imageUrl?: StringNullableFilter<"round_checks"> | string | null
+    status?: Enumcheck_statusFilter<"round_checks"> | $Enums.check_status
+    is_deleted?: BoolFilter<"round_checks"> | boolean
+    deletedAt?: DateTimeFilter<"round_checks"> | Date | string
+    updatedAt?: DateTimeFilter<"round_checks"> | Date | string
+    createdAt?: DateTimeFilter<"round_checks"> | Date | string
+    round_payments?: Round_paymentsListRelationFilter
+  }
+
+  export type round_checksOrderByWithRelationInput = {
+    id?: SortOrder
+    username?: SortOrderInput | SortOrder
+    bankname?: SortOrderInput | SortOrder
+    type?: SortOrderInput | SortOrder
+    amount?: SortOrderInput | SortOrder
+    recordeddate?: SortOrderInput | SortOrder
+    memo?: SortOrderInput | SortOrder
+    imageUrl?: SortOrderInput | SortOrder
+    status?: SortOrder
+    is_deleted?: SortOrder
+    deletedAt?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+    round_payments?: round_paymentsOrderByRelationAggregateInput
+    _relevance?: round_checksOrderByRelevanceInput
+  }
+
+  export type round_checksWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: round_checksWhereInput | round_checksWhereInput[]
+    OR?: round_checksWhereInput[]
+    NOT?: round_checksWhereInput | round_checksWhereInput[]
+    username?: StringNullableFilter<"round_checks"> | string | null
+    bankname?: StringNullableFilter<"round_checks"> | string | null
+    type?: Enumcheck_typesNullableFilter<"round_checks"> | $Enums.check_types | null
+    amount?: StringNullableFilter<"round_checks"> | string | null
+    recordeddate?: DateTimeNullableFilter<"round_checks"> | Date | string | null
+    memo?: StringNullableFilter<"round_checks"> | string | null
+    imageUrl?: StringNullableFilter<"round_checks"> | string | null
+    status?: Enumcheck_statusFilter<"round_checks"> | $Enums.check_status
+    is_deleted?: BoolFilter<"round_checks"> | boolean
+    deletedAt?: DateTimeFilter<"round_checks"> | Date | string
+    updatedAt?: DateTimeFilter<"round_checks"> | Date | string
+    createdAt?: DateTimeFilter<"round_checks"> | Date | string
+    round_payments?: Round_paymentsListRelationFilter
+  }, "id">
+
+  export type round_checksOrderByWithAggregationInput = {
+    id?: SortOrder
+    username?: SortOrderInput | SortOrder
+    bankname?: SortOrderInput | SortOrder
+    type?: SortOrderInput | SortOrder
+    amount?: SortOrderInput | SortOrder
+    recordeddate?: SortOrderInput | SortOrder
+    memo?: SortOrderInput | SortOrder
+    imageUrl?: SortOrderInput | SortOrder
+    status?: SortOrder
+    is_deleted?: SortOrder
+    deletedAt?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+    _count?: round_checksCountOrderByAggregateInput
+    _avg?: round_checksAvgOrderByAggregateInput
+    _max?: round_checksMaxOrderByAggregateInput
+    _min?: round_checksMinOrderByAggregateInput
+    _sum?: round_checksSumOrderByAggregateInput
+  }
+
+  export type round_checksScalarWhereWithAggregatesInput = {
+    AND?: round_checksScalarWhereWithAggregatesInput | round_checksScalarWhereWithAggregatesInput[]
+    OR?: round_checksScalarWhereWithAggregatesInput[]
+    NOT?: round_checksScalarWhereWithAggregatesInput | round_checksScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"round_checks"> | number
+    username?: StringNullableWithAggregatesFilter<"round_checks"> | string | null
+    bankname?: StringNullableWithAggregatesFilter<"round_checks"> | string | null
+    type?: Enumcheck_typesNullableWithAggregatesFilter<"round_checks"> | $Enums.check_types | null
+    amount?: StringNullableWithAggregatesFilter<"round_checks"> | string | null
+    recordeddate?: DateTimeNullableWithAggregatesFilter<"round_checks"> | Date | string | null
+    memo?: StringNullableWithAggregatesFilter<"round_checks"> | string | null
+    imageUrl?: StringNullableWithAggregatesFilter<"round_checks"> | string | null
+    status?: Enumcheck_statusWithAggregatesFilter<"round_checks"> | $Enums.check_status
+    is_deleted?: BoolWithAggregatesFilter<"round_checks"> | boolean
+    deletedAt?: DateTimeWithAggregatesFilter<"round_checks"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"round_checks"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"round_checks"> | Date | string
+  }
+
   export type print_agreementsWhereInput = {
     AND?: print_agreementsWhereInput | print_agreementsWhereInput[]
     OR?: print_agreementsWhereInput[]
@@ -47903,6 +53138,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    round_book?: roundbooksCreateNestedManyWithoutBookInput
     bookedition?: bookeditionCreateNestedManyWithoutBooksInput
     damagedbooks?: damagedbooksCreateNestedManyWithoutBooksInput
     translatorbook?: translatorbookCreateNestedManyWithoutBooksInput
@@ -47944,6 +53180,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    round_book?: roundbooksUncheckedCreateNestedManyWithoutBookInput
     bookedition?: bookeditionUncheckedCreateNestedManyWithoutBooksInput
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutBooksInput
     translatorbook?: translatorbookUncheckedCreateNestedManyWithoutBooksInput
@@ -47984,6 +53221,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    round_book?: roundbooksUpdateManyWithoutBookNestedInput
     bookedition?: bookeditionUpdateManyWithoutBooksNestedInput
     damagedbooks?: damagedbooksUpdateManyWithoutBooksNestedInput
     translatorbook?: translatorbookUpdateManyWithoutBooksNestedInput
@@ -48025,6 +53263,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    round_book?: roundbooksUncheckedUpdateManyWithoutBookNestedInput
     bookedition?: bookeditionUncheckedUpdateManyWithoutBooksNestedInput
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutBooksNestedInput
     translatorbook?: translatorbookUncheckedUpdateManyWithoutBooksNestedInput
@@ -48343,6 +53582,7 @@ export namespace Prisma {
     bookshopeditions?: bookshopeditionsCreateNestedManyWithoutBookshopesInput
     orders?: ordersCreateNestedManyWithoutBookshopesInput
     payments?: paymentsCreateNestedManyWithoutShopInput
+    roundrecords?: roundrecordsCreateNestedManyWithoutBookshopInput
   }
 
   export type bookshopesUncheckedCreateInput = {
@@ -48360,6 +53600,7 @@ export namespace Prisma {
     bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookshopesInput
     orders?: ordersUncheckedCreateNestedManyWithoutBookshopesInput
     payments?: paymentsUncheckedCreateNestedManyWithoutShopInput
+    roundrecords?: roundrecordsUncheckedCreateNestedManyWithoutBookshopInput
   }
 
   export type bookshopesUpdateInput = {
@@ -48376,6 +53617,7 @@ export namespace Prisma {
     bookshopeditions?: bookshopeditionsUpdateManyWithoutBookshopesNestedInput
     orders?: ordersUpdateManyWithoutBookshopesNestedInput
     payments?: paymentsUpdateManyWithoutShopNestedInput
+    roundrecords?: roundrecordsUpdateManyWithoutBookshopNestedInput
   }
 
   export type bookshopesUncheckedUpdateInput = {
@@ -48393,6 +53635,7 @@ export namespace Prisma {
     bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookshopesNestedInput
     orders?: ordersUncheckedUpdateManyWithoutBookshopesNestedInput
     payments?: paymentsUncheckedUpdateManyWithoutShopNestedInput
+    roundrecords?: roundrecordsUncheckedUpdateManyWithoutBookshopNestedInput
   }
 
   export type bookshopesCreateManyInput = {
@@ -50139,6 +55382,386 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type roundbooksCreateInput = {
+    status?: boolean
+    starting_amount?: number | null
+    returned_amount?: number | null
+    allocated?: boolean
+    is_deleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    book: booksCreateNestedOneWithoutRound_bookInput
+    round_records?: roundrecordsCreateNestedManyWithoutRoundBooksInput
+  }
+
+  export type roundbooksUncheckedCreateInput = {
+    id?: number
+    status?: boolean
+    bookId: number
+    starting_amount?: number | null
+    returned_amount?: number | null
+    allocated?: boolean
+    is_deleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    round_records?: roundrecordsUncheckedCreateNestedManyWithoutRoundBooksInput
+  }
+
+  export type roundbooksUpdateInput = {
+    status?: BoolFieldUpdateOperationsInput | boolean
+    starting_amount?: NullableIntFieldUpdateOperationsInput | number | null
+    returned_amount?: NullableIntFieldUpdateOperationsInput | number | null
+    allocated?: BoolFieldUpdateOperationsInput | boolean
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    book?: booksUpdateOneRequiredWithoutRound_bookNestedInput
+    round_records?: roundrecordsUpdateManyWithoutRoundBooksNestedInput
+  }
+
+  export type roundbooksUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    status?: BoolFieldUpdateOperationsInput | boolean
+    bookId?: IntFieldUpdateOperationsInput | number
+    starting_amount?: NullableIntFieldUpdateOperationsInput | number | null
+    returned_amount?: NullableIntFieldUpdateOperationsInput | number | null
+    allocated?: BoolFieldUpdateOperationsInput | boolean
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    round_records?: roundrecordsUncheckedUpdateManyWithoutRoundBooksNestedInput
+  }
+
+  export type roundbooksCreateManyInput = {
+    id?: number
+    status?: boolean
+    bookId: number
+    starting_amount?: number | null
+    returned_amount?: number | null
+    allocated?: boolean
+    is_deleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type roundbooksUpdateManyMutationInput = {
+    status?: BoolFieldUpdateOperationsInput | boolean
+    starting_amount?: NullableIntFieldUpdateOperationsInput | number | null
+    returned_amount?: NullableIntFieldUpdateOperationsInput | number | null
+    allocated?: BoolFieldUpdateOperationsInput | boolean
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type roundbooksUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    status?: BoolFieldUpdateOperationsInput | boolean
+    bookId?: IntFieldUpdateOperationsInput | number
+    starting_amount?: NullableIntFieldUpdateOperationsInput | number | null
+    returned_amount?: NullableIntFieldUpdateOperationsInput | number | null
+    allocated?: BoolFieldUpdateOperationsInput | boolean
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type roundrecordsCreateInput = {
+    status?: string
+    totalprice?: number | null
+    is_deleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    RoundBooks: roundbooksCreateNestedOneWithoutRound_recordsInput
+    round_payments?: round_paymentsCreateNestedManyWithoutRoundrecordInput
+    bookshop?: bookshopesCreateNestedOneWithoutRoundrecordsInput
+  }
+
+  export type roundrecordsUncheckedCreateInput = {
+    id?: number
+    status?: string
+    roundbookId: number
+    bookshop_id?: number | null
+    totalprice?: number | null
+    is_deleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    round_payments?: round_paymentsUncheckedCreateNestedManyWithoutRoundrecordInput
+  }
+
+  export type roundrecordsUpdateInput = {
+    status?: StringFieldUpdateOperationsInput | string
+    totalprice?: NullableFloatFieldUpdateOperationsInput | number | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    RoundBooks?: roundbooksUpdateOneRequiredWithoutRound_recordsNestedInput
+    round_payments?: round_paymentsUpdateManyWithoutRoundrecordNestedInput
+    bookshop?: bookshopesUpdateOneWithoutRoundrecordsNestedInput
+  }
+
+  export type roundrecordsUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    roundbookId?: IntFieldUpdateOperationsInput | number
+    bookshop_id?: NullableIntFieldUpdateOperationsInput | number | null
+    totalprice?: NullableFloatFieldUpdateOperationsInput | number | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    round_payments?: round_paymentsUncheckedUpdateManyWithoutRoundrecordNestedInput
+  }
+
+  export type roundrecordsCreateManyInput = {
+    id?: number
+    status?: string
+    roundbookId: number
+    bookshop_id?: number | null
+    totalprice?: number | null
+    is_deleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type roundrecordsUpdateManyMutationInput = {
+    status?: StringFieldUpdateOperationsInput | string
+    totalprice?: NullableFloatFieldUpdateOperationsInput | number | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type roundrecordsUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    roundbookId?: IntFieldUpdateOperationsInput | number
+    bookshop_id?: NullableIntFieldUpdateOperationsInput | number | null
+    totalprice?: NullableFloatFieldUpdateOperationsInput | number | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type round_paymentsCreateInput = {
+    shopId: number
+    amount: number
+    payment_type: string
+    status?: string
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    orderid?: string | null
+    memo?: string | null
+    roundrecord: roundrecordsCreateNestedOneWithoutRound_paymentsInput
+    check?: round_checksCreateNestedOneWithoutRound_paymentsInput
+  }
+
+  export type round_paymentsUncheckedCreateInput = {
+    id?: number
+    shopId: number
+    amount: number
+    payment_type: string
+    checkId?: number | null
+    status?: string
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    orderid?: string | null
+    roundrecordId: number
+    memo?: string | null
+  }
+
+  export type round_paymentsUpdateInput = {
+    shopId?: IntFieldUpdateOperationsInput | number
+    amount?: FloatFieldUpdateOperationsInput | number
+    payment_type?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orderid?: NullableStringFieldUpdateOperationsInput | string | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    roundrecord?: roundrecordsUpdateOneRequiredWithoutRound_paymentsNestedInput
+    check?: round_checksUpdateOneWithoutRound_paymentsNestedInput
+  }
+
+  export type round_paymentsUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    shopId?: IntFieldUpdateOperationsInput | number
+    amount?: FloatFieldUpdateOperationsInput | number
+    payment_type?: StringFieldUpdateOperationsInput | string
+    checkId?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: StringFieldUpdateOperationsInput | string
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orderid?: NullableStringFieldUpdateOperationsInput | string | null
+    roundrecordId?: IntFieldUpdateOperationsInput | number
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type round_paymentsCreateManyInput = {
+    id?: number
+    shopId: number
+    amount: number
+    payment_type: string
+    checkId?: number | null
+    status?: string
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    orderid?: string | null
+    roundrecordId: number
+    memo?: string | null
+  }
+
+  export type round_paymentsUpdateManyMutationInput = {
+    shopId?: IntFieldUpdateOperationsInput | number
+    amount?: FloatFieldUpdateOperationsInput | number
+    payment_type?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orderid?: NullableStringFieldUpdateOperationsInput | string | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type round_paymentsUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    shopId?: IntFieldUpdateOperationsInput | number
+    amount?: FloatFieldUpdateOperationsInput | number
+    payment_type?: StringFieldUpdateOperationsInput | string
+    checkId?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: StringFieldUpdateOperationsInput | string
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orderid?: NullableStringFieldUpdateOperationsInput | string | null
+    roundrecordId?: IntFieldUpdateOperationsInput | number
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type round_checksCreateInput = {
+    username?: string | null
+    bankname?: string | null
+    type?: $Enums.check_types | null
+    amount?: string | null
+    recordeddate?: Date | string | null
+    memo?: string | null
+    imageUrl?: string | null
+    status?: $Enums.check_status
+    is_deleted?: boolean
+    deletedAt?: Date | string
+    updatedAt?: Date | string
+    createdAt?: Date | string
+    round_payments?: round_paymentsCreateNestedManyWithoutCheckInput
+  }
+
+  export type round_checksUncheckedCreateInput = {
+    id?: number
+    username?: string | null
+    bankname?: string | null
+    type?: $Enums.check_types | null
+    amount?: string | null
+    recordeddate?: Date | string | null
+    memo?: string | null
+    imageUrl?: string | null
+    status?: $Enums.check_status
+    is_deleted?: boolean
+    deletedAt?: Date | string
+    updatedAt?: Date | string
+    createdAt?: Date | string
+    round_payments?: round_paymentsUncheckedCreateNestedManyWithoutCheckInput
+  }
+
+  export type round_checksUpdateInput = {
+    username?: NullableStringFieldUpdateOperationsInput | string | null
+    bankname?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: NullableEnumcheck_typesFieldUpdateOperationsInput | $Enums.check_types | null
+    amount?: NullableStringFieldUpdateOperationsInput | string | null
+    recordeddate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: Enumcheck_statusFieldUpdateOperationsInput | $Enums.check_status
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    round_payments?: round_paymentsUpdateManyWithoutCheckNestedInput
+  }
+
+  export type round_checksUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    username?: NullableStringFieldUpdateOperationsInput | string | null
+    bankname?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: NullableEnumcheck_typesFieldUpdateOperationsInput | $Enums.check_types | null
+    amount?: NullableStringFieldUpdateOperationsInput | string | null
+    recordeddate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: Enumcheck_statusFieldUpdateOperationsInput | $Enums.check_status
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    round_payments?: round_paymentsUncheckedUpdateManyWithoutCheckNestedInput
+  }
+
+  export type round_checksCreateManyInput = {
+    id?: number
+    username?: string | null
+    bankname?: string | null
+    type?: $Enums.check_types | null
+    amount?: string | null
+    recordeddate?: Date | string | null
+    memo?: string | null
+    imageUrl?: string | null
+    status?: $Enums.check_status
+    is_deleted?: boolean
+    deletedAt?: Date | string
+    updatedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type round_checksUpdateManyMutationInput = {
+    username?: NullableStringFieldUpdateOperationsInput | string | null
+    bankname?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: NullableEnumcheck_typesFieldUpdateOperationsInput | $Enums.check_types | null
+    amount?: NullableStringFieldUpdateOperationsInput | string | null
+    recordeddate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: Enumcheck_statusFieldUpdateOperationsInput | $Enums.check_status
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type round_checksUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    username?: NullableStringFieldUpdateOperationsInput | string | null
+    bankname?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: NullableEnumcheck_typesFieldUpdateOperationsInput | $Enums.check_types | null
+    amount?: NullableStringFieldUpdateOperationsInput | string | null
+    recordeddate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: Enumcheck_statusFieldUpdateOperationsInput | $Enums.check_status
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type print_agreementsCreateInput = {
     bookTitle: string
     printerName: string
@@ -51631,6 +57254,12 @@ export namespace Prisma {
     not?: NestedEnumbooks_productionstatusNullableFilter<$PrismaModel> | $Enums.books_productionstatus | null
   }
 
+  export type RoundbooksListRelationFilter = {
+    every?: roundbooksWhereInput
+    some?: roundbooksWhereInput
+    none?: roundbooksWhereInput
+  }
+
   export type BookeditionListRelationFilter = {
     every?: bookeditionWhereInput
     some?: bookeditionWhereInput
@@ -51641,6 +57270,10 @@ export namespace Prisma {
     every?: translatorbookWhereInput
     some?: translatorbookWhereInput
     none?: translatorbookWhereInput
+  }
+
+  export type roundbooksOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type bookeditionOrderByRelationAggregateInput = {
@@ -51987,11 +57620,21 @@ export namespace Prisma {
     none?: paymentsWhereInput
   }
 
+  export type RoundrecordsListRelationFilter = {
+    every?: roundrecordsWhereInput
+    some?: roundrecordsWhereInput
+    none?: roundrecordsWhereInput
+  }
+
   export type ordersOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
   export type paymentsOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type roundrecordsOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -53366,6 +59009,305 @@ export namespace Prisma {
     value?: SortOrder
   }
 
+  export type roundbooksCountOrderByAggregateInput = {
+    id?: SortOrder
+    status?: SortOrder
+    bookId?: SortOrder
+    starting_amount?: SortOrder
+    returned_amount?: SortOrder
+    allocated?: SortOrder
+    is_deleted?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type roundbooksAvgOrderByAggregateInput = {
+    id?: SortOrder
+    bookId?: SortOrder
+    starting_amount?: SortOrder
+    returned_amount?: SortOrder
+  }
+
+  export type roundbooksMaxOrderByAggregateInput = {
+    id?: SortOrder
+    status?: SortOrder
+    bookId?: SortOrder
+    starting_amount?: SortOrder
+    returned_amount?: SortOrder
+    allocated?: SortOrder
+    is_deleted?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type roundbooksMinOrderByAggregateInput = {
+    id?: SortOrder
+    status?: SortOrder
+    bookId?: SortOrder
+    starting_amount?: SortOrder
+    returned_amount?: SortOrder
+    allocated?: SortOrder
+    is_deleted?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type roundbooksSumOrderByAggregateInput = {
+    id?: SortOrder
+    bookId?: SortOrder
+    starting_amount?: SortOrder
+    returned_amount?: SortOrder
+  }
+
+  export type RoundbooksScalarRelationFilter = {
+    is?: roundbooksWhereInput
+    isNot?: roundbooksWhereInput
+  }
+
+  export type Round_paymentsListRelationFilter = {
+    every?: round_paymentsWhereInput
+    some?: round_paymentsWhereInput
+    none?: round_paymentsWhereInput
+  }
+
+  export type BookshopesNullableScalarRelationFilter = {
+    is?: bookshopesWhereInput | null
+    isNot?: bookshopesWhereInput | null
+  }
+
+  export type round_paymentsOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type roundrecordsOrderByRelevanceInput = {
+    fields: roundrecordsOrderByRelevanceFieldEnum | roundrecordsOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type roundrecordsCountOrderByAggregateInput = {
+    id?: SortOrder
+    status?: SortOrder
+    roundbookId?: SortOrder
+    bookshop_id?: SortOrder
+    totalprice?: SortOrder
+    is_deleted?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type roundrecordsAvgOrderByAggregateInput = {
+    id?: SortOrder
+    roundbookId?: SortOrder
+    bookshop_id?: SortOrder
+    totalprice?: SortOrder
+  }
+
+  export type roundrecordsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    status?: SortOrder
+    roundbookId?: SortOrder
+    bookshop_id?: SortOrder
+    totalprice?: SortOrder
+    is_deleted?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type roundrecordsMinOrderByAggregateInput = {
+    id?: SortOrder
+    status?: SortOrder
+    roundbookId?: SortOrder
+    bookshop_id?: SortOrder
+    totalprice?: SortOrder
+    is_deleted?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type roundrecordsSumOrderByAggregateInput = {
+    id?: SortOrder
+    roundbookId?: SortOrder
+    bookshop_id?: SortOrder
+    totalprice?: SortOrder
+  }
+
+  export type RoundrecordsScalarRelationFilter = {
+    is?: roundrecordsWhereInput
+    isNot?: roundrecordsWhereInput
+  }
+
+  export type Round_checksNullableScalarRelationFilter = {
+    is?: round_checksWhereInput | null
+    isNot?: round_checksWhereInput | null
+  }
+
+  export type round_paymentsOrderByRelevanceInput = {
+    fields: round_paymentsOrderByRelevanceFieldEnum | round_paymentsOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type round_paymentsCountOrderByAggregateInput = {
+    id?: SortOrder
+    shopId?: SortOrder
+    amount?: SortOrder
+    payment_type?: SortOrder
+    checkId?: SortOrder
+    status?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+    deletedAt?: SortOrder
+    orderid?: SortOrder
+    roundrecordId?: SortOrder
+    memo?: SortOrder
+  }
+
+  export type round_paymentsAvgOrderByAggregateInput = {
+    id?: SortOrder
+    shopId?: SortOrder
+    amount?: SortOrder
+    checkId?: SortOrder
+    roundrecordId?: SortOrder
+  }
+
+  export type round_paymentsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    shopId?: SortOrder
+    amount?: SortOrder
+    payment_type?: SortOrder
+    checkId?: SortOrder
+    status?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+    deletedAt?: SortOrder
+    orderid?: SortOrder
+    roundrecordId?: SortOrder
+    memo?: SortOrder
+  }
+
+  export type round_paymentsMinOrderByAggregateInput = {
+    id?: SortOrder
+    shopId?: SortOrder
+    amount?: SortOrder
+    payment_type?: SortOrder
+    checkId?: SortOrder
+    status?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+    deletedAt?: SortOrder
+    orderid?: SortOrder
+    roundrecordId?: SortOrder
+    memo?: SortOrder
+  }
+
+  export type round_paymentsSumOrderByAggregateInput = {
+    id?: SortOrder
+    shopId?: SortOrder
+    amount?: SortOrder
+    checkId?: SortOrder
+    roundrecordId?: SortOrder
+  }
+
+  export type Enumcheck_typesNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.check_types | Enumcheck_typesFieldRefInput<$PrismaModel> | null
+    in?: $Enums.check_types[] | null
+    notIn?: $Enums.check_types[] | null
+    not?: NestedEnumcheck_typesNullableFilter<$PrismaModel> | $Enums.check_types | null
+  }
+
+  export type Enumcheck_statusFilter<$PrismaModel = never> = {
+    equals?: $Enums.check_status | Enumcheck_statusFieldRefInput<$PrismaModel>
+    in?: $Enums.check_status[]
+    notIn?: $Enums.check_status[]
+    not?: NestedEnumcheck_statusFilter<$PrismaModel> | $Enums.check_status
+  }
+
+  export type round_checksOrderByRelevanceInput = {
+    fields: round_checksOrderByRelevanceFieldEnum | round_checksOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type round_checksCountOrderByAggregateInput = {
+    id?: SortOrder
+    username?: SortOrder
+    bankname?: SortOrder
+    type?: SortOrder
+    amount?: SortOrder
+    recordeddate?: SortOrder
+    memo?: SortOrder
+    imageUrl?: SortOrder
+    status?: SortOrder
+    is_deleted?: SortOrder
+    deletedAt?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type round_checksAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type round_checksMaxOrderByAggregateInput = {
+    id?: SortOrder
+    username?: SortOrder
+    bankname?: SortOrder
+    type?: SortOrder
+    amount?: SortOrder
+    recordeddate?: SortOrder
+    memo?: SortOrder
+    imageUrl?: SortOrder
+    status?: SortOrder
+    is_deleted?: SortOrder
+    deletedAt?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type round_checksMinOrderByAggregateInput = {
+    id?: SortOrder
+    username?: SortOrder
+    bankname?: SortOrder
+    type?: SortOrder
+    amount?: SortOrder
+    recordeddate?: SortOrder
+    memo?: SortOrder
+    imageUrl?: SortOrder
+    status?: SortOrder
+    is_deleted?: SortOrder
+    deletedAt?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type round_checksSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type Enumcheck_typesNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.check_types | Enumcheck_typesFieldRefInput<$PrismaModel> | null
+    in?: $Enums.check_types[] | null
+    notIn?: $Enums.check_types[] | null
+    not?: NestedEnumcheck_typesNullableWithAggregatesFilter<$PrismaModel> | $Enums.check_types | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumcheck_typesNullableFilter<$PrismaModel>
+    _max?: NestedEnumcheck_typesNullableFilter<$PrismaModel>
+  }
+
+  export type Enumcheck_statusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.check_status | Enumcheck_statusFieldRefInput<$PrismaModel>
+    in?: $Enums.check_status[]
+    notIn?: $Enums.check_status[]
+    not?: NestedEnumcheck_statusWithAggregatesFilter<$PrismaModel> | $Enums.check_status
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumcheck_statusFilter<$PrismaModel>
+    _max?: NestedEnumcheck_statusFilter<$PrismaModel>
+  }
+
   export type print_agreementsOrderByRelevanceInput = {
     fields: print_agreementsOrderByRelevanceFieldEnum | print_agreementsOrderByRelevanceFieldEnum[]
     sort: SortOrder
@@ -53652,20 +59594,6 @@ export namespace Prisma {
     id?: SortOrder
   }
 
-  export type Enumcheck_typesNullableFilter<$PrismaModel = never> = {
-    equals?: $Enums.check_types | Enumcheck_typesFieldRefInput<$PrismaModel> | null
-    in?: $Enums.check_types[] | null
-    notIn?: $Enums.check_types[] | null
-    not?: NestedEnumcheck_typesNullableFilter<$PrismaModel> | $Enums.check_types | null
-  }
-
-  export type Enumcheck_statusFilter<$PrismaModel = never> = {
-    equals?: $Enums.check_status | Enumcheck_statusFieldRefInput<$PrismaModel>
-    in?: $Enums.check_status[]
-    notIn?: $Enums.check_status[]
-    not?: NestedEnumcheck_statusFilter<$PrismaModel> | $Enums.check_status
-  }
-
   export type checksOrderByRelevanceInput = {
     fields: checksOrderByRelevanceFieldEnum | checksOrderByRelevanceFieldEnum[]
     sort: SortOrder
@@ -53726,26 +59654,6 @@ export namespace Prisma {
 
   export type checksSumOrderByAggregateInput = {
     id?: SortOrder
-  }
-
-  export type Enumcheck_typesNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.check_types | Enumcheck_typesFieldRefInput<$PrismaModel> | null
-    in?: $Enums.check_types[] | null
-    notIn?: $Enums.check_types[] | null
-    not?: NestedEnumcheck_typesNullableWithAggregatesFilter<$PrismaModel> | $Enums.check_types | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedEnumcheck_typesNullableFilter<$PrismaModel>
-    _max?: NestedEnumcheck_typesNullableFilter<$PrismaModel>
-  }
-
-  export type Enumcheck_statusWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.check_status | Enumcheck_statusFieldRefInput<$PrismaModel>
-    in?: $Enums.check_status[]
-    notIn?: $Enums.check_status[]
-    not?: NestedEnumcheck_statusWithAggregatesFilter<$PrismaModel> | $Enums.check_status
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumcheck_statusFilter<$PrismaModel>
-    _max?: NestedEnumcheck_statusFilter<$PrismaModel>
   }
 
   export type paymentsOrderByRelevanceInput = {
@@ -54557,6 +60465,13 @@ export namespace Prisma {
     update?: XOR<XOR<printerUpdateToOneWithWhereWithoutBookeditionprintersInput, printerUpdateWithoutBookeditionprintersInput>, printerUncheckedUpdateWithoutBookeditionprintersInput>
   }
 
+  export type roundbooksCreateNestedManyWithoutBookInput = {
+    create?: XOR<roundbooksCreateWithoutBookInput, roundbooksUncheckedCreateWithoutBookInput> | roundbooksCreateWithoutBookInput[] | roundbooksUncheckedCreateWithoutBookInput[]
+    connectOrCreate?: roundbooksCreateOrConnectWithoutBookInput | roundbooksCreateOrConnectWithoutBookInput[]
+    createMany?: roundbooksCreateManyBookInputEnvelope
+    connect?: roundbooksWhereUniqueInput | roundbooksWhereUniqueInput[]
+  }
+
   export type bookeditionCreateNestedManyWithoutBooksInput = {
     create?: XOR<bookeditionCreateWithoutBooksInput, bookeditionUncheckedCreateWithoutBooksInput> | bookeditionCreateWithoutBooksInput[] | bookeditionUncheckedCreateWithoutBooksInput[]
     connectOrCreate?: bookeditionCreateOrConnectWithoutBooksInput | bookeditionCreateOrConnectWithoutBooksInput[]
@@ -54576,6 +60491,13 @@ export namespace Prisma {
     connectOrCreate?: translatorbookCreateOrConnectWithoutBooksInput | translatorbookCreateOrConnectWithoutBooksInput[]
     createMany?: translatorbookCreateManyBooksInputEnvelope
     connect?: translatorbookWhereUniqueInput | translatorbookWhereUniqueInput[]
+  }
+
+  export type roundbooksUncheckedCreateNestedManyWithoutBookInput = {
+    create?: XOR<roundbooksCreateWithoutBookInput, roundbooksUncheckedCreateWithoutBookInput> | roundbooksCreateWithoutBookInput[] | roundbooksUncheckedCreateWithoutBookInput[]
+    connectOrCreate?: roundbooksCreateOrConnectWithoutBookInput | roundbooksCreateOrConnectWithoutBookInput[]
+    createMany?: roundbooksCreateManyBookInputEnvelope
+    connect?: roundbooksWhereUniqueInput | roundbooksWhereUniqueInput[]
   }
 
   export type bookeditionUncheckedCreateNestedManyWithoutBooksInput = {
@@ -54601,6 +60523,20 @@ export namespace Prisma {
 
   export type NullableEnumbooks_productionstatusFieldUpdateOperationsInput = {
     set?: $Enums.books_productionstatus | null
+  }
+
+  export type roundbooksUpdateManyWithoutBookNestedInput = {
+    create?: XOR<roundbooksCreateWithoutBookInput, roundbooksUncheckedCreateWithoutBookInput> | roundbooksCreateWithoutBookInput[] | roundbooksUncheckedCreateWithoutBookInput[]
+    connectOrCreate?: roundbooksCreateOrConnectWithoutBookInput | roundbooksCreateOrConnectWithoutBookInput[]
+    upsert?: roundbooksUpsertWithWhereUniqueWithoutBookInput | roundbooksUpsertWithWhereUniqueWithoutBookInput[]
+    createMany?: roundbooksCreateManyBookInputEnvelope
+    set?: roundbooksWhereUniqueInput | roundbooksWhereUniqueInput[]
+    disconnect?: roundbooksWhereUniqueInput | roundbooksWhereUniqueInput[]
+    delete?: roundbooksWhereUniqueInput | roundbooksWhereUniqueInput[]
+    connect?: roundbooksWhereUniqueInput | roundbooksWhereUniqueInput[]
+    update?: roundbooksUpdateWithWhereUniqueWithoutBookInput | roundbooksUpdateWithWhereUniqueWithoutBookInput[]
+    updateMany?: roundbooksUpdateManyWithWhereWithoutBookInput | roundbooksUpdateManyWithWhereWithoutBookInput[]
+    deleteMany?: roundbooksScalarWhereInput | roundbooksScalarWhereInput[]
   }
 
   export type bookeditionUpdateManyWithoutBooksNestedInput = {
@@ -54643,6 +60579,20 @@ export namespace Prisma {
     update?: translatorbookUpdateWithWhereUniqueWithoutBooksInput | translatorbookUpdateWithWhereUniqueWithoutBooksInput[]
     updateMany?: translatorbookUpdateManyWithWhereWithoutBooksInput | translatorbookUpdateManyWithWhereWithoutBooksInput[]
     deleteMany?: translatorbookScalarWhereInput | translatorbookScalarWhereInput[]
+  }
+
+  export type roundbooksUncheckedUpdateManyWithoutBookNestedInput = {
+    create?: XOR<roundbooksCreateWithoutBookInput, roundbooksUncheckedCreateWithoutBookInput> | roundbooksCreateWithoutBookInput[] | roundbooksUncheckedCreateWithoutBookInput[]
+    connectOrCreate?: roundbooksCreateOrConnectWithoutBookInput | roundbooksCreateOrConnectWithoutBookInput[]
+    upsert?: roundbooksUpsertWithWhereUniqueWithoutBookInput | roundbooksUpsertWithWhereUniqueWithoutBookInput[]
+    createMany?: roundbooksCreateManyBookInputEnvelope
+    set?: roundbooksWhereUniqueInput | roundbooksWhereUniqueInput[]
+    disconnect?: roundbooksWhereUniqueInput | roundbooksWhereUniqueInput[]
+    delete?: roundbooksWhereUniqueInput | roundbooksWhereUniqueInput[]
+    connect?: roundbooksWhereUniqueInput | roundbooksWhereUniqueInput[]
+    update?: roundbooksUpdateWithWhereUniqueWithoutBookInput | roundbooksUpdateWithWhereUniqueWithoutBookInput[]
+    updateMany?: roundbooksUpdateManyWithWhereWithoutBookInput | roundbooksUpdateManyWithWhereWithoutBookInput[]
+    deleteMany?: roundbooksScalarWhereInput | roundbooksScalarWhereInput[]
   }
 
   export type bookeditionUncheckedUpdateManyWithoutBooksNestedInput = {
@@ -54768,6 +60718,13 @@ export namespace Prisma {
     connect?: paymentsWhereUniqueInput | paymentsWhereUniqueInput[]
   }
 
+  export type roundrecordsCreateNestedManyWithoutBookshopInput = {
+    create?: XOR<roundrecordsCreateWithoutBookshopInput, roundrecordsUncheckedCreateWithoutBookshopInput> | roundrecordsCreateWithoutBookshopInput[] | roundrecordsUncheckedCreateWithoutBookshopInput[]
+    connectOrCreate?: roundrecordsCreateOrConnectWithoutBookshopInput | roundrecordsCreateOrConnectWithoutBookshopInput[]
+    createMany?: roundrecordsCreateManyBookshopInputEnvelope
+    connect?: roundrecordsWhereUniqueInput | roundrecordsWhereUniqueInput[]
+  }
+
   export type bookshopeditionsUncheckedCreateNestedManyWithoutBookshopesInput = {
     create?: XOR<bookshopeditionsCreateWithoutBookshopesInput, bookshopeditionsUncheckedCreateWithoutBookshopesInput> | bookshopeditionsCreateWithoutBookshopesInput[] | bookshopeditionsUncheckedCreateWithoutBookshopesInput[]
     connectOrCreate?: bookshopeditionsCreateOrConnectWithoutBookshopesInput | bookshopeditionsCreateOrConnectWithoutBookshopesInput[]
@@ -54787,6 +60744,13 @@ export namespace Prisma {
     connectOrCreate?: paymentsCreateOrConnectWithoutShopInput | paymentsCreateOrConnectWithoutShopInput[]
     createMany?: paymentsCreateManyShopInputEnvelope
     connect?: paymentsWhereUniqueInput | paymentsWhereUniqueInput[]
+  }
+
+  export type roundrecordsUncheckedCreateNestedManyWithoutBookshopInput = {
+    create?: XOR<roundrecordsCreateWithoutBookshopInput, roundrecordsUncheckedCreateWithoutBookshopInput> | roundrecordsCreateWithoutBookshopInput[] | roundrecordsUncheckedCreateWithoutBookshopInput[]
+    connectOrCreate?: roundrecordsCreateOrConnectWithoutBookshopInput | roundrecordsCreateOrConnectWithoutBookshopInput[]
+    createMany?: roundrecordsCreateManyBookshopInputEnvelope
+    connect?: roundrecordsWhereUniqueInput | roundrecordsWhereUniqueInput[]
   }
 
   export type FloatFieldUpdateOperationsInput = {
@@ -54839,6 +60803,20 @@ export namespace Prisma {
     deleteMany?: paymentsScalarWhereInput | paymentsScalarWhereInput[]
   }
 
+  export type roundrecordsUpdateManyWithoutBookshopNestedInput = {
+    create?: XOR<roundrecordsCreateWithoutBookshopInput, roundrecordsUncheckedCreateWithoutBookshopInput> | roundrecordsCreateWithoutBookshopInput[] | roundrecordsUncheckedCreateWithoutBookshopInput[]
+    connectOrCreate?: roundrecordsCreateOrConnectWithoutBookshopInput | roundrecordsCreateOrConnectWithoutBookshopInput[]
+    upsert?: roundrecordsUpsertWithWhereUniqueWithoutBookshopInput | roundrecordsUpsertWithWhereUniqueWithoutBookshopInput[]
+    createMany?: roundrecordsCreateManyBookshopInputEnvelope
+    set?: roundrecordsWhereUniqueInput | roundrecordsWhereUniqueInput[]
+    disconnect?: roundrecordsWhereUniqueInput | roundrecordsWhereUniqueInput[]
+    delete?: roundrecordsWhereUniqueInput | roundrecordsWhereUniqueInput[]
+    connect?: roundrecordsWhereUniqueInput | roundrecordsWhereUniqueInput[]
+    update?: roundrecordsUpdateWithWhereUniqueWithoutBookshopInput | roundrecordsUpdateWithWhereUniqueWithoutBookshopInput[]
+    updateMany?: roundrecordsUpdateManyWithWhereWithoutBookshopInput | roundrecordsUpdateManyWithWhereWithoutBookshopInput[]
+    deleteMany?: roundrecordsScalarWhereInput | roundrecordsScalarWhereInput[]
+  }
+
   export type bookshopeditionsUncheckedUpdateManyWithoutBookshopesNestedInput = {
     create?: XOR<bookshopeditionsCreateWithoutBookshopesInput, bookshopeditionsUncheckedCreateWithoutBookshopesInput> | bookshopeditionsCreateWithoutBookshopesInput[] | bookshopeditionsUncheckedCreateWithoutBookshopesInput[]
     connectOrCreate?: bookshopeditionsCreateOrConnectWithoutBookshopesInput | bookshopeditionsCreateOrConnectWithoutBookshopesInput[]
@@ -54879,6 +60857,20 @@ export namespace Prisma {
     update?: paymentsUpdateWithWhereUniqueWithoutShopInput | paymentsUpdateWithWhereUniqueWithoutShopInput[]
     updateMany?: paymentsUpdateManyWithWhereWithoutShopInput | paymentsUpdateManyWithWhereWithoutShopInput[]
     deleteMany?: paymentsScalarWhereInput | paymentsScalarWhereInput[]
+  }
+
+  export type roundrecordsUncheckedUpdateManyWithoutBookshopNestedInput = {
+    create?: XOR<roundrecordsCreateWithoutBookshopInput, roundrecordsUncheckedCreateWithoutBookshopInput> | roundrecordsCreateWithoutBookshopInput[] | roundrecordsUncheckedCreateWithoutBookshopInput[]
+    connectOrCreate?: roundrecordsCreateOrConnectWithoutBookshopInput | roundrecordsCreateOrConnectWithoutBookshopInput[]
+    upsert?: roundrecordsUpsertWithWhereUniqueWithoutBookshopInput | roundrecordsUpsertWithWhereUniqueWithoutBookshopInput[]
+    createMany?: roundrecordsCreateManyBookshopInputEnvelope
+    set?: roundrecordsWhereUniqueInput | roundrecordsWhereUniqueInput[]
+    disconnect?: roundrecordsWhereUniqueInput | roundrecordsWhereUniqueInput[]
+    delete?: roundrecordsWhereUniqueInput | roundrecordsWhereUniqueInput[]
+    connect?: roundrecordsWhereUniqueInput | roundrecordsWhereUniqueInput[]
+    update?: roundrecordsUpdateWithWhereUniqueWithoutBookshopInput | roundrecordsUpdateWithWhereUniqueWithoutBookshopInput[]
+    updateMany?: roundrecordsUpdateManyWithWhereWithoutBookshopInput | roundrecordsUpdateManyWithWhereWithoutBookshopInput[]
+    deleteMany?: roundrecordsScalarWhereInput | roundrecordsScalarWhereInput[]
   }
 
   export type locked_editionsCreateNestedManyWithoutOrdersInput = {
@@ -55763,6 +61755,214 @@ export namespace Prisma {
     update?: XOR<XOR<accountsUpdateToOneWithWhereWithoutNotesInput, accountsUpdateWithoutNotesInput>, accountsUncheckedUpdateWithoutNotesInput>
   }
 
+  export type booksCreateNestedOneWithoutRound_bookInput = {
+    create?: XOR<booksCreateWithoutRound_bookInput, booksUncheckedCreateWithoutRound_bookInput>
+    connectOrCreate?: booksCreateOrConnectWithoutRound_bookInput
+    connect?: booksWhereUniqueInput
+  }
+
+  export type roundrecordsCreateNestedManyWithoutRoundBooksInput = {
+    create?: XOR<roundrecordsCreateWithoutRoundBooksInput, roundrecordsUncheckedCreateWithoutRoundBooksInput> | roundrecordsCreateWithoutRoundBooksInput[] | roundrecordsUncheckedCreateWithoutRoundBooksInput[]
+    connectOrCreate?: roundrecordsCreateOrConnectWithoutRoundBooksInput | roundrecordsCreateOrConnectWithoutRoundBooksInput[]
+    createMany?: roundrecordsCreateManyRoundBooksInputEnvelope
+    connect?: roundrecordsWhereUniqueInput | roundrecordsWhereUniqueInput[]
+  }
+
+  export type roundrecordsUncheckedCreateNestedManyWithoutRoundBooksInput = {
+    create?: XOR<roundrecordsCreateWithoutRoundBooksInput, roundrecordsUncheckedCreateWithoutRoundBooksInput> | roundrecordsCreateWithoutRoundBooksInput[] | roundrecordsUncheckedCreateWithoutRoundBooksInput[]
+    connectOrCreate?: roundrecordsCreateOrConnectWithoutRoundBooksInput | roundrecordsCreateOrConnectWithoutRoundBooksInput[]
+    createMany?: roundrecordsCreateManyRoundBooksInputEnvelope
+    connect?: roundrecordsWhereUniqueInput | roundrecordsWhereUniqueInput[]
+  }
+
+  export type booksUpdateOneRequiredWithoutRound_bookNestedInput = {
+    create?: XOR<booksCreateWithoutRound_bookInput, booksUncheckedCreateWithoutRound_bookInput>
+    connectOrCreate?: booksCreateOrConnectWithoutRound_bookInput
+    upsert?: booksUpsertWithoutRound_bookInput
+    connect?: booksWhereUniqueInput
+    update?: XOR<XOR<booksUpdateToOneWithWhereWithoutRound_bookInput, booksUpdateWithoutRound_bookInput>, booksUncheckedUpdateWithoutRound_bookInput>
+  }
+
+  export type roundrecordsUpdateManyWithoutRoundBooksNestedInput = {
+    create?: XOR<roundrecordsCreateWithoutRoundBooksInput, roundrecordsUncheckedCreateWithoutRoundBooksInput> | roundrecordsCreateWithoutRoundBooksInput[] | roundrecordsUncheckedCreateWithoutRoundBooksInput[]
+    connectOrCreate?: roundrecordsCreateOrConnectWithoutRoundBooksInput | roundrecordsCreateOrConnectWithoutRoundBooksInput[]
+    upsert?: roundrecordsUpsertWithWhereUniqueWithoutRoundBooksInput | roundrecordsUpsertWithWhereUniqueWithoutRoundBooksInput[]
+    createMany?: roundrecordsCreateManyRoundBooksInputEnvelope
+    set?: roundrecordsWhereUniqueInput | roundrecordsWhereUniqueInput[]
+    disconnect?: roundrecordsWhereUniqueInput | roundrecordsWhereUniqueInput[]
+    delete?: roundrecordsWhereUniqueInput | roundrecordsWhereUniqueInput[]
+    connect?: roundrecordsWhereUniqueInput | roundrecordsWhereUniqueInput[]
+    update?: roundrecordsUpdateWithWhereUniqueWithoutRoundBooksInput | roundrecordsUpdateWithWhereUniqueWithoutRoundBooksInput[]
+    updateMany?: roundrecordsUpdateManyWithWhereWithoutRoundBooksInput | roundrecordsUpdateManyWithWhereWithoutRoundBooksInput[]
+    deleteMany?: roundrecordsScalarWhereInput | roundrecordsScalarWhereInput[]
+  }
+
+  export type roundrecordsUncheckedUpdateManyWithoutRoundBooksNestedInput = {
+    create?: XOR<roundrecordsCreateWithoutRoundBooksInput, roundrecordsUncheckedCreateWithoutRoundBooksInput> | roundrecordsCreateWithoutRoundBooksInput[] | roundrecordsUncheckedCreateWithoutRoundBooksInput[]
+    connectOrCreate?: roundrecordsCreateOrConnectWithoutRoundBooksInput | roundrecordsCreateOrConnectWithoutRoundBooksInput[]
+    upsert?: roundrecordsUpsertWithWhereUniqueWithoutRoundBooksInput | roundrecordsUpsertWithWhereUniqueWithoutRoundBooksInput[]
+    createMany?: roundrecordsCreateManyRoundBooksInputEnvelope
+    set?: roundrecordsWhereUniqueInput | roundrecordsWhereUniqueInput[]
+    disconnect?: roundrecordsWhereUniqueInput | roundrecordsWhereUniqueInput[]
+    delete?: roundrecordsWhereUniqueInput | roundrecordsWhereUniqueInput[]
+    connect?: roundrecordsWhereUniqueInput | roundrecordsWhereUniqueInput[]
+    update?: roundrecordsUpdateWithWhereUniqueWithoutRoundBooksInput | roundrecordsUpdateWithWhereUniqueWithoutRoundBooksInput[]
+    updateMany?: roundrecordsUpdateManyWithWhereWithoutRoundBooksInput | roundrecordsUpdateManyWithWhereWithoutRoundBooksInput[]
+    deleteMany?: roundrecordsScalarWhereInput | roundrecordsScalarWhereInput[]
+  }
+
+  export type roundbooksCreateNestedOneWithoutRound_recordsInput = {
+    create?: XOR<roundbooksCreateWithoutRound_recordsInput, roundbooksUncheckedCreateWithoutRound_recordsInput>
+    connectOrCreate?: roundbooksCreateOrConnectWithoutRound_recordsInput
+    connect?: roundbooksWhereUniqueInput
+  }
+
+  export type round_paymentsCreateNestedManyWithoutRoundrecordInput = {
+    create?: XOR<round_paymentsCreateWithoutRoundrecordInput, round_paymentsUncheckedCreateWithoutRoundrecordInput> | round_paymentsCreateWithoutRoundrecordInput[] | round_paymentsUncheckedCreateWithoutRoundrecordInput[]
+    connectOrCreate?: round_paymentsCreateOrConnectWithoutRoundrecordInput | round_paymentsCreateOrConnectWithoutRoundrecordInput[]
+    createMany?: round_paymentsCreateManyRoundrecordInputEnvelope
+    connect?: round_paymentsWhereUniqueInput | round_paymentsWhereUniqueInput[]
+  }
+
+  export type bookshopesCreateNestedOneWithoutRoundrecordsInput = {
+    create?: XOR<bookshopesCreateWithoutRoundrecordsInput, bookshopesUncheckedCreateWithoutRoundrecordsInput>
+    connectOrCreate?: bookshopesCreateOrConnectWithoutRoundrecordsInput
+    connect?: bookshopesWhereUniqueInput
+  }
+
+  export type round_paymentsUncheckedCreateNestedManyWithoutRoundrecordInput = {
+    create?: XOR<round_paymentsCreateWithoutRoundrecordInput, round_paymentsUncheckedCreateWithoutRoundrecordInput> | round_paymentsCreateWithoutRoundrecordInput[] | round_paymentsUncheckedCreateWithoutRoundrecordInput[]
+    connectOrCreate?: round_paymentsCreateOrConnectWithoutRoundrecordInput | round_paymentsCreateOrConnectWithoutRoundrecordInput[]
+    createMany?: round_paymentsCreateManyRoundrecordInputEnvelope
+    connect?: round_paymentsWhereUniqueInput | round_paymentsWhereUniqueInput[]
+  }
+
+  export type roundbooksUpdateOneRequiredWithoutRound_recordsNestedInput = {
+    create?: XOR<roundbooksCreateWithoutRound_recordsInput, roundbooksUncheckedCreateWithoutRound_recordsInput>
+    connectOrCreate?: roundbooksCreateOrConnectWithoutRound_recordsInput
+    upsert?: roundbooksUpsertWithoutRound_recordsInput
+    connect?: roundbooksWhereUniqueInput
+    update?: XOR<XOR<roundbooksUpdateToOneWithWhereWithoutRound_recordsInput, roundbooksUpdateWithoutRound_recordsInput>, roundbooksUncheckedUpdateWithoutRound_recordsInput>
+  }
+
+  export type round_paymentsUpdateManyWithoutRoundrecordNestedInput = {
+    create?: XOR<round_paymentsCreateWithoutRoundrecordInput, round_paymentsUncheckedCreateWithoutRoundrecordInput> | round_paymentsCreateWithoutRoundrecordInput[] | round_paymentsUncheckedCreateWithoutRoundrecordInput[]
+    connectOrCreate?: round_paymentsCreateOrConnectWithoutRoundrecordInput | round_paymentsCreateOrConnectWithoutRoundrecordInput[]
+    upsert?: round_paymentsUpsertWithWhereUniqueWithoutRoundrecordInput | round_paymentsUpsertWithWhereUniqueWithoutRoundrecordInput[]
+    createMany?: round_paymentsCreateManyRoundrecordInputEnvelope
+    set?: round_paymentsWhereUniqueInput | round_paymentsWhereUniqueInput[]
+    disconnect?: round_paymentsWhereUniqueInput | round_paymentsWhereUniqueInput[]
+    delete?: round_paymentsWhereUniqueInput | round_paymentsWhereUniqueInput[]
+    connect?: round_paymentsWhereUniqueInput | round_paymentsWhereUniqueInput[]
+    update?: round_paymentsUpdateWithWhereUniqueWithoutRoundrecordInput | round_paymentsUpdateWithWhereUniqueWithoutRoundrecordInput[]
+    updateMany?: round_paymentsUpdateManyWithWhereWithoutRoundrecordInput | round_paymentsUpdateManyWithWhereWithoutRoundrecordInput[]
+    deleteMany?: round_paymentsScalarWhereInput | round_paymentsScalarWhereInput[]
+  }
+
+  export type bookshopesUpdateOneWithoutRoundrecordsNestedInput = {
+    create?: XOR<bookshopesCreateWithoutRoundrecordsInput, bookshopesUncheckedCreateWithoutRoundrecordsInput>
+    connectOrCreate?: bookshopesCreateOrConnectWithoutRoundrecordsInput
+    upsert?: bookshopesUpsertWithoutRoundrecordsInput
+    disconnect?: bookshopesWhereInput | boolean
+    delete?: bookshopesWhereInput | boolean
+    connect?: bookshopesWhereUniqueInput
+    update?: XOR<XOR<bookshopesUpdateToOneWithWhereWithoutRoundrecordsInput, bookshopesUpdateWithoutRoundrecordsInput>, bookshopesUncheckedUpdateWithoutRoundrecordsInput>
+  }
+
+  export type round_paymentsUncheckedUpdateManyWithoutRoundrecordNestedInput = {
+    create?: XOR<round_paymentsCreateWithoutRoundrecordInput, round_paymentsUncheckedCreateWithoutRoundrecordInput> | round_paymentsCreateWithoutRoundrecordInput[] | round_paymentsUncheckedCreateWithoutRoundrecordInput[]
+    connectOrCreate?: round_paymentsCreateOrConnectWithoutRoundrecordInput | round_paymentsCreateOrConnectWithoutRoundrecordInput[]
+    upsert?: round_paymentsUpsertWithWhereUniqueWithoutRoundrecordInput | round_paymentsUpsertWithWhereUniqueWithoutRoundrecordInput[]
+    createMany?: round_paymentsCreateManyRoundrecordInputEnvelope
+    set?: round_paymentsWhereUniqueInput | round_paymentsWhereUniqueInput[]
+    disconnect?: round_paymentsWhereUniqueInput | round_paymentsWhereUniqueInput[]
+    delete?: round_paymentsWhereUniqueInput | round_paymentsWhereUniqueInput[]
+    connect?: round_paymentsWhereUniqueInput | round_paymentsWhereUniqueInput[]
+    update?: round_paymentsUpdateWithWhereUniqueWithoutRoundrecordInput | round_paymentsUpdateWithWhereUniqueWithoutRoundrecordInput[]
+    updateMany?: round_paymentsUpdateManyWithWhereWithoutRoundrecordInput | round_paymentsUpdateManyWithWhereWithoutRoundrecordInput[]
+    deleteMany?: round_paymentsScalarWhereInput | round_paymentsScalarWhereInput[]
+  }
+
+  export type roundrecordsCreateNestedOneWithoutRound_paymentsInput = {
+    create?: XOR<roundrecordsCreateWithoutRound_paymentsInput, roundrecordsUncheckedCreateWithoutRound_paymentsInput>
+    connectOrCreate?: roundrecordsCreateOrConnectWithoutRound_paymentsInput
+    connect?: roundrecordsWhereUniqueInput
+  }
+
+  export type round_checksCreateNestedOneWithoutRound_paymentsInput = {
+    create?: XOR<round_checksCreateWithoutRound_paymentsInput, round_checksUncheckedCreateWithoutRound_paymentsInput>
+    connectOrCreate?: round_checksCreateOrConnectWithoutRound_paymentsInput
+    connect?: round_checksWhereUniqueInput
+  }
+
+  export type roundrecordsUpdateOneRequiredWithoutRound_paymentsNestedInput = {
+    create?: XOR<roundrecordsCreateWithoutRound_paymentsInput, roundrecordsUncheckedCreateWithoutRound_paymentsInput>
+    connectOrCreate?: roundrecordsCreateOrConnectWithoutRound_paymentsInput
+    upsert?: roundrecordsUpsertWithoutRound_paymentsInput
+    connect?: roundrecordsWhereUniqueInput
+    update?: XOR<XOR<roundrecordsUpdateToOneWithWhereWithoutRound_paymentsInput, roundrecordsUpdateWithoutRound_paymentsInput>, roundrecordsUncheckedUpdateWithoutRound_paymentsInput>
+  }
+
+  export type round_checksUpdateOneWithoutRound_paymentsNestedInput = {
+    create?: XOR<round_checksCreateWithoutRound_paymentsInput, round_checksUncheckedCreateWithoutRound_paymentsInput>
+    connectOrCreate?: round_checksCreateOrConnectWithoutRound_paymentsInput
+    upsert?: round_checksUpsertWithoutRound_paymentsInput
+    disconnect?: round_checksWhereInput | boolean
+    delete?: round_checksWhereInput | boolean
+    connect?: round_checksWhereUniqueInput
+    update?: XOR<XOR<round_checksUpdateToOneWithWhereWithoutRound_paymentsInput, round_checksUpdateWithoutRound_paymentsInput>, round_checksUncheckedUpdateWithoutRound_paymentsInput>
+  }
+
+  export type round_paymentsCreateNestedManyWithoutCheckInput = {
+    create?: XOR<round_paymentsCreateWithoutCheckInput, round_paymentsUncheckedCreateWithoutCheckInput> | round_paymentsCreateWithoutCheckInput[] | round_paymentsUncheckedCreateWithoutCheckInput[]
+    connectOrCreate?: round_paymentsCreateOrConnectWithoutCheckInput | round_paymentsCreateOrConnectWithoutCheckInput[]
+    createMany?: round_paymentsCreateManyCheckInputEnvelope
+    connect?: round_paymentsWhereUniqueInput | round_paymentsWhereUniqueInput[]
+  }
+
+  export type round_paymentsUncheckedCreateNestedManyWithoutCheckInput = {
+    create?: XOR<round_paymentsCreateWithoutCheckInput, round_paymentsUncheckedCreateWithoutCheckInput> | round_paymentsCreateWithoutCheckInput[] | round_paymentsUncheckedCreateWithoutCheckInput[]
+    connectOrCreate?: round_paymentsCreateOrConnectWithoutCheckInput | round_paymentsCreateOrConnectWithoutCheckInput[]
+    createMany?: round_paymentsCreateManyCheckInputEnvelope
+    connect?: round_paymentsWhereUniqueInput | round_paymentsWhereUniqueInput[]
+  }
+
+  export type NullableEnumcheck_typesFieldUpdateOperationsInput = {
+    set?: $Enums.check_types | null
+  }
+
+  export type Enumcheck_statusFieldUpdateOperationsInput = {
+    set?: $Enums.check_status
+  }
+
+  export type round_paymentsUpdateManyWithoutCheckNestedInput = {
+    create?: XOR<round_paymentsCreateWithoutCheckInput, round_paymentsUncheckedCreateWithoutCheckInput> | round_paymentsCreateWithoutCheckInput[] | round_paymentsUncheckedCreateWithoutCheckInput[]
+    connectOrCreate?: round_paymentsCreateOrConnectWithoutCheckInput | round_paymentsCreateOrConnectWithoutCheckInput[]
+    upsert?: round_paymentsUpsertWithWhereUniqueWithoutCheckInput | round_paymentsUpsertWithWhereUniqueWithoutCheckInput[]
+    createMany?: round_paymentsCreateManyCheckInputEnvelope
+    set?: round_paymentsWhereUniqueInput | round_paymentsWhereUniqueInput[]
+    disconnect?: round_paymentsWhereUniqueInput | round_paymentsWhereUniqueInput[]
+    delete?: round_paymentsWhereUniqueInput | round_paymentsWhereUniqueInput[]
+    connect?: round_paymentsWhereUniqueInput | round_paymentsWhereUniqueInput[]
+    update?: round_paymentsUpdateWithWhereUniqueWithoutCheckInput | round_paymentsUpdateWithWhereUniqueWithoutCheckInput[]
+    updateMany?: round_paymentsUpdateManyWithWhereWithoutCheckInput | round_paymentsUpdateManyWithWhereWithoutCheckInput[]
+    deleteMany?: round_paymentsScalarWhereInput | round_paymentsScalarWhereInput[]
+  }
+
+  export type round_paymentsUncheckedUpdateManyWithoutCheckNestedInput = {
+    create?: XOR<round_paymentsCreateWithoutCheckInput, round_paymentsUncheckedCreateWithoutCheckInput> | round_paymentsCreateWithoutCheckInput[] | round_paymentsUncheckedCreateWithoutCheckInput[]
+    connectOrCreate?: round_paymentsCreateOrConnectWithoutCheckInput | round_paymentsCreateOrConnectWithoutCheckInput[]
+    upsert?: round_paymentsUpsertWithWhereUniqueWithoutCheckInput | round_paymentsUpsertWithWhereUniqueWithoutCheckInput[]
+    createMany?: round_paymentsCreateManyCheckInputEnvelope
+    set?: round_paymentsWhereUniqueInput | round_paymentsWhereUniqueInput[]
+    disconnect?: round_paymentsWhereUniqueInput | round_paymentsWhereUniqueInput[]
+    delete?: round_paymentsWhereUniqueInput | round_paymentsWhereUniqueInput[]
+    connect?: round_paymentsWhereUniqueInput | round_paymentsWhereUniqueInput[]
+    update?: round_paymentsUpdateWithWhereUniqueWithoutCheckInput | round_paymentsUpdateWithWhereUniqueWithoutCheckInput[]
+    updateMany?: round_paymentsUpdateManyWithWhereWithoutCheckInput | round_paymentsUpdateManyWithWhereWithoutCheckInput[]
+    deleteMany?: round_paymentsScalarWhereInput | round_paymentsScalarWhereInput[]
+  }
+
   export type paymentsCreateNestedManyWithoutCheckInput = {
     create?: XOR<paymentsCreateWithoutCheckInput, paymentsUncheckedCreateWithoutCheckInput> | paymentsCreateWithoutCheckInput[] | paymentsUncheckedCreateWithoutCheckInput[]
     connectOrCreate?: paymentsCreateOrConnectWithoutCheckInput | paymentsCreateOrConnectWithoutCheckInput[]
@@ -55789,14 +61989,6 @@ export namespace Prisma {
     connectOrCreate?: ordersCreateOrConnectWithoutChecksInput | ordersCreateOrConnectWithoutChecksInput[]
     createMany?: ordersCreateManyChecksInputEnvelope
     connect?: ordersWhereUniqueInput | ordersWhereUniqueInput[]
-  }
-
-  export type NullableEnumcheck_typesFieldUpdateOperationsInput = {
-    set?: $Enums.check_types | null
-  }
-
-  export type Enumcheck_statusFieldUpdateOperationsInput = {
-    set?: $Enums.check_status
   }
 
   export type paymentsUpdateManyWithoutCheckNestedInput = {
@@ -56703,6 +62895,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    round_book?: roundbooksCreateNestedManyWithoutBookInput
     damagedbooks?: damagedbooksCreateNestedManyWithoutBooksInput
     translatorbook?: translatorbookCreateNestedManyWithoutBooksInput
   }
@@ -56743,6 +62936,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    round_book?: roundbooksUncheckedCreateNestedManyWithoutBookInput
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutBooksInput
     translatorbook?: translatorbookUncheckedCreateNestedManyWithoutBooksInput
   }
@@ -57046,6 +63240,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    round_book?: roundbooksUpdateManyWithoutBookNestedInput
     damagedbooks?: damagedbooksUpdateManyWithoutBooksNestedInput
     translatorbook?: translatorbookUpdateManyWithoutBooksNestedInput
   }
@@ -57086,6 +63281,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    round_book?: roundbooksUncheckedUpdateManyWithoutBookNestedInput
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutBooksNestedInput
     translatorbook?: translatorbookUncheckedUpdateManyWithoutBooksNestedInput
   }
@@ -57788,6 +63984,39 @@ export namespace Prisma {
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutPrinterNestedInput
   }
 
+  export type roundbooksCreateWithoutBookInput = {
+    status?: boolean
+    starting_amount?: number | null
+    returned_amount?: number | null
+    allocated?: boolean
+    is_deleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    round_records?: roundrecordsCreateNestedManyWithoutRoundBooksInput
+  }
+
+  export type roundbooksUncheckedCreateWithoutBookInput = {
+    id?: number
+    status?: boolean
+    starting_amount?: number | null
+    returned_amount?: number | null
+    allocated?: boolean
+    is_deleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    round_records?: roundrecordsUncheckedCreateNestedManyWithoutRoundBooksInput
+  }
+
+  export type roundbooksCreateOrConnectWithoutBookInput = {
+    where: roundbooksWhereUniqueInput
+    create: XOR<roundbooksCreateWithoutBookInput, roundbooksUncheckedCreateWithoutBookInput>
+  }
+
+  export type roundbooksCreateManyBookInputEnvelope = {
+    data: roundbooksCreateManyBookInput | roundbooksCreateManyBookInput[]
+    skipDuplicates?: boolean
+  }
+
   export type bookeditionCreateWithoutBooksInput = {
     edition_name: string
     selling_price?: number | null
@@ -57957,6 +64186,37 @@ export namespace Prisma {
   export type translatorbookCreateManyBooksInputEnvelope = {
     data: translatorbookCreateManyBooksInput | translatorbookCreateManyBooksInput[]
     skipDuplicates?: boolean
+  }
+
+  export type roundbooksUpsertWithWhereUniqueWithoutBookInput = {
+    where: roundbooksWhereUniqueInput
+    update: XOR<roundbooksUpdateWithoutBookInput, roundbooksUncheckedUpdateWithoutBookInput>
+    create: XOR<roundbooksCreateWithoutBookInput, roundbooksUncheckedCreateWithoutBookInput>
+  }
+
+  export type roundbooksUpdateWithWhereUniqueWithoutBookInput = {
+    where: roundbooksWhereUniqueInput
+    data: XOR<roundbooksUpdateWithoutBookInput, roundbooksUncheckedUpdateWithoutBookInput>
+  }
+
+  export type roundbooksUpdateManyWithWhereWithoutBookInput = {
+    where: roundbooksScalarWhereInput
+    data: XOR<roundbooksUpdateManyMutationInput, roundbooksUncheckedUpdateManyWithoutBookInput>
+  }
+
+  export type roundbooksScalarWhereInput = {
+    AND?: roundbooksScalarWhereInput | roundbooksScalarWhereInput[]
+    OR?: roundbooksScalarWhereInput[]
+    NOT?: roundbooksScalarWhereInput | roundbooksScalarWhereInput[]
+    id?: IntFilter<"roundbooks"> | number
+    status?: BoolFilter<"roundbooks"> | boolean
+    bookId?: IntFilter<"roundbooks"> | number
+    starting_amount?: IntNullableFilter<"roundbooks"> | number | null
+    returned_amount?: IntNullableFilter<"roundbooks"> | number | null
+    allocated?: BoolFilter<"roundbooks"> | boolean
+    is_deleted?: BoolFilter<"roundbooks"> | boolean
+    createdAt?: DateTimeFilter<"roundbooks"> | Date | string
+    updatedAt?: DateTimeFilter<"roundbooks"> | Date | string
   }
 
   export type bookeditionUpsertWithWhereUniqueWithoutBooksInput = {
@@ -58435,6 +64695,7 @@ export namespace Prisma {
     previousDebt?: number
     orders?: ordersCreateNestedManyWithoutBookshopesInput
     payments?: paymentsCreateNestedManyWithoutShopInput
+    roundrecords?: roundrecordsCreateNestedManyWithoutBookshopInput
   }
 
   export type bookshopesUncheckedCreateWithoutBookshopeditionsInput = {
@@ -58451,6 +64712,7 @@ export namespace Prisma {
     previousDebt?: number
     orders?: ordersUncheckedCreateNestedManyWithoutBookshopesInput
     payments?: paymentsUncheckedCreateNestedManyWithoutShopInput
+    roundrecords?: roundrecordsUncheckedCreateNestedManyWithoutBookshopInput
   }
 
   export type bookshopesCreateOrConnectWithoutBookshopeditionsInput = {
@@ -58574,6 +64836,7 @@ export namespace Prisma {
     previousDebt?: FloatFieldUpdateOperationsInput | number
     orders?: ordersUpdateManyWithoutBookshopesNestedInput
     payments?: paymentsUpdateManyWithoutShopNestedInput
+    roundrecords?: roundrecordsUpdateManyWithoutBookshopNestedInput
   }
 
   export type bookshopesUncheckedUpdateWithoutBookshopeditionsInput = {
@@ -58590,6 +64853,7 @@ export namespace Prisma {
     previousDebt?: FloatFieldUpdateOperationsInput | number
     orders?: ordersUncheckedUpdateManyWithoutBookshopesNestedInput
     payments?: paymentsUncheckedUpdateManyWithoutShopNestedInput
+    roundrecords?: roundrecordsUncheckedUpdateManyWithoutBookshopNestedInput
   }
 
   export type bookshopeditionsCreateWithoutBookshopesInput = {
@@ -58717,6 +64981,37 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type roundrecordsCreateWithoutBookshopInput = {
+    status?: string
+    totalprice?: number | null
+    is_deleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    RoundBooks: roundbooksCreateNestedOneWithoutRound_recordsInput
+    round_payments?: round_paymentsCreateNestedManyWithoutRoundrecordInput
+  }
+
+  export type roundrecordsUncheckedCreateWithoutBookshopInput = {
+    id?: number
+    status?: string
+    roundbookId: number
+    totalprice?: number | null
+    is_deleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    round_payments?: round_paymentsUncheckedCreateNestedManyWithoutRoundrecordInput
+  }
+
+  export type roundrecordsCreateOrConnectWithoutBookshopInput = {
+    where: roundrecordsWhereUniqueInput
+    create: XOR<roundrecordsCreateWithoutBookshopInput, roundrecordsUncheckedCreateWithoutBookshopInput>
+  }
+
+  export type roundrecordsCreateManyBookshopInputEnvelope = {
+    data: roundrecordsCreateManyBookshopInput | roundrecordsCreateManyBookshopInput[]
+    skipDuplicates?: boolean
+  }
+
   export type bookshopeditionsUpsertWithWhereUniqueWithoutBookshopesInput = {
     where: bookshopeditionsWhereUniqueInput
     update: XOR<bookshopeditionsUpdateWithoutBookshopesInput, bookshopeditionsUncheckedUpdateWithoutBookshopesInput>
@@ -58805,6 +65100,36 @@ export namespace Prisma {
     memo?: StringNullableFilter<"payments"> | string | null
   }
 
+  export type roundrecordsUpsertWithWhereUniqueWithoutBookshopInput = {
+    where: roundrecordsWhereUniqueInput
+    update: XOR<roundrecordsUpdateWithoutBookshopInput, roundrecordsUncheckedUpdateWithoutBookshopInput>
+    create: XOR<roundrecordsCreateWithoutBookshopInput, roundrecordsUncheckedCreateWithoutBookshopInput>
+  }
+
+  export type roundrecordsUpdateWithWhereUniqueWithoutBookshopInput = {
+    where: roundrecordsWhereUniqueInput
+    data: XOR<roundrecordsUpdateWithoutBookshopInput, roundrecordsUncheckedUpdateWithoutBookshopInput>
+  }
+
+  export type roundrecordsUpdateManyWithWhereWithoutBookshopInput = {
+    where: roundrecordsScalarWhereInput
+    data: XOR<roundrecordsUpdateManyMutationInput, roundrecordsUncheckedUpdateManyWithoutBookshopInput>
+  }
+
+  export type roundrecordsScalarWhereInput = {
+    AND?: roundrecordsScalarWhereInput | roundrecordsScalarWhereInput[]
+    OR?: roundrecordsScalarWhereInput[]
+    NOT?: roundrecordsScalarWhereInput | roundrecordsScalarWhereInput[]
+    id?: IntFilter<"roundrecords"> | number
+    status?: StringFilter<"roundrecords"> | string
+    roundbookId?: IntFilter<"roundrecords"> | number
+    bookshop_id?: IntNullableFilter<"roundrecords"> | number | null
+    totalprice?: FloatNullableFilter<"roundrecords"> | number | null
+    is_deleted?: BoolFilter<"roundrecords"> | boolean
+    createdAt?: DateTimeFilter<"roundrecords"> | Date | string
+    updatedAt?: DateTimeFilter<"roundrecords"> | Date | string
+  }
+
   export type locked_editionsCreateWithoutOrdersInput = {
     amount_locked?: number
     status?: $Enums.locked_editions_status
@@ -58849,6 +65174,7 @@ export namespace Prisma {
     previousDebt?: number
     bookshopeditions?: bookshopeditionsCreateNestedManyWithoutBookshopesInput
     payments?: paymentsCreateNestedManyWithoutShopInput
+    roundrecords?: roundrecordsCreateNestedManyWithoutBookshopInput
   }
 
   export type bookshopesUncheckedCreateWithoutOrdersInput = {
@@ -58865,6 +65191,7 @@ export namespace Prisma {
     previousDebt?: number
     bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookshopesInput
     payments?: paymentsUncheckedCreateNestedManyWithoutShopInput
+    roundrecords?: roundrecordsUncheckedCreateNestedManyWithoutBookshopInput
   }
 
   export type bookshopesCreateOrConnectWithoutOrdersInput = {
@@ -58973,6 +65300,7 @@ export namespace Prisma {
     previousDebt?: FloatFieldUpdateOperationsInput | number
     bookshopeditions?: bookshopeditionsUpdateManyWithoutBookshopesNestedInput
     payments?: paymentsUpdateManyWithoutShopNestedInput
+    roundrecords?: roundrecordsUpdateManyWithoutBookshopNestedInput
   }
 
   export type bookshopesUncheckedUpdateWithoutOrdersInput = {
@@ -58989,6 +65317,7 @@ export namespace Prisma {
     previousDebt?: FloatFieldUpdateOperationsInput | number
     bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookshopesNestedInput
     payments?: paymentsUncheckedUpdateManyWithoutShopNestedInput
+    roundrecords?: roundrecordsUncheckedUpdateManyWithoutBookshopNestedInput
   }
 
   export type checksUpsertWithoutOrdersInput = {
@@ -59394,6 +65723,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    round_book?: roundbooksCreateNestedManyWithoutBookInput
     bookedition?: bookeditionCreateNestedManyWithoutBooksInput
     translatorbook?: translatorbookCreateNestedManyWithoutBooksInput
   }
@@ -59434,6 +65764,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    round_book?: roundbooksUncheckedCreateNestedManyWithoutBookInput
     bookedition?: bookeditionUncheckedCreateNestedManyWithoutBooksInput
     translatorbook?: translatorbookUncheckedCreateNestedManyWithoutBooksInput
   }
@@ -59683,6 +66014,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    round_book?: roundbooksUpdateManyWithoutBookNestedInput
     bookedition?: bookeditionUpdateManyWithoutBooksNestedInput
     translatorbook?: translatorbookUpdateManyWithoutBooksNestedInput
   }
@@ -59723,6 +66055,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    round_book?: roundbooksUncheckedUpdateManyWithoutBookNestedInput
     bookedition?: bookeditionUncheckedUpdateManyWithoutBooksNestedInput
     translatorbook?: translatorbookUncheckedUpdateManyWithoutBooksNestedInput
   }
@@ -61252,6 +67585,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    round_book?: roundbooksCreateNestedManyWithoutBookInput
     bookedition?: bookeditionCreateNestedManyWithoutBooksInput
     damagedbooks?: damagedbooksCreateNestedManyWithoutBooksInput
   }
@@ -61292,6 +67626,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    round_book?: roundbooksUncheckedCreateNestedManyWithoutBookInput
     bookedition?: bookeditionUncheckedCreateNestedManyWithoutBooksInput
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutBooksInput
   }
@@ -61375,6 +67710,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    round_book?: roundbooksUpdateManyWithoutBookNestedInput
     bookedition?: bookeditionUpdateManyWithoutBooksNestedInput
     damagedbooks?: damagedbooksUpdateManyWithoutBooksNestedInput
   }
@@ -61415,6 +67751,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    round_book?: roundbooksUncheckedUpdateManyWithoutBookNestedInput
     bookedition?: bookeditionUncheckedUpdateManyWithoutBooksNestedInput
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutBooksNestedInput
   }
@@ -61609,6 +67946,640 @@ export namespace Prisma {
     roles?: rolesUncheckedUpdateManyWithoutAccountsNestedInput
   }
 
+  export type booksCreateWithoutRound_bookInput = {
+    book_sort_index?: number | null
+    unique_identification_code: string
+    isbn?: string | null
+    title: string
+    author?: string | null
+    translator?: string | null
+    designer?: string | null
+    language?: string | null
+    edition?: string | null
+    category?: string | null
+    publication_year: string
+    copyright_registration_number?: string | null
+    print_batch_id?: string | null
+    book_sku: string
+    number_of_pages?: number | null
+    info?: string | null
+    book_image_url?: string | null
+    status?: string
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    productionstatus?: $Enums.books_productionstatus | null
+    default_edition_id?: string | null
+    pen_name?: string | null
+    translator_cost?: number | null
+    cover_design_cost?: number | null
+    text_design_cost?: number | null
+    editor_cost?: number | null
+    typewriting_cost?: number | null
+    store_cost?: number | null
+    distribution_cost?: number | null
+    advertisement_cost?: number | null
+    purchasing_right_cost?: number | null
+    bookedition?: bookeditionCreateNestedManyWithoutBooksInput
+    damagedbooks?: damagedbooksCreateNestedManyWithoutBooksInput
+    translatorbook?: translatorbookCreateNestedManyWithoutBooksInput
+  }
+
+  export type booksUncheckedCreateWithoutRound_bookInput = {
+    id?: number
+    book_sort_index?: number | null
+    unique_identification_code: string
+    isbn?: string | null
+    title: string
+    author?: string | null
+    translator?: string | null
+    designer?: string | null
+    language?: string | null
+    edition?: string | null
+    category?: string | null
+    publication_year: string
+    copyright_registration_number?: string | null
+    print_batch_id?: string | null
+    book_sku: string
+    number_of_pages?: number | null
+    info?: string | null
+    book_image_url?: string | null
+    status?: string
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    productionstatus?: $Enums.books_productionstatus | null
+    default_edition_id?: string | null
+    pen_name?: string | null
+    translator_cost?: number | null
+    cover_design_cost?: number | null
+    text_design_cost?: number | null
+    editor_cost?: number | null
+    typewriting_cost?: number | null
+    store_cost?: number | null
+    distribution_cost?: number | null
+    advertisement_cost?: number | null
+    purchasing_right_cost?: number | null
+    bookedition?: bookeditionUncheckedCreateNestedManyWithoutBooksInput
+    damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutBooksInput
+    translatorbook?: translatorbookUncheckedCreateNestedManyWithoutBooksInput
+  }
+
+  export type booksCreateOrConnectWithoutRound_bookInput = {
+    where: booksWhereUniqueInput
+    create: XOR<booksCreateWithoutRound_bookInput, booksUncheckedCreateWithoutRound_bookInput>
+  }
+
+  export type roundrecordsCreateWithoutRoundBooksInput = {
+    status?: string
+    totalprice?: number | null
+    is_deleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    round_payments?: round_paymentsCreateNestedManyWithoutRoundrecordInput
+    bookshop?: bookshopesCreateNestedOneWithoutRoundrecordsInput
+  }
+
+  export type roundrecordsUncheckedCreateWithoutRoundBooksInput = {
+    id?: number
+    status?: string
+    bookshop_id?: number | null
+    totalprice?: number | null
+    is_deleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    round_payments?: round_paymentsUncheckedCreateNestedManyWithoutRoundrecordInput
+  }
+
+  export type roundrecordsCreateOrConnectWithoutRoundBooksInput = {
+    where: roundrecordsWhereUniqueInput
+    create: XOR<roundrecordsCreateWithoutRoundBooksInput, roundrecordsUncheckedCreateWithoutRoundBooksInput>
+  }
+
+  export type roundrecordsCreateManyRoundBooksInputEnvelope = {
+    data: roundrecordsCreateManyRoundBooksInput | roundrecordsCreateManyRoundBooksInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type booksUpsertWithoutRound_bookInput = {
+    update: XOR<booksUpdateWithoutRound_bookInput, booksUncheckedUpdateWithoutRound_bookInput>
+    create: XOR<booksCreateWithoutRound_bookInput, booksUncheckedCreateWithoutRound_bookInput>
+    where?: booksWhereInput
+  }
+
+  export type booksUpdateToOneWithWhereWithoutRound_bookInput = {
+    where?: booksWhereInput
+    data: XOR<booksUpdateWithoutRound_bookInput, booksUncheckedUpdateWithoutRound_bookInput>
+  }
+
+  export type booksUpdateWithoutRound_bookInput = {
+    book_sort_index?: NullableIntFieldUpdateOperationsInput | number | null
+    unique_identification_code?: StringFieldUpdateOperationsInput | string
+    isbn?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: StringFieldUpdateOperationsInput | string
+    author?: NullableStringFieldUpdateOperationsInput | string | null
+    translator?: NullableStringFieldUpdateOperationsInput | string | null
+    designer?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: NullableStringFieldUpdateOperationsInput | string | null
+    edition?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    publication_year?: StringFieldUpdateOperationsInput | string
+    copyright_registration_number?: NullableStringFieldUpdateOperationsInput | string | null
+    print_batch_id?: NullableStringFieldUpdateOperationsInput | string | null
+    book_sku?: StringFieldUpdateOperationsInput | string
+    number_of_pages?: NullableIntFieldUpdateOperationsInput | number | null
+    info?: NullableStringFieldUpdateOperationsInput | string | null
+    book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
+    default_edition_id?: NullableStringFieldUpdateOperationsInput | string | null
+    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
+    translator_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    text_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    editor_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    typewriting_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    store_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    bookedition?: bookeditionUpdateManyWithoutBooksNestedInput
+    damagedbooks?: damagedbooksUpdateManyWithoutBooksNestedInput
+    translatorbook?: translatorbookUpdateManyWithoutBooksNestedInput
+  }
+
+  export type booksUncheckedUpdateWithoutRound_bookInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    book_sort_index?: NullableIntFieldUpdateOperationsInput | number | null
+    unique_identification_code?: StringFieldUpdateOperationsInput | string
+    isbn?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: StringFieldUpdateOperationsInput | string
+    author?: NullableStringFieldUpdateOperationsInput | string | null
+    translator?: NullableStringFieldUpdateOperationsInput | string | null
+    designer?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: NullableStringFieldUpdateOperationsInput | string | null
+    edition?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    publication_year?: StringFieldUpdateOperationsInput | string
+    copyright_registration_number?: NullableStringFieldUpdateOperationsInput | string | null
+    print_batch_id?: NullableStringFieldUpdateOperationsInput | string | null
+    book_sku?: StringFieldUpdateOperationsInput | string
+    number_of_pages?: NullableIntFieldUpdateOperationsInput | number | null
+    info?: NullableStringFieldUpdateOperationsInput | string | null
+    book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
+    default_edition_id?: NullableStringFieldUpdateOperationsInput | string | null
+    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
+    translator_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    text_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    editor_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    typewriting_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    store_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    bookedition?: bookeditionUncheckedUpdateManyWithoutBooksNestedInput
+    damagedbooks?: damagedbooksUncheckedUpdateManyWithoutBooksNestedInput
+    translatorbook?: translatorbookUncheckedUpdateManyWithoutBooksNestedInput
+  }
+
+  export type roundrecordsUpsertWithWhereUniqueWithoutRoundBooksInput = {
+    where: roundrecordsWhereUniqueInput
+    update: XOR<roundrecordsUpdateWithoutRoundBooksInput, roundrecordsUncheckedUpdateWithoutRoundBooksInput>
+    create: XOR<roundrecordsCreateWithoutRoundBooksInput, roundrecordsUncheckedCreateWithoutRoundBooksInput>
+  }
+
+  export type roundrecordsUpdateWithWhereUniqueWithoutRoundBooksInput = {
+    where: roundrecordsWhereUniqueInput
+    data: XOR<roundrecordsUpdateWithoutRoundBooksInput, roundrecordsUncheckedUpdateWithoutRoundBooksInput>
+  }
+
+  export type roundrecordsUpdateManyWithWhereWithoutRoundBooksInput = {
+    where: roundrecordsScalarWhereInput
+    data: XOR<roundrecordsUpdateManyMutationInput, roundrecordsUncheckedUpdateManyWithoutRoundBooksInput>
+  }
+
+  export type roundbooksCreateWithoutRound_recordsInput = {
+    status?: boolean
+    starting_amount?: number | null
+    returned_amount?: number | null
+    allocated?: boolean
+    is_deleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    book: booksCreateNestedOneWithoutRound_bookInput
+  }
+
+  export type roundbooksUncheckedCreateWithoutRound_recordsInput = {
+    id?: number
+    status?: boolean
+    bookId: number
+    starting_amount?: number | null
+    returned_amount?: number | null
+    allocated?: boolean
+    is_deleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type roundbooksCreateOrConnectWithoutRound_recordsInput = {
+    where: roundbooksWhereUniqueInput
+    create: XOR<roundbooksCreateWithoutRound_recordsInput, roundbooksUncheckedCreateWithoutRound_recordsInput>
+  }
+
+  export type round_paymentsCreateWithoutRoundrecordInput = {
+    shopId: number
+    amount: number
+    payment_type: string
+    status?: string
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    orderid?: string | null
+    memo?: string | null
+    check?: round_checksCreateNestedOneWithoutRound_paymentsInput
+  }
+
+  export type round_paymentsUncheckedCreateWithoutRoundrecordInput = {
+    id?: number
+    shopId: number
+    amount: number
+    payment_type: string
+    checkId?: number | null
+    status?: string
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    orderid?: string | null
+    memo?: string | null
+  }
+
+  export type round_paymentsCreateOrConnectWithoutRoundrecordInput = {
+    where: round_paymentsWhereUniqueInput
+    create: XOR<round_paymentsCreateWithoutRoundrecordInput, round_paymentsUncheckedCreateWithoutRoundrecordInput>
+  }
+
+  export type round_paymentsCreateManyRoundrecordInputEnvelope = {
+    data: round_paymentsCreateManyRoundrecordInput | round_paymentsCreateManyRoundrecordInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type bookshopesCreateWithoutRoundrecordsInput = {
+    name: string
+    location: string
+    branch?: string | null
+    phone?: string | null
+    email?: string | null
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    previousDebt?: number
+    bookshopeditions?: bookshopeditionsCreateNestedManyWithoutBookshopesInput
+    orders?: ordersCreateNestedManyWithoutBookshopesInput
+    payments?: paymentsCreateNestedManyWithoutShopInput
+  }
+
+  export type bookshopesUncheckedCreateWithoutRoundrecordsInput = {
+    id?: number
+    name: string
+    location: string
+    branch?: string | null
+    phone?: string | null
+    email?: string | null
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    previousDebt?: number
+    bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookshopesInput
+    orders?: ordersUncheckedCreateNestedManyWithoutBookshopesInput
+    payments?: paymentsUncheckedCreateNestedManyWithoutShopInput
+  }
+
+  export type bookshopesCreateOrConnectWithoutRoundrecordsInput = {
+    where: bookshopesWhereUniqueInput
+    create: XOR<bookshopesCreateWithoutRoundrecordsInput, bookshopesUncheckedCreateWithoutRoundrecordsInput>
+  }
+
+  export type roundbooksUpsertWithoutRound_recordsInput = {
+    update: XOR<roundbooksUpdateWithoutRound_recordsInput, roundbooksUncheckedUpdateWithoutRound_recordsInput>
+    create: XOR<roundbooksCreateWithoutRound_recordsInput, roundbooksUncheckedCreateWithoutRound_recordsInput>
+    where?: roundbooksWhereInput
+  }
+
+  export type roundbooksUpdateToOneWithWhereWithoutRound_recordsInput = {
+    where?: roundbooksWhereInput
+    data: XOR<roundbooksUpdateWithoutRound_recordsInput, roundbooksUncheckedUpdateWithoutRound_recordsInput>
+  }
+
+  export type roundbooksUpdateWithoutRound_recordsInput = {
+    status?: BoolFieldUpdateOperationsInput | boolean
+    starting_amount?: NullableIntFieldUpdateOperationsInput | number | null
+    returned_amount?: NullableIntFieldUpdateOperationsInput | number | null
+    allocated?: BoolFieldUpdateOperationsInput | boolean
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    book?: booksUpdateOneRequiredWithoutRound_bookNestedInput
+  }
+
+  export type roundbooksUncheckedUpdateWithoutRound_recordsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    status?: BoolFieldUpdateOperationsInput | boolean
+    bookId?: IntFieldUpdateOperationsInput | number
+    starting_amount?: NullableIntFieldUpdateOperationsInput | number | null
+    returned_amount?: NullableIntFieldUpdateOperationsInput | number | null
+    allocated?: BoolFieldUpdateOperationsInput | boolean
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type round_paymentsUpsertWithWhereUniqueWithoutRoundrecordInput = {
+    where: round_paymentsWhereUniqueInput
+    update: XOR<round_paymentsUpdateWithoutRoundrecordInput, round_paymentsUncheckedUpdateWithoutRoundrecordInput>
+    create: XOR<round_paymentsCreateWithoutRoundrecordInput, round_paymentsUncheckedCreateWithoutRoundrecordInput>
+  }
+
+  export type round_paymentsUpdateWithWhereUniqueWithoutRoundrecordInput = {
+    where: round_paymentsWhereUniqueInput
+    data: XOR<round_paymentsUpdateWithoutRoundrecordInput, round_paymentsUncheckedUpdateWithoutRoundrecordInput>
+  }
+
+  export type round_paymentsUpdateManyWithWhereWithoutRoundrecordInput = {
+    where: round_paymentsScalarWhereInput
+    data: XOR<round_paymentsUpdateManyMutationInput, round_paymentsUncheckedUpdateManyWithoutRoundrecordInput>
+  }
+
+  export type round_paymentsScalarWhereInput = {
+    AND?: round_paymentsScalarWhereInput | round_paymentsScalarWhereInput[]
+    OR?: round_paymentsScalarWhereInput[]
+    NOT?: round_paymentsScalarWhereInput | round_paymentsScalarWhereInput[]
+    id?: IntFilter<"round_payments"> | number
+    shopId?: IntFilter<"round_payments"> | number
+    amount?: FloatFilter<"round_payments"> | number
+    payment_type?: StringFilter<"round_payments"> | string
+    checkId?: IntNullableFilter<"round_payments"> | number | null
+    status?: StringFilter<"round_payments"> | string
+    is_deleted?: BoolFilter<"round_payments"> | boolean
+    updatedAt?: DateTimeFilter<"round_payments"> | Date | string
+    createdAt?: DateTimeFilter<"round_payments"> | Date | string
+    deletedAt?: DateTimeFilter<"round_payments"> | Date | string
+    orderid?: StringNullableFilter<"round_payments"> | string | null
+    roundrecordId?: IntFilter<"round_payments"> | number
+    memo?: StringNullableFilter<"round_payments"> | string | null
+  }
+
+  export type bookshopesUpsertWithoutRoundrecordsInput = {
+    update: XOR<bookshopesUpdateWithoutRoundrecordsInput, bookshopesUncheckedUpdateWithoutRoundrecordsInput>
+    create: XOR<bookshopesCreateWithoutRoundrecordsInput, bookshopesUncheckedCreateWithoutRoundrecordsInput>
+    where?: bookshopesWhereInput
+  }
+
+  export type bookshopesUpdateToOneWithWhereWithoutRoundrecordsInput = {
+    where?: bookshopesWhereInput
+    data: XOR<bookshopesUpdateWithoutRoundrecordsInput, bookshopesUncheckedUpdateWithoutRoundrecordsInput>
+  }
+
+  export type bookshopesUpdateWithoutRoundrecordsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    location?: StringFieldUpdateOperationsInput | string
+    branch?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    previousDebt?: FloatFieldUpdateOperationsInput | number
+    bookshopeditions?: bookshopeditionsUpdateManyWithoutBookshopesNestedInput
+    orders?: ordersUpdateManyWithoutBookshopesNestedInput
+    payments?: paymentsUpdateManyWithoutShopNestedInput
+  }
+
+  export type bookshopesUncheckedUpdateWithoutRoundrecordsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    location?: StringFieldUpdateOperationsInput | string
+    branch?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    previousDebt?: FloatFieldUpdateOperationsInput | number
+    bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookshopesNestedInput
+    orders?: ordersUncheckedUpdateManyWithoutBookshopesNestedInput
+    payments?: paymentsUncheckedUpdateManyWithoutShopNestedInput
+  }
+
+  export type roundrecordsCreateWithoutRound_paymentsInput = {
+    status?: string
+    totalprice?: number | null
+    is_deleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    RoundBooks: roundbooksCreateNestedOneWithoutRound_recordsInput
+    bookshop?: bookshopesCreateNestedOneWithoutRoundrecordsInput
+  }
+
+  export type roundrecordsUncheckedCreateWithoutRound_paymentsInput = {
+    id?: number
+    status?: string
+    roundbookId: number
+    bookshop_id?: number | null
+    totalprice?: number | null
+    is_deleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type roundrecordsCreateOrConnectWithoutRound_paymentsInput = {
+    where: roundrecordsWhereUniqueInput
+    create: XOR<roundrecordsCreateWithoutRound_paymentsInput, roundrecordsUncheckedCreateWithoutRound_paymentsInput>
+  }
+
+  export type round_checksCreateWithoutRound_paymentsInput = {
+    username?: string | null
+    bankname?: string | null
+    type?: $Enums.check_types | null
+    amount?: string | null
+    recordeddate?: Date | string | null
+    memo?: string | null
+    imageUrl?: string | null
+    status?: $Enums.check_status
+    is_deleted?: boolean
+    deletedAt?: Date | string
+    updatedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type round_checksUncheckedCreateWithoutRound_paymentsInput = {
+    id?: number
+    username?: string | null
+    bankname?: string | null
+    type?: $Enums.check_types | null
+    amount?: string | null
+    recordeddate?: Date | string | null
+    memo?: string | null
+    imageUrl?: string | null
+    status?: $Enums.check_status
+    is_deleted?: boolean
+    deletedAt?: Date | string
+    updatedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type round_checksCreateOrConnectWithoutRound_paymentsInput = {
+    where: round_checksWhereUniqueInput
+    create: XOR<round_checksCreateWithoutRound_paymentsInput, round_checksUncheckedCreateWithoutRound_paymentsInput>
+  }
+
+  export type roundrecordsUpsertWithoutRound_paymentsInput = {
+    update: XOR<roundrecordsUpdateWithoutRound_paymentsInput, roundrecordsUncheckedUpdateWithoutRound_paymentsInput>
+    create: XOR<roundrecordsCreateWithoutRound_paymentsInput, roundrecordsUncheckedCreateWithoutRound_paymentsInput>
+    where?: roundrecordsWhereInput
+  }
+
+  export type roundrecordsUpdateToOneWithWhereWithoutRound_paymentsInput = {
+    where?: roundrecordsWhereInput
+    data: XOR<roundrecordsUpdateWithoutRound_paymentsInput, roundrecordsUncheckedUpdateWithoutRound_paymentsInput>
+  }
+
+  export type roundrecordsUpdateWithoutRound_paymentsInput = {
+    status?: StringFieldUpdateOperationsInput | string
+    totalprice?: NullableFloatFieldUpdateOperationsInput | number | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    RoundBooks?: roundbooksUpdateOneRequiredWithoutRound_recordsNestedInput
+    bookshop?: bookshopesUpdateOneWithoutRoundrecordsNestedInput
+  }
+
+  export type roundrecordsUncheckedUpdateWithoutRound_paymentsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    roundbookId?: IntFieldUpdateOperationsInput | number
+    bookshop_id?: NullableIntFieldUpdateOperationsInput | number | null
+    totalprice?: NullableFloatFieldUpdateOperationsInput | number | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type round_checksUpsertWithoutRound_paymentsInput = {
+    update: XOR<round_checksUpdateWithoutRound_paymentsInput, round_checksUncheckedUpdateWithoutRound_paymentsInput>
+    create: XOR<round_checksCreateWithoutRound_paymentsInput, round_checksUncheckedCreateWithoutRound_paymentsInput>
+    where?: round_checksWhereInput
+  }
+
+  export type round_checksUpdateToOneWithWhereWithoutRound_paymentsInput = {
+    where?: round_checksWhereInput
+    data: XOR<round_checksUpdateWithoutRound_paymentsInput, round_checksUncheckedUpdateWithoutRound_paymentsInput>
+  }
+
+  export type round_checksUpdateWithoutRound_paymentsInput = {
+    username?: NullableStringFieldUpdateOperationsInput | string | null
+    bankname?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: NullableEnumcheck_typesFieldUpdateOperationsInput | $Enums.check_types | null
+    amount?: NullableStringFieldUpdateOperationsInput | string | null
+    recordeddate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: Enumcheck_statusFieldUpdateOperationsInput | $Enums.check_status
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type round_checksUncheckedUpdateWithoutRound_paymentsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    username?: NullableStringFieldUpdateOperationsInput | string | null
+    bankname?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: NullableEnumcheck_typesFieldUpdateOperationsInput | $Enums.check_types | null
+    amount?: NullableStringFieldUpdateOperationsInput | string | null
+    recordeddate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: Enumcheck_statusFieldUpdateOperationsInput | $Enums.check_status
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type round_paymentsCreateWithoutCheckInput = {
+    shopId: number
+    amount: number
+    payment_type: string
+    status?: string
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    orderid?: string | null
+    memo?: string | null
+    roundrecord: roundrecordsCreateNestedOneWithoutRound_paymentsInput
+  }
+
+  export type round_paymentsUncheckedCreateWithoutCheckInput = {
+    id?: number
+    shopId: number
+    amount: number
+    payment_type: string
+    status?: string
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    orderid?: string | null
+    roundrecordId: number
+    memo?: string | null
+  }
+
+  export type round_paymentsCreateOrConnectWithoutCheckInput = {
+    where: round_paymentsWhereUniqueInput
+    create: XOR<round_paymentsCreateWithoutCheckInput, round_paymentsUncheckedCreateWithoutCheckInput>
+  }
+
+  export type round_paymentsCreateManyCheckInputEnvelope = {
+    data: round_paymentsCreateManyCheckInput | round_paymentsCreateManyCheckInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type round_paymentsUpsertWithWhereUniqueWithoutCheckInput = {
+    where: round_paymentsWhereUniqueInput
+    update: XOR<round_paymentsUpdateWithoutCheckInput, round_paymentsUncheckedUpdateWithoutCheckInput>
+    create: XOR<round_paymentsCreateWithoutCheckInput, round_paymentsUncheckedCreateWithoutCheckInput>
+  }
+
+  export type round_paymentsUpdateWithWhereUniqueWithoutCheckInput = {
+    where: round_paymentsWhereUniqueInput
+    data: XOR<round_paymentsUpdateWithoutCheckInput, round_paymentsUncheckedUpdateWithoutCheckInput>
+  }
+
+  export type round_paymentsUpdateManyWithWhereWithoutCheckInput = {
+    where: round_paymentsScalarWhereInput
+    data: XOR<round_paymentsUpdateManyMutationInput, round_paymentsUncheckedUpdateManyWithoutCheckInput>
+  }
+
   export type paymentsCreateWithoutCheckInput = {
     amount: number
     payment_type: string
@@ -61740,6 +68711,7 @@ export namespace Prisma {
     previousDebt?: number
     bookshopeditions?: bookshopeditionsCreateNestedManyWithoutBookshopesInput
     orders?: ordersCreateNestedManyWithoutBookshopesInput
+    roundrecords?: roundrecordsCreateNestedManyWithoutBookshopInput
   }
 
   export type bookshopesUncheckedCreateWithoutPaymentsInput = {
@@ -61756,6 +68728,7 @@ export namespace Prisma {
     previousDebt?: number
     bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookshopesInput
     orders?: ordersUncheckedCreateNestedManyWithoutBookshopesInput
+    roundrecords?: roundrecordsUncheckedCreateNestedManyWithoutBookshopInput
   }
 
   export type bookshopesCreateOrConnectWithoutPaymentsInput = {
@@ -61825,6 +68798,7 @@ export namespace Prisma {
     previousDebt?: FloatFieldUpdateOperationsInput | number
     bookshopeditions?: bookshopeditionsUpdateManyWithoutBookshopesNestedInput
     orders?: ordersUpdateManyWithoutBookshopesNestedInput
+    roundrecords?: roundrecordsUpdateManyWithoutBookshopNestedInput
   }
 
   export type bookshopesUncheckedUpdateWithoutPaymentsInput = {
@@ -61841,6 +68815,7 @@ export namespace Prisma {
     previousDebt?: FloatFieldUpdateOperationsInput | number
     bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookshopesNestedInput
     orders?: ordersUncheckedUpdateManyWithoutBookshopesNestedInput
+    roundrecords?: roundrecordsUncheckedUpdateManyWithoutBookshopNestedInput
   }
 
   export type checksUpsertWithoutPaymentsInput = {
@@ -62704,6 +69679,17 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type roundbooksCreateManyBookInput = {
+    id?: number
+    status?: boolean
+    starting_amount?: number | null
+    returned_amount?: number | null
+    allocated?: boolean
+    is_deleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type bookeditionCreateManyBooksInput = {
     id?: number
     edition_name: string
@@ -62766,6 +69752,40 @@ export namespace Prisma {
     updatedAt: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+  }
+
+  export type roundbooksUpdateWithoutBookInput = {
+    status?: BoolFieldUpdateOperationsInput | boolean
+    starting_amount?: NullableIntFieldUpdateOperationsInput | number | null
+    returned_amount?: NullableIntFieldUpdateOperationsInput | number | null
+    allocated?: BoolFieldUpdateOperationsInput | boolean
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    round_records?: roundrecordsUpdateManyWithoutRoundBooksNestedInput
+  }
+
+  export type roundbooksUncheckedUpdateWithoutBookInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    status?: BoolFieldUpdateOperationsInput | boolean
+    starting_amount?: NullableIntFieldUpdateOperationsInput | number | null
+    returned_amount?: NullableIntFieldUpdateOperationsInput | number | null
+    allocated?: BoolFieldUpdateOperationsInput | boolean
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    round_records?: roundrecordsUncheckedUpdateManyWithoutRoundBooksNestedInput
+  }
+
+  export type roundbooksUncheckedUpdateManyWithoutBookInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    status?: BoolFieldUpdateOperationsInput | boolean
+    starting_amount?: NullableIntFieldUpdateOperationsInput | number | null
+    returned_amount?: NullableIntFieldUpdateOperationsInput | number | null
+    allocated?: BoolFieldUpdateOperationsInput | boolean
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type bookeditionUpdateWithoutBooksInput = {
@@ -63020,6 +70040,16 @@ export namespace Prisma {
     memo?: string | null
   }
 
+  export type roundrecordsCreateManyBookshopInput = {
+    id?: number
+    status?: string
+    roundbookId: number
+    totalprice?: number | null
+    is_deleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type bookshopeditionsUpdateWithoutBookshopesInput = {
     quantity?: IntFieldUpdateOperationsInput | number
     price_per_peice?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -63160,6 +70190,37 @@ export namespace Prisma {
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orderid?: NullableStringFieldUpdateOperationsInput | string | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type roundrecordsUpdateWithoutBookshopInput = {
+    status?: StringFieldUpdateOperationsInput | string
+    totalprice?: NullableFloatFieldUpdateOperationsInput | number | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    RoundBooks?: roundbooksUpdateOneRequiredWithoutRound_recordsNestedInput
+    round_payments?: round_paymentsUpdateManyWithoutRoundrecordNestedInput
+  }
+
+  export type roundrecordsUncheckedUpdateWithoutBookshopInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    roundbookId?: IntFieldUpdateOperationsInput | number
+    totalprice?: NullableFloatFieldUpdateOperationsInput | number | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    round_payments?: round_paymentsUncheckedUpdateManyWithoutRoundrecordNestedInput
+  }
+
+  export type roundrecordsUncheckedUpdateManyWithoutBookshopInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    roundbookId?: IntFieldUpdateOperationsInput | number
+    totalprice?: NullableFloatFieldUpdateOperationsInput | number | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type locked_editionsCreateManyOrdersInput = {
@@ -63767,6 +70828,165 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type roundrecordsCreateManyRoundBooksInput = {
+    id?: number
+    status?: string
+    bookshop_id?: number | null
+    totalprice?: number | null
+    is_deleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type roundrecordsUpdateWithoutRoundBooksInput = {
+    status?: StringFieldUpdateOperationsInput | string
+    totalprice?: NullableFloatFieldUpdateOperationsInput | number | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    round_payments?: round_paymentsUpdateManyWithoutRoundrecordNestedInput
+    bookshop?: bookshopesUpdateOneWithoutRoundrecordsNestedInput
+  }
+
+  export type roundrecordsUncheckedUpdateWithoutRoundBooksInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    bookshop_id?: NullableIntFieldUpdateOperationsInput | number | null
+    totalprice?: NullableFloatFieldUpdateOperationsInput | number | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    round_payments?: round_paymentsUncheckedUpdateManyWithoutRoundrecordNestedInput
+  }
+
+  export type roundrecordsUncheckedUpdateManyWithoutRoundBooksInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    bookshop_id?: NullableIntFieldUpdateOperationsInput | number | null
+    totalprice?: NullableFloatFieldUpdateOperationsInput | number | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type round_paymentsCreateManyRoundrecordInput = {
+    id?: number
+    shopId: number
+    amount: number
+    payment_type: string
+    checkId?: number | null
+    status?: string
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    orderid?: string | null
+    memo?: string | null
+  }
+
+  export type round_paymentsUpdateWithoutRoundrecordInput = {
+    shopId?: IntFieldUpdateOperationsInput | number
+    amount?: FloatFieldUpdateOperationsInput | number
+    payment_type?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orderid?: NullableStringFieldUpdateOperationsInput | string | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    check?: round_checksUpdateOneWithoutRound_paymentsNestedInput
+  }
+
+  export type round_paymentsUncheckedUpdateWithoutRoundrecordInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    shopId?: IntFieldUpdateOperationsInput | number
+    amount?: FloatFieldUpdateOperationsInput | number
+    payment_type?: StringFieldUpdateOperationsInput | string
+    checkId?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: StringFieldUpdateOperationsInput | string
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orderid?: NullableStringFieldUpdateOperationsInput | string | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type round_paymentsUncheckedUpdateManyWithoutRoundrecordInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    shopId?: IntFieldUpdateOperationsInput | number
+    amount?: FloatFieldUpdateOperationsInput | number
+    payment_type?: StringFieldUpdateOperationsInput | string
+    checkId?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: StringFieldUpdateOperationsInput | string
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orderid?: NullableStringFieldUpdateOperationsInput | string | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type round_paymentsCreateManyCheckInput = {
+    id?: number
+    shopId: number
+    amount: number
+    payment_type: string
+    status?: string
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    orderid?: string | null
+    roundrecordId: number
+    memo?: string | null
+  }
+
+  export type round_paymentsUpdateWithoutCheckInput = {
+    shopId?: IntFieldUpdateOperationsInput | number
+    amount?: FloatFieldUpdateOperationsInput | number
+    payment_type?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orderid?: NullableStringFieldUpdateOperationsInput | string | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    roundrecord?: roundrecordsUpdateOneRequiredWithoutRound_paymentsNestedInput
+  }
+
+  export type round_paymentsUncheckedUpdateWithoutCheckInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    shopId?: IntFieldUpdateOperationsInput | number
+    amount?: FloatFieldUpdateOperationsInput | number
+    payment_type?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orderid?: NullableStringFieldUpdateOperationsInput | string | null
+    roundrecordId?: IntFieldUpdateOperationsInput | number
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type round_paymentsUncheckedUpdateManyWithoutCheckInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    shopId?: IntFieldUpdateOperationsInput | number
+    amount?: FloatFieldUpdateOperationsInput | number
+    payment_type?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orderid?: NullableStringFieldUpdateOperationsInput | string | null
+    roundrecordId?: IntFieldUpdateOperationsInput | number
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type paymentsCreateManyCheckInput = {
