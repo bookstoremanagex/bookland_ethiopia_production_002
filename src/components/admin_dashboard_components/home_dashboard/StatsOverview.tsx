@@ -3,6 +3,8 @@ import {
   ShoppingBag,
   TrendingUp,
   Banknote,
+  ShoppingCart,
+  AlertTriangle,
   ArrowUpRight,
   ArrowDownRight,
 } from "lucide-react";
@@ -13,8 +15,9 @@ interface StatsOverviewProps {
     totalShops: number;
     totalRevenue: number;
     totalDebt: number;
+    pendingOrders: number;
+    lowStockCount: number;
     revenueGrowth: number;
-    debtChange: number;
   };
 }
 
@@ -27,7 +30,7 @@ export function StatsOverview({ stats }: StatsOverviewProps) {
       icon: BookOpen,
       accent: "from-primarycolor/15 to-tertiarycolor/30",
       iconBg: "bg-primarycolor/10 text-primarycolor",
-      trend: { value: "+12%", up: true },
+      trend: { value: "Total", up: true as const },
     },
     {
       title: "Partner shops",
@@ -36,7 +39,7 @@ export function StatsOverview({ stats }: StatsOverviewProps) {
       icon: ShoppingBag,
       accent: "from-secondarycolor/10 to-primarycolor/10",
       iconBg: "bg-secondarycolor/10 text-secondarycolor",
-      trend: { value: "+3", up: true },
+      trend: { value: "Active", up: true as const },
     },
     {
       title: "Gross revenue",
@@ -54,12 +57,30 @@ export function StatsOverview({ stats }: StatsOverviewProps) {
       icon: Banknote,
       accent: "from-amber-500/10 to-rose-500/5",
       iconBg: "bg-amber-50 text-amber-800",
-      trend: { value: `${Math.abs(stats.debtChange)}%`, up: stats.debtChange < 0 },
+      trend: { value: "Due", up: false },
+    },
+    {
+      title: "Pending orders",
+      value: stats.pendingOrders.toLocaleString(),
+      hint: "Awaiting approval",
+      icon: ShoppingCart,
+      accent: "from-blue-500/10 to-sky-500/5",
+      iconBg: "bg-blue-50 text-blue-700",
+      trend: { value: "Open", up: true as const },
+    },
+    {
+      title: "Low stock items",
+      value: stats.lowStockCount.toLocaleString(),
+      hint: "Below threshold",
+      icon: AlertTriangle,
+      accent: "from-orange-500/10 to-red-500/5",
+      iconBg: "bg-orange-50 text-orange-700",
+      trend: { value: "Needs attention", up: false },
     },
   ];
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-4">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3 2xl:grid-cols-6">
       {items.map((item, idx) => (
         <div
           key={idx}
@@ -68,9 +89,9 @@ export function StatsOverview({ stats }: StatsOverviewProps) {
           <div
             className={`pointer-events-none absolute inset-0 bg-gradient-to-br opacity-0 transition-opacity group-hover:opacity-100 ${item.accent}`}
           />
-          <div className="relative flex flex-col gap-4">
+          <div className="relative flex flex-col gap-3">
             <div
-              className={`flex size-11 items-center justify-center rounded-xl ${item.iconBg}`}
+              className={`flex size-10 items-center justify-center rounded-xl ${item.iconBg}`}
             >
               <item.icon className="size-5" strokeWidth={2} />
             </div>
@@ -84,7 +105,7 @@ export function StatsOverview({ stats }: StatsOverviewProps) {
               <p className="mt-0.5 text-sm text-slate-500">{item.hint}</p>
             </div>
             <div className="flex items-center justify-between border-t border-slate-100 pt-3">
-              <span className="text-xs text-slate-400">Trend</span>
+              <span className="text-xs text-slate-400">Status</span>
               <span
                 className={`inline-flex items-center gap-1 text-xs font-semibold ${
                   item.trend.up ? "text-emerald-600" : "text-rose-600"

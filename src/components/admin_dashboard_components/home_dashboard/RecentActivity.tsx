@@ -1,13 +1,12 @@
-import { History, ArrowRight, Package, Building2, Clock } from "lucide-react";
+import { History, ArrowRight, User, Clock } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 interface RecentActivityProps {
   activities: {
     id: number;
-    bookTitle: string;
-    shopName: string;
-    quantity: number;
+    action: string;
+    accountName: string;
     date: string;
   }[];
 }
@@ -23,15 +22,15 @@ export function RecentActivity({ activities }: RecentActivityProps) {
             </div>
             <div>
               <h2 className="text-lg font-semibold tracking-tight text-slate-900 sm:text-xl">
-                Recent distributions
+                Activity Log
               </h2>
               <p className="text-sm text-slate-600">
-                Latest shop assignments from your catalog.
+                Latest actions across the system.
               </p>
             </div>
           </div>
         </div>
-        <Link href="/admin_dashboard/shop_assignments" className="shrink-0">
+        <Link href="/admin_dashboard/activity_log" className="shrink-0">
           <Button
             variant="outline"
             size="sm"
@@ -50,29 +49,25 @@ export function RecentActivity({ activities }: RecentActivityProps) {
           activities.map((activity) => (
             <div
               key={activity.id}
-              className="flex flex-col gap-3 py-4 transition-colors hover:bg-slate-50/80 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:rounded-xl sm:px-3"
+              className="flex flex-col gap-2 py-4 transition-colors hover:bg-slate-50/80 sm:flex-row sm:items-center sm:justify-between sm:rounded-xl sm:px-3"
             >
-              <div className="flex min-w-0 flex-1 items-start gap-4">
-                <div className="flex size-11 shrink-0 items-center justify-center rounded-xl border border-slate-100 bg-white text-primarycolor shadow-sm">
-                  <Package className="size-5" strokeWidth={2} />
+              <div className="flex min-w-0 flex-1 items-start gap-3">
+                <div className="mt-0.5 size-8 rounded-lg bg-primarycolor/5 flex items-center justify-center shrink-0">
+                  <User className="size-4 text-primarycolor/60" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate font-medium text-slate-900">{activity.bookTitle}</p>
-                  <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500">
-                    <span className="inline-flex items-center gap-1.5">
-                      <Building2 className="size-3.5 shrink-0 text-primarycolor/60" />
-                      {activity.shopName}
+                  <p className="truncate text-sm font-medium text-slate-900">{activity.action}</p>
+                  <div className="mt-0.5 flex items-center gap-3 text-xs text-slate-500">
+                    <span className="inline-flex items-center gap-1">
+                      <User className="size-3" />
+                      {activity.accountName}
                     </span>
-                    <span className="inline-flex items-center gap-1.5">
-                      <Clock className="size-3.5 shrink-0 text-primarycolor/60" />
+                    <span className="inline-flex items-center gap-1">
+                      <Clock className="size-3" />
                       {activity.date}
                     </span>
                   </div>
                 </div>
-              </div>
-              <div className="shrink-0 text-left sm:text-right">
-                <p className="text-lg font-semibold tabular-nums text-primarycolor">{activity.quantity}</p>
-                <p className="text-xs text-slate-500">units</p>
               </div>
             </div>
           ))

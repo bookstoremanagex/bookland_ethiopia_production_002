@@ -5,7 +5,23 @@ import { StatsOverview } from "./StatsOverview";
 import { FinancialChart } from "./FinancialChart";
 import { RecentActivity } from "./RecentActivity";
 import { ProductionOverview } from "./ProductionOverview";
-import { LayoutDashboard, Calendar, Sparkles, Bell, BellRing, MessageSquare, ArrowRight, X, Clock, CheckCircle2, AlertCircle, Info } from "lucide-react";
+import { QuickActions } from "./QuickActions";
+import { OrderSummary } from "./OrderSummary";
+import { LowStockAlerts } from "./LowStockAlerts";
+import {
+  LayoutDashboard,
+  Calendar,
+  Sparkles,
+  Bell,
+  BellRing,
+  MessageSquare,
+  ArrowRight,
+  X,
+  Clock,
+  CheckCircle2,
+  AlertCircle,
+  Info,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCalendar } from "@/lib/calendar-context";
 import Link from "next/link";
@@ -16,6 +32,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import type { DashboardData } from "@/app/admin_dashboard/page";
 
 interface NotificationItem {
   id: number;
@@ -27,13 +44,7 @@ interface NotificationItem {
 }
 
 interface DashboardContainerProps {
-  data: {
-    stats: any;
-    financialData: any[];
-    recentActivities: any[];
-    productionData: any[];
-    notifications: NotificationItem[];
-  };
+  data: DashboardData;
 }
 
 function timeAgo(dateStr: string): string {
@@ -103,8 +114,7 @@ export default function DashboardContainer({ data }: DashboardContainerProps) {
                 Welcome back
               </h1>
               <p className="mt-2 max-w-xl text-base leading-relaxed text-slate-600">
-                Here is a snapshot of inventory, shops, and revenue. Use the sidebar
-                to jump into books, finance, or operations.
+                Here is a snapshot of your catalog, finances, orders, and operations.
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-slate-500">
@@ -121,6 +131,9 @@ export default function DashboardContainer({ data }: DashboardContainerProps) {
           </div>
         </div>
       </header>
+
+      {/* Quick Actions */}
+      <QuickActions pendingOrders={data.stats.pendingOrders} pendingPayments={data.stats.pendingPayments} />
 
       {/* Unread Notifications */}
       {data.notifications.length > 0 && (
@@ -169,8 +182,10 @@ export default function DashboardContainer({ data }: DashboardContainerProps) {
         </section>
       )}
 
+      {/* Stats Cards */}
       <StatsOverview stats={data.stats} />
 
+      {/* Chart Row */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-8">
         <div className="lg:col-span-2">
           <FinancialChart data={data.financialData} />
@@ -180,9 +195,14 @@ export default function DashboardContainer({ data }: DashboardContainerProps) {
         </div>
       </div>
 
-      <section className="pb-4">
-        <RecentActivity activities={data.recentActivities} />
-      </section>
+      {/* Orders + Low Stock Row */}
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2 xl:gap-8">
+        <OrderSummary orders={data.recentOrders} />
+        <LowStockAlerts items={data.lowStockItems} />
+      </div>
+
+      {/* Activity */}
+      <RecentActivity activities={data.recentActivities} />
 
       {/* Notification Detail Dialog */}
       <Dialog open={!!selectedNotification} onOpenChange={(open) => { if (!open) setSelectedNotification(null) }}>

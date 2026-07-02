@@ -48,8 +48,7 @@ export function FinancialChart({ data }: FinancialChartProps) {
           Revenue & outstanding
         </CardTitle>
         <CardDescription className="text-sm leading-relaxed text-slate-600">
-          Comparison of gross revenue and pending amounts across the sample
-          periods.
+          Monthly revenue and pending amounts from shop assignments.
         </CardDescription>
       </CardHeader>
       <CardContent className="px-4 pb-6 pt-4 sm:px-8 sm:pb-8">
