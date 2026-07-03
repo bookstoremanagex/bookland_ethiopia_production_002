@@ -1065,7 +1065,7 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                                                                     {editionData.stores.map((store, stIdx) => {
                                                                         const storeAlloc = edAlloc.storeAllocations[stIdx];
-                                                                        const currentQty = storeAlloc?.quantity || 0;
+                                                                        const currentQty = storeAlloc?.quantity ?? 0;
                                                                         const isValid = currentQty <= store.availableQty;
                                                                         return (
                                                                             <div
@@ -1101,14 +1101,14 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                                                                                     type="number"
                                                                                     min={0}
                                                                                     max={store.availableQty}
-                                                                                    value={currentQty}
+                                                                                    value={currentQty || ""}
                                                                                     onChange={e => handleStoreQtyChange(
                                                                                         bookIdx,
                                                                                         edIdx,
                                                                                         stIdx,
                                                                                         parseInt(e.target.value) || 0
                                                                                     )}
-                                                                                    placeholder="0"
+                                                                                    onWheel={e => e.currentTarget.blur()}
                                                                                     className={cn(
                                                                                         "h-10 text-center rounded-lg font-bold border-2 text-sm",
                                                                                         currentQty > 0

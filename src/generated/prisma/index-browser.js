@@ -392,6 +392,7 @@ exports.Prisma.Printorder_itemsScalarFieldEnum = {
   quantity: 'quantity',
   price_per_book: 'price_per_book',
   total_price: 'total_price',
+  content: 'content',
   status: 'status',
   is_deleted: 'is_deleted',
   updatedAt: 'updatedAt',
@@ -795,6 +796,10 @@ exports.Prisma.printorderOrderByRelevanceFieldEnum = {
 
 exports.Prisma.printorder_paymentsOrderByRelevanceFieldEnum = {
   reference: 'reference'
+};
+
+exports.Prisma.printorder_itemsOrderByRelevanceFieldEnum = {
+  content: 'content'
 };
 
 exports.Prisma.roletypesOrderByRelevanceFieldEnum = {

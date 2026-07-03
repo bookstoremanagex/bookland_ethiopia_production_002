@@ -24019,6 +24019,7 @@ export namespace Prisma {
     quantity: number | null
     price_per_book: number | null
     total_price: number | null
+    content: string | null
     status: $Enums.printorder_status | null
     is_deleted: boolean | null
     updatedAt: Date | null
@@ -24032,6 +24033,7 @@ export namespace Prisma {
     quantity: number | null
     price_per_book: number | null
     total_price: number | null
+    content: string | null
     status: $Enums.printorder_status | null
     is_deleted: boolean | null
     updatedAt: Date | null
@@ -24045,6 +24047,7 @@ export namespace Prisma {
     quantity: number
     price_per_book: number
     total_price: number
+    content: number
     status: number
     is_deleted: number
     updatedAt: number
@@ -24078,6 +24081,7 @@ export namespace Prisma {
     quantity?: true
     price_per_book?: true
     total_price?: true
+    content?: true
     status?: true
     is_deleted?: true
     updatedAt?: true
@@ -24091,6 +24095,7 @@ export namespace Prisma {
     quantity?: true
     price_per_book?: true
     total_price?: true
+    content?: true
     status?: true
     is_deleted?: true
     updatedAt?: true
@@ -24104,6 +24109,7 @@ export namespace Prisma {
     quantity?: true
     price_per_book?: true
     total_price?: true
+    content?: true
     status?: true
     is_deleted?: true
     updatedAt?: true
@@ -24204,6 +24210,7 @@ export namespace Prisma {
     quantity: number
     price_per_book: number
     total_price: number
+    content: string | null
     status: $Enums.printorder_status
     is_deleted: boolean
     updatedAt: Date
@@ -24236,6 +24243,7 @@ export namespace Prisma {
     quantity?: boolean
     price_per_book?: boolean
     total_price?: boolean
+    content?: boolean
     status?: boolean
     is_deleted?: boolean
     updatedAt?: boolean
@@ -24253,13 +24261,14 @@ export namespace Prisma {
     quantity?: boolean
     price_per_book?: boolean
     total_price?: boolean
+    content?: boolean
     status?: boolean
     is_deleted?: boolean
     updatedAt?: boolean
     createdAt?: boolean
   }
 
-  export type printorder_itemsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "printorder_id" | "bookEditionId" | "quantity" | "price_per_book" | "total_price" | "status" | "is_deleted" | "updatedAt" | "createdAt", ExtArgs["result"]["printorder_items"]>
+  export type printorder_itemsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "printorder_id" | "bookEditionId" | "quantity" | "price_per_book" | "total_price" | "content" | "status" | "is_deleted" | "updatedAt" | "createdAt", ExtArgs["result"]["printorder_items"]>
   export type printorder_itemsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     printorder?: boolean | printorderDefaultArgs<ExtArgs>
     bookedition?: boolean | bookeditionDefaultArgs<ExtArgs>
@@ -24278,6 +24287,7 @@ export namespace Prisma {
       quantity: number
       price_per_book: number
       total_price: number
+      content: string | null
       status: $Enums.printorder_status
       is_deleted: boolean
       updatedAt: Date
@@ -24659,6 +24669,7 @@ export namespace Prisma {
     readonly quantity: FieldRef<"printorder_items", 'Int'>
     readonly price_per_book: FieldRef<"printorder_items", 'Float'>
     readonly total_price: FieldRef<"printorder_items", 'Float'>
+    readonly content: FieldRef<"printorder_items", 'String'>
     readonly status: FieldRef<"printorder_items", 'printorder_status'>
     readonly is_deleted: FieldRef<"printorder_items", 'Boolean'>
     readonly updatedAt: FieldRef<"printorder_items", 'DateTime'>
@@ -48059,6 +48070,7 @@ export namespace Prisma {
     quantity: 'quantity',
     price_per_book: 'price_per_book',
     total_price: 'total_price',
+    content: 'content',
     status: 'status',
     is_deleted: 'is_deleted',
     updatedAt: 'updatedAt',
@@ -48576,6 +48588,13 @@ export namespace Prisma {
   };
 
   export type printorder_paymentsOrderByRelevanceFieldEnum = (typeof printorder_paymentsOrderByRelevanceFieldEnum)[keyof typeof printorder_paymentsOrderByRelevanceFieldEnum]
+
+
+  export const printorder_itemsOrderByRelevanceFieldEnum: {
+    content: 'content'
+  };
+
+  export type printorder_itemsOrderByRelevanceFieldEnum = (typeof printorder_itemsOrderByRelevanceFieldEnum)[keyof typeof printorder_itemsOrderByRelevanceFieldEnum]
 
 
   export const roletypesOrderByRelevanceFieldEnum: {
@@ -50618,6 +50637,7 @@ export namespace Prisma {
     quantity?: IntFilter<"printorder_items"> | number
     price_per_book?: FloatFilter<"printorder_items"> | number
     total_price?: FloatFilter<"printorder_items"> | number
+    content?: StringNullableFilter<"printorder_items"> | string | null
     status?: Enumprintorder_statusFilter<"printorder_items"> | $Enums.printorder_status
     is_deleted?: BoolFilter<"printorder_items"> | boolean
     updatedAt?: DateTimeFilter<"printorder_items"> | Date | string
@@ -50633,12 +50653,14 @@ export namespace Prisma {
     quantity?: SortOrder
     price_per_book?: SortOrder
     total_price?: SortOrder
+    content?: SortOrderInput | SortOrder
     status?: SortOrder
     is_deleted?: SortOrder
     updatedAt?: SortOrder
     createdAt?: SortOrder
     printorder?: printorderOrderByWithRelationInput
     bookedition?: bookeditionOrderByWithRelationInput
+    _relevance?: printorder_itemsOrderByRelevanceInput
   }
 
   export type printorder_itemsWhereUniqueInput = Prisma.AtLeast<{
@@ -50651,6 +50673,7 @@ export namespace Prisma {
     quantity?: IntFilter<"printorder_items"> | number
     price_per_book?: FloatFilter<"printorder_items"> | number
     total_price?: FloatFilter<"printorder_items"> | number
+    content?: StringNullableFilter<"printorder_items"> | string | null
     status?: Enumprintorder_statusFilter<"printorder_items"> | $Enums.printorder_status
     is_deleted?: BoolFilter<"printorder_items"> | boolean
     updatedAt?: DateTimeFilter<"printorder_items"> | Date | string
@@ -50666,6 +50689,7 @@ export namespace Prisma {
     quantity?: SortOrder
     price_per_book?: SortOrder
     total_price?: SortOrder
+    content?: SortOrderInput | SortOrder
     status?: SortOrder
     is_deleted?: SortOrder
     updatedAt?: SortOrder
@@ -50687,6 +50711,7 @@ export namespace Prisma {
     quantity?: IntWithAggregatesFilter<"printorder_items"> | number
     price_per_book?: FloatWithAggregatesFilter<"printorder_items"> | number
     total_price?: FloatWithAggregatesFilter<"printorder_items"> | number
+    content?: StringNullableWithAggregatesFilter<"printorder_items"> | string | null
     status?: Enumprintorder_statusWithAggregatesFilter<"printorder_items"> | $Enums.printorder_status
     is_deleted?: BoolWithAggregatesFilter<"printorder_items"> | boolean
     updatedAt?: DateTimeWithAggregatesFilter<"printorder_items"> | Date | string
@@ -54484,6 +54509,7 @@ export namespace Prisma {
     quantity?: number
     price_per_book?: number
     total_price?: number
+    content?: string | null
     status?: $Enums.printorder_status
     is_deleted?: boolean
     updatedAt?: Date | string
@@ -54499,6 +54525,7 @@ export namespace Prisma {
     quantity?: number
     price_per_book?: number
     total_price?: number
+    content?: string | null
     status?: $Enums.printorder_status
     is_deleted?: boolean
     updatedAt?: Date | string
@@ -54509,6 +54536,7 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     price_per_book?: FloatFieldUpdateOperationsInput | number
     total_price?: FloatFieldUpdateOperationsInput | number
+    content?: NullableStringFieldUpdateOperationsInput | string | null
     status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -54524,6 +54552,7 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     price_per_book?: FloatFieldUpdateOperationsInput | number
     total_price?: FloatFieldUpdateOperationsInput | number
+    content?: NullableStringFieldUpdateOperationsInput | string | null
     status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -54537,6 +54566,7 @@ export namespace Prisma {
     quantity?: number
     price_per_book?: number
     total_price?: number
+    content?: string | null
     status?: $Enums.printorder_status
     is_deleted?: boolean
     updatedAt?: Date | string
@@ -54547,6 +54577,7 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     price_per_book?: FloatFieldUpdateOperationsInput | number
     total_price?: FloatFieldUpdateOperationsInput | number
+    content?: NullableStringFieldUpdateOperationsInput | string | null
     status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -54560,6 +54591,7 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     price_per_book?: FloatFieldUpdateOperationsInput | number
     total_price?: FloatFieldUpdateOperationsInput | number
+    content?: NullableStringFieldUpdateOperationsInput | string | null
     status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -58393,6 +58425,12 @@ export namespace Prisma {
     bookEditionId?: SortOrder
   }
 
+  export type printorder_itemsOrderByRelevanceInput = {
+    fields: printorder_itemsOrderByRelevanceFieldEnum | printorder_itemsOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
   export type printorder_itemsCountOrderByAggregateInput = {
     id?: SortOrder
     printorder_id?: SortOrder
@@ -58400,6 +58438,7 @@ export namespace Prisma {
     quantity?: SortOrder
     price_per_book?: SortOrder
     total_price?: SortOrder
+    content?: SortOrder
     status?: SortOrder
     is_deleted?: SortOrder
     updatedAt?: SortOrder
@@ -58422,6 +58461,7 @@ export namespace Prisma {
     quantity?: SortOrder
     price_per_book?: SortOrder
     total_price?: SortOrder
+    content?: SortOrder
     status?: SortOrder
     is_deleted?: SortOrder
     updatedAt?: SortOrder
@@ -58435,6 +58475,7 @@ export namespace Prisma {
     quantity?: SortOrder
     price_per_book?: SortOrder
     total_price?: SortOrder
+    content?: SortOrder
     status?: SortOrder
     is_deleted?: SortOrder
     updatedAt?: SortOrder
@@ -63134,6 +63175,7 @@ export namespace Prisma {
     quantity?: number
     price_per_book?: number
     total_price?: number
+    content?: string | null
     status?: $Enums.printorder_status
     is_deleted?: boolean
     updatedAt?: Date | string
@@ -63147,6 +63189,7 @@ export namespace Prisma {
     quantity?: number
     price_per_book?: number
     total_price?: number
+    content?: string | null
     status?: $Enums.printorder_status
     is_deleted?: boolean
     updatedAt?: Date | string
@@ -63478,6 +63521,7 @@ export namespace Prisma {
     quantity?: IntFilter<"printorder_items"> | number
     price_per_book?: FloatFilter<"printorder_items"> | number
     total_price?: FloatFilter<"printorder_items"> | number
+    content?: StringNullableFilter<"printorder_items"> | string | null
     status?: Enumprintorder_statusFilter<"printorder_items"> | $Enums.printorder_status
     is_deleted?: BoolFilter<"printorder_items"> | boolean
     updatedAt?: DateTimeFilter<"printorder_items"> | Date | string
@@ -66701,6 +66745,7 @@ export namespace Prisma {
     quantity?: number
     price_per_book?: number
     total_price?: number
+    content?: string | null
     status?: $Enums.printorder_status
     is_deleted?: boolean
     updatedAt?: Date | string
@@ -66714,6 +66759,7 @@ export namespace Prisma {
     quantity?: number
     price_per_book?: number
     total_price?: number
+    content?: string | null
     status?: $Enums.printorder_status
     is_deleted?: boolean
     updatedAt?: Date | string
@@ -69417,6 +69463,7 @@ export namespace Prisma {
     quantity?: number
     price_per_book?: number
     total_price?: number
+    content?: string | null
     status?: $Enums.printorder_status
     is_deleted?: boolean
     updatedAt?: Date | string
@@ -69648,6 +69695,7 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     price_per_book?: FloatFieldUpdateOperationsInput | number
     total_price?: FloatFieldUpdateOperationsInput | number
+    content?: NullableStringFieldUpdateOperationsInput | string | null
     status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -69661,6 +69709,7 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     price_per_book?: FloatFieldUpdateOperationsInput | number
     total_price?: FloatFieldUpdateOperationsInput | number
+    content?: NullableStringFieldUpdateOperationsInput | string | null
     status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -69673,6 +69722,7 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     price_per_book?: FloatFieldUpdateOperationsInput | number
     total_price?: FloatFieldUpdateOperationsInput | number
+    content?: NullableStringFieldUpdateOperationsInput | string | null
     status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -70554,6 +70604,7 @@ export namespace Prisma {
     quantity?: number
     price_per_book?: number
     total_price?: number
+    content?: string | null
     status?: $Enums.printorder_status
     is_deleted?: boolean
     updatedAt?: Date | string
@@ -70573,6 +70624,7 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     price_per_book?: FloatFieldUpdateOperationsInput | number
     total_price?: FloatFieldUpdateOperationsInput | number
+    content?: NullableStringFieldUpdateOperationsInput | string | null
     status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -70586,6 +70638,7 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     price_per_book?: FloatFieldUpdateOperationsInput | number
     total_price?: FloatFieldUpdateOperationsInput | number
+    content?: NullableStringFieldUpdateOperationsInput | string | null
     status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -70598,6 +70651,7 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     price_per_book?: FloatFieldUpdateOperationsInput | number
     total_price?: FloatFieldUpdateOperationsInput | number
+    content?: NullableStringFieldUpdateOperationsInput | string | null
     status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string

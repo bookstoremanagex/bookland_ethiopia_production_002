@@ -45,10 +45,6 @@ const ACCOUNT_TYPES = [
   "Inventory Manager",
   "Finance Officer",
   "Sales Staff",
-  "Retail Manager",
-  "Delivery and Sales Management",
-  "Delivery Sample",
-  "Printer",
   "Viewer",
 ];
 
