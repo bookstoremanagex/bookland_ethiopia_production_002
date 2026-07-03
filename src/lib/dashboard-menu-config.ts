@@ -71,7 +71,8 @@ export const ALL_DASHBOARD_MENUS: MenuItem[] = [
     { id: "checks", title: "Manage Checks", icon: FileCheck, path: "checks", menuName: "Checks" },
     { id: "manage_orders", title: "Manage Orders", icon: ClipboardList, path: "manage_orders", menuName: "Manage Orders" },
     { id: "manage_payment", title: "Manage Payment", icon: BadgeDollarSign, path: "manage_payment", menuName: "Manage Payments" },
-    { id: "retail_management", title: "Retail Management", icon: ShoppingBag, path: "retail_management", menuName: "Retail Management" },
+    { id: "retail_management", title: "Selling to individual", icon: ShoppingBag, path: "retail_management", menuName: "Selling to individual" },
+    { id: "retail_shop", title: "Retail Shop", icon: Store, path: "retail-shop", menuName: "Retail Shop" },
     { id: "activity_log", title: "Activity Log", icon: History, path: "activity_log", menuName: "Activity Log" },
     { 
         id: "production", 
@@ -152,6 +153,7 @@ export const ALL_DASHBOARD_MENUS: MenuItem[] = [
         menuName: "Settings",
         subItems: [
             { title: "Accounts", icon: User, path: "settings/accounts", menuName: "Accounts" },
+            { title: "Retail Shop Accounts", icon: Store, path: "settings/retail-shop-accounts", menuName: "Retail Shop Accounts" },
             { title: "Menu Management", icon: ClipboardList, path: "settings/menus", menuName: "Menu Management" },
             { title: "Theme Customization", icon: Palette, path: "settings/theme", menuName: "Theme Customization" }
         ]

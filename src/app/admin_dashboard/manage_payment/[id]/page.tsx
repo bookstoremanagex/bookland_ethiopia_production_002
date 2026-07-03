@@ -42,6 +42,10 @@ export default async function ManagePaymentDetailPage({ params }: { params: Prom
     const totalDebt = orderDebt + previousDebt;
     const totalRemaining = totalDebt - totalPaid;
 
+    const roundOrders = shop.orders.filter((o: any) => o.order_type === "on round");
+    const roundTotalAmount = roundOrders.reduce((sum: number, o: any) => sum + (o.total_amount || 0), 0);
+    const roundTotalPaid = roundOrders.reduce((sum: number, o: any) => sum + (o.amount_paid || 0), 0);
+
     return (
         <ManagePaymentDetailClient
             shop={{
@@ -125,6 +129,12 @@ export default async function ManagePaymentDetailPage({ params }: { params: Prom
             }))}
             totals={{ totalDebt, totalPaid, totalRemaining }}
             previousDebt={previousDebt}
+            roundBooksTotals={{
+                orderCount: roundOrders.length,
+                totalAmount: roundTotalAmount,
+                totalPaid: roundTotalPaid,
+                remaining: roundTotalAmount - roundTotalPaid,
+            }}
         />
     );
 }

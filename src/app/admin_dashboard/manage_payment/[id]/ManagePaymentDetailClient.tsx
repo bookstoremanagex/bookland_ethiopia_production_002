@@ -111,12 +111,20 @@ interface Totals {
     totalRemaining: number;
 }
 
+interface RoundBooksTotals {
+    orderCount: number;
+    totalAmount: number;
+    totalPaid: number;
+    remaining: number;
+}
+
 interface Props {
     shop: ShopInfo;
     payments: Payment[];
     orders: AdminOrder[];
     totals: Totals;
     previousDebt: number;
+    roundBooksTotals: RoundBooksTotals;
 }
 
 function timeAgo(date: string | Date): string {
@@ -138,7 +146,7 @@ function timeAgo(date: string | Date): string {
     return "just now";
 }
 
-export default function ManagePaymentDetailClient({ shop, payments, orders, totals, previousDebt }: Props) {
+export default function ManagePaymentDetailClient({ shop, payments, orders, totals, previousDebt, roundBooksTotals }: Props) {
     const { formatDate } = useCalendar();
     const router = useRouter();
     const [isAdmin, setIsAdmin] = useState(false);
@@ -374,6 +382,32 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, tota
                             </div>
                         )
                     })()}
+                </div>
+
+                {/* Round Books Summary Card */}
+                <div className="bg-white rounded-[2rem] border-2 border-primarycolor/5 p-6 shadow-xl space-y-4">
+                    <div className="flex items-center gap-2 text-indigo-600 mb-1">
+                        <ShoppingBag className="size-4" />
+                        <h3 className="text-[10px] font-black uppercase tracking-widest">Round Books Summary</h3>
+                    </div>
+                    <div className="space-y-3">
+                        <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-indigo-50 border border-indigo-100">
+                            <span className="text-[10px] font-bold text-indigo-600">Total Round Orders</span>
+                            <span className="text-sm font-black text-indigo-700">{roundBooksTotals.orderCount}</span>
+                        </div>
+                        <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-primarycolor/5">
+                            <span className="text-[10px] font-bold text-muted-foreground">Total Amount</span>
+                            <span className="text-sm font-black text-primarycolor">{roundBooksTotals.totalAmount.toLocaleString()} ETB</span>
+                        </div>
+                        <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-emerald-50 border border-emerald-100">
+                            <span className="text-[10px] font-bold text-emerald-600">Total Paid</span>
+                            <span className="text-sm font-black text-emerald-700">{roundBooksTotals.totalPaid.toLocaleString()} ETB</span>
+                        </div>
+                        <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-rose-50 border border-rose-100">
+                            <span className="text-[10px] font-bold text-rose-600">Remaining</span>
+                            <span className="text-sm font-black text-rose-700">{roundBooksTotals.remaining.toLocaleString()} ETB</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 

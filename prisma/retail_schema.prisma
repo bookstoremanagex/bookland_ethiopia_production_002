@@ -1,0 +1,102 @@
+generator retail_client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/retail-prisma"
+}
+
+datasource retail_db {
+  provider = "mysql"
+  url      = env("RETAIL_SHOP_DATABASE_URL")
+}
+
+model retail_books {
+  id                              Int       @id @default(autoincrement())
+  book_id                         Int?
+  title                           String
+  author                          String
+  language                        String
+  category                        String
+  publication_year                String?
+  copyright_registration_number   String?
+  book_image_url                  String?
+  status                          String    @default("available")
+  is_deleted                      Boolean   @default(false)
+  updatedAt                       DateTime
+  createdAt                       DateTime  @default(now())
+  deletedAt                       DateTime  @default(now())
+  pen_name                        String?
+  translator_cost                 Float?
+  cover_design_cost               Float?
+  text_design_cost                Float?
+  editor_cost                     Float?
+  typewriting_cost                Float?
+  store_cost                      Float?
+  distribution_cost               Float?
+  advertisement_cost              Float?
+  purchasing_right_cost           Float?
+ourbook Boolean @default(false)
+  bookEditions reatil_book_editions[]
+
+  created_at DateTime @default(now())
+updated_at DateTime @default(now())
+deleted_at DateTime @default(now())
+}
+
+model reatil_book_editions {
+  id           Int     @id @default(autoincrement())
+  edition_name String
+  book_id      Int?
+  books        retail_books?  @relation(fields: [book_id], references: [id], map: "BookEditions_book_id_fkey")
+  price        Float?
+  orders retail_orders[]
+
+  created_at DateTime @default(now())
+updated_at DateTime @default(now())
+deleted_at DateTime @default(now())
+
+  @@index([book_id], map: "BookEditions_book_id_fkey")
+}
+
+
+model retail_orders  {
+  id Int @id @default(autoincrement())
+  book_edition_id Int
+  book reatil_book_editions @relation(fields: [book_edition_id], references: [id], map: "RetailOrders_book_edition_id_fkey")
+  total_price Float?
+  quantity Int?
+  customer customers? @relation(fields: [customerId], references: [id], map: "RetailOrders_customer_id_fkey")
+  customerId Int?
+  
+created_at DateTime @default(now())
+updated_at DateTime @default(now())
+deleted_at DateTime @default(now())
+}
+
+model users {
+  id  Int @id @default(autoincrement())
+  name String?
+  email String?
+  password String?
+  role String?
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+  deleted_at DateTime @default(now())
+}
+
+model customers {
+  id  Int @id @default(autoincrement())
+  name String?
+  email String?
+  password String?
+  customerType String?
+  orders retail_orders[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+  deleted_at DateTime @default(now())
+}
+
+enum customerType {
+  INDVIDUAL
+  DISTRIBUTOR
+  BOOKSHOP
+}

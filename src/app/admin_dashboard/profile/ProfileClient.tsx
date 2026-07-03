@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useCalendar } from "@/lib/calendar-context";
 import { User, Mail, Shield, Calendar, Save, Loader2, KeyRound, LogOut } from "lucide-react";
-import { getProfileData, updateAdminProfile } from './actions';
+import { getProfileData, updateAdminProfile, changePasswordAction } from './actions';
 import { logoutAction } from '@/app/actions/auth-actions';
 import { useRouter } from 'next/navigation';
 
@@ -13,6 +13,7 @@ export default function ProfileClient() {
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isSavingPassword, setIsSavingPassword] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [user, setUser] = useState<{
     id: number;
@@ -25,9 +26,13 @@ export default function ProfileClient() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    password: ''
+  });
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: '',
+    newPassword: '',
   });
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+  const [passwordMessage, setPasswordMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
   const [fetchError, setFetchError] = useState(false);
 
   useEffect(() => {
@@ -43,7 +48,6 @@ export default function ProfileClient() {
         setFormData({
           name: result.user.name,
           email: result.user.email,
-          password: ''
         });
         setFetchError(false);
       } else {
@@ -64,11 +68,35 @@ export default function ProfileClient() {
     
     if (result.success) {
       setMessage({ type: 'success', text: 'Profile updated successfully!' });
-      setFormData(prev => ({ ...prev, password: '' }));
     } else {
       setMessage({ type: 'error', text: result.error || 'Failed to update profile' });
     }
     setIsSaving(false);
+  };
+
+  const handlePasswordChange = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) return;
+    if (!passwordData.currentPassword || !passwordData.newPassword) {
+      setPasswordMessage({ type: 'error', text: 'Both current and new password are required' });
+      return;
+    }
+    if (passwordData.newPassword.length < 6) {
+      setPasswordMessage({ type: 'error', text: 'New password must be at least 6 characters' });
+      return;
+    }
+    setIsSavingPassword(true);
+    setPasswordMessage(null);
+
+    const result = await changePasswordAction(user.id, passwordData.currentPassword, passwordData.newPassword);
+    
+    if (result.success) {
+      setPasswordMessage({ type: 'success', text: 'Password changed successfully!' });
+      setPasswordData({ currentPassword: '', newPassword: '' });
+    } else {
+      setPasswordMessage({ type: 'error', text: result.error || 'Failed to change password' });
+    }
+    setIsSavingPassword(false);
   };
 
   const handleLogout = async () => {
@@ -188,20 +216,6 @@ export default function ProfileClient() {
               </div>
             </div>
 
-            <div className="space-y-3">
-              <label className="text-[10px] font-black text-primarycolor/40 uppercase tracking-widest ml-1">Change Password</label>
-              <div className="relative group max-w-md">
-                <KeyRound className="absolute left-5 top-1/2 -translate-y-1/2 size-4 text-slate-400 group-focus-within:text-secondarycolor transition-colors" />
-                <input
-                  type="password"
-                  placeholder="Enter new password to change..."
-                  value={formData.password}
-                  onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
-                  className="w-full h-14 pl-14 pr-6 rounded-2xl bg-slate-50 border-2 border-transparent focus:border-secondarycolor/20 focus:bg-white outline-none font-bold text-primarycolor transition-all placeholder:text-slate-300 placeholder:font-medium"
-                />
-              </div>
-            </div>
-
             {message && (
               <div className={`p-4 rounded-2xl font-bold text-xs uppercase tracking-tight ${
                 message.type === 'success' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-rose-50 text-rose-600 border border-rose-100'
@@ -222,6 +236,68 @@ export default function ProfileClient() {
               <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest max-w-[200px]">
                 Last synchronized: {mounted ? new Date().toLocaleTimeString() : '...'}
               </p>
+            </div>
+          </form>
+
+          {/* Password Change Section */}
+          <form onSubmit={handlePasswordChange} className="bg-white p-10 rounded-[3rem] border-2 border-primarycolor/5 shadow-2xl space-y-8 mt-8">
+            <div>
+              <h3 className="text-sm font-black text-primarycolor uppercase tracking-tight flex items-center gap-2">
+                <KeyRound className="size-4" />
+                Change Password
+              </h3>
+              <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mt-1">
+                Enter your current password and a new password
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-3">
+                <label className="text-[10px] font-black text-primarycolor/40 uppercase tracking-widest ml-1">Current Password</label>
+                <div className="relative group">
+                  <KeyRound className="absolute left-5 top-1/2 -translate-y-1/2 size-4 text-slate-400 group-focus-within:text-secondarycolor transition-colors" />
+                  <input
+                    type="password"
+                    placeholder="Enter current password..."
+                    value={passwordData.currentPassword}
+                    onChange={(e) => setPasswordData(prev => ({ ...prev, currentPassword: e.target.value }))}
+                    className="w-full h-14 pl-14 pr-6 rounded-2xl bg-slate-50 border-2 border-transparent focus:border-secondarycolor/20 focus:bg-white outline-none font-bold text-primarycolor transition-all placeholder:text-slate-300 placeholder:font-medium"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <label className="text-[10px] font-black text-primarycolor/40 uppercase tracking-widest ml-1">New Password</label>
+                <div className="relative group">
+                  <KeyRound className="absolute left-5 top-1/2 -translate-y-1/2 size-4 text-slate-400 group-focus-within:text-secondarycolor transition-colors" />
+                  <input
+                    type="password"
+                    placeholder="Enter new password..."
+                    value={passwordData.newPassword}
+                    onChange={(e) => setPasswordData(prev => ({ ...prev, newPassword: e.target.value }))}
+                    className="w-full h-14 pl-14 pr-6 rounded-2xl bg-slate-50 border-2 border-transparent focus:border-secondarycolor/20 focus:bg-white outline-none font-bold text-primarycolor transition-all placeholder:text-slate-300 placeholder:font-medium"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {passwordMessage && (
+              <div className={`p-4 rounded-2xl font-bold text-xs uppercase tracking-tight ${
+                passwordMessage.type === 'success' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-rose-50 text-rose-600 border border-rose-100'
+              }`}>
+                {passwordMessage.text}
+              </div>
+            )}
+
+            <div className="flex items-center gap-6 pt-6 border-t border-slate-50">
+              <button
+                type="submit"
+                disabled={isSavingPassword}
+                className="h-14 px-10 rounded-2xl bg-secondarycolor text-white font-black uppercase tracking-widest text-[10px] hover:shadow-2xl hover:shadow-secondarycolor/20 active:scale-95 transition-all flex items-center gap-3 disabled:opacity-50"
+              >
+                {isSavingPassword ? <Loader2 className="size-4 animate-spin" /> : <KeyRound className="size-4" />}
+                {isSavingPassword ? 'Changing Password...' : 'Change Password'}
+              </button>
             </div>
           </form>
         </div>

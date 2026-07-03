@@ -279,6 +279,51 @@ export async function getRoundRecordDetail(recordId: number) {
   }
 }
 
+export async function getShopRoundPaymentInfo(shopId: number) {
+  try {
+    const records = await (prisma as any).roundrecords.findMany({
+      where: { bookshop_id: shopId, is_deleted: false },
+      include: {
+        round_payments: {
+          where: { is_deleted: false },
+        },
+        RoundBooks: {
+          include: {
+            book: {
+              select: { id: true, title: true },
+            },
+          },
+        },
+      },
+    });
+
+    const breakdown = records.map((r: any) => {
+      const totalprice = r.totalprice ?? 0;
+      const paidAmount = (r.round_payments || [])
+        .filter((p: any) => p.status === "APPROVED")
+        .reduce((sum: number, p: any) => sum + (p.amount || 0), 0);
+      return {
+        recordId: r.id,
+        bookTitle: r.RoundBooks?.book?.title || "Unknown",
+        totalprice,
+        paidAmount,
+        remaining: totalprice - paidAmount,
+      };
+    });
+
+    const totalRemaining = breakdown.reduce((sum: number, b: any) => sum + b.remaining, 0);
+    const totalAmount = breakdown.reduce((sum: number, b: any) => sum + b.totalprice, 0);
+    const totalPaid = breakdown.reduce((sum: number, b: any) => sum + b.paidAmount, 0);
+
+    return {
+      success: true,
+      data: { breakdown, totalAmount, totalPaid, totalRemaining },
+    };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+}
+
 export async function deleteRoundBook(id: number) {
   try {
     await (prisma as any).roundbooks.update({

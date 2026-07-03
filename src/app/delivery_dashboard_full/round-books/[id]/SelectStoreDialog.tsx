@@ -14,6 +14,7 @@ import {
   Calendar,
   ChevronsUpDown,
   Pencil,
+  Eye,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -40,7 +41,16 @@ import {
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { getAvailableShops, getEditionPrice, createRoundRecord, createRoundCheck } from "../actions";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+} from "@/components/ui/alert-dialog";
+import { getAvailableShops, getEditionPrice, createRoundRecord, createRoundCheck, getShopRoundPaymentInfo } from "../actions";
 
 type ShopOption = { id: number; name: string; location: string; branch: string | null };
 
@@ -82,6 +92,15 @@ export default function SelectStoreDialog({
   const [checkAmount, setCheckAmount] = useState("");
   const [checkMemo, setCheckMemo] = useState("");
   const [checkRecordedDate, setCheckRecordedDate] = useState("");
+
+  const [shopRoundInfo, setShopRoundInfo] = useState<{
+    breakdown: { bookTitle: string; totalprice: number; paidAmount: number; remaining: number }[];
+    totalAmount: number;
+    totalPaid: number;
+    totalRemaining: number;
+  } | null>(null);
+  const [loadingRoundInfo, setLoadingRoundInfo] = useState(false);
+  const [showRoundDetail, setShowRoundDetail] = useState(false);
 
   const filteredShops = useMemo(() => {
     if (!shopSearch) return shops;
@@ -278,6 +297,12 @@ export default function SelectStoreDialog({
                                 onSelect={() => {
                                   setSelectedShop(shop);
                                   setShopSearchOpen(false);
+                                  setShopRoundInfo(null);
+                                  setLoadingRoundInfo(true);
+                                  getShopRoundPaymentInfo(shop.id).then((res) => {
+                                    if (res.success) setShopRoundInfo(res.data);
+                                    setLoadingRoundInfo(false);
+                                  });
                                 }}
                                 className="h-12 px-4 flex items-center gap-3 cursor-pointer rounded-xl"
                               >
@@ -311,6 +336,37 @@ export default function SelectStoreDialog({
                           <p className="font-bold text-sm text-emerald-800">{selectedShop.name}</p>
                           <p className="text-[9px] font-bold text-emerald-600">{selectedShop.location}</p>
                         </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {selectedShop && (
+                    <div className="bg-indigo-50 rounded-2xl border-2 border-indigo-200/50 p-4">
+                      <div className="flex items-center gap-3">
+                        <div className="size-9 rounded-xl bg-indigo-100 flex items-center justify-center text-indigo-600 shrink-0">
+                          <Banknote className="size-4" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[8px] font-black text-indigo-600 uppercase tracking-widest">Total Remaining from Rounds</p>
+                          {loadingRoundInfo ? (
+                            <div className="flex items-center gap-2 mt-1">
+                              <Loader2 className="size-3.5 animate-spin text-indigo-400" />
+                              <span className="text-[10px] font-bold text-indigo-400">Loading...</span>
+                            </div>
+                          ) : shopRoundInfo ? (
+                            <p className="font-black text-lg text-indigo-700 mt-0.5">
+                              {shopRoundInfo.totalRemaining.toLocaleString()} ETB
+                            </p>
+                          ) : null}
+                        </div>
+                        {shopRoundInfo && shopRoundInfo.breakdown.length > 0 && (
+                          <button
+                            onClick={() => setShowRoundDetail(true)}
+                            className="size-9 rounded-xl bg-indigo-200/50 hover:bg-indigo-200 flex items-center justify-center text-indigo-700 transition-all shrink-0"
+                          >
+                            <Eye className="size-4" />
+                          </button>
+                        )}
                       </div>
                     </div>
                   )}
@@ -557,6 +613,62 @@ export default function SelectStoreDialog({
             </button>
           )}
         </div>
+
+        {/* Round Payment Detail Dialog */}
+        <AlertDialog open={showRoundDetail} onOpenChange={setShowRoundDetail}>
+          <AlertDialogContent className="rounded-[2rem] border-2 border-primarycolor/5 p-0 max-w-md overflow-hidden">
+            <AlertDialogHeader className="p-6 pb-4 border-b border-slate-100">
+              <div className="flex items-center gap-3">
+                <div className="size-10 rounded-xl bg-indigo-100 flex items-center justify-center text-indigo-600 shrink-0">
+                  <Banknote className="size-5" />
+                </div>
+                <div>
+                  <AlertDialogTitle className="text-base font-black uppercase italic text-left leading-tight text-primarycolor">
+                    Round Payment Details
+                  </AlertDialogTitle>
+                  <AlertDialogDescription className="text-[9px] font-bold text-muted-foreground">
+                    {selectedShop?.name} — Remaining: {shopRoundInfo?.totalRemaining.toLocaleString() ?? 0} ETB
+                  </AlertDialogDescription>
+                </div>
+              </div>
+            </AlertDialogHeader>
+            <div className="p-6 space-y-3 max-h-60 overflow-y-auto">
+              {shopRoundInfo?.breakdown.map((item, i) => (
+                <div key={i} className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100">
+                  <div className="min-w-0 flex-1">
+                    <p className="font-bold text-sm text-slate-800 truncate">{item.bookTitle}</p>
+                    <p className="text-[9px] font-bold text-muted-foreground">
+                      {item.totalprice.toLocaleString()} ETB total
+                    </p>
+                  </div>
+                  <div className="text-right shrink-0 ml-3">
+                    <p className="font-bold text-xs text-emerald-600">
+                      Paid: {item.paidAmount.toLocaleString()} ETB
+                    </p>
+                    <p className={cn(
+                      "font-black text-xs",
+                      item.remaining > 0 ? "text-rose-600" : "text-emerald-600",
+                    )}>
+                      {item.remaining > 0 ? `Remaining: ${item.remaining.toLocaleString()} ETB` : "Fully Paid"}
+                    </p>
+                  </div>
+                </div>
+              ))}
+              {(!shopRoundInfo || shopRoundInfo.breakdown.length === 0) && (
+                <div className="py-8 text-center">
+                  <p className="text-[10px] font-bold text-muted-foreground">No round records found for this shop</p>
+                </div>
+              )}
+            </div>
+            <AlertDialogFooter className="p-4 pt-0">
+              <AlertDialogCancel asChild>
+                <button className="w-full h-12 rounded-2xl border-2 border-slate-200 font-black text-[9px] uppercase tracking-widest text-slate-600 hover:bg-slate-50 transition-all cursor-pointer">
+                  Close
+                </button>
+              </AlertDialogCancel>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </DialogContent>
     </Dialog>
   );
