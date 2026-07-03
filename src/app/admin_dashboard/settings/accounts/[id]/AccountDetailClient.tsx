@@ -457,6 +457,7 @@ export default function AccountDetailClient({ account, roletypes }: { account: A
       </div>
 
       {/* Roles & Permissions Section */}
+      {account.account_type !== "ADMIN" && account.account_type !== "Printer" && account.account_type !== "Delivery Account" && (
       <div className="bg-white rounded-[1.5rem] sm:rounded-[2.5rem] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.08)] border border-primarycolor/5 overflow-hidden">
         <div className="p-6 sm:p-12 space-y-8">
           <div className="space-y-1">
@@ -518,6 +519,7 @@ export default function AccountDetailClient({ account, roletypes }: { account: A
           </div>
         </div>
       </div>
+      )}
 
       {/* Security Section */}
       <div className="bg-white rounded-[1.5rem] sm:rounded-[2.5rem] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.08)] border border-primarycolor/5 overflow-hidden">

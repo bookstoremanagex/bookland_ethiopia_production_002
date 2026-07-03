@@ -8,6 +8,7 @@ import {
   Banknote,
   X,
   Menu,
+  BookOpen,
 } from "lucide-react";
 
 import {
@@ -31,6 +32,7 @@ import Link from "next/link";
 
 const menuItems = [
   { title: "Home", icon: Home, url: "/printer_full" },
+  { title: "Books in collective", icon: BookOpen, url: "/printer_full/books-in-collective" },
   { title: "Profile", icon: User, url: "/printer_full/profile" },
   { title: "Notes", icon: FileText, url: "/printer_full/notes" },
   { title: "Payments", icon: Banknote, url: "/printer_full/payments" },
