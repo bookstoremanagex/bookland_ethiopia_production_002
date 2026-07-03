@@ -300,7 +300,7 @@ export default function SelectStoreDialog({
                                   setShopRoundInfo(null);
                                   setLoadingRoundInfo(true);
                                   getShopRoundPaymentInfo(shop.id).then((res) => {
-                                    if (res.success) setShopRoundInfo(res.data);
+                                    if (res.success) setShopRoundInfo(res.data ?? null);
                                     setLoadingRoundInfo(false);
                                   });
                                 }}
