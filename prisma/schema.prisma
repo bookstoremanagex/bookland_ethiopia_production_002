@@ -221,6 +221,7 @@ model orders {
   bookShopId         Int
   order_type         String // "requested" or "on round"
   memo               String?           @db.Text
+  hide_remaining Boolean @default(false)
   is_approved        Boolean           @default(false)
   total_amount       Float             @default(0)
   amount_paid        Float             @default(0)

@@ -49,6 +49,7 @@ export type AdminOrder = {
   check_id: number | null;
   status: string;
   is_approved: boolean;
+  hide_remaining: boolean;
   memo: string | null;
   allocation_summary: string | null;
   delivery: boolean;

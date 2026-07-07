@@ -1,6 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import {
+    ColumnDef,
+    flexRender,
+    getCoreRowModel,
+    getFilteredRowModel,
+    getPaginationRowModel,
+    getSortedRowModel,
+    SortingState,
+    useReactTable,
+} from "@tanstack/react-table";
 import {
     Building2,
     MapPin,
@@ -28,15 +38,27 @@ import {
     Trash2,
     ListOrdered,
     ShoppingBag,
+    Search,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { parseISO } from "date-fns";
 import { useCalendar } from "@/lib/calendar-context";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { approvePayment, checkIsAdminUser, rejectPayment, deletePayment, setPaymentPending, updatePaymentMemo } from "@/app/actions/payment-actions";
+import { setOrderHideRemaining } from "@/app/actions/order-actions";
 import { updateCheckStatus, updateCheckDetails } from "@/app/actions/check-actions";
 import { updateShopPreviousDebt } from "@/app/actions/book-shop-actions";
 import {
@@ -49,6 +71,15 @@ import {
     AlertDialogCancel,
     AlertDialogAction,
 } from "@/components/ui/alert-dialog";
+
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+    DialogFooter,
+} from "@/components/ui/dialog";
 
 import {
     Tabs,
@@ -171,7 +202,18 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, tota
 
     const [paymentPage, setPaymentPage] = useState(1);
     const perPage = 15;
+    const [orderSorting, setOrderSorting] = useState<SortingState>([{ id: "createdAt", desc: true }]);
+    const [orderGlobalFilter, setOrderGlobalFilter] = useState("");
     const [selectedActionPayment, setSelectedActionPayment] = useState<Payment | null>(null);
+    const [hideRemToggleOrder, setHideRemToggleOrder] = useState<AdminOrder | null>(null);
+    const [hideRemDialogValue, setHideRemDialogValue] = useState(false);
+    const [togglingHideRem, setTogglingHideRem] = useState(false);
+
+    useEffect(() => {
+        if (hideRemToggleOrder) {
+            setHideRemDialogValue(hideRemToggleOrder.hide_remaining);
+        }
+    }, [hideRemToggleOrder]);
     const [showActionDialog, setShowActionDialog] = useState(false);
     const [confirmAction, setConfirmAction] = useState<"reject" | "delete" | "pending" | null>(null);
     const [showConfirmDialog, setShowConfirmDialog] = useState(false);
@@ -694,108 +736,234 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, tota
                             </h2>
                         </div>
 
-                        {orders.length > 0 ? (
-                            <div className="space-y-3">
-                                {orders.map((order) => {
-                                    const itemCount = order.order_items?.length || 0;
-                                    const totalBooks = order.order_items?.reduce((sum, item) => sum + (item.quantity || 0), 0) || 0;
-                                    const linkedPayments = payments.filter(p =>
-                                        p.status === "APPROVED" &&
-                                        p.orderid != null &&
-                                        (p.orderid === String(order.id) ||
-                                         p.orderid === `ORD-${order.id}` ||
-                                         p.orderid.replace(/^ORD-/i, "") === String(order.id))
-                                    );
-                                    const paidFromLinked = linkedPayments.reduce((sum, p) => sum + p.amount, 0);
-                                    const remaining = (order.total_amount || 0) - paidFromLinked;
-                                    return (
-                                        <div
-                                            key={order.id}
-                                            onClick={() => {
-                                                setSelectedOrder(order);
-                                                setIsOrderModalOpen(true);
-                                            }}
-                                            className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl border-2 border-slate-100 bg-slate-50/50 hover:bg-white hover:border-primarycolor/20 transition-all cursor-pointer"
-                                        >
-                                            <div className="flex items-center gap-4 min-w-0">
-                                                <div className={cn(
-                                                    "size-11 rounded-xl flex items-center justify-center shrink-0",
-                                                    order.status === "Approved"
-                                                        ? "bg-emerald-100 text-emerald-600"
-                                                        : order.status === "Delivered"
-                                                        ? "bg-blue-100 text-blue-600"
-                                                        : "bg-amber-100 text-amber-600"
-                                                )}>
-                                                    <ShoppingBag className="size-5" />
-                                                </div>
-                                                <div className="min-w-0">
-                                                    <div className="flex items-center gap-2">
-                                                        <span className="font-black text-primarycolor">
-                                                            #ORD-{order.id}
-                                                        </span>
-                                                        <span className={cn(
-                                                            "px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest",
-                                                            order.order_type === "on round"
-                                                                ? "bg-indigo-100 text-indigo-600"
-                                                                : "bg-teal-100 text-teal-600"
-                                                        )}>
-                                                            {order.order_type === "on round" ? "On Round" : "Requested"}
-                                                        </span>
-                                                    </div>
-                                                    <div className="flex items-center gap-3 text-[10px] text-muted-foreground font-bold mt-0.5 flex-wrap">
-                                                        <span className="flex items-center gap-1.5">
-                                                            <Calendar className="size-3" />
-                                                            {formatDate(new Date(order.createdAt), "MMM dd, yyyy HH:mm")}
-                                                        </span>
-                                                        <span className="flex items-center gap-1">
-                                                            <ShoppingBag className="size-3" />
-                                                            {itemCount} item{itemCount !== 1 ? "s" : ""} ({totalBooks} book{totalBooks !== 1 ? "s" : ""})
-                                                        </span>
-                                                        {order.order_items?.[0]?.bookedition?.books && (
-                                                            <span className="truncate max-w-[200px] text-muted-foreground/60">
-                                                                "{order.order_items[0].bookedition.books.title}"
-                                                                {itemCount > 1 && " + more"}
-                                                            </span>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div className="flex items-center gap-3 shrink-0 flex-wrap">
-                                                <div className="text-right">
-                                                    <p className="font-black text-primarycolor text-sm">
-                                                        {(order.total_amount || 0).toLocaleString()} ETB
-                                                    </p>
-                                                    {remaining > 0 && (
-                                                        <p className="text-[9px] font-bold text-rose-500">
-                                                            {remaining.toLocaleString()} ETB remaining
-                                                        </p>
-                                                    )}
-                                                </div>
-                                                <span className={cn(
-                                                    "px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest",
-                                                    order.status === "Approved"
-                                                        ? "bg-emerald-50 text-emerald-600 border border-emerald-200"
-                                                        : order.status === "Delivered"
-                                                        ? "bg-blue-50 text-blue-600 border border-blue-200"
-                                                        : order.status === "Pending"
-                                                        ? "bg-amber-50 text-amber-600 border border-amber-200"
-                                                        : "bg-slate-50 text-slate-600 border border-slate-200"
-                                                )}>
-                                                    {order.status}
-                                                </span>
-                                                <Button
-                                                    onClick={(e) => { e.stopPropagation(); setPaymentOrderId(order.id); setIsOrderPaymentModalOpen(true); }}
-                                                    className="h-9 px-4 rounded-xl bg-primarycolor hover:bg-secondarycolor text-white font-black text-[8px] uppercase tracking-widest gap-1.5 shadow-lg shadow-primarycolor/20"
+                        {orders.length > 0 ? (() => {
+                            const orderColumns: ColumnDef<AdminOrder>[] = [
+                                {
+                                    accessorKey: "id",
+                                    header: "Order ID",
+                                    cell: ({ row }) => (
+                                        <span className="font-black text-primarycolor">#ORD-{row.original.id}</span>
+                                    ),
+                                },
+                                {
+                                    accessorKey: "order_type",
+                                    header: "Type",
+                                    cell: ({ row }) => (
+                                        <span className={cn(
+                                            "px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest",
+                                            row.original.order_type === "on round"
+                                                ? "bg-indigo-100 text-indigo-600"
+                                                : "bg-teal-100 text-teal-600"
+                                        )}>
+                                            {row.original.order_type === "on round" ? "On Round" : "Requested"}
+                                        </span>
+                                    ),
+                                },
+                                {
+                                    accessorKey: "createdAt",
+                                    header: "Date",
+                                    cell: ({ row }) => (
+                                        <span className="text-[10px] font-bold text-muted-foreground whitespace-nowrap" title={formatDate(new Date(row.original.createdAt), "MMM dd, yyyy HH:mm")}>
+                                            {formatDate(new Date(row.original.createdAt), "MMM dd, yyyy HH:mm")}
+                                        </span>
+                                    ),
+                                },
+                                {
+                                    id: "items",
+                                    header: "Items",
+                                    cell: ({ row }) => {
+                                        const count = row.original.order_items?.length || 0;
+                                        const total = row.original.order_items?.reduce((s, i) => s + (i.quantity || 0), 0) || 0;
+                                        return <span className="font-bold text-xs">{count} ({total} books)</span>;
+                                    },
+                                },
+                                {
+                                    accessorKey: "total_amount",
+                                    header: "Total",
+                                    cell: ({ row }) => (
+                                        <span className="font-black text-sm">{(row.original.total_amount || 0).toLocaleString()} ETB</span>
+                                    ),
+                                },
+                                {
+                                    id: "paid",
+                                    header: "Paid",
+                                    cell: ({ row }) => {
+                                        const linkedP = payments.filter(p =>
+                                            p.status === "APPROVED" && p.orderid != null &&
+                                            (p.orderid === String(row.original.id) || p.orderid === `ORD-${row.original.id}` || p.orderid.replace(/^ORD-/i, "") === String(row.original.id))
+                                        );
+                                        const paid = linkedP.reduce((s, p) => s + p.amount, 0);
+                                        return <span className="font-bold text-emerald-600 text-sm">{paid.toLocaleString()} ETB</span>;
+                                    },
+                                },
+                                {
+                                    id: "remaining",
+                                    header: "Remaining",
+                                    cell: ({ row }) => {
+                                        const linkedP = payments.filter(p =>
+                                            p.status === "APPROVED" && p.orderid != null &&
+                                            (p.orderid === String(row.original.id) || p.orderid === `ORD-${row.original.id}` || p.orderid.replace(/^ORD-/i, "") === String(row.original.id))
+                                        );
+                                        const paid = linkedP.reduce((s, p) => s + p.amount, 0);
+                                        const remaining = (row.original.total_amount || 0) - paid;
+                                        if (row.original.hide_remaining) {
+                                            return (
+                                                <button
+                                                    onClick={(e) => { e.stopPropagation(); setHideRemToggleOrder(row.original); }}
+                                                    className={cn("font-bold text-sm px-2 py-0.5 rounded-lg cursor-pointer transition-all", remaining > 0 ? "text-rose-500 hover:bg-rose-50" : "text-emerald-600 hover:bg-emerald-50")}
+                                                    title="Hidden — click to reveal"
                                                 >
-                                                    <Plus className="size-3" /> Record Payment
-                                                </Button>
-                                            </div>
+                                                    X
+                                                </button>
+                                            );
+                                        }
+                                        return (
+                                            <button
+                                                onClick={(e) => { e.stopPropagation(); setHideRemToggleOrder(row.original); }}
+                                                className={cn("font-bold text-sm cursor-pointer hover:underline transition-all", remaining > 0 ? "text-rose-500" : "text-emerald-600")}
+                                            >
+                                                {remaining.toLocaleString()} ETB
+                                            </button>
+                                        );
+                                    },
+                                },
+                                {
+                                    accessorKey: "status",
+                                    header: "Status",
+                                    cell: ({ row }) => (
+                                        <span className={cn(
+                                            "px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest",
+                                            row.original.status === "Approved"
+                                                ? "bg-emerald-50 text-emerald-600 border border-emerald-200"
+                                                : row.original.status === "Delivered"
+                                                ? "bg-blue-50 text-blue-600 border border-blue-200"
+                                                : row.original.status === "Pending"
+                                                ? "bg-amber-50 text-amber-600 border border-amber-200"
+                                                : "bg-slate-50 text-slate-600 border border-slate-200"
+                                        )}>
+                                            {row.original.status}
+                                        </span>
+                                    ),
+                                },
+                                {
+                                    id: "actions",
+                                    header: "",
+                                    cell: ({ row }) => (
+                                        <div className="flex items-center gap-1">
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() => { setSelectedOrder(row.original); setIsOrderModalOpen(true); }}
+                                                className="h-8 px-3 rounded-lg text-[9px] font-black uppercase tracking-widest text-primarycolor hover:bg-primarycolor/5"
+                                            >
+                                                <Eye className="size-3.5 mr-1" /> View
+                                            </Button>
+                                            <Button
+                                                size="sm"
+                                                onClick={(e) => { e.stopPropagation(); setPaymentOrderId(row.original.id); setIsOrderPaymentModalOpen(true); }}
+                                                className="h-8 px-3 rounded-lg bg-primarycolor hover:bg-secondarycolor text-white font-black text-[8px] uppercase tracking-widest gap-1"
+                                            >
+                                                <Plus className="size-3" /> Pay
+                                            </Button>
                                         </div>
-                                    );
-                                })}
-                            </div>
-                        ) : (
+                                    ),
+                                },
+                            ];
+
+                            const sortedOrders = useMemo(() =>
+                                [...orders].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()),
+                                [orders]
+                            );
+
+                            const orderTable = useReactTable({
+                                data: sortedOrders,
+                                columns: orderColumns,
+                                state: { sorting: orderSorting, globalFilter: orderGlobalFilter },
+                                onSortingChange: setOrderSorting,
+                                onGlobalFilterChange: setOrderGlobalFilter,
+                                getCoreRowModel: getCoreRowModel(),
+                                getSortedRowModel: getSortedRowModel(),
+                                getFilteredRowModel: getFilteredRowModel(),
+                                getPaginationRowModel: getPaginationRowModel(),
+                                initialState: { pagination: { pageSize: 15 } },
+                            });
+
+                            return (
+                                <div className="space-y-4">
+                                    <div className="relative max-w-sm">
+                                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground/50" />
+                                        <Input
+                                            value={orderGlobalFilter}
+                                            onChange={(e) => setOrderGlobalFilter(e.target.value)}
+                                            placeholder="Search orders..."
+                                            className="h-10 pl-10 rounded-xl border-2 border-slate-100 font-bold text-xs focus:border-primarycolor"
+                                        />
+                                    </div>
+                                    <div className="rounded-2xl border-2 border-slate-100 overflow-hidden">
+                                        <Table>
+                                            <TableHeader>
+                                                {orderTable.getHeaderGroups().map((hg) => (
+                                                    <TableRow key={hg.id}>
+                                                        {hg.headers.map((header) => (
+                                                            <TableHead key={header.id} className="text-[9px] font-black uppercase tracking-widest text-muted-foreground h-10 px-3">
+                                                                {flexRender(header.column.columnDef.header, header.getContext())}
+                                                            </TableHead>
+                                                        ))}
+                                                    </TableRow>
+                                                ))}
+                                            </TableHeader>
+                                            <TableBody>
+                                                {orderTable.getRowModel().rows.map((row) => (
+                                                    <TableRow
+                                                        key={row.id}
+                                                        className="cursor-pointer hover:bg-primarycolor/[0.02]"
+                                                        onClick={() => { setSelectedOrder(row.original); setIsOrderModalOpen(true); }}
+                                                    >
+                                                        {row.getVisibleCells().map((cell) => (
+                                                            <TableCell key={cell.id} className="px-3 py-3">
+                                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                                            </TableCell>
+                                                        ))}
+                                                    </TableRow>
+                                                ))}
+                                                {orderTable.getRowModel().rows.length === 0 && (
+                                                    <TableRow>
+                                                        <TableCell colSpan={orderColumns.length} className="h-32 text-center">
+                                                            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">No orders match your search</p>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                )}
+                                            </TableBody>
+                                        </Table>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-[9px] font-black text-muted-foreground/50 uppercase tracking-widest">
+                                            Page {orderTable.getState().pagination.pageIndex + 1} of {orderTable.getPageCount()} ({orderTable.getFilteredRowModel().rows.length} orders)
+                                        </span>
+                                        <div className="flex items-center gap-1.5">
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => orderTable.previousPage()}
+                                                disabled={!orderTable.getCanPreviousPage()}
+                                                className="h-8 px-3 rounded-lg border-2 border-slate-100 font-black text-[9px] uppercase tracking-widest"
+                                            >
+                                                <ChevronLeft className="size-3 mr-1" /> Prev
+                                            </Button>
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => orderTable.nextPage()}
+                                                disabled={!orderTable.getCanNextPage()}
+                                                className="h-8 px-3 rounded-lg border-2 border-slate-100 font-black text-[9px] uppercase tracking-widest"
+                                            >
+                                                Next <ChevronRight className="size-3 ml-1" />
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        })() : (
                             <div className="py-16 text-center border-2 border-dashed border-slate-100 rounded-[2rem] bg-slate-50/50">
                                 <ListOrdered className="size-10 mx-auto text-slate-200 mb-3" />
                                 <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">No orders found for this shop</p>
@@ -1275,6 +1443,67 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, tota
                     </DrawerFooter>
                 </DrawerContent>
             </Drawer>
+
+            <Dialog open={!!hideRemToggleOrder} onOpenChange={(o) => { if (!o) setHideRemToggleOrder(null); }}>
+                <DialogContent className="sm:max-w-sm rounded-[2rem] border-4 border-primarycolor/5 p-0 overflow-hidden shadow-2xl bg-white" onOpenAutoFocus={(e) => e.preventDefault()}>
+                    <DialogHeader className="p-5 pb-3 border-b border-slate-100">
+                        <DialogTitle className="text-lg font-black text-primarycolor uppercase tracking-tight italic">
+                            Hide Remaining Amount
+                        </DialogTitle>
+                        <DialogDescription className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground">
+                            Order #ORD-{hideRemToggleOrder?.id}
+                        </DialogDescription>
+                    </DialogHeader>
+                    {hideRemToggleOrder && (
+                        <div className="p-5 space-y-5">
+                            <div className="flex items-center justify-between p-4 rounded-2xl border-2 border-slate-100 bg-slate-50/50">
+                                <div className="space-y-0.5">
+                                    <p className="text-sm font-black text-slate-800">Hide remaining amount</p>
+                                    <p className="text-[9px] font-bold text-muted-foreground">Show "X" instead of the amount in the table</p>
+                                </div>
+                                <Checkbox
+                                    checked={hideRemDialogValue}
+                                    onCheckedChange={(checked) => setHideRemDialogValue(checked === true)}
+                                    className="size-6 rounded-lg border-2 border-primarycolor/30 data-[state=checked]:bg-primarycolor data-[state=checked]:border-primarycolor"
+                                />
+                            </div>
+                        </div>
+                    )}
+                    <DialogFooter className="bg-slate-50 p-4 border-t border-slate-100 flex flex-row items-center justify-end gap-2">
+                        <Button
+                            variant="outline"
+                            onClick={() => setHideRemToggleOrder(null)}
+                            className="rounded-xl h-10 px-5 font-black text-[10px] uppercase tracking-widest"
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            disabled={togglingHideRem}
+                            onClick={async () => {
+                                if (!hideRemToggleOrder) return;
+                                setTogglingHideRem(true);
+                                try {
+                                    const res = await setOrderHideRemaining(hideRemToggleOrder.id, hideRemDialogValue);
+                                    if (res.success) {
+                                        toast.success(hideRemDialogValue ? "Remaining amount hidden" : "Remaining amount revealed");
+                                        setHideRemToggleOrder(null);
+                                        router.refresh();
+                                    } else {
+                                        toast.error(res.error);
+                                    }
+                                } catch {
+                                    toast.error("Failed to update");
+                                } finally {
+                                    setTogglingHideRem(false);
+                                }
+                            }}
+                            className="rounded-xl h-10 px-5 bg-primarycolor hover:bg-secondarycolor text-white font-black text-[10px] uppercase tracking-widest shadow-lg shadow-primarycolor/20"
+                        >
+                            {togglingHideRem ? <Loader2 className="size-4 animate-spin" /> : "Save"}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

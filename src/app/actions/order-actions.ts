@@ -962,3 +962,26 @@ export async function updateShopTotals(shopId: number, totalPaid: number) {
     return { success: false, error: "Failed to update shop totals" };
   }
 }
+
+export async function setOrderHideRemaining(orderId: number, hide: boolean) {
+  try {
+    await (prisma as any).orders.update({
+      where: { id: Number(orderId) },
+      data: { hide_remaining: hide, updatedAt: new Date() },
+    });
+
+    // Fetch shopId for revalidation
+    const order = await (prisma as any).orders.findUnique({
+      where: { id: Number(orderId) },
+      select: { bookShopId: true },
+    });
+
+    if (order?.bookShopId) {
+      revalidatePath(`/admin_dashboard/manage_payment/${order.bookShopId}`);
+    }
+    return { success: true, hide_remaining: hide };
+  } catch (error: any) {
+    console.error("Set hide remaining error:", error);
+    return { success: false, error: error?.message || "Failed to update" };
+  }
+}

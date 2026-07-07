@@ -26,6 +26,7 @@ type OrderRow = {
   order_type: string;
   total_amount: number;
   amount_paid: number;
+  hide_remaining: boolean;
   status: string;
   is_approved: boolean;
   delivery: boolean;
@@ -308,8 +309,8 @@ export default function OrdersList({ orders, payments: allPayments }: { orders: 
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground font-medium">Remaining</span>
-                        <span className={cn("font-bold text-right", (o.total_amount - paidFromLinked) > 0 ? "text-amber-600" : "text-emerald-600")}>
-                          {(o.total_amount - paidFromLinked).toLocaleString()} ETB
+                        <span className={cn("font-bold text-right", o.hide_remaining ? "text-muted-foreground" : (o.total_amount - paidFromLinked) > 0 ? "text-amber-600" : "text-emerald-600")}>
+                          {o.hide_remaining ? "X" : `${(o.total_amount - paidFromLinked).toLocaleString()} ETB`}
                         </span>
                       </div>
                     </div>

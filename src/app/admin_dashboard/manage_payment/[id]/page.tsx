@@ -88,6 +88,7 @@ export default async function ManagePaymentDetailPage({ params }: { params: Prom
                 check_id: o.check_id,
                 status: o.status,
                 is_approved: o.is_approved,
+                hide_remaining: o.hide_remaining ?? false,
                 memo: o.memo,
                 allocation_summary: o.allocation_summary,
                 delivery: o.delivery,

@@ -275,6 +275,7 @@ exports.Prisma.OrdersScalarFieldEnum = {
   bookShopId: 'bookShopId',
   order_type: 'order_type',
   memo: 'memo',
+  hide_remaining: 'hide_remaining',
   is_approved: 'is_approved',
   total_amount: 'total_amount',
   amount_paid: 'amount_paid',

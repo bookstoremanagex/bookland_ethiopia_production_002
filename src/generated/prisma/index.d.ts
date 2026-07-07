@@ -14411,6 +14411,7 @@ export namespace Prisma {
     bookShopId: number | null
     order_type: string | null
     memo: string | null
+    hide_remaining: boolean | null
     is_approved: boolean | null
     total_amount: number | null
     amount_paid: number | null
@@ -14430,6 +14431,7 @@ export namespace Prisma {
     bookShopId: number | null
     order_type: string | null
     memo: string | null
+    hide_remaining: boolean | null
     is_approved: boolean | null
     total_amount: number | null
     amount_paid: number | null
@@ -14449,6 +14451,7 @@ export namespace Prisma {
     bookShopId: number
     order_type: number
     memo: number
+    hide_remaining: number
     is_approved: number
     total_amount: number
     amount_paid: number
@@ -14488,6 +14491,7 @@ export namespace Prisma {
     bookShopId?: true
     order_type?: true
     memo?: true
+    hide_remaining?: true
     is_approved?: true
     total_amount?: true
     amount_paid?: true
@@ -14507,6 +14511,7 @@ export namespace Prisma {
     bookShopId?: true
     order_type?: true
     memo?: true
+    hide_remaining?: true
     is_approved?: true
     total_amount?: true
     amount_paid?: true
@@ -14526,6 +14531,7 @@ export namespace Prisma {
     bookShopId?: true
     order_type?: true
     memo?: true
+    hide_remaining?: true
     is_approved?: true
     total_amount?: true
     amount_paid?: true
@@ -14632,6 +14638,7 @@ export namespace Prisma {
     bookShopId: number
     order_type: string
     memo: string | null
+    hide_remaining: boolean
     is_approved: boolean
     total_amount: number
     amount_paid: number
@@ -14670,6 +14677,7 @@ export namespace Prisma {
     bookShopId?: boolean
     order_type?: boolean
     memo?: boolean
+    hide_remaining?: boolean
     is_approved?: boolean
     total_amount?: boolean
     amount_paid?: boolean
@@ -14696,6 +14704,7 @@ export namespace Prisma {
     bookShopId?: boolean
     order_type?: boolean
     memo?: boolean
+    hide_remaining?: boolean
     is_approved?: boolean
     total_amount?: boolean
     amount_paid?: boolean
@@ -14710,7 +14719,7 @@ export namespace Prisma {
     createdAt?: boolean
   }
 
-  export type ordersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "bookShopId" | "order_type" | "memo" | "is_approved" | "total_amount" | "amount_paid" | "payment_type" | "check_id" | "status" | "is_deleted" | "allocation_summary" | "delivery" | "delivered_by" | "updatedAt" | "createdAt", ExtArgs["result"]["orders"]>
+  export type ordersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "bookShopId" | "order_type" | "memo" | "hide_remaining" | "is_approved" | "total_amount" | "amount_paid" | "payment_type" | "check_id" | "status" | "is_deleted" | "allocation_summary" | "delivery" | "delivered_by" | "updatedAt" | "createdAt", ExtArgs["result"]["orders"]>
   export type ordersInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     locked_editions?: boolean | orders$locked_editionsArgs<ExtArgs>
     bookshopes?: boolean | bookshopesDefaultArgs<ExtArgs>
@@ -14732,6 +14741,7 @@ export namespace Prisma {
       bookShopId: number
       order_type: string
       memo: string | null
+      hide_remaining: boolean
       is_approved: boolean
       total_amount: number
       amount_paid: number
@@ -15121,6 +15131,7 @@ export namespace Prisma {
     readonly bookShopId: FieldRef<"orders", 'Int'>
     readonly order_type: FieldRef<"orders", 'String'>
     readonly memo: FieldRef<"orders", 'String'>
+    readonly hide_remaining: FieldRef<"orders", 'Boolean'>
     readonly is_approved: FieldRef<"orders", 'Boolean'>
     readonly total_amount: FieldRef<"orders", 'Float'>
     readonly amount_paid: FieldRef<"orders", 'Float'>
@@ -47926,6 +47937,7 @@ export namespace Prisma {
     bookShopId: 'bookShopId',
     order_type: 'order_type',
     memo: 'memo',
+    hide_remaining: 'hide_remaining',
     is_approved: 'is_approved',
     total_amount: 'total_amount',
     amount_paid: 'amount_paid',
@@ -49859,6 +49871,7 @@ export namespace Prisma {
     bookShopId?: IntFilter<"orders"> | number
     order_type?: StringFilter<"orders"> | string
     memo?: StringNullableFilter<"orders"> | string | null
+    hide_remaining?: BoolFilter<"orders"> | boolean
     is_approved?: BoolFilter<"orders"> | boolean
     total_amount?: FloatFilter<"orders"> | number
     amount_paid?: FloatFilter<"orders"> | number
@@ -49882,6 +49895,7 @@ export namespace Prisma {
     bookShopId?: SortOrder
     order_type?: SortOrder
     memo?: SortOrderInput | SortOrder
+    hide_remaining?: SortOrder
     is_approved?: SortOrder
     total_amount?: SortOrder
     amount_paid?: SortOrder
@@ -49909,6 +49923,7 @@ export namespace Prisma {
     bookShopId?: IntFilter<"orders"> | number
     order_type?: StringFilter<"orders"> | string
     memo?: StringNullableFilter<"orders"> | string | null
+    hide_remaining?: BoolFilter<"orders"> | boolean
     is_approved?: BoolFilter<"orders"> | boolean
     total_amount?: FloatFilter<"orders"> | number
     amount_paid?: FloatFilter<"orders"> | number
@@ -49932,6 +49947,7 @@ export namespace Prisma {
     bookShopId?: SortOrder
     order_type?: SortOrder
     memo?: SortOrderInput | SortOrder
+    hide_remaining?: SortOrder
     is_approved?: SortOrder
     total_amount?: SortOrder
     amount_paid?: SortOrder
@@ -49959,6 +49975,7 @@ export namespace Prisma {
     bookShopId?: IntWithAggregatesFilter<"orders"> | number
     order_type?: StringWithAggregatesFilter<"orders"> | string
     memo?: StringNullableWithAggregatesFilter<"orders"> | string | null
+    hide_remaining?: BoolWithAggregatesFilter<"orders"> | boolean
     is_approved?: BoolWithAggregatesFilter<"orders"> | boolean
     total_amount?: FloatWithAggregatesFilter<"orders"> | number
     amount_paid?: FloatWithAggregatesFilter<"orders"> | number
@@ -53707,6 +53724,7 @@ export namespace Prisma {
   export type ordersCreateInput = {
     order_type: string
     memo?: string | null
+    hide_remaining?: boolean
     is_approved?: boolean
     total_amount?: number
     amount_paid?: number
@@ -53729,6 +53747,7 @@ export namespace Prisma {
     bookShopId: number
     order_type: string
     memo?: string | null
+    hide_remaining?: boolean
     is_approved?: boolean
     total_amount?: number
     amount_paid?: number
@@ -53748,6 +53767,7 @@ export namespace Prisma {
   export type ordersUpdateInput = {
     order_type?: StringFieldUpdateOperationsInput | string
     memo?: NullableStringFieldUpdateOperationsInput | string | null
+    hide_remaining?: BoolFieldUpdateOperationsInput | boolean
     is_approved?: BoolFieldUpdateOperationsInput | boolean
     total_amount?: FloatFieldUpdateOperationsInput | number
     amount_paid?: FloatFieldUpdateOperationsInput | number
@@ -53770,6 +53790,7 @@ export namespace Prisma {
     bookShopId?: IntFieldUpdateOperationsInput | number
     order_type?: StringFieldUpdateOperationsInput | string
     memo?: NullableStringFieldUpdateOperationsInput | string | null
+    hide_remaining?: BoolFieldUpdateOperationsInput | boolean
     is_approved?: BoolFieldUpdateOperationsInput | boolean
     total_amount?: FloatFieldUpdateOperationsInput | number
     amount_paid?: FloatFieldUpdateOperationsInput | number
@@ -53791,6 +53812,7 @@ export namespace Prisma {
     bookShopId: number
     order_type: string
     memo?: string | null
+    hide_remaining?: boolean
     is_approved?: boolean
     total_amount?: number
     amount_paid?: number
@@ -53808,6 +53830,7 @@ export namespace Prisma {
   export type ordersUpdateManyMutationInput = {
     order_type?: StringFieldUpdateOperationsInput | string
     memo?: NullableStringFieldUpdateOperationsInput | string | null
+    hide_remaining?: BoolFieldUpdateOperationsInput | boolean
     is_approved?: BoolFieldUpdateOperationsInput | boolean
     total_amount?: FloatFieldUpdateOperationsInput | number
     amount_paid?: FloatFieldUpdateOperationsInput | number
@@ -53826,6 +53849,7 @@ export namespace Prisma {
     bookShopId?: IntFieldUpdateOperationsInput | number
     order_type?: StringFieldUpdateOperationsInput | string
     memo?: NullableStringFieldUpdateOperationsInput | string | null
+    hide_remaining?: BoolFieldUpdateOperationsInput | boolean
     is_approved?: BoolFieldUpdateOperationsInput | boolean
     total_amount?: FloatFieldUpdateOperationsInput | number
     amount_paid?: FloatFieldUpdateOperationsInput | number
@@ -57760,6 +57784,7 @@ export namespace Prisma {
     bookShopId?: SortOrder
     order_type?: SortOrder
     memo?: SortOrder
+    hide_remaining?: SortOrder
     is_approved?: SortOrder
     total_amount?: SortOrder
     amount_paid?: SortOrder
@@ -57788,6 +57813,7 @@ export namespace Prisma {
     bookShopId?: SortOrder
     order_type?: SortOrder
     memo?: SortOrder
+    hide_remaining?: SortOrder
     is_approved?: SortOrder
     total_amount?: SortOrder
     amount_paid?: SortOrder
@@ -57807,6 +57833,7 @@ export namespace Prisma {
     bookShopId?: SortOrder
     order_type?: SortOrder
     memo?: SortOrder
+    hide_remaining?: SortOrder
     is_approved?: SortOrder
     total_amount?: SortOrder
     amount_paid?: SortOrder
@@ -64457,6 +64484,7 @@ export namespace Prisma {
   export type ordersCreateWithoutLocked_editionsInput = {
     order_type: string
     memo?: string | null
+    hide_remaining?: boolean
     is_approved?: boolean
     total_amount?: number
     amount_paid?: number
@@ -64478,6 +64506,7 @@ export namespace Prisma {
     bookShopId: number
     order_type: string
     memo?: string | null
+    hide_remaining?: boolean
     is_approved?: boolean
     total_amount?: number
     amount_paid?: number
@@ -64604,6 +64633,7 @@ export namespace Prisma {
   export type ordersUpdateWithoutLocked_editionsInput = {
     order_type?: StringFieldUpdateOperationsInput | string
     memo?: NullableStringFieldUpdateOperationsInput | string | null
+    hide_remaining?: BoolFieldUpdateOperationsInput | boolean
     is_approved?: BoolFieldUpdateOperationsInput | boolean
     total_amount?: FloatFieldUpdateOperationsInput | number
     amount_paid?: FloatFieldUpdateOperationsInput | number
@@ -64625,6 +64655,7 @@ export namespace Prisma {
     bookShopId?: IntFieldUpdateOperationsInput | number
     order_type?: StringFieldUpdateOperationsInput | string
     memo?: NullableStringFieldUpdateOperationsInput | string | null
+    hide_remaining?: BoolFieldUpdateOperationsInput | boolean
     is_approved?: BoolFieldUpdateOperationsInput | boolean
     total_amount?: FloatFieldUpdateOperationsInput | number
     amount_paid?: FloatFieldUpdateOperationsInput | number
@@ -64942,6 +64973,7 @@ export namespace Prisma {
   export type ordersCreateWithoutBookshopesInput = {
     order_type: string
     memo?: string | null
+    hide_remaining?: boolean
     is_approved?: boolean
     total_amount?: number
     amount_paid?: number
@@ -64962,6 +64994,7 @@ export namespace Prisma {
     id?: number
     order_type: string
     memo?: string | null
+    hide_remaining?: boolean
     is_approved?: boolean
     total_amount?: number
     amount_paid?: number
@@ -65096,6 +65129,7 @@ export namespace Prisma {
     bookShopId?: IntFilter<"orders"> | number
     order_type?: StringFilter<"orders"> | string
     memo?: StringNullableFilter<"orders"> | string | null
+    hide_remaining?: BoolFilter<"orders"> | boolean
     is_approved?: BoolFilter<"orders"> | boolean
     total_amount?: FloatFilter<"orders"> | number
     amount_paid?: FloatFilter<"orders"> | number
@@ -65427,6 +65461,7 @@ export namespace Prisma {
   export type ordersCreateWithoutOrder_itemsInput = {
     order_type: string
     memo?: string | null
+    hide_remaining?: boolean
     is_approved?: boolean
     total_amount?: number
     amount_paid?: number
@@ -65448,6 +65483,7 @@ export namespace Prisma {
     bookShopId: number
     order_type: string
     memo?: string | null
+    hide_remaining?: boolean
     is_approved?: boolean
     total_amount?: number
     amount_paid?: number
@@ -65568,6 +65604,7 @@ export namespace Prisma {
   export type ordersUpdateWithoutOrder_itemsInput = {
     order_type?: StringFieldUpdateOperationsInput | string
     memo?: NullableStringFieldUpdateOperationsInput | string | null
+    hide_remaining?: BoolFieldUpdateOperationsInput | boolean
     is_approved?: BoolFieldUpdateOperationsInput | boolean
     total_amount?: FloatFieldUpdateOperationsInput | number
     amount_paid?: FloatFieldUpdateOperationsInput | number
@@ -65589,6 +65626,7 @@ export namespace Prisma {
     bookShopId?: IntFieldUpdateOperationsInput | number
     order_type?: StringFieldUpdateOperationsInput | string
     memo?: NullableStringFieldUpdateOperationsInput | string | null
+    hide_remaining?: BoolFieldUpdateOperationsInput | boolean
     is_approved?: BoolFieldUpdateOperationsInput | boolean
     total_amount?: FloatFieldUpdateOperationsInput | number
     amount_paid?: FloatFieldUpdateOperationsInput | number
@@ -68666,6 +68704,7 @@ export namespace Prisma {
   export type ordersCreateWithoutChecksInput = {
     order_type: string
     memo?: string | null
+    hide_remaining?: boolean
     is_approved?: boolean
     total_amount?: number
     amount_paid?: number
@@ -68687,6 +68726,7 @@ export namespace Prisma {
     bookShopId: number
     order_type: string
     memo?: string | null
+    hide_remaining?: boolean
     is_approved?: boolean
     total_amount?: number
     amount_paid?: number
@@ -70062,6 +70102,7 @@ export namespace Prisma {
     id?: number
     order_type: string
     memo?: string | null
+    hide_remaining?: boolean
     is_approved?: boolean
     total_amount?: number
     amount_paid?: number
@@ -70147,6 +70188,7 @@ export namespace Prisma {
   export type ordersUpdateWithoutBookshopesInput = {
     order_type?: StringFieldUpdateOperationsInput | string
     memo?: NullableStringFieldUpdateOperationsInput | string | null
+    hide_remaining?: BoolFieldUpdateOperationsInput | boolean
     is_approved?: BoolFieldUpdateOperationsInput | boolean
     total_amount?: FloatFieldUpdateOperationsInput | number
     amount_paid?: FloatFieldUpdateOperationsInput | number
@@ -70167,6 +70209,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     order_type?: StringFieldUpdateOperationsInput | string
     memo?: NullableStringFieldUpdateOperationsInput | string | null
+    hide_remaining?: BoolFieldUpdateOperationsInput | boolean
     is_approved?: BoolFieldUpdateOperationsInput | boolean
     total_amount?: FloatFieldUpdateOperationsInput | number
     amount_paid?: FloatFieldUpdateOperationsInput | number
@@ -70187,6 +70230,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     order_type?: StringFieldUpdateOperationsInput | string
     memo?: NullableStringFieldUpdateOperationsInput | string | null
+    hide_remaining?: BoolFieldUpdateOperationsInput | boolean
     is_approved?: BoolFieldUpdateOperationsInput | boolean
     total_amount?: FloatFieldUpdateOperationsInput | number
     amount_paid?: FloatFieldUpdateOperationsInput | number
@@ -71062,6 +71106,7 @@ export namespace Prisma {
     bookShopId: number
     order_type: string
     memo?: string | null
+    hide_remaining?: boolean
     is_approved?: boolean
     total_amount?: number
     amount_paid?: number
@@ -71119,6 +71164,7 @@ export namespace Prisma {
   export type ordersUpdateWithoutChecksInput = {
     order_type?: StringFieldUpdateOperationsInput | string
     memo?: NullableStringFieldUpdateOperationsInput | string | null
+    hide_remaining?: BoolFieldUpdateOperationsInput | boolean
     is_approved?: BoolFieldUpdateOperationsInput | boolean
     total_amount?: FloatFieldUpdateOperationsInput | number
     amount_paid?: FloatFieldUpdateOperationsInput | number
@@ -71140,6 +71186,7 @@ export namespace Prisma {
     bookShopId?: IntFieldUpdateOperationsInput | number
     order_type?: StringFieldUpdateOperationsInput | string
     memo?: NullableStringFieldUpdateOperationsInput | string | null
+    hide_remaining?: BoolFieldUpdateOperationsInput | boolean
     is_approved?: BoolFieldUpdateOperationsInput | boolean
     total_amount?: FloatFieldUpdateOperationsInput | number
     amount_paid?: FloatFieldUpdateOperationsInput | number
@@ -71160,6 +71207,7 @@ export namespace Prisma {
     bookShopId?: IntFieldUpdateOperationsInput | number
     order_type?: StringFieldUpdateOperationsInput | string
     memo?: NullableStringFieldUpdateOperationsInput | string | null
+    hide_remaining?: BoolFieldUpdateOperationsInput | boolean
     is_approved?: BoolFieldUpdateOperationsInput | boolean
     total_amount?: FloatFieldUpdateOperationsInput | number
     amount_paid?: FloatFieldUpdateOperationsInput | number

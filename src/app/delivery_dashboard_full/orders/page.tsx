@@ -16,6 +16,11 @@ export default async function OrdersPage() {
     orderBy: { createdAt: "desc" as const },
   });
 
+  const mappedOrders = orders.map((o: any) => ({
+    ...o,
+    hide_remaining: o.hide_remaining ?? false,
+  }));
+
   const payments = await (prisma as any).payments.findMany({
     where: { is_deleted: false, status: "APPROVED" },
     select: {
@@ -28,7 +33,7 @@ export default async function OrdersPage() {
   return (
     <div className="min-h-full bg-gradient-to-b from-slate-50 via-white to-primarycolor/[0.04]">
       <div className="mx-auto max-w-[1600px] px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
-        <OrdersList orders={orders as any} payments={payments as any} />
+        <OrdersList orders={mappedOrders as any} payments={payments as any} />
       </div>
     </div>
   );
