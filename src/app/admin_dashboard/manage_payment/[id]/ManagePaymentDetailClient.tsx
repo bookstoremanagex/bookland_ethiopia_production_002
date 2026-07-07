@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import {
     ColumnDef,
     flexRender,
@@ -737,36 +737,71 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, tota
                         </div>
 
                         {orders.length > 0 ? (() => {
+                            const Label = ({ children }: { children: React.ReactNode }) => (
+                                <span className="text-[7px] font-black uppercase tracking-widest text-muted-foreground/50">{children}</span>
+                            );
+
+                            function relativeTime(date: Date): string {
+                                const diff = Date.now() - date.getTime();
+                                const sec = Math.floor(diff / 1000);
+                                if (sec < 60) return "Just now";
+                                const min = Math.floor(sec / 60);
+                                if (min < 60) return `${min}m ago`;
+                                const hrs = Math.floor(min / 60);
+                                if (hrs < 24) return `${hrs}h ago`;
+                                const days = Math.floor(hrs / 24);
+                                if (days < 7) return `${days}d ago`;
+                                const weeks = Math.floor(days / 7);
+                                if (weeks < 5) return `${weeks}w ago`;
+                                const months = Math.floor(days / 30);
+                                return `${months}mo ago`;
+                            }
+
                             const orderColumns: ColumnDef<AdminOrder>[] = [
                                 {
                                     accessorKey: "id",
-                                    header: "Order ID",
+                                    header: "Order",
                                     cell: ({ row }) => (
-                                        <span className="font-black text-primarycolor">#ORD-{row.original.id}</span>
+                                        <div className="flex flex-col gap-0.5">
+                                            <Label>Order ID</Label>
+                                            <span className="font-black text-primarycolor text-sm">#ORD-{row.original.id}</span>
+                                        </div>
                                     ),
                                 },
                                 {
                                     accessorKey: "order_type",
                                     header: "Type",
                                     cell: ({ row }) => (
-                                        <span className={cn(
-                                            "px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest",
-                                            row.original.order_type === "on round"
-                                                ? "bg-indigo-100 text-indigo-600"
-                                                : "bg-teal-100 text-teal-600"
-                                        )}>
-                                            {row.original.order_type === "on round" ? "On Round" : "Requested"}
-                                        </span>
+                                        <div className="flex flex-col gap-1">
+                                            <Label>Type</Label>
+                                            <span className={cn(
+                                                "self-start px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest",
+                                                row.original.order_type === "on round"
+                                                    ? "bg-indigo-100 text-indigo-600"
+                                                    : "bg-teal-100 text-teal-600"
+                                            )}>
+                                                {row.original.order_type === "on round" ? "On Round" : "Requested"}
+                                            </span>
+                                        </div>
                                     ),
                                 },
                                 {
                                     accessorKey: "createdAt",
                                     header: "Date",
-                                    cell: ({ row }) => (
-                                        <span className="text-[10px] font-bold text-muted-foreground whitespace-nowrap" title={formatDate(new Date(row.original.createdAt), "MMM dd, yyyy HH:mm")}>
-                                            {formatDate(new Date(row.original.createdAt), "MMM dd, yyyy HH:mm")}
-                                        </span>
-                                    ),
+                                    cell: ({ row }) => {
+                                        const dt = new Date(row.original.createdAt);
+                                        return (
+                                            <div className="flex flex-col gap-0.5">
+                                                <Label>Date</Label>
+                                                <span className="text-[10px] font-bold text-muted-foreground whitespace-nowrap" title={formatDate(dt, "MMM dd, yyyy HH:mm")}>
+                                                    {formatDate(dt, "MMM dd, yyyy HH:mm")}
+                                                </span>
+                                                <span className="text-[8px] font-bold text-muted-foreground/40 whitespace-nowrap">
+                                                    ({relativeTime(dt)})
+                                                </span>
+                                            </div>
+                                        );
+                                    },
                                 },
                                 {
                                     id: "items",
@@ -774,14 +809,22 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, tota
                                     cell: ({ row }) => {
                                         const count = row.original.order_items?.length || 0;
                                         const total = row.original.order_items?.reduce((s, i) => s + (i.quantity || 0), 0) || 0;
-                                        return <span className="font-bold text-xs">{count} ({total} books)</span>;
+                                        return (
+                                            <div className="flex flex-col gap-0.5">
+                                                <Label>Items</Label>
+                                                <span className="font-bold text-xs">{count} ({total} books)</span>
+                                            </div>
+                                        );
                                     },
                                 },
                                 {
                                     accessorKey: "total_amount",
                                     header: "Total",
                                     cell: ({ row }) => (
-                                        <span className="font-black text-sm">{(row.original.total_amount || 0).toLocaleString()} ETB</span>
+                                        <div className="flex flex-col gap-0.5">
+                                            <Label>Total</Label>
+                                            <span className="font-black text-sm">{(row.original.total_amount || 0).toLocaleString()} ETB</span>
+                                        </div>
                                     ),
                                 },
                                 {
@@ -793,12 +836,17 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, tota
                                             (p.orderid === String(row.original.id) || p.orderid === `ORD-${row.original.id}` || p.orderid.replace(/^ORD-/i, "") === String(row.original.id))
                                         );
                                         const paid = linkedP.reduce((s, p) => s + p.amount, 0);
-                                        return <span className="font-bold text-emerald-600 text-sm">{paid.toLocaleString()} ETB</span>;
+                                        return (
+                                            <div className="flex flex-col gap-0.5">
+                                                <Label>Paid</Label>
+                                                <span className="font-bold text-emerald-600 text-sm">{paid.toLocaleString()} ETB</span>
+                                            </div>
+                                        );
                                     },
                                 },
                                 {
                                     id: "remaining",
-                                    header: "Remaining",
+                                    header: "Rem.",
                                     cell: ({ row }) => {
                                         const linkedP = payments.filter(p =>
                                             p.status === "APPROVED" && p.orderid != null &&
@@ -806,24 +854,26 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, tota
                                         );
                                         const paid = linkedP.reduce((s, p) => s + p.amount, 0);
                                         const remaining = (row.original.total_amount || 0) - paid;
-                                        if (row.original.hide_remaining) {
-                                            return (
-                                                <button
-                                                    onClick={(e) => { e.stopPropagation(); setHideRemToggleOrder(row.original); }}
-                                                    className={cn("font-bold text-sm px-2 py-0.5 rounded-lg cursor-pointer transition-all", remaining > 0 ? "text-rose-500 hover:bg-rose-50" : "text-emerald-600 hover:bg-emerald-50")}
-                                                    title="Hidden — click to reveal"
-                                                >
-                                                    X
-                                                </button>
-                                            );
-                                        }
                                         return (
-                                            <button
-                                                onClick={(e) => { e.stopPropagation(); setHideRemToggleOrder(row.original); }}
-                                                className={cn("font-bold text-sm cursor-pointer hover:underline transition-all", remaining > 0 ? "text-rose-500" : "text-emerald-600")}
-                                            >
-                                                {remaining.toLocaleString()} ETB
-                                            </button>
+                                            <div className="flex flex-col gap-0.5">
+                                                <Label>Remaining</Label>
+                                                {row.original.hide_remaining ? (
+                                                    <button
+                                                        onClick={(e) => { e.stopPropagation(); setHideRemToggleOrder(row.original); }}
+                                                        className={cn("font-bold text-sm px-2 py-0.5 rounded-lg cursor-pointer transition-all self-start", remaining > 0 ? "text-rose-500 hover:bg-rose-50" : "text-emerald-600 hover:bg-emerald-50")}
+                                                        title="Hidden — click to reveal"
+                                                    >
+                                                        X
+                                                    </button>
+                                                ) : (
+                                                    <button
+                                                        onClick={(e) => { e.stopPropagation(); setHideRemToggleOrder(row.original); }}
+                                                        className={cn("font-bold text-sm cursor-pointer hover:underline transition-all self-start", remaining > 0 ? "text-rose-500" : "text-emerald-600")}
+                                                    >
+                                                        {remaining.toLocaleString()} ETB
+                                                    </button>
+                                                )}
+                                            </div>
                                         );
                                     },
                                 },
@@ -831,40 +881,46 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, tota
                                     accessorKey: "status",
                                     header: "Status",
                                     cell: ({ row }) => (
-                                        <span className={cn(
-                                            "px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest",
-                                            row.original.status === "Approved"
-                                                ? "bg-emerald-50 text-emerald-600 border border-emerald-200"
-                                                : row.original.status === "Delivered"
-                                                ? "bg-blue-50 text-blue-600 border border-blue-200"
-                                                : row.original.status === "Pending"
-                                                ? "bg-amber-50 text-amber-600 border border-amber-200"
-                                                : "bg-slate-50 text-slate-600 border border-slate-200"
-                                        )}>
-                                            {row.original.status}
-                                        </span>
+                                        <div className="flex flex-col gap-1">
+                                            <Label>Status</Label>
+                                            <span className={cn(
+                                                "self-start px-2 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest",
+                                                row.original.status === "Approved"
+                                                    ? "bg-emerald-50 text-emerald-600 border border-emerald-200"
+                                                    : row.original.status === "Delivered"
+                                                    ? "bg-blue-50 text-blue-600 border border-blue-200"
+                                                    : row.original.status === "Pending"
+                                                    ? "bg-amber-50 text-amber-600 border border-amber-200"
+                                                    : "bg-slate-50 text-slate-600 border border-slate-200"
+                                            )}>
+                                                {row.original.status}
+                                            </span>
+                                        </div>
                                     ),
                                 },
                                 {
                                     id: "actions",
                                     header: "",
                                     cell: ({ row }) => (
-                                        <div className="flex items-center gap-1">
-                                            <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                onClick={() => { setSelectedOrder(row.original); setIsOrderModalOpen(true); }}
-                                                className="h-8 px-3 rounded-lg text-[9px] font-black uppercase tracking-widest text-primarycolor hover:bg-primarycolor/5"
-                                            >
-                                                <Eye className="size-3.5 mr-1" /> View
-                                            </Button>
-                                            <Button
-                                                size="sm"
-                                                onClick={(e) => { e.stopPropagation(); setPaymentOrderId(row.original.id); setIsOrderPaymentModalOpen(true); }}
-                                                className="h-8 px-3 rounded-lg bg-primarycolor hover:bg-secondarycolor text-white font-black text-[8px] uppercase tracking-widest gap-1"
-                                            >
-                                                <Plus className="size-3" /> Pay
-                                            </Button>
+                                        <div className="flex flex-col gap-1.5">
+                                            <Label>Actions</Label>
+                                            <div className="flex items-center gap-1">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    onClick={() => { setSelectedOrder(row.original); setIsOrderModalOpen(true); }}
+                                                    className="h-7 px-2.5 rounded-lg text-[8px] font-black uppercase tracking-widest text-primarycolor hover:bg-primarycolor/5"
+                                                >
+                                                    <Eye className="size-3 mr-1" /> View
+                                                </Button>
+                                                <Button
+                                                    size="sm"
+                                                    onClick={(e) => { e.stopPropagation(); setPaymentOrderId(row.original.id); setIsOrderPaymentModalOpen(true); }}
+                                                    className="h-7 px-2.5 rounded-lg bg-primarycolor hover:bg-secondarycolor text-white font-black text-[7px] uppercase tracking-widest gap-1"
+                                                >
+                                                    <Plus className="size-2.5" /> Pay
+                                                </Button>
+                                            </div>
                                         </div>
                                     ),
                                 },
@@ -905,7 +961,7 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, tota
                                                 {orderTable.getHeaderGroups().map((hg) => (
                                                     <TableRow key={hg.id}>
                                                         {hg.headers.map((header) => (
-                                                            <TableHead key={header.id} className="text-[9px] font-black uppercase tracking-widest text-muted-foreground h-10 px-3">
+                                                            <TableHead key={header.id} className="text-[9px] font-black uppercase tracking-widest text-muted-foreground h-10 px-4">
                                                                 {flexRender(header.column.columnDef.header, header.getContext())}
                                                             </TableHead>
                                                         ))}
@@ -920,7 +976,7 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, tota
                                                         onClick={() => { setSelectedOrder(row.original); setIsOrderModalOpen(true); }}
                                                     >
                                                         {row.getVisibleCells().map((cell) => (
-                                                            <TableCell key={cell.id} className="px-3 py-3">
+                                                            <TableCell key={cell.id} className="px-4 py-3.5">
                                                                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                                             </TableCell>
                                                         ))}
