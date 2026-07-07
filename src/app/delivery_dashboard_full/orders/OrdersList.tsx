@@ -89,7 +89,17 @@ const cardVariants = {
 
 type TabKey = "all" | "pending" | "approved";
 
-export default function OrdersList({ orders }: { orders: OrderRow[] }) {
+type PaymentRow = {
+  id: number;
+  amount: number;
+  orderid: string | null;
+  payment_type: string;
+  createdAt: string | Date;
+  shopId: number;
+  status: string;
+};
+
+export default function OrdersList({ orders, payments: allPayments }: { orders: OrderRow[]; payments: PaymentRow[] }) {
   const router = useRouter();
   const [tab, setTab] = useState<TabKey>("all");
   const [search, setSearch] = useState("");
@@ -234,6 +244,13 @@ export default function OrdersList({ orders }: { orders: OrderRow[] }) {
             const timeStr = new Date(o.createdAt).toLocaleTimeString("en-US", {
               hour: "2-digit", minute: "2-digit",
             });
+            const linkedPayments = allPayments.filter(p =>
+              p.orderid != null &&
+              (p.orderid === String(o.id) ||
+               p.orderid === `ORD-${o.id}` ||
+               p.orderid.replace(/^ORD-/i, "") === String(o.id))
+            );
+            const paidFromLinked = linkedPayments.reduce((sum, p) => sum + p.amount, 0);
             return (
               <>
                 <DialogHeader className="p-5 pb-3 border-b border-slate-100 shrink-0">
@@ -287,12 +304,12 @@ export default function OrdersList({ orders }: { orders: OrderRow[] }) {
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground font-medium">Amount Paid</span>
-                        <span className="font-bold text-emerald-600 text-right">{o.amount_paid?.toLocaleString() || 0} ETB</span>
+                        <span className="font-bold text-emerald-600 text-right">{paidFromLinked.toLocaleString() || 0} ETB</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground font-medium">Remaining</span>
-                        <span className={cn("font-bold text-right", (o.total_amount - (o.amount_paid || 0)) > 0 ? "text-amber-600" : "text-emerald-600")}>
-                          {(o.total_amount - (o.amount_paid || 0)).toLocaleString()} ETB
+                        <span className={cn("font-bold text-right", (o.total_amount - paidFromLinked) > 0 ? "text-amber-600" : "text-emerald-600")}>
+                          {(o.total_amount - paidFromLinked).toLocaleString()} ETB
                         </span>
                       </div>
                     </div>

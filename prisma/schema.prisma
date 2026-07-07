@@ -686,8 +686,7 @@ model checks {
   updatedAt    DateTime     @default(now())
   createdAt    DateTime     @default(now())
   payments     payments[]
-  orders       orders[]
-  
+  orders       orders[]  
 }
 
 model payments {
@@ -702,7 +701,6 @@ model payments {
   createdAt    DateTime @default(now())
   deletedAt    DateTime @default(now())
   orderid      String?
-
   memo  String?    @db.Text
   shop  bookshopes @relation(fields: [shopId], references: [id])
   check checks?    @relation(fields: [checkId], references: [id])

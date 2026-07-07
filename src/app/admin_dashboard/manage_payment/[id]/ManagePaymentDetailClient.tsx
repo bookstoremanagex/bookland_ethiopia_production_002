@@ -699,7 +699,15 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, tota
                                 {orders.map((order) => {
                                     const itemCount = order.order_items?.length || 0;
                                     const totalBooks = order.order_items?.reduce((sum, item) => sum + (item.quantity || 0), 0) || 0;
-                                    const remaining = (order.total_amount || 0) - (order.amount_paid || 0);
+                                    const linkedPayments = payments.filter(p =>
+                                        p.status === "APPROVED" &&
+                                        p.orderid != null &&
+                                        (p.orderid === String(order.id) ||
+                                         p.orderid === `ORD-${order.id}` ||
+                                         p.orderid.replace(/^ORD-/i, "") === String(order.id))
+                                    );
+                                    const paidFromLinked = linkedPayments.reduce((sum, p) => sum + p.amount, 0);
+                                    const remaining = (order.total_amount || 0) - paidFromLinked;
                                     return (
                                         <div
                                             key={order.id}
