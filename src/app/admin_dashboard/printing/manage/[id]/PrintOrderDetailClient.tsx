@@ -33,6 +33,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { DateInput } from '@/components/ui/date-input'
 import { Textarea } from '@/components/ui/textarea'
+import RichTextEditor from '@/components/ui/rich-text-editor'
 import { toast } from 'sonner'
 import Link from 'next/link'
 import { format } from 'date-fns'
@@ -1130,11 +1131,9 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
                                 </Button>
                             </div>
 
-                            <textarea
+                            <RichTextEditor
                                 value={contentDialogValue}
-                                onChange={(e) => setContentDialogValue(e.target.value)}
-                                rows={8}
-                                className="w-full p-5 rounded-2xl border-2 border-slate-100 font-bold text-sm outline-none focus:border-primarycolor transition-all resize-y bg-slate-50"
+                                onChange={setContentDialogValue}
                                 placeholder="Write content notes, specifications, or instructions for this edition..."
                             />
 
@@ -1153,9 +1152,21 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
                                     onClick={async () => {
                                         setIsSavingContent(true)
                                         updateItem(contentDialogItem.id, 'content', contentDialogValue)
+                                        const res = await updatePrintOrder(order.id, {
+                                            ...formData,
+                                            items: formData.items.map(it =>
+                                                it.id === contentDialogItem.id
+                                                    ? { ...it, content: contentDialogValue }
+                                                    : it
+                                            )
+                                        })
+                                        if (res.success) {
+                                            toast.success("Content updated")
+                                        } else {
+                                            toast.error(res.error || "Failed to save content")
+                                        }
                                         setContentDialogItem(null)
                                         setIsSavingContent(false)
-                                        toast.success("Content updated")
                                     }}
                                     className="flex-[2] h-12 rounded-xl bg-primarycolor hover:bg-secondarycolor font-black uppercase tracking-widest text-xs gap-2"
                                 >

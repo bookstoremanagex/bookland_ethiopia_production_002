@@ -469,7 +469,7 @@ export default function BooksCollectiveTable({ books, projectCount }: Props) {
               {detailItem.content && (
                 <div className="bg-slate-50 rounded-xl p-5">
                   <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-2">Content Notes</p>
-                  <p className="text-sm font-medium text-slate-700 whitespace-pre-wrap leading-relaxed">{detailItem.content}</p>
+                  <div className="text-sm font-medium text-slate-700 leading-relaxed rich-text" dangerouslySetInnerHTML={{ __html: detailItem.content }} />
                 </div>
               )}
             </div>

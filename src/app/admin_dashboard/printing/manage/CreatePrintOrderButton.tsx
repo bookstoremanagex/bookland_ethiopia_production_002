@@ -26,6 +26,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { DateInput } from '@/components/ui/date-input'
+import RichTextEditor from '@/components/ui/rich-text-editor'
 import { Textarea } from '@/components/ui/textarea'
 import {
     Dialog,
@@ -723,11 +724,10 @@ export default function CreatePrintOrderButton({ printers, editions, books }: Cr
                                                             <FilePlus className="size-3" />
                                                             Content
                                                         </label>
-                                                        <textarea
+                                                        <RichTextEditor
                                                             value={item.content}
-                                                            onChange={(e) => updateItem(item.id, 'content', e.target.value)}
-                                                            rows={2}
-                                                            className="w-full p-3 rounded-xl border-2 border-slate-100 font-bold text-xs outline-none focus:border-primarycolor transition-all resize-y bg-transparent"
+                                                            onChange={(val) => updateItem(item.id, 'content', val)}
+                                                            minHeight="60px"
                                                             placeholder="Write content notes for this edition..."
                                                         />
                                                     </div>
