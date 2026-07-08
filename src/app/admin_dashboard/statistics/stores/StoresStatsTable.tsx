@@ -33,9 +33,11 @@ import {
     Search,
     Store,
     Loader2,
+    Download,
 } from "lucide-react";
 import { getStoreStats } from "@/app/actions/statistics-actions";
 import { Input } from "@/components/ui/input";
+import * as XLSX from "xlsx";
 
 interface StoreEntry {
     name: string;
@@ -160,6 +162,20 @@ export default function StoresStatsTable({
         initialState: { pagination: { pageSize: 15 } },
     });
 
+    function handleExport() {
+        const rows = filtered.map((s) => ({
+            "Store": s.name,
+            "Location": s.location,
+            "Books Ordered": s.totalQty,
+            "Approved Total (ETB)": s.totalApproved,
+            "Amount Paid (ETB)": s.totalPaid,
+        }));
+        const ws = XLSX.utils.json_to_sheet(rows);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Stores Statistics");
+        XLSX.writeFile(wb, "stores_statistics.xlsx");
+    }
+
     return (
         <div className="space-y-4">
             {/* Summary card */}
@@ -203,6 +219,14 @@ export default function StoresStatsTable({
                             ))}
                         </SelectContent>
                     </Select>
+                    <Button
+                        onClick={handleExport}
+                        size="sm"
+                        className="h-10 rounded-xl bg-primarycolor text-white font-black text-[11px] uppercase tracking-widest gap-1.5 px-4 shadow-md shadow-primarycolor/20 hover:shadow-lg hover:shadow-primarycolor/30 transition-all"
+                    >
+                        <Download className="size-3.5" />
+                        Excel
+                    </Button>
                 </div>
 
                 {loading ? (

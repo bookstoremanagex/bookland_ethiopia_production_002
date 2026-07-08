@@ -30,7 +30,7 @@ export default async function RetailShopHomePage() {
     },
     {
       label: "Revenue",
-      value: `$${(stats?.totalRevenue ?? 0).toFixed(2)}`,
+      value: `ETB ${(stats?.totalRevenue ?? 0).toFixed(2)}`,
       icon: DollarSign,
       href: "/retail_shop_dashboard/history",
       color: "bg-amber-500",

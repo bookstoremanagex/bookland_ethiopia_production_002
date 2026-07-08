@@ -90,7 +90,7 @@ export function HistoryClient({ orders }: { orders: RetailOrder[] }) {
                       <div className="flex items-center gap-3 mt-2 text-[11px] font-bold text-slate-400">
                         <span>Qty: {order.quantity ?? 0}</span>
                         <span className="text-primarycolor">
-                          ${(order.total_price ?? 0).toFixed(2)}
+                          ETB {(order.total_price ?? 0).toFixed(2)}
                         </span>
                         {customerName && (
                           <span className="flex items-center gap-1 text-slate-400">

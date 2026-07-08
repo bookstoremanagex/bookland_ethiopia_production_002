@@ -74,7 +74,7 @@ export default async function RetailShopOverviewPage() {
             </div>
           </div>
           <p className="text-2xl font-black text-slate-800">
-            ${(data.totalRevenue ?? 0).toFixed(2)}
+            ETB {(data.totalRevenue ?? 0).toFixed(2)}
           </p>
           <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-1">
             Total Revenue
@@ -142,7 +142,7 @@ export default async function RetailShopOverviewPage() {
                 </div>
                 <div className="text-right shrink-0 ml-3">
                   <p className="text-sm font-black text-primarycolor">
-                    ${(order.total_price ?? 0).toFixed(2)}
+                    ETB {(order.total_price ?? 0).toFixed(2)}
                   </p>
                   <p className="text-[10px] font-bold text-slate-400">
                     Qty: {order.quantity ?? 0} &middot;{" "}

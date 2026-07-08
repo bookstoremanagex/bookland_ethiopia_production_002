@@ -131,16 +131,16 @@ export default async function RevenueAnalysisPage() {
                 <div className="hidden md:flex items-center gap-8 shrink-0">
                   <div className="text-right">
                     <div className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Cost</div>
-                    <div className="text-sm font-semibold text-red-600">${fmt(book.totalCost)}</div>
+                    <div className="text-sm font-semibold text-red-600">ETB {fmt(book.totalCost)}</div>
                   </div>
                   <div className="text-right">
                     <div className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Revenue</div>
-                    <div className="text-sm font-semibold text-green-600">${fmt(book.totalRevenue)}</div>
+                    <div className="text-sm font-semibold text-green-600">ETB {fmt(book.totalRevenue)}</div>
                   </div>
                   <div className="text-right">
                     <div className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Profit</div>
                     <div className={`text-sm font-bold ${book.totalProfit >= 0 ? "text-primarycolor" : "text-red-600"}`}>
-                      ${fmt(book.totalProfit)}
+                      ETB {fmt(book.totalProfit)}
                     </div>
                   </div>
                 </div>
@@ -212,7 +212,7 @@ function StatCard({ label, value, color }: { label: string; value: string; color
   return (
     <div className={`rounded-xl p-3 text-center ${colorClasses[color] || colorClasses.primary}`}>
       <div className="text-[9px] font-black uppercase tracking-widest opacity-60">{label}</div>
-      <div className="text-sm font-bold">${value}</div>
+      <div className="text-sm font-bold">ETB {value}</div>
     </div>
   );
 }
@@ -227,7 +227,7 @@ function EditionStat({ label, value, color }: { label: string; value: string; co
   return (
     <div className="text-right">
       <div className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">{label}</div>
-      <div className={`text-xs font-bold ${colorClasses[color] || colorClasses.primary}`}>${value}</div>
+      <div className={`text-xs font-bold ${colorClasses[color] || colorClasses.primary}`}>ETB {value}</div>
     </div>
   );
 }

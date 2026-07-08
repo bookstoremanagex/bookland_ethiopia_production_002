@@ -683,6 +683,9 @@ export function AdminAppSidebar({ accountId }: { accountId?: number }) {
                     ) ||
                       activePath?.includes(
                         "/admin_dashboard/production/translation_work",
+                      ) ||
+                      activePath?.includes(
+                        "/admin_dashboard/production/translations/books",
                       ))
                   }
                 >
@@ -698,6 +701,9 @@ export function AdminAppSidebar({ accountId }: { accountId?: number }) {
                             ) ||
                               activePath?.includes(
                                 "/admin_dashboard/production/translation_work",
+                              ) ||
+                              activePath?.includes(
+                                "/admin_dashboard/production/translations/books",
                               ))
                             ? "bg-primarycolor/10 text-primarycolor font-black"
                             : "hover:bg-primarycolor/5 text-foreground",
@@ -712,6 +718,9 @@ export function AdminAppSidebar({ accountId }: { accountId?: number }) {
                               ) ||
                                 activePath?.includes(
                                   "/admin_dashboard/production/translation_work",
+                                ) ||
+                                activePath?.includes(
+                                  "/admin_dashboard/production/translations/books",
                                 ))
                               ? "text-primarycolor"
                               : "text-primarycolor/70",
@@ -784,6 +793,38 @@ export function AdminAppSidebar({ accountId }: { accountId?: number }) {
                                 )}
                               />
                               <span>Translation Work</span>
+                            </Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                        <SidebarMenuSubItem>
+                          <SidebarMenuSubButton
+                            asChild
+                            isActive={
+                              isMounted &&
+                              (activePath ===
+                                "/admin_dashboard/production/translations/books" ||
+                                activePath.startsWith(
+                                  "/admin_dashboard/production/translations/books/",
+                                ))
+                            }
+                            className={cn(
+                              "transition-all duration-300 rounded-lg h-9 px-4",
+                              "data-[active=true]:bg-primarycolor data-[active=true]:text-white data-[active=true]:font-black data-[active=true]:shadow-md data-[active=true]:shadow-primarycolor/20",
+                              "hover:bg-primarycolor/10 hover:text-primarycolor",
+                            )}
+                          >
+                            <Link href="/admin_dashboard/production/translations/books">
+                              <BookOpen
+                                className={cn(
+                                  "w-4 h-4",
+                                  isMounted &&
+                                    activePath ===
+                                      "/admin_dashboard/production/translations/books"
+                                    ? "text-white"
+                                    : "text-primarycolor/70",
+                                )}
+                              />
+                              <span>Books</span>
                             </Link>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>

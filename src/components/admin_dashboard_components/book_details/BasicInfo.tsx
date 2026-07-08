@@ -192,6 +192,14 @@ export default function BasicInfo({
                         {renderEditableField('copyright_registration_number', 'Copyright Reg. No', Copyright)}
                         {renderEditableField('number_of_pages', 'Pages', BookOpen, 'number')}
                         {renderEditableField('book_sort_index', 'Sort Index', ArrowUpDown, 'number')}
+                        {renderEditableField('productionstatus', 'Production Status', Activity, 'select', [
+                            { label: 'On Production', value: 'ON_PRODUCTION' },
+                            { label: 'Translation', value: 'TRANSLATION' },
+                            { label: 'Design', value: 'DESIGN' },
+                            { label: 'Printing', value: 'PRINTING' },
+                            { label: 'Pre-printing', value: 'PREPRINTING' },
+                            { label: 'Sales', value: 'SALES' },
+                        ])}
                     </div>
                 </div>
             </div>

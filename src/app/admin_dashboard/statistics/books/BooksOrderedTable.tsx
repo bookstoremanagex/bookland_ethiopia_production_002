@@ -33,11 +33,13 @@ import {
     Search,
     BookOpen,
     Loader2,
+    Download,
 } from "lucide-react";
 import { getOrderedBooks } from "@/app/actions/statistics-actions";
 import { getRelativeTime } from "@/lib/relative-time";
 import { Input } from "@/components/ui/input";
 import { useCalendar } from "@/lib/calendar-context";
+import * as XLSX from "xlsx";
 
 interface BookEntry {
     title: string;
@@ -162,6 +164,19 @@ export default function BooksOrderedTable({
         initialState: { pagination: { pageSize: 15 } },
     });
 
+    function handleExport() {
+        const rows = filtered.map((b) => ({
+            "Book": b.title,
+            "Time": new Date(b.latestOrderAt).toLocaleString(),
+            "Qty Ordered": b.totalQty,
+            "Total Price (ETB)": b.totalPrice,
+        }));
+        const ws = XLSX.utils.json_to_sheet(rows);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Books Ordered");
+        XLSX.writeFile(wb, "books_ordered.xlsx");
+    }
+
     return (
         <div className="space-y-4">
             {/* Summary cards */}
@@ -216,6 +231,14 @@ export default function BooksOrderedTable({
                         ))}
                     </SelectContent>
                 </Select>
+                <Button
+                    onClick={handleExport}
+                    size="sm"
+                    className="h-10 rounded-xl bg-primarycolor text-white font-black text-[11px] uppercase tracking-widest gap-1.5 px-4 shadow-md shadow-primarycolor/20 hover:shadow-lg hover:shadow-primarycolor/30 transition-all"
+                >
+                    <Download className="size-3.5" />
+                    Excel
+                </Button>
             </div>
 
             {loading ? (

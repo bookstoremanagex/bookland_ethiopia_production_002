@@ -185,7 +185,7 @@ export function OrdersClient({
                         {ed.edition_name}
                       </span>
                       <span className="text-xs font-black text-primarycolor">
-                        {ed.price != null ? `$${ed.price.toFixed(2)}` : "—"}
+                        {ed.price != null ? `ETB ${ed.price.toFixed(2)}` : "—"}
                       </span>
                     </div>
                     <button
@@ -389,7 +389,7 @@ export function OrdersClient({
               Total
             </span>
             <span className="text-lg font-black text-primarycolor">
-              ${total.toFixed(2)}
+              ETB {total.toFixed(2)}
             </span>
           </div>
 

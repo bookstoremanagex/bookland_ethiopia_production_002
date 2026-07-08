@@ -109,7 +109,7 @@ export function BooksTable({ data }: { data: RetailBook[] }) {
               {count}
               <div className="text-[10px] font-semibold text-slate-400">
                 {editions
-                  .map((e) => `${e.edition_name} ($${(e.price ?? 0).toFixed(2)})`)
+                  .map((e) => `${e.edition_name} (ETB ${(e.price ?? 0).toFixed(2)})`)
                   .join(", ")}
               </div>
             </div>

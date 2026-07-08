@@ -357,19 +357,19 @@ export default function InvoicesPage() {
                 <div className="bg-card rounded-[2rem] border-2 border-primarycolor/10 p-6 space-y-2">
                     <p className="text-xs font-black text-muted-foreground uppercase tracking-widest">Paid Invoices Value</p>
                     <h3 className="text-3xl font-black text-emerald-600">
-                        ${invoices.filter(i => i.status === "Paid").reduce((acc, i) => acc + i.amount, 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                        ETB {invoices.filter(i => i.status === "Paid").reduce((acc, i) => acc + i.amount, 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                     </h3>
                 </div>
                 <div className="bg-card rounded-[2rem] border-2 border-primarycolor/10 p-6 space-y-2">
                     <p className="text-xs font-black text-muted-foreground uppercase tracking-widest">Unpaid Bills Out</p>
                     <h3 className="text-3xl font-black text-sky-600">
-                        ${invoices.filter(i => i.status === "Unpaid").reduce((acc, i) => acc + i.amount, 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                        ETB {invoices.filter(i => i.status === "Unpaid").reduce((acc, i) => acc + i.amount, 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                     </h3>
                 </div>
                 <div className="bg-card rounded-[2rem] border-2 border-primarycolor/10 p-6 space-y-2">
                     <p className="text-xs font-black text-muted-foreground uppercase tracking-widest">Overdue Billing</p>
                     <h3 className="text-3xl font-black text-rose-600">
-                        ${invoices.filter(i => i.status === "Overdue").reduce((acc, i) => acc + i.amount, 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                        ETB {invoices.filter(i => i.status === "Overdue").reduce((acc, i) => acc + i.amount, 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                     </h3>
                 </div>
             </div>
@@ -477,7 +477,7 @@ export default function InvoicesPage() {
                                             <div className="flex items-center gap-2">
                                                 <DollarSign className="size-4 text-primarycolor/60" />
                                                 <span className="text-lg font-black text-secondarycolor">
-                                                    ${item.amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                                    ETB {item.amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                                 </span>
                                             </div>
 

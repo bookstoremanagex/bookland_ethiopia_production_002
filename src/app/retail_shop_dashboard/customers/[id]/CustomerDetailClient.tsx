@@ -94,7 +94,7 @@ export function CustomerDetailClient({ customer }: { customer: CustomerDetail })
           </div>
           <div className="text-center">
             <p className="text-2xl font-black text-primarycolor">
-              ${totalSpent.toFixed(2)}
+              ETB {totalSpent.toFixed(2)}
             </p>
             <p className="text-[10px] font-black uppercase tracking-wider text-slate-400 mt-1">
               Total Spent
@@ -146,7 +146,7 @@ export function CustomerDetailClient({ customer }: { customer: CustomerDetail })
                 </div>
                 <div className="text-right">
                   <p className="text-sm font-black text-primarycolor">
-                    ${(order.total_price ?? 0).toFixed(2)}
+                    ETB {(order.total_price ?? 0).toFixed(2)}
                   </p>
                   <p className="text-[10px] font-bold text-slate-400">
                     {new Date(order.created_at).toLocaleDateString("en-US", {

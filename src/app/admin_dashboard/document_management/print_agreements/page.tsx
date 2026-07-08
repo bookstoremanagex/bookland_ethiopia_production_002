@@ -337,7 +337,7 @@ export default function PrintAgreementsPage() {
                 <div className="bg-card rounded-[2rem] border-2 border-primarycolor/10 p-6 space-y-2">
                     <p className="text-xs font-black text-muted-foreground uppercase tracking-widest">Total Active Printing Cost</p>
                     <h3 className="text-3xl font-black text-emerald-600">
-                        ${agreements.reduce((acc, a) => acc + (a.cost || 0), 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        ETB {agreements.reduce((acc, a) => acc + (a.cost || 0), 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </h3>
                 </div>
             </div>
@@ -455,7 +455,7 @@ export default function PrintAgreementsPage() {
                                             <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-xs">
                                                 <span className="font-black text-secondarycolor/80">{(item.quantity || 0).toLocaleString()} units</span>
                                                 {item.cost && (
-                                                    <span className="font-black text-secondarycolor">${item.cost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                                                    <span className="font-black text-secondarycolor">ETB {item.cost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                                                 )}
                                                 {item.commencementDate && (
                                                     <span className="font-semibold text-secondarycolor/70 flex items-center gap-1">

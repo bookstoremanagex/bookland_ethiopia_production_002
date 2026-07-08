@@ -160,7 +160,7 @@ export default function PrintAgreementDetailPage({ params }: { params: Promise<{
                                 <p className="text-[10px] font-black uppercase tracking-widest text-secondarycolor/50">Printing Quoted Cost</p>
                                 <span className="inline-flex items-center gap-1 text-sm font-black text-secondarycolor mt-1">
                                     <DollarSign className="size-4 text-primarycolor/70" />
-                                    {agreement.cost ? `$${agreement.cost.toLocaleString(undefined, { minimumFractionDigits: 2 })}` : "â€”"}
+                                    {agreement.cost ? `ETB ${agreement.cost.toLocaleString(undefined, { minimumFractionDigits: 2 })}` : "â€”"}
                                 </span>
                             </div>
 

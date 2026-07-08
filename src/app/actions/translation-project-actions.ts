@@ -57,7 +57,7 @@ export async function createTranslationProject(data: TranslationProjectFormValue
 export async function getAvailableBooks() {
     try {
         const books = await prisma.books.findMany({
-            where: { is_deleted: false },
+            where: { is_deleted: false, productionstatus: "TRANSLATION" },
             select: { id: true, title: true, unique_identification_code: true }
         })
         return { success: true, data: books }

@@ -101,7 +101,7 @@ export function BooksClient({ books }: { books: RetailBook[] }) {
                         {ed.edition_name}
                       </span>
                       <span className="font-black text-primarycolor">
-                        {ed.price != null ? `$${ed.price.toFixed(2)}` : "—"}
+                        {ed.price != null ? `ETB ${ed.price.toFixed(2)}` : "—"}
                       </span>
                     </div>
                   ))}

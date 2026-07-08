@@ -100,7 +100,8 @@ export const ALL_DASHBOARD_MENUS: MenuItem[] = [
         menuName: "Translations",
         subItems: [
             { title: "Translators", icon: Languages, path: "production/translators", menuName: "Translation List" },
-            { title: "Translation Work", icon: PenTool, path: "production/translation_work", menuName: "Translation Work" }
+            { title: "Translation Work", icon: PenTool, path: "production/translation_work", menuName: "Translation Work" },
+            { title: "Books", icon: BookOpen, path: "production/translations/books", menuName: "Translation Books" }
         ]
     },
     { 
