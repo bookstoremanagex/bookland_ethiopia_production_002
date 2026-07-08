@@ -104,7 +104,8 @@ export const ALL_DASHBOARD_MENUS: MenuItem[] = [
         subItems: [
             { title: "Printers", icon: Printer, path: "printing/printers", menuName: "Printers" },
             { title: "Manage Printing", icon: ClipboardList, path: "printing/manage", menuName: "Manage Printing" },
-            { title: "Books List", icon: List, path: "printing/list", menuName: "Books List" }
+            { title: "Books List", icon: List, path: "printing/list", menuName: "Books List" },
+            { title: "Info", icon: BarChart3, path: "printing/info", menuName: "Printing Info" }
         ]
     },
     { 

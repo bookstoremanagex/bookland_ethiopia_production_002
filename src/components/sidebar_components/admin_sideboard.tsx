@@ -787,6 +787,38 @@ export function AdminAppSidebar({ accountId }: { accountId?: number }) {
                             </Link>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
+                        <SidebarMenuSubItem>
+                          <SidebarMenuSubButton
+                            asChild
+                            isActive={
+                              isMounted &&
+                              (activePath ===
+                                "/admin_dashboard/printing/info" ||
+                                activePath.startsWith(
+                                  "/admin_dashboard/printing/info/",
+                                ))
+                            }
+                            className={cn(
+                              "transition-all duration-300 rounded-lg h-9 px-4",
+                              "data-[active=true]:bg-primarycolor data-[active=true]:text-white data-[active=true]:font-black data-[active=true]:shadow-md data-[active=true]:shadow-primarycolor/20",
+                              "hover:bg-primarycolor/10 hover:text-primarycolor",
+                            )}
+                          >
+                            <Link href="/admin_dashboard/printing/info">
+                              <BarChart3
+                                className={cn(
+                                  "w-4 h-4",
+                                  isMounted &&
+                                    activePath ===
+                                      "/admin_dashboard/printing/info"
+                                    ? "text-white"
+                                    : "text-primarycolor/70",
+                                )}
+                              />
+                              <span>Info</span>
+                            </Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
                       </SidebarMenuSub>
                     </CollapsibleContent>
                   </SidebarMenuItem>
