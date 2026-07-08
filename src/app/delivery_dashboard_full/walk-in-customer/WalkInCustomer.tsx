@@ -31,6 +31,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { searchBooks } from "@/app/actions/transfer-actions";
 import { createRetailPurchase } from "@/app/actions/retail-purchase-actions";
+import { useCalendar } from "@/lib/calendar-context";
 
 type PurchaseItem = {
   id: number;
@@ -125,6 +126,7 @@ export default function WalkInCustomer({ initialPurchases }: { initialPurchases:
   const pageSize = 15;
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Purchase | null>(null);
+  const { formatShort } = useCalendar();
 
   const filtered = useMemo(() => {
     if (!search) return purchases;
@@ -177,9 +179,7 @@ export default function WalkInCustomer({ initialPurchases }: { initialPurchases:
           <div className="space-y-3 pb-4">
             {paged.map((purchase, i) => {
               const itemCount = purchase.items?.length || 0;
-              const dateStr = new Date(purchase.createdAt).toLocaleDateString("en-US", {
-                month: "short", day: "numeric", year: "numeric",
-              });
+              const dateStr = formatShort(new Date(purchase.createdAt));
               return (
                 <motion.div
                   key={purchase.id}
@@ -274,9 +274,7 @@ export default function WalkInCustomer({ initialPurchases }: { initialPurchases:
         <DialogContent className="sm:max-w-lg w-[95vw] rounded-[2.5rem] border-4 border-primarycolor/5 bg-white p-0 overflow-hidden shadow-2xl max-h-[90vh] flex flex-col">
           {selectedOrder && (() => {
             const o = selectedOrder;
-            const dateStr = new Date(o.createdAt).toLocaleDateString("en-US", {
-              month: "short", day: "numeric", year: "numeric",
-            });
+            const dateStr = formatShort(new Date(o.createdAt));
             const timeStr = new Date(o.createdAt).toLocaleTimeString("en-US", {
               hour: "2-digit", minute: "2-digit",
             });

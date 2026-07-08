@@ -18,7 +18,7 @@ interface CalendarContextValue {
 const CalendarContext = createContext<CalendarContextValue | null>(null)
 
 export function CalendarProvider({ children }: { children: React.ReactNode }) {
-  const [calendar, setCalendar] = useState<CalendarPreference>("gregorian")
+  const [calendar, setCalendar] = useState<CalendarPreference>("ethiopian")
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -53,14 +53,14 @@ export function CalendarProvider({ children }: { children: React.ReactNode }) {
     return (
       <CalendarContext.Provider
         value={{
-          calendar: "gregorian",
+          calendar: "ethiopian",
           setCalendar: updateCalendar,
           toggleCalendar: () => {},
-          formatDate: (date, pattern) => formatDateUtil(date, "gregorian", pattern),
-          formatShort: (date) => formatDateShort(date, "gregorian"),
-          formatLong: (date) => formatDateLong(date, "gregorian"),
-          formatISO: (date) => formatDateISO(date, "gregorian"),
-          formatDateTime: (date) => formatDateTime(date, "gregorian"),
+          formatDate: (date, pattern) => formatDateUtil(date, "ethiopian", pattern),
+          formatShort: (date) => formatDateShort(date, "ethiopian"),
+          formatLong: (date) => formatDateLong(date, "ethiopian"),
+          formatISO: (date) => formatDateISO(date, "ethiopian"),
+          formatDateTime: (date) => formatDateTime(date, "ethiopian"),
         }}
       >
         {children}

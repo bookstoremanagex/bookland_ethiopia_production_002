@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useCalendar } from "@/lib/calendar-context";
 import {
   ArrowLeft,
   BookOpen,
@@ -72,6 +73,7 @@ export default function RoundBookDetail({ roundBook }: { roundBook: RoundBookDat
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
   const [showSelectStore, setShowSelectStore] = useState(false);
   const [detailRecordId, setDetailRecordId] = useState<number | null>(null);
+  const { formatShort } = useCalendar();
 
   const handleCancelEdit = () => {
     setStartingAmount(String(roundBook.starting_amount));
@@ -79,9 +81,7 @@ export default function RoundBookDetail({ roundBook }: { roundBook: RoundBookDat
     setIsEditing(false);
   };
 
-  const dateStr = new Date(roundBook.createdAt).toLocaleDateString("en-US", {
-    month: "short", day: "numeric", year: "numeric",
-  });
+  const dateStr = formatShort(new Date(roundBook.createdAt));
 
   const handleSave = async () => {
     setIsSaving(true);

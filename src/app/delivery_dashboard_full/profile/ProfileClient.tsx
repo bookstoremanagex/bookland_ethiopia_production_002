@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { getProfileData } from "./actions";
 import { logoutAction } from "@/app/actions/auth-actions";
 import { useRouter } from "next/navigation";
+import { useCalendar } from "@/lib/calendar-context";
 
 export default function ProfileClient() {
   const router = useRouter();
@@ -29,6 +30,7 @@ export default function ProfileClient() {
     createdAt: string;
   } | null>(null);
   const [fetchError, setFetchError] = useState(false);
+  const { formatShort } = useCalendar();
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -77,7 +79,7 @@ export default function ProfileClient() {
   }
 
   const dateStr = mounted
-    ? new Date(user.createdAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
+    ? formatShort(new Date(user.createdAt))
     : "...";
 
   return (

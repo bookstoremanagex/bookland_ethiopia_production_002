@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useCalendar } from "@/lib/calendar-context";
 import {
   ArrowLeft,
   Store,
@@ -99,6 +100,7 @@ function PaymentStatus({ status }: { status: string }) {
 
 export default function PaymentDetail({ shop }: { shop: ShopData }) {
   const router = useRouter();
+  const { formatShort, formatDateTime } = useCalendar();
   const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
   const [actionPayment, setActionPayment] = useState<Payment | null>(null);
   const [showActionDialog, setShowActionDialog] = useState(false);
@@ -146,9 +148,7 @@ export default function PaymentDetail({ shop }: { shop: ShopData }) {
       header: "Date",
       cell: ({ row }) => {
         const p = row.original;
-        const dateStr = new Date(p.createdAt).toLocaleDateString("en-US", {
-          month: "short", day: "numeric", year: "numeric",
-        });
+        const dateStr = formatShort(new Date(p.createdAt));
         const timeStr = new Date(p.createdAt).toLocaleTimeString("en-US", {
           hour: "2-digit", minute: "2-digit",
         });
@@ -165,7 +165,8 @@ export default function PaymentDetail({ shop }: { shop: ShopData }) {
       header: "Status",
       cell: ({ row }) => <PaymentStatus status={row.original.status} />,
     },
-  ], []);
+  ],
+  []);
 
   const table = useReactTable({
     data: shop.payments,
@@ -267,9 +268,7 @@ export default function PaymentDetail({ shop }: { shop: ShopData }) {
                 <div className="p-6 space-y-3">
                   {table.getRowModel().rows.map((row) => {
                     const p = row.original;
-                    const dateStr = new Date(p.createdAt).toLocaleDateString("en-US", {
-                      month: "short", day: "numeric", year: "numeric",
-                    });
+                    const dateStr = formatShort(new Date(p.createdAt));
                     const timeStr = new Date(p.createdAt).toLocaleTimeString("en-US", {
                       hour: "2-digit", minute: "2-digit",
                     });
@@ -419,9 +418,7 @@ export default function PaymentDetail({ shop }: { shop: ShopData }) {
                         </div>
                         <div className="flex items-center gap-1 text-[9px] text-muted-foreground font-bold">
                           <Calendar className="size-3" />
-                          {new Date(order.createdAt).toLocaleDateString("en-US", {
-                            month: "short", day: "numeric", year: "numeric",
-                          })}
+                          {formatShort(new Date(order.createdAt))}
                         </div>
                       </div>
                     </div>
@@ -522,9 +519,7 @@ export default function PaymentDetail({ shop }: { shop: ShopData }) {
         <DialogContent className="sm:max-w-lg w-[95vw] rounded-[2.5rem] border-4 border-primarycolor/5 bg-white p-0 overflow-hidden shadow-2xl max-h-[90vh] flex flex-col">
           {selectedPayment && (() => {
             const p = selectedPayment;
-            const dateStr = new Date(p.createdAt).toLocaleDateString("en-US", {
-              month: "short", day: "numeric", year: "numeric",
-            });
+            const dateStr = formatShort(new Date(p.createdAt));
             const timeStr = new Date(p.createdAt).toLocaleTimeString("en-US", {
               hour: "2-digit", minute: "2-digit",
             });

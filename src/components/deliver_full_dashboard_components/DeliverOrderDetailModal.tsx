@@ -26,6 +26,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { AdminOrder } from "@/app/admin_dashboard/manage_orders/ManageOrdersPageContent";
 import RecordPaymentModal from "./RecordPaymentModal";
+import { useCalendar } from "@/lib/calendar-context";
 
 interface Props {
   isOpen: boolean;
@@ -43,6 +44,7 @@ interface Props {
 }
 
 export default function DeliverOrderDetailModal({ isOpen, onClose, order, payments }: Props) {
+  const { formatShort } = useCalendar();
   const [printOptionsOpen, setPrintOptionsOpen] = useState(false);
   const [printFontSize, setPrintFontSize] = useState<"big" | "small" | "very-small" | "extra-small">("small");
   const [printPageWidth, setPrintPageWidth] = useState<"full" | "half">("full");
@@ -194,9 +196,7 @@ export default function DeliverOrderDetailModal({ isOpen, onClose, order, paymen
                 </div>
                 <div className="flex items-center gap-2 text-muted-foreground col-span-2">
                   <Calendar className="size-3.5 shrink-0" />
-                  <span className="font-semibold">{new Date(order.createdAt).toLocaleDateString("en-US", {
-                    month: "short", day: "numeric", year: "numeric",
-                  })}</span>
+                  <span className="font-semibold">{formatShort(new Date(order.createdAt))}</span>
                   <span className={cn(
                     "px-1.5 py-0.5 rounded text-[7px] font-black uppercase tracking-widest ml-1",
                     order.order_type === "on round"
@@ -329,9 +329,7 @@ export default function DeliverOrderDetailModal({ isOpen, onClose, order, paymen
                             {payment.payment_type === "CHECK" ? "Check" : "Direct"}
                           </span>
                           <span className="text-[8px] text-muted-foreground/60">
-                            {new Date(payment.createdAt).toLocaleDateString("en-US", {
-                              month: "short", day: "numeric", year: "numeric",
-                            })}
+                            {formatShort(new Date(payment.createdAt))}
                           </span>
                         </div>
                         {payment.memo && (

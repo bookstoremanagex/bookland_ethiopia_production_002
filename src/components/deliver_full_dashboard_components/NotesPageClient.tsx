@@ -24,6 +24,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { useCalendar } from "@/lib/calendar-context";
 
 type Note = {
   id: number;
@@ -64,18 +65,14 @@ function SwipeableNoteCard({
   onEdit: (note: Note) => void;
 }) {
   const [deleting, setDeleting] = useState(false);
+  const { formatShort } = useCalendar();
 
   const handleDelete = async () => {
     setDeleting(true);
     await onDelete(note.id);
   };
 
-  const dateStr = new Date(note.createdAt).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  const dateStr = formatShort(new Date(note.createdAt)) + " " + new Date(note.createdAt).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
 
   return (
     <div className="relative overflow-hidden rounded-3xl">

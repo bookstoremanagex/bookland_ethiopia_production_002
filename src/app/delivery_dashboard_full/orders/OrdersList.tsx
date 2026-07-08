@@ -20,6 +20,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { markOrderDelivered } from "@/app/actions/order-actions";
+import { useCalendar } from "@/lib/calendar-context"
 
 type OrderRow = {
   id: number;
@@ -107,6 +108,7 @@ export default function OrdersList({ orders, payments: allPayments }: { orders: 
   const [page, setPage] = useState(0);
   const [selectedOrder, setSelectedOrder] = useState<OrderRow | null>(null);
   const [delivering, setDelivering] = useState(false);
+  const { formatShort, formatDateTime } = useCalendar();
   const pageSize = 15;
 
   const filtered = useMemo(() => {
@@ -163,9 +165,7 @@ export default function OrdersList({ orders, payments: allPayments }: { orders: 
           <div className="space-y-3 pb-4">
             {paged.map((order, i) => {
               const totalBooks = order.order_items?.reduce((s, item) => s + (item.quantity || 0), 0) || 0;
-              const dateStr = new Date(order.createdAt).toLocaleDateString("en-US", {
-                month: "short", day: "numeric", year: "numeric",
-              });
+              const dateStr = formatShort(new Date(order.createdAt));
               return (
                 <motion.div
                   key={order.id}
@@ -239,9 +239,7 @@ export default function OrdersList({ orders, payments: allPayments }: { orders: 
           {selectedOrder && (() => {
             const o = selectedOrder;
             const totalBooks = o.order_items?.reduce((s, item) => s + (item.quantity || 0), 0) || 0;
-            const dateStr = new Date(o.createdAt).toLocaleDateString("en-US", {
-              month: "short", day: "numeric", year: "numeric",
-            });
+            const dateStr = formatShort(new Date(o.createdAt));
             const timeStr = new Date(o.createdAt).toLocaleTimeString("en-US", {
               hour: "2-digit", minute: "2-digit",
             });

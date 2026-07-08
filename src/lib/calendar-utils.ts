@@ -2,22 +2,22 @@ import { toEthiopian, toGregorian } from "ethiopian-date"
 
 export type CalendarPreference = "gregorian" | "ethiopian"
 
-const ETHIOPIAN_MONTHS = [
-  "Meskerem", "Tikimt", "Hidar", "Tahsas", "Tir", "Yekatit",
-  "Magabit", "Miazia", "Ginbot", "Sene", "Hamle", "Nehase", "Pagume",
+export const ETHIOPIAN_MONTHS = [
+  "መስከረም", "ጥቅምት", "ኅዳር", "ታሕሳስ", "ጥር", "የካቲት",
+  "መጋቢት", "ሚያዝያ", "ግንቦት", "ሰኔ", "ሐምሌ", "ነሐሴ", "ጳጉሜ",
 ]
 
 const ETHIOPIAN_MONTHS_SHORT = [
-  "Mes", "Tik", "Hid", "Tah", "Tir", "Yek",
-  "Mag", "Mia", "Gin", "Sen", "Ham", "Neh", "Pag",
+  "መስከ", "ጥቅም", "ኅዳር", "ታሕሳ", "ጥር", "የካቲ",
+  "መጋቢ", "ሚያዝ", "ግንቦ", "ሰኔ", "ሐምሌ", "ነሐሴ", "ጳጉሜ",
 ]
 
 const ETHIOPIAN_WEEKDAYS = [
-  "Ehud", "Segno", "Maksegno", "Erob", "Hamus", "Arb", "Kidam",
+  "እሑድ", "ሰኞ", "ማክሰኞ", "ረቡዕ", "ሐሙስ", "ዓርብ", "ቅዳሜ",
 ]
 
 const ETHIOPIAN_WEEKDAYS_SHORT = [
-  "Ehu", "Seg", "Mak", "Ero", "Ham", "Arb", "Kid",
+  "እሑ", "ሰኞ", "ማክ", "ረቡ", "ሐሙ", "ዓር", "ቅዳ",
 ]
 
 function pad(n: number): string {
@@ -99,8 +99,8 @@ function formatEthiopian(date: Date, pattern: string): string {
   const map: Record<string, string> = {
     yyyy: eth.year.toString(),
     yy: eth.year.toString().slice(-2),
-    MMMM: ETHIOPIAN_MONTHS[eth.month - 1] || "Pagume",
-    MMM: ETHIOPIAN_MONTHS_SHORT[eth.month - 1] || "Pag",
+    MMMM: ETHIOPIAN_MONTHS[eth.month - 1] || "ጳጉሜ",
+    MMM: ETHIOPIAN_MONTHS_SHORT[eth.month - 1] || "ጳጉሜ",
     MM: pad(eth.month),
     M: eth.month.toString(),
     dd: pad(eth.day),
@@ -135,7 +135,7 @@ export function formatDateLong(date: Date, calendar: CalendarPreference): string
   }
   const eth = convertToEthiopian(date)
   const wd = ETHIOPIAN_WEEKDAYS[date.getDay()]
-  const mn = ETHIOPIAN_MONTHS[eth.month - 1] || "Pagume"
+  const mn = ETHIOPIAN_MONTHS[eth.month - 1] || "ጳጉሜ"
   return `${wd}, ${mn} ${eth.day}, ${eth.year}`
 }
 

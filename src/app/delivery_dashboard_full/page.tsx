@@ -1,6 +1,7 @@
 import { ShoppingCart, CreditCard, UserRound, PackageOpen, Bell, Clock, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { getUnreadCount, getNotifications } from "../actions/notification-actions";
+import { useCalendar } from "@/lib/calendar-context";
 
 const buttons = [
   {
@@ -36,7 +37,8 @@ function formatRelativeTime(date: Date): string {
   if (diffHours < 24) return `${diffHours}h ago`;
   if (diffDays === 1) return "Yesterday";
   if (diffDays < 7) return `${diffDays}d ago`;
-  return new Date(date).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  const { formatShort } = useCalendar();
+  return formatShort(new Date(date));
 }
 
 export default async function DeliveryDashboardHomePage() {

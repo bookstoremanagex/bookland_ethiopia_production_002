@@ -13,11 +13,13 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getProfileData } from "./actions";
+import { useCalendar } from "@/lib/calendar-context";
 import { logoutAction } from "@/app/actions/auth-actions";
 import { useRouter } from "next/navigation";
 
 export default function ProfileClient() {
   const router = useRouter();
+  const { formatShort } = useCalendar();
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -82,7 +84,7 @@ export default function ProfileClient() {
   }
 
   const dateStr = mounted
-    ? new Date(user.createdAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
+    ? formatShort(new Date(user.createdAt))
     : "...";
 
   return (

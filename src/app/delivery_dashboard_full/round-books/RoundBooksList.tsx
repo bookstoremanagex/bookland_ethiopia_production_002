@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
+import { useCalendar } from "@/lib/calendar-context";
 import {
   Search,
   X,
@@ -61,6 +62,7 @@ type RoundBookRow = {
 export default function RoundBooksList({ initialData }: { initialData: RoundBookRow[] }) {
   const router = useRouter();
   const [search, setSearch] = useState("");
+  const { formatShort } = useCalendar();
   const [showStartDialog, setShowStartDialog] = useState(false);
   const [availableBooks, setAvailableBooks] = useState<any[]>([]);
   const [bookSearch, setBookSearch] = useState("");
@@ -313,9 +315,7 @@ export default function RoundBooksList({ initialData }: { initialData: RoundBook
             <div className="p-4 space-y-3 md:hidden">
               {table.getRowModel().rows.map((row) => {
                 const rb = row.original;
-                const dateStr = new Date(rb.createdAt).toLocaleDateString("en-US", {
-                  month: "short", day: "numeric", year: "numeric",
-                });
+                const dateStr = formatShort(new Date(rb.createdAt));
                 return (
                   <div
                     key={rb.id}
