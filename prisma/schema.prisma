@@ -713,6 +713,7 @@ model payments {
   amount       Float
   payment_type String // "DIRECT" | "CHECK"
   checkId      Int?
+  image String? 
   status       String   @default("PENDING") // "PENDING" | "APPROVED"
   is_deleted   Boolean  @default(false)
   updatedAt    DateTime @default(now())

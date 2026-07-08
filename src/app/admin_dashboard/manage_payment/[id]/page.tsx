@@ -75,6 +75,7 @@ export default async function ManagePaymentDetailPage({ params }: { params: Prom
                     memo: p.check.memo,
                     imageUrl: p.check.imageUrl,
                 } : null,
+                image: p.image || null,
                 createdAt: p.createdAt,
                 orderid: p.orderid || null,
                 memo: p.memo || null,

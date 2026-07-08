@@ -96,6 +96,10 @@ export default function RecordPaymentModal({ shopId, shopName, trigger, orderId 
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
 
+  const [receiptImageUrl, setReceiptImageUrl] = useState("");
+  const [uploadingReceipt, setUploadingReceipt] = useState(false);
+  const [receiptUploadProgress, setReceiptUploadProgress] = useState(0);
+
   const syncAmount = useCallback((val: string) => {
     setAmount(val);
     setNewCheck((prev) => ({ ...prev, amount: val }));
@@ -150,6 +154,42 @@ export default function RecordPaymentModal({ shopId, shopName, trigger, orderId 
     xhr.send(formData);
   };
 
+  const handleReceiptUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingReceipt(true);
+    setReceiptUploadProgress(0);
+
+    const xhr = new XMLHttpRequest();
+    const formData = new FormData();
+    formData.append("file", file);
+
+    xhr.upload.onprogress = (event) => {
+      if (event.lengthComputable) {
+        setReceiptUploadProgress(Math.round((event.loaded / event.total) * 100));
+      }
+    };
+
+    xhr.onload = () => {
+      if (xhr.status === 200) {
+        const res = JSON.parse(xhr.responseText);
+        if (res.success) {
+          setReceiptImageUrl(res.url);
+          setReceiptUploadProgress(100);
+        }
+      }
+      setUploadingReceipt(false);
+    };
+
+    xhr.onerror = () => {
+      setUploadingReceipt(false);
+      toast.error("Failed to upload receipt image");
+    };
+
+    xhr.open("POST", "/api/upload-payment-image");
+    xhr.send(formData);
+  };
+
   const handleCreateCheck = async () => {
     if (!newCheck.username || !newCheck.bankname || !newCheck.amount) {
       toast.error("Username and Bank Name are required");
@@ -200,6 +240,7 @@ export default function RecordPaymentModal({ shopId, shopName, trigger, orderId 
         checkId: paymentType === "CHECK" ? selectedCheck?.id || null : null,
         orderid: orderId ? String(orderId) : null,
         memo: memo || null,
+        image: receiptImageUrl || null,
       });
 
       if (res.success) {
@@ -212,6 +253,8 @@ export default function RecordPaymentModal({ shopId, shopName, trigger, orderId 
         setShowNewCheck(false);
         setCheckImageUrl("");
         setUploadProgress(0);
+        setReceiptImageUrl("");
+        setReceiptUploadProgress(0);
         router.refresh();
       } else {
         toast.error(res.error);
@@ -330,6 +373,78 @@ export default function RecordPaymentModal({ shopId, shopName, trigger, orderId 
               className="w-full h-24 px-4 py-3 rounded-2xl border-2 border-slate-100 bg-white font-bold text-sm resize-none focus:border-primarycolor outline-none transition-all"
               placeholder="Add a note about this payment..."
             />
+          </div>
+
+          {/* Receipt Image Upload */}
+          <div className="space-y-3">
+            <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Receipt Image (optional)</p>
+            <div className="space-y-2">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleReceiptUpload}
+                disabled={uploadingReceipt}
+                className="hidden"
+                id="receipt-image-upload"
+              />
+              <label
+                htmlFor="receipt-image-upload"
+                className={cn(
+                  "flex items-center gap-3 h-14 px-4 rounded-2xl border-2 border-dashed bg-white font-bold text-sm cursor-pointer transition-all",
+                  receiptImageUrl
+                    ? "border-emerald-300 bg-emerald-50/50"
+                    : uploadingReceipt
+                      ? "border-primarycolor/30 bg-primarycolor/5"
+                      : "border-slate-200 hover:border-primarycolor/30"
+                )}
+              >
+                {receiptImageUrl ? (
+                  <>
+                    <div className="size-9 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
+                      <CheckCircle2 className="size-5" />
+                    </div>
+                    <span className="text-emerald-700 text-xs font-bold truncate">Receipt uploaded</span>
+                  </>
+                ) : uploadingReceipt ? (
+                  <>
+                    <div className="size-9 rounded-xl bg-primarycolor/10 flex items-center justify-center text-primarycolor shrink-0">
+                      <Loader2 className="size-5 animate-spin" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-primarycolor text-xs font-bold">Uploading receipt...</span>
+                        <span className="text-primarycolor text-[10px] font-black">{receiptUploadProgress}%</span>
+                      </div>
+                      <div className="h-1.5 rounded-full bg-primarycolor/20 overflow-hidden">
+                        <div
+                          className="h-full rounded-full bg-primarycolor transition-all duration-300"
+                          style={{ width: `${receiptUploadProgress}%` }}
+                        />
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="size-9 rounded-xl bg-primarycolor/5 flex items-center justify-center text-primarycolor shrink-0">
+                      <Upload className="size-5" />
+                    </div>
+                    <div className="flex-1">
+                      <span className="text-slate-700 text-xs font-bold">Upload receipt image</span>
+                      <p className="text-[8px] text-muted-foreground font-semibold">PNG, JPG up to 4MB</p>
+                    </div>
+                  </>
+                )}
+              </label>
+            </div>
+            {receiptImageUrl && (
+              <div className="rounded-2xl overflow-hidden border-2 border-emerald-200 bg-emerald-50/50">
+                <img
+                  src={receiptImageUrl}
+                  alt="Receipt"
+                  className="w-full h-40 object-contain bg-white"
+                />
+              </div>
+            )}
           </div>
 
           {paymentType === "CHECK" && (

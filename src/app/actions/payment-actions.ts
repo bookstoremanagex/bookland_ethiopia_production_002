@@ -46,6 +46,7 @@ export async function createPayment(data: {
     checkId?: number | null;
     orderid?: string | null;
     memo?: string | null;
+    image?: string | null;
 }) {
     try {
         const session = await getCurrentSession();
@@ -59,6 +60,7 @@ export async function createPayment(data: {
                 checkId: data.checkId || null,
                 orderid: data.orderid || null,
                 memo: data.memo || null,
+                image: data.image || null,
                 status: "PENDING",
             }
         });

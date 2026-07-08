@@ -123,6 +123,7 @@ interface Payment {
     createdAt: string | Date;
     orderid: string | null;
     memo: string | null;
+    image?: string | null;
 }
 
 interface ShopInfo {
@@ -198,6 +199,8 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, tota
     const [selectedOrder, setSelectedOrder] = useState<AdminOrder | null>(null);
     const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
     const [paymentOrderId, setPaymentOrderId] = useState<number | null>(null);
+    const [selectedPaymentImage, setSelectedPaymentImage] = useState<string | null>(null);
+    const [isPaymentImageOpen, setIsPaymentImageOpen] = useState(false);
     const [isOrderPaymentModalOpen, setIsOrderPaymentModalOpen] = useState(false);
 
     const [paymentPage, setPaymentPage] = useState(1);
@@ -647,6 +650,23 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, tota
                                                         className="h-9 px-3 rounded-xl border-2 border-slate-200 text-muted-foreground font-black text-[9px] uppercase tracking-widest hover:bg-slate-50 transition-all"
                                                     >
                                                         Cancel
+                                                    </button>
+                                                </div>
+                                            )}
+                                            {payment.image && (
+                                                <div className="mt-3">
+                                                    <button
+                                                        onClick={() => { setSelectedPaymentImage(payment.image!); setIsPaymentImageOpen(true); }}
+                                                        className="group relative rounded-xl overflow-hidden border-2 border-slate-100 hover:border-primarycolor/30 transition-all cursor-pointer"
+                                                    >
+                                                        <img
+                                                            src={payment.image}
+                                                            alt="Payment receipt"
+                                                            className="h-24 w-auto max-w-[200px] object-cover rounded-xl"
+                                                        />
+                                                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all flex items-center justify-center">
+                                                            <Eye className="size-5 text-white opacity-0 group-hover:opacity-100 transition-all drop-shadow-lg" />
+                                                        </div>
                                                     </button>
                                                 </div>
                                             )}
@@ -1499,6 +1519,30 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, tota
                     </DrawerFooter>
                 </DrawerContent>
             </Drawer>
+
+            <Dialog open={isPaymentImageOpen} onOpenChange={(o) => { if (!o) { setIsPaymentImageOpen(false); setSelectedPaymentImage(null); } }}>
+                <DialogContent className="sm:max-w-2xl rounded-[2rem] border-4 border-primarycolor/5 p-0 overflow-hidden shadow-2xl bg-white">
+                    <DialogHeader className="p-5 pb-3 border-b border-slate-100">
+                        <DialogTitle className="text-lg font-black text-primarycolor uppercase tracking-tight italic">
+                            Payment Receipt Image
+                        </DialogTitle>
+                        <DialogDescription className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground">
+                            Receipt or proof of payment
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="p-5">
+                        {selectedPaymentImage && (
+                            <div className="rounded-2xl overflow-hidden border-2 border-slate-100 bg-slate-50">
+                                <img
+                                    src={selectedPaymentImage}
+                                    alt="Payment receipt"
+                                    className="w-full h-auto max-h-[70vh] object-contain bg-white"
+                                />
+                            </div>
+                        )}
+                    </div>
+                </DialogContent>
+            </Dialog>
 
             <Dialog open={!!hideRemToggleOrder} onOpenChange={(o) => { if (!o) setHideRemToggleOrder(null); }}>
                 <DialogContent className="sm:max-w-sm rounded-[2rem] border-4 border-primarycolor/5 p-0 overflow-hidden shadow-2xl bg-white" onOpenAutoFocus={(e) => e.preventDefault()}>

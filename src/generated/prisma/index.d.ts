@@ -45804,6 +45804,7 @@ export namespace Prisma {
     amount: number | null
     payment_type: string | null
     checkId: number | null
+    image: string | null
     status: string | null
     is_deleted: boolean | null
     updatedAt: Date | null
@@ -45819,6 +45820,7 @@ export namespace Prisma {
     amount: number | null
     payment_type: string | null
     checkId: number | null
+    image: string | null
     status: string | null
     is_deleted: boolean | null
     updatedAt: Date | null
@@ -45834,6 +45836,7 @@ export namespace Prisma {
     amount: number
     payment_type: number
     checkId: number
+    image: number
     status: number
     is_deleted: number
     updatedAt: number
@@ -45865,6 +45868,7 @@ export namespace Prisma {
     amount?: true
     payment_type?: true
     checkId?: true
+    image?: true
     status?: true
     is_deleted?: true
     updatedAt?: true
@@ -45880,6 +45884,7 @@ export namespace Prisma {
     amount?: true
     payment_type?: true
     checkId?: true
+    image?: true
     status?: true
     is_deleted?: true
     updatedAt?: true
@@ -45895,6 +45900,7 @@ export namespace Prisma {
     amount?: true
     payment_type?: true
     checkId?: true
+    image?: true
     status?: true
     is_deleted?: true
     updatedAt?: true
@@ -45997,6 +46003,7 @@ export namespace Prisma {
     amount: number
     payment_type: string
     checkId: number | null
+    image: string | null
     status: string
     is_deleted: boolean
     updatedAt: Date
@@ -46031,6 +46038,7 @@ export namespace Prisma {
     amount?: boolean
     payment_type?: boolean
     checkId?: boolean
+    image?: boolean
     status?: boolean
     is_deleted?: boolean
     updatedAt?: boolean
@@ -46050,6 +46058,7 @@ export namespace Prisma {
     amount?: boolean
     payment_type?: boolean
     checkId?: boolean
+    image?: boolean
     status?: boolean
     is_deleted?: boolean
     updatedAt?: boolean
@@ -46059,7 +46068,7 @@ export namespace Prisma {
     memo?: boolean
   }
 
-  export type paymentsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "shopId" | "amount" | "payment_type" | "checkId" | "status" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt" | "orderid" | "memo", ExtArgs["result"]["payments"]>
+  export type paymentsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "shopId" | "amount" | "payment_type" | "checkId" | "image" | "status" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt" | "orderid" | "memo", ExtArgs["result"]["payments"]>
   export type paymentsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     shop?: boolean | bookshopesDefaultArgs<ExtArgs>
     check?: boolean | payments$checkArgs<ExtArgs>
@@ -46077,6 +46086,7 @@ export namespace Prisma {
       amount: number
       payment_type: string
       checkId: number | null
+      image: string | null
       status: string
       is_deleted: boolean
       updatedAt: Date
@@ -46460,6 +46470,7 @@ export namespace Prisma {
     readonly amount: FieldRef<"payments", 'Float'>
     readonly payment_type: FieldRef<"payments", 'String'>
     readonly checkId: FieldRef<"payments", 'Int'>
+    readonly image: FieldRef<"payments", 'String'>
     readonly status: FieldRef<"payments", 'String'>
     readonly is_deleted: FieldRef<"payments", 'Boolean'>
     readonly updatedAt: FieldRef<"payments", 'DateTime'>
@@ -49605,6 +49616,7 @@ export namespace Prisma {
     amount: 'amount',
     payment_type: 'payment_type',
     checkId: 'checkId',
+    image: 'image',
     status: 'status',
     is_deleted: 'is_deleted',
     updatedAt: 'updatedAt',
@@ -49969,6 +49981,7 @@ export namespace Prisma {
 
   export const paymentsOrderByRelevanceFieldEnum: {
     payment_type: 'payment_type',
+    image: 'image',
     status: 'status',
     orderid: 'orderid',
     memo: 'memo'
@@ -53662,6 +53675,7 @@ export namespace Prisma {
     amount?: FloatFilter<"payments"> | number
     payment_type?: StringFilter<"payments"> | string
     checkId?: IntNullableFilter<"payments"> | number | null
+    image?: StringNullableFilter<"payments"> | string | null
     status?: StringFilter<"payments"> | string
     is_deleted?: BoolFilter<"payments"> | boolean
     updatedAt?: DateTimeFilter<"payments"> | Date | string
@@ -53679,6 +53693,7 @@ export namespace Prisma {
     amount?: SortOrder
     payment_type?: SortOrder
     checkId?: SortOrderInput | SortOrder
+    image?: SortOrderInput | SortOrder
     status?: SortOrder
     is_deleted?: SortOrder
     updatedAt?: SortOrder
@@ -53700,6 +53715,7 @@ export namespace Prisma {
     amount?: FloatFilter<"payments"> | number
     payment_type?: StringFilter<"payments"> | string
     checkId?: IntNullableFilter<"payments"> | number | null
+    image?: StringNullableFilter<"payments"> | string | null
     status?: StringFilter<"payments"> | string
     is_deleted?: BoolFilter<"payments"> | boolean
     updatedAt?: DateTimeFilter<"payments"> | Date | string
@@ -53717,6 +53733,7 @@ export namespace Prisma {
     amount?: SortOrder
     payment_type?: SortOrder
     checkId?: SortOrderInput | SortOrder
+    image?: SortOrderInput | SortOrder
     status?: SortOrder
     is_deleted?: SortOrder
     updatedAt?: SortOrder
@@ -53740,6 +53757,7 @@ export namespace Prisma {
     amount?: FloatWithAggregatesFilter<"payments"> | number
     payment_type?: StringWithAggregatesFilter<"payments"> | string
     checkId?: IntNullableWithAggregatesFilter<"payments"> | number | null
+    image?: StringNullableWithAggregatesFilter<"payments"> | string | null
     status?: StringWithAggregatesFilter<"payments"> | string
     is_deleted?: BoolWithAggregatesFilter<"payments"> | boolean
     updatedAt?: DateTimeWithAggregatesFilter<"payments"> | Date | string
@@ -57780,6 +57798,7 @@ export namespace Prisma {
   export type paymentsCreateInput = {
     amount: number
     payment_type: string
+    image?: string | null
     status?: string
     is_deleted?: boolean
     updatedAt?: Date | string
@@ -57797,6 +57816,7 @@ export namespace Prisma {
     amount: number
     payment_type: string
     checkId?: number | null
+    image?: string | null
     status?: string
     is_deleted?: boolean
     updatedAt?: Date | string
@@ -57809,6 +57829,7 @@ export namespace Prisma {
   export type paymentsUpdateInput = {
     amount?: FloatFieldUpdateOperationsInput | number
     payment_type?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -57826,6 +57847,7 @@ export namespace Prisma {
     amount?: FloatFieldUpdateOperationsInput | number
     payment_type?: StringFieldUpdateOperationsInput | string
     checkId?: NullableIntFieldUpdateOperationsInput | number | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -57841,6 +57863,7 @@ export namespace Prisma {
     amount: number
     payment_type: string
     checkId?: number | null
+    image?: string | null
     status?: string
     is_deleted?: boolean
     updatedAt?: Date | string
@@ -57853,6 +57876,7 @@ export namespace Prisma {
   export type paymentsUpdateManyMutationInput = {
     amount?: FloatFieldUpdateOperationsInput | number
     payment_type?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -57868,6 +57892,7 @@ export namespace Prisma {
     amount?: FloatFieldUpdateOperationsInput | number
     payment_type?: StringFieldUpdateOperationsInput | string
     checkId?: NullableIntFieldUpdateOperationsInput | number | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -61171,6 +61196,7 @@ export namespace Prisma {
     amount?: SortOrder
     payment_type?: SortOrder
     checkId?: SortOrder
+    image?: SortOrder
     status?: SortOrder
     is_deleted?: SortOrder
     updatedAt?: SortOrder
@@ -61193,6 +61219,7 @@ export namespace Prisma {
     amount?: SortOrder
     payment_type?: SortOrder
     checkId?: SortOrder
+    image?: SortOrder
     status?: SortOrder
     is_deleted?: SortOrder
     updatedAt?: SortOrder
@@ -61208,6 +61235,7 @@ export namespace Prisma {
     amount?: SortOrder
     payment_type?: SortOrder
     checkId?: SortOrder
+    image?: SortOrder
     status?: SortOrder
     is_deleted?: SortOrder
     updatedAt?: SortOrder
@@ -66517,6 +66545,7 @@ export namespace Prisma {
   export type paymentsCreateWithoutShopInput = {
     amount: number
     payment_type: string
+    image?: string | null
     status?: string
     is_deleted?: boolean
     updatedAt?: Date | string
@@ -66532,6 +66561,7 @@ export namespace Prisma {
     amount: number
     payment_type: string
     checkId?: number | null
+    image?: string | null
     status?: string
     is_deleted?: boolean
     updatedAt?: Date | string
@@ -66662,6 +66692,7 @@ export namespace Prisma {
     amount?: FloatFilter<"payments"> | number
     payment_type?: StringFilter<"payments"> | string
     checkId?: IntNullableFilter<"payments"> | number | null
+    image?: StringNullableFilter<"payments"> | string | null
     status?: StringFilter<"payments"> | string
     is_deleted?: BoolFilter<"payments"> | boolean
     updatedAt?: DateTimeFilter<"payments"> | Date | string
@@ -70310,6 +70341,7 @@ export namespace Prisma {
   export type paymentsCreateWithoutCheckInput = {
     amount: number
     payment_type: string
+    image?: string | null
     status?: string
     is_deleted?: boolean
     updatedAt?: Date | string
@@ -70325,6 +70357,7 @@ export namespace Prisma {
     shopId: number
     amount: number
     payment_type: string
+    image?: string | null
     status?: string
     is_deleted?: boolean
     updatedAt?: Date | string
@@ -71767,6 +71800,7 @@ export namespace Prisma {
     amount: number
     payment_type: string
     checkId?: number | null
+    image?: string | null
     status?: string
     is_deleted?: boolean
     updatedAt?: Date | string
@@ -71893,6 +71927,7 @@ export namespace Prisma {
   export type paymentsUpdateWithoutShopInput = {
     amount?: FloatFieldUpdateOperationsInput | number
     payment_type?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -71908,6 +71943,7 @@ export namespace Prisma {
     amount?: FloatFieldUpdateOperationsInput | number
     payment_type?: StringFieldUpdateOperationsInput | string
     checkId?: NullableIntFieldUpdateOperationsInput | number | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -71922,6 +71958,7 @@ export namespace Prisma {
     amount?: FloatFieldUpdateOperationsInput | number
     payment_type?: StringFieldUpdateOperationsInput | string
     checkId?: NullableIntFieldUpdateOperationsInput | number | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -72782,6 +72819,7 @@ export namespace Prisma {
     shopId: number
     amount: number
     payment_type: string
+    image?: string | null
     status?: string
     is_deleted?: boolean
     updatedAt?: Date | string
@@ -72813,6 +72851,7 @@ export namespace Prisma {
   export type paymentsUpdateWithoutCheckInput = {
     amount?: FloatFieldUpdateOperationsInput | number
     payment_type?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -72828,6 +72867,7 @@ export namespace Prisma {
     shopId?: IntFieldUpdateOperationsInput | number
     amount?: FloatFieldUpdateOperationsInput | number
     payment_type?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -72842,6 +72882,7 @@ export namespace Prisma {
     shopId?: IntFieldUpdateOperationsInput | number
     amount?: FloatFieldUpdateOperationsInput | number
     payment_type?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string

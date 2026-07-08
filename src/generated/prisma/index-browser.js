@@ -679,6 +679,7 @@ exports.Prisma.PaymentsScalarFieldEnum = {
   amount: 'amount',
   payment_type: 'payment_type',
   checkId: 'checkId',
+  image: 'image',
   status: 'status',
   is_deleted: 'is_deleted',
   updatedAt: 'updatedAt',
@@ -938,6 +939,7 @@ exports.Prisma.checksOrderByRelevanceFieldEnum = {
 
 exports.Prisma.paymentsOrderByRelevanceFieldEnum = {
   payment_type: 'payment_type',
+  image: 'image',
   status: 'status',
   orderid: 'orderid',
   memo: 'memo'
