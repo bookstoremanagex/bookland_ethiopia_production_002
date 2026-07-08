@@ -161,6 +161,139 @@ export async function getBookEditionsForTransfer(bookId: number) {
     }
 }
 
+/**
+ * Find active printorder_items for an edition and record printer delivery records
+ * by distributing the quantity across items starting from the most recent.
+ */
+async function recordPrinterDeliveries(
+    tx: any,
+    editionId: number,
+    storeId: number,
+    quantity: number
+) {
+    // Find all non-deleted printorder_items for this edition, ordered most recent first
+    let items = await tx.printorder_items.findMany({
+        where: {
+            bookEditionId: editionId,
+            is_deleted: false,
+        },
+        orderBy: { createdAt: 'desc' },
+        include: {
+            printer_delivery_records: {
+                where: { is_deleted: false },
+                select: { quantity_deliverd: true },
+            },
+        },
+    });
+
+    // If no printorder_items exist, create a minimal one on the fly
+    if (items.length === 0) {
+        const edition = await tx.bookedition.findUnique({
+            where: { id: editionId },
+            include: { books: true },
+        });
+
+        const anyPrinter = await tx.printer.findFirst({
+            where: { is_deleted: false },
+            select: { id: true },
+        });
+
+        if (!anyPrinter) {
+            console.warn(`[recordPrinterDeliveries] No printer found to create fallback printorder for editionId=${editionId}`);
+            return;
+        }
+
+        const dummyOrder = await tx.printorder.create({
+            data: {
+                project_name: `Auto-delivery for ${edition?.books?.title || `Edition #${editionId}`}`,
+                printerId: anyPrinter.id,
+                status: "NOT_STARTED",
+                quality: "STANDARD",
+                edition: "SINGLE",
+                count: quantity,
+                is_deleted: false,
+                updatedAt: new Date(),
+            },
+        });
+
+        const dummyItem = await tx.printorder_items.create({
+            data: {
+                printorder_id: dummyOrder.id,
+                bookEditionId: editionId,
+                quantity: quantity,
+                price_per_book: 0,
+                total_price: 0,
+                status: "NOT_STARTED",
+                is_deleted: false,
+            },
+        });
+
+        items = [{
+            ...dummyItem,
+            printer_delivery_records: [],
+        }];
+    }
+
+    let remainingToDeliver = quantity;
+
+    for (const item of items) {
+        if (remainingToDeliver <= 0) break;
+
+        const alreadyDelivered = (item.printer_delivery_records || []).reduce(
+            (sum: number, r: any) => sum + (r.quantity_deliverd || 0),
+            0
+        );
+        const maxDeliverable = (item.quantity || 0) - alreadyDelivered;
+
+        if (maxDeliverable <= 0) continue;
+
+        const deliverNow = Math.min(remainingToDeliver, maxDeliverable);
+
+        await tx.printer_delivery_records.create({
+            data: {
+                printorder_item_id: item.id,
+                storeId: storeId,
+                quantity_deliverd: deliverNow,
+                approvedByPrinter: false,
+                approvedByPrinterAt: null,
+                is_deleted: false,
+            },
+        });
+
+        remainingToDeliver -= deliverNow;
+    }
+
+    // If existing items are exhausted, add a new printorder_item to the same printorder
+    if (remainingToDeliver > 0 && items.length > 0) {
+        const parentOrderId = items[0].printorder_id;
+
+        const newItem = await tx.printorder_items.create({
+            data: {
+                printorder_id: parentOrderId,
+                bookEditionId: editionId,
+                quantity: remainingToDeliver,
+                price_per_book: 0,
+                total_price: 0,
+                status: "NOT_STARTED",
+                is_deleted: false,
+            },
+        });
+
+        await tx.printer_delivery_records.create({
+            data: {
+                printorder_item_id: newItem.id,
+                storeId: storeId,
+                quantity_deliverd: remainingToDeliver,
+                approvedByPrinter: false,
+                approvedByPrinterAt: null,
+                is_deleted: false,
+            },
+        });
+
+        remainingToDeliver = 0;
+    }
+}
+
 export async function transferToStore(storeId: number, transfers: { editionId: number, quantity: number }[]) {
     try {
         // Run as a transaction to ensure data integrity
@@ -217,6 +350,9 @@ export async function transferToStore(storeId: number, transfers: { editionId: n
                         }
                     });
                 }
+
+                // 4. Record printer delivery records
+                await recordPrinterDeliveries(tx, transfer.editionId, storeId, transfer.quantity);
 
                 transferResults.push({ editionId: transfer.editionId, quantity: transfer.quantity });
             }

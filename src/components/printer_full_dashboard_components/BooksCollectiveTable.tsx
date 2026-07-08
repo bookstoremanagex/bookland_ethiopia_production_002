@@ -236,27 +236,27 @@ export default function BooksCollectiveTable({ books, projectCount }: Props) {
     <>
       <div className="space-y-4">
         {/* Search & Filter */}
-        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-          <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 md:gap-3">
+          <div className="relative flex-1 max-w-full sm:max-w-sm">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 md:size-4 text-slate-400" />
             <input
-              placeholder="Search by title, project, or edition..."
+              placeholder="Search..."
               value={globalFilter}
               onChange={(e) => setGlobalFilter(e.target.value)}
-              className="w-full h-11 pl-10 pr-4 rounded-xl border border-slate-200 bg-slate-50 text-sm font-medium text-slate-700 outline-none placeholder:text-slate-400 focus:border-primarycolor/50 focus:bg-white focus:ring-2 focus:ring-primarycolor/10 transition-all"
+              className="w-full h-10 md:h-11 pl-9 md:pl-10 pr-3 md:pr-4 rounded-xl border border-slate-200 bg-slate-50 text-xs md:text-sm font-medium text-slate-700 outline-none placeholder:text-slate-400 focus:border-primarycolor/50 focus:bg-white focus:ring-2 focus:ring-primarycolor/10 transition-all"
             />
           </div>
           <Select
             value={statusFilter || "ALL"}
             onValueChange={(value) => setStatusFilter(value === "ALL" ? "" : value)}
           >
-            <SelectTrigger className="h-11 min-w-[160px] rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold uppercase tracking-widest text-slate-700">
+            <SelectTrigger className="h-10 md:h-11 min-w-[130px] md:min-w-[160px] rounded-xl border border-slate-200 bg-slate-50 text-[10px] md:text-xs font-bold uppercase tracking-widest text-slate-700">
               <SelectValue placeholder="All Statuses" />
             </SelectTrigger>
             <SelectContent className="rounded-2xl p-2 border-2">
-              <SelectItem value="ALL" className="rounded-xl h-9 text-[10px] font-bold uppercase tracking-widest">All Statuses</SelectItem>
-              <SelectItem value="NOT_STARTED" className="rounded-xl h-9 text-[10px] font-bold uppercase tracking-widest">Not Started</SelectItem>
-              <SelectItem value="COMPLETED" className="rounded-xl h-9 text-[10px] font-bold uppercase tracking-widest">Completed</SelectItem>
+              <SelectItem value="ALL" className="rounded-xl h-8 md:h-9 text-[9px] md:text-[10px] font-bold uppercase tracking-widest">All Statuses</SelectItem>
+              <SelectItem value="NOT_STARTED" className="rounded-xl h-8 md:h-9 text-[9px] md:text-[10px] font-bold uppercase tracking-widest">Not Started</SelectItem>
+              <SelectItem value="COMPLETED" className="rounded-xl h-8 md:h-9 text-[9px] md:text-[10px] font-bold uppercase tracking-widest">Completed</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -310,7 +310,7 @@ export default function BooksCollectiveTable({ books, projectCount }: Props) {
               const book = row.original;
               const isCompleted = book.status === "COMPLETED";
               return (
-                <div key={book.id} className="p-4 space-y-3">
+                <div key={book.id} className="p-3 md:p-4 space-y-2 md:space-y-3">
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-bold text-slate-800 leading-tight">{book.bookTitle}</p>
@@ -380,32 +380,32 @@ export default function BooksCollectiveTable({ books, projectCount }: Props) {
 
         {/* Pagination */}
         <div className="flex items-center justify-between">
-          <p className="text-xs font-bold text-slate-400">
-            {table.getFilteredRowModel().rows.length} of {sortedBooks.length} item(s)
+          <p className="text-[10px] md:text-xs font-bold text-slate-400">
+            {table.getFilteredRowModel().rows.length} of {sortedBooks.length}
           </p>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 md:gap-2">
             <Button
               variant="outline"
               size="sm"
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
-              className="h-8 px-3 rounded-lg text-xs font-bold"
+              className="h-7 md:h-8 px-2 md:px-3 rounded-lg text-[10px] md:text-xs font-bold"
             >
-              <ChevronLeft className="size-3.5 mr-1" />
-              Prev
+              <ChevronLeft className="size-3 md:size-3.5 mr-0.5 md:mr-1" />
+              <span className="hidden sm:inline">Prev</span>
             </Button>
-            <span className="text-xs font-bold text-slate-500 min-w-[60px] text-center">
-              {table.getState().pagination.pageIndex + 1} / {table.getPageCount()}
+            <span className="text-[10px] md:text-xs font-bold text-slate-500 min-w-[36px] md:min-w-[60px] text-center">
+              {table.getState().pagination.pageIndex + 1}/{table.getPageCount()}
             </span>
             <Button
               variant="outline"
               size="sm"
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
-              className="h-8 px-3 rounded-lg text-xs font-bold"
+              className="h-7 md:h-8 px-2 md:px-3 rounded-lg text-[10px] md:text-xs font-bold"
             >
-              Next
-              <ChevronRight className="size-3.5 ml-1" />
+              <span className="hidden sm:inline">Next</span>
+              <ChevronRight className="size-3 md:size-3.5 ml-0.5 md:ml-1" />
             </Button>
           </div>
         </div>
@@ -413,63 +413,63 @@ export default function BooksCollectiveTable({ books, projectCount }: Props) {
 
       {/* Detail Modal */}
       {detailItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setDetailItem(null)}>
-          <div className="w-full max-w-2xl bg-white rounded-[2rem] shadow-2xl max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
-            <div className="p-6 md:p-8 space-y-6">
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex items-center gap-4">
-                  <div className="size-12 rounded-2xl bg-primarycolor/10 flex items-center justify-center text-primarycolor shrink-0">
-                    <BookOpen className="size-6" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 md:p-4 bg-black/60 backdrop-blur-sm" onClick={() => setDetailItem(null)}>
+          <div className="w-full max-w-2xl bg-white rounded-2xl md:rounded-[2rem] shadow-2xl max-h-[90vh] overflow-y-auto mx-0 md:mx-4" onClick={e => e.stopPropagation()}>
+            <div className="p-4 md:p-8 space-y-4 md:space-y-6">
+              <div className="flex items-start justify-between gap-3 md:gap-4">
+                <div className="flex items-center gap-3 md:gap-4 min-w-0">
+                  <div className="size-10 md:size-12 rounded-xl md:rounded-2xl bg-primarycolor/10 flex items-center justify-center text-primarycolor shrink-0">
+                    <BookOpen className="size-5 md:size-6" />
                   </div>
-                  <div>
-                    <h3 className="text-xl font-black text-slate-800">{detailItem.bookTitle}</h3>
-                    <p className="text-sm font-bold text-slate-400">{detailItem.bookAuthor}</p>
+                  <div className="min-w-0">
+                    <h3 className="text-base md:text-xl font-black text-slate-800 truncate">{detailItem.bookTitle}</h3>
+                    <p className="text-xs md:text-sm font-bold text-slate-400 truncate">{detailItem.bookAuthor}</p>
                   </div>
                 </div>
                 <button
                   onClick={() => setDetailItem(null)}
-                  className="size-8 rounded-full hover:bg-slate-100 flex items-center justify-center shrink-0 transition-colors"
+                  className="size-7 md:size-8 rounded-full hover:bg-slate-100 flex items-center justify-center shrink-0 transition-colors"
                 >
-                  <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                  <svg className="size-4 md:size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-slate-50 rounded-xl p-4 text-center">
-                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Edition</p>
-                  <p className="text-sm font-black text-slate-700 mt-1">{detailItem.editionName}</p>
+              <div className="grid grid-cols-2 gap-2 md:gap-4">
+                <div className="bg-slate-50 rounded-xl p-3 md:p-4 text-center">
+                  <p className="text-[8px] md:text-[9px] font-black text-slate-400 uppercase tracking-widest">Edition</p>
+                  <p className="text-[11px] md:text-sm font-black text-slate-700 mt-0.5 md:mt-1 truncate">{detailItem.editionName}</p>
                 </div>
-                <div className="bg-slate-50 rounded-xl p-4 text-center">
-                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Project</p>
-                  <p className="text-sm font-black text-primarycolor mt-1 truncate">{detailItem.projectName}</p>
+                <div className="bg-slate-50 rounded-xl p-3 md:p-4 text-center">
+                  <p className="text-[8px] md:text-[9px] font-black text-slate-400 uppercase tracking-widest">Project</p>
+                  <p className="text-[11px] md:text-sm font-black text-primarycolor mt-0.5 md:mt-1 truncate">{detailItem.projectName}</p>
                 </div>
-                <div className="bg-slate-50 rounded-xl p-4 text-center">
-                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Total Copies</p>
-                  <p className="text-sm font-black text-slate-700 mt-1">{detailItem.quantity.toLocaleString()}</p>
+                <div className="bg-slate-50 rounded-xl p-3 md:p-4 text-center">
+                  <p className="text-[8px] md:text-[9px] font-black text-slate-400 uppercase tracking-widest">Total Copies</p>
+                  <p className="text-[11px] md:text-sm font-black text-slate-700 mt-0.5 md:mt-1">{detailItem.quantity.toLocaleString()}</p>
                 </div>
-                <div className="bg-slate-50 rounded-xl p-4 text-center">
-                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Remaining</p>
-                  <p className={cn("text-sm font-black mt-1", detailItem.remaining != null && detailItem.remaining > 0 ? "text-amber-500" : "text-emerald-500")}>
+                <div className="bg-slate-50 rounded-xl p-3 md:p-4 text-center">
+                  <p className="text-[8px] md:text-[9px] font-black text-slate-400 uppercase tracking-widest">Remaining</p>
+                  <p className={cn("text-[11px] md:text-sm font-black mt-0.5 md:mt-1", detailItem.remaining != null && detailItem.remaining > 0 ? "text-amber-500" : "text-emerald-500")}>
                     {detailItem.remaining != null ? detailItem.remaining.toLocaleString() : "—"}
                   </p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="bg-emerald-50 rounded-xl p-4">
-                  <p className="text-[9px] font-black text-emerald-600 uppercase tracking-widest">Total Cost</p>
-                  <p className="text-lg font-black text-emerald-700 mt-1">{detailItem.totalPrice.toLocaleString()} ETB</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-4">
+                <div className="bg-emerald-50 rounded-xl p-3 md:p-4">
+                  <p className="text-[8px] md:text-[9px] font-black text-emerald-600 uppercase tracking-widest">Total Cost</p>
+                  <p className="text-sm md:text-lg font-black text-emerald-700 mt-0.5 md:mt-1 truncate">{detailItem.totalPrice.toLocaleString()} ETB</p>
                 </div>
-                <div className="bg-blue-50 rounded-xl p-4">
-                  <p className="text-[9px] font-black text-blue-600 uppercase tracking-widest">Paid Amount</p>
-                  <p className="text-lg font-black text-blue-700 mt-1">{detailItem.paidAmount.toLocaleString()} ETB</p>
+                <div className="bg-blue-50 rounded-xl p-3 md:p-4">
+                  <p className="text-[8px] md:text-[9px] font-black text-blue-600 uppercase tracking-widest">Paid Amount</p>
+                  <p className="text-sm md:text-lg font-black text-blue-700 mt-0.5 md:mt-1 truncate">{detailItem.paidAmount.toLocaleString()} ETB</p>
                 </div>
               </div>
 
               {detailItem.content && (
-                <div className="bg-slate-50 rounded-xl p-5">
-                  <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-2">Content Notes</p>
-                  <div className="text-sm font-medium text-slate-700 leading-relaxed rich-text" dangerouslySetInnerHTML={{ __html: detailItem.content }} />
+                <div className="bg-slate-50 rounded-xl p-4 md:p-5">
+                  <p className="text-[8px] md:text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1.5 md:mb-2">Content Notes</p>
+                  <div className="text-xs md:text-sm font-medium text-slate-700 leading-relaxed rich-text" dangerouslySetInnerHTML={{ __html: detailItem.content }} />
                 </div>
               )}
             </div>
@@ -479,31 +479,31 @@ export default function BooksCollectiveTable({ books, projectCount }: Props) {
 
       {/* Confirmation Dialog */}
       {confirmDialog && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="w-full max-w-md bg-white rounded-2xl p-7 shadow-2xl space-y-6 animate-in zoom-in-95 duration-200">
-            <div className="flex items-center gap-4">
-              <div className="size-14 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-500 border border-emerald-200 shrink-0">
-                <ShieldAlert className="size-7" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 md:p-4 bg-black/60 backdrop-blur-sm">
+          <div className="w-full max-w-md bg-white rounded-xl md:rounded-2xl p-5 md:p-7 shadow-2xl space-y-4 md:space-y-6 animate-in zoom-in-95 duration-200 mx-3 md:mx-0">
+            <div className="flex items-center gap-3 md:gap-4">
+              <div className="size-10 md:size-14 rounded-xl md:rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-500 border border-emerald-200 shrink-0">
+                <ShieldAlert className="size-5 md:size-7" />
               </div>
-              <div className="space-y-0.5">
-                <h3 className="text-lg font-black text-slate-800">Mark as Completed</h3>
-                <p className="text-sm font-bold text-slate-500 leading-snug">
+              <div className="space-y-0.5 min-w-0">
+                <h3 className="text-base md:text-lg font-black text-slate-800">Mark as Completed</h3>
+                <p className="text-xs md:text-sm font-bold text-slate-500 leading-snug">
                   You are about to mark {confirmDialog.label} as completed. This cannot be undone.
                 </p>
               </div>
             </div>
-            <div className="bg-amber-50 rounded-xl border border-amber-200 p-4 flex items-start gap-3">
-              <AlertTriangle className="size-5 text-amber-500 shrink-0 mt-0.5" />
-              <p className="text-xs font-bold text-amber-700 leading-relaxed">
+            <div className="bg-amber-50 rounded-xl border border-amber-200 p-3 md:p-4 flex items-start gap-2 md:gap-3">
+              <AlertTriangle className="size-4 md:size-5 text-amber-500 shrink-0 mt-0.5" />
+              <p className="text-[10px] md:text-xs font-bold text-amber-700 leading-relaxed">
                 Once marked complete, you cannot revert the status back. Please confirm all work is finished.
               </p>
             </div>
-            <div className="flex gap-3 pt-1">
+            <div className="flex gap-2 md:gap-3 pt-1">
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => setConfirmDialog(null)}
-                className="flex-1 h-11 rounded-xl border-2 font-black uppercase tracking-widest text-[11px]"
+                className="flex-1 h-10 md:h-11 rounded-xl border-2 font-black uppercase tracking-widest text-[10px] md:text-[11px]"
               >
                 Cancel
               </Button>
@@ -514,7 +514,7 @@ export default function BooksCollectiveTable({ books, projectCount }: Props) {
                   setConfirmDialog(null);
                   applyStatusUpdate(dialog.id, "COMPLETED");
                 }}
-                className="flex-[2] h-11 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-black uppercase tracking-widest text-[11px] shadow-lg shadow-emerald-500/20"
+                className="flex-[2] h-10 md:h-11 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-black uppercase tracking-widest text-[10px] md:text-[11px] shadow-lg shadow-emerald-500/20"
               >
                 Confirm Complete
               </Button>

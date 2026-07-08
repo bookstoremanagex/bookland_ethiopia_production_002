@@ -99,6 +99,11 @@ export type printorder = $Result.DefaultSelection<Prisma.$printorderPayload>
  */
 export type printorder_payments = $Result.DefaultSelection<Prisma.$printorder_paymentsPayload>
 /**
+ * Model printer_delivery_records
+ * 
+ */
+export type printer_delivery_records = $Result.DefaultSelection<Prisma.$printer_delivery_recordsPayload>
+/**
  * Model printorder_items
  * 
  */
@@ -670,6 +675,16 @@ export class PrismaClient<
     * ```
     */
   get printorder_payments(): Prisma.printorder_paymentsDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.printer_delivery_records`: Exposes CRUD operations for the **printer_delivery_records** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Printer_delivery_records
+    * const printer_delivery_records = await prisma.printer_delivery_records.findMany()
+    * ```
+    */
+  get printer_delivery_records(): Prisma.printer_delivery_recordsDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.printorder_items`: Exposes CRUD operations for the **printorder_items** model.
@@ -1358,6 +1373,7 @@ export namespace Prisma {
     printer: 'printer',
     printorder: 'printorder',
     printorder_payments: 'printorder_payments',
+    printer_delivery_records: 'printer_delivery_records',
     printorder_items: 'printorder_items',
     roletypes: 'roletypes',
     roles: 'roles',
@@ -1399,7 +1415,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "accounts" | "bookedition" | "bookeditionstores" | "bookeditionprinters" | "books" | "locked_editions" | "bookshopeditions" | "bookshopes" | "orders" | "order_items" | "damagedbooks" | "dashboardmenu" | "menus" | "menu_management" | "printer" | "printorder" | "printorder_payments" | "printorder_items" | "roletypes" | "roles" | "stores" | "translator" | "translatorbook" | "notification" | "activityLogs" | "notes" | "contracts" | "roundbooks" | "roundrecords" | "round_payments" | "round_checks" | "print_agreements" | "delivery_notes" | "invoices" | "approval_documents" | "settings" | "checks" | "payments" | "retail_purchases" | "retail_purchase_items"
+      modelProps: "accounts" | "bookedition" | "bookeditionstores" | "bookeditionprinters" | "books" | "locked_editions" | "bookshopeditions" | "bookshopes" | "orders" | "order_items" | "damagedbooks" | "dashboardmenu" | "menus" | "menu_management" | "printer" | "printorder" | "printorder_payments" | "printer_delivery_records" | "printorder_items" | "roletypes" | "roles" | "stores" | "translator" | "translatorbook" | "notification" | "activityLogs" | "notes" | "contracts" | "roundbooks" | "roundrecords" | "round_payments" | "round_checks" | "print_agreements" | "delivery_notes" | "invoices" | "approval_documents" | "settings" | "checks" | "payments" | "retail_purchases" | "retail_purchase_items"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2522,6 +2538,72 @@ export namespace Prisma {
           count: {
             args: Prisma.printorder_paymentsCountArgs<ExtArgs>
             result: $Utils.Optional<Printorder_paymentsCountAggregateOutputType> | number
+          }
+        }
+      }
+      printer_delivery_records: {
+        payload: Prisma.$printer_delivery_recordsPayload<ExtArgs>
+        fields: Prisma.printer_delivery_recordsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.printer_delivery_recordsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$printer_delivery_recordsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.printer_delivery_recordsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$printer_delivery_recordsPayload>
+          }
+          findFirst: {
+            args: Prisma.printer_delivery_recordsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$printer_delivery_recordsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.printer_delivery_recordsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$printer_delivery_recordsPayload>
+          }
+          findMany: {
+            args: Prisma.printer_delivery_recordsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$printer_delivery_recordsPayload>[]
+          }
+          create: {
+            args: Prisma.printer_delivery_recordsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$printer_delivery_recordsPayload>
+          }
+          createMany: {
+            args: Prisma.printer_delivery_recordsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.printer_delivery_recordsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$printer_delivery_recordsPayload>
+          }
+          update: {
+            args: Prisma.printer_delivery_recordsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$printer_delivery_recordsPayload>
+          }
+          deleteMany: {
+            args: Prisma.printer_delivery_recordsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.printer_delivery_recordsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.printer_delivery_recordsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$printer_delivery_recordsPayload>
+          }
+          aggregate: {
+            args: Prisma.Printer_delivery_recordsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePrinter_delivery_records>
+          }
+          groupBy: {
+            args: Prisma.printer_delivery_recordsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Printer_delivery_recordsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.printer_delivery_recordsCountArgs<ExtArgs>
+            result: $Utils.Optional<Printer_delivery_recordsCountAggregateOutputType> | number
           }
         }
       }
@@ -4156,6 +4238,7 @@ export namespace Prisma {
     printer?: printerOmit
     printorder?: printorderOmit
     printorder_payments?: printorder_paymentsOmit
+    printer_delivery_records?: printer_delivery_recordsOmit
     printorder_items?: printorder_itemsOmit
     roletypes?: roletypesOmit
     roles?: rolesOmit
@@ -4688,6 +4771,37 @@ export namespace Prisma {
    */
   export type PrintorderCountOutputTypeCountPrintorder_paymentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: printorder_paymentsWhereInput
+  }
+
+
+  /**
+   * Count Type Printorder_itemsCountOutputType
+   */
+
+  export type Printorder_itemsCountOutputType = {
+    printer_delivery_records: number
+  }
+
+  export type Printorder_itemsCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    printer_delivery_records?: boolean | Printorder_itemsCountOutputTypeCountPrinter_delivery_recordsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * Printorder_itemsCountOutputType without action
+   */
+  export type Printorder_itemsCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Printorder_itemsCountOutputType
+     */
+    select?: Printorder_itemsCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * Printorder_itemsCountOutputType without action
+   */
+  export type Printorder_itemsCountOutputTypeCountPrinter_delivery_recordsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: printer_delivery_recordsWhereInput
   }
 
 
@@ -24005,6 +24119,1025 @@ export namespace Prisma {
 
 
   /**
+   * Model printer_delivery_records
+   */
+
+  export type AggregatePrinter_delivery_records = {
+    _count: Printer_delivery_recordsCountAggregateOutputType | null
+    _avg: Printer_delivery_recordsAvgAggregateOutputType | null
+    _sum: Printer_delivery_recordsSumAggregateOutputType | null
+    _min: Printer_delivery_recordsMinAggregateOutputType | null
+    _max: Printer_delivery_recordsMaxAggregateOutputType | null
+  }
+
+  export type Printer_delivery_recordsAvgAggregateOutputType = {
+    id: number | null
+    printorder_item_id: number | null
+    storeId: number | null
+    quantity_deliverd: number | null
+  }
+
+  export type Printer_delivery_recordsSumAggregateOutputType = {
+    id: number | null
+    printorder_item_id: number | null
+    storeId: number | null
+    quantity_deliverd: number | null
+  }
+
+  export type Printer_delivery_recordsMinAggregateOutputType = {
+    id: number | null
+    printorder_item_id: number | null
+    storeId: number | null
+    quantity_deliverd: number | null
+    approvedByPrinter: boolean | null
+    approvedByPrinterAt: Date | null
+    is_deleted: boolean | null
+    updatedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type Printer_delivery_recordsMaxAggregateOutputType = {
+    id: number | null
+    printorder_item_id: number | null
+    storeId: number | null
+    quantity_deliverd: number | null
+    approvedByPrinter: boolean | null
+    approvedByPrinterAt: Date | null
+    is_deleted: boolean | null
+    updatedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type Printer_delivery_recordsCountAggregateOutputType = {
+    id: number
+    printorder_item_id: number
+    storeId: number
+    quantity_deliverd: number
+    approvedByPrinter: number
+    approvedByPrinterAt: number
+    is_deleted: number
+    updatedAt: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type Printer_delivery_recordsAvgAggregateInputType = {
+    id?: true
+    printorder_item_id?: true
+    storeId?: true
+    quantity_deliverd?: true
+  }
+
+  export type Printer_delivery_recordsSumAggregateInputType = {
+    id?: true
+    printorder_item_id?: true
+    storeId?: true
+    quantity_deliverd?: true
+  }
+
+  export type Printer_delivery_recordsMinAggregateInputType = {
+    id?: true
+    printorder_item_id?: true
+    storeId?: true
+    quantity_deliverd?: true
+    approvedByPrinter?: true
+    approvedByPrinterAt?: true
+    is_deleted?: true
+    updatedAt?: true
+    createdAt?: true
+  }
+
+  export type Printer_delivery_recordsMaxAggregateInputType = {
+    id?: true
+    printorder_item_id?: true
+    storeId?: true
+    quantity_deliverd?: true
+    approvedByPrinter?: true
+    approvedByPrinterAt?: true
+    is_deleted?: true
+    updatedAt?: true
+    createdAt?: true
+  }
+
+  export type Printer_delivery_recordsCountAggregateInputType = {
+    id?: true
+    printorder_item_id?: true
+    storeId?: true
+    quantity_deliverd?: true
+    approvedByPrinter?: true
+    approvedByPrinterAt?: true
+    is_deleted?: true
+    updatedAt?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type Printer_delivery_recordsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which printer_delivery_records to aggregate.
+     */
+    where?: printer_delivery_recordsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of printer_delivery_records to fetch.
+     */
+    orderBy?: printer_delivery_recordsOrderByWithRelationInput | printer_delivery_recordsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: printer_delivery_recordsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` printer_delivery_records from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` printer_delivery_records.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned printer_delivery_records
+    **/
+    _count?: true | Printer_delivery_recordsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: Printer_delivery_recordsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: Printer_delivery_recordsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Printer_delivery_recordsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Printer_delivery_recordsMaxAggregateInputType
+  }
+
+  export type GetPrinter_delivery_recordsAggregateType<T extends Printer_delivery_recordsAggregateArgs> = {
+        [P in keyof T & keyof AggregatePrinter_delivery_records]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePrinter_delivery_records[P]>
+      : GetScalarType<T[P], AggregatePrinter_delivery_records[P]>
+  }
+
+
+
+
+  export type printer_delivery_recordsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: printer_delivery_recordsWhereInput
+    orderBy?: printer_delivery_recordsOrderByWithAggregationInput | printer_delivery_recordsOrderByWithAggregationInput[]
+    by: Printer_delivery_recordsScalarFieldEnum[] | Printer_delivery_recordsScalarFieldEnum
+    having?: printer_delivery_recordsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Printer_delivery_recordsCountAggregateInputType | true
+    _avg?: Printer_delivery_recordsAvgAggregateInputType
+    _sum?: Printer_delivery_recordsSumAggregateInputType
+    _min?: Printer_delivery_recordsMinAggregateInputType
+    _max?: Printer_delivery_recordsMaxAggregateInputType
+  }
+
+  export type Printer_delivery_recordsGroupByOutputType = {
+    id: number
+    printorder_item_id: number
+    storeId: number | null
+    quantity_deliverd: number | null
+    approvedByPrinter: boolean
+    approvedByPrinterAt: Date | null
+    is_deleted: boolean
+    updatedAt: Date
+    createdAt: Date
+    _count: Printer_delivery_recordsCountAggregateOutputType | null
+    _avg: Printer_delivery_recordsAvgAggregateOutputType | null
+    _sum: Printer_delivery_recordsSumAggregateOutputType | null
+    _min: Printer_delivery_recordsMinAggregateOutputType | null
+    _max: Printer_delivery_recordsMaxAggregateOutputType | null
+  }
+
+  type GetPrinter_delivery_recordsGroupByPayload<T extends printer_delivery_recordsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Printer_delivery_recordsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Printer_delivery_recordsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Printer_delivery_recordsGroupByOutputType[P]>
+            : GetScalarType<T[P], Printer_delivery_recordsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type printer_delivery_recordsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    printorder_item_id?: boolean
+    storeId?: boolean
+    quantity_deliverd?: boolean
+    approvedByPrinter?: boolean
+    approvedByPrinterAt?: boolean
+    is_deleted?: boolean
+    updatedAt?: boolean
+    createdAt?: boolean
+    printorderId?: boolean | printorder_itemsDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["printer_delivery_records"]>
+
+
+
+  export type printer_delivery_recordsSelectScalar = {
+    id?: boolean
+    printorder_item_id?: boolean
+    storeId?: boolean
+    quantity_deliverd?: boolean
+    approvedByPrinter?: boolean
+    approvedByPrinterAt?: boolean
+    is_deleted?: boolean
+    updatedAt?: boolean
+    createdAt?: boolean
+  }
+
+  export type printer_delivery_recordsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "printorder_item_id" | "storeId" | "quantity_deliverd" | "approvedByPrinter" | "approvedByPrinterAt" | "is_deleted" | "updatedAt" | "createdAt", ExtArgs["result"]["printer_delivery_records"]>
+  export type printer_delivery_recordsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    printorderId?: boolean | printorder_itemsDefaultArgs<ExtArgs>
+  }
+
+  export type $printer_delivery_recordsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "printer_delivery_records"
+    objects: {
+      printorderId: Prisma.$printorder_itemsPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      printorder_item_id: number
+      storeId: number | null
+      quantity_deliverd: number | null
+      approvedByPrinter: boolean
+      approvedByPrinterAt: Date | null
+      is_deleted: boolean
+      updatedAt: Date
+      createdAt: Date
+    }, ExtArgs["result"]["printer_delivery_records"]>
+    composites: {}
+  }
+
+  type printer_delivery_recordsGetPayload<S extends boolean | null | undefined | printer_delivery_recordsDefaultArgs> = $Result.GetResult<Prisma.$printer_delivery_recordsPayload, S>
+
+  type printer_delivery_recordsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<printer_delivery_recordsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Printer_delivery_recordsCountAggregateInputType | true
+    }
+
+  export interface printer_delivery_recordsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['printer_delivery_records'], meta: { name: 'printer_delivery_records' } }
+    /**
+     * Find zero or one Printer_delivery_records that matches the filter.
+     * @param {printer_delivery_recordsFindUniqueArgs} args - Arguments to find a Printer_delivery_records
+     * @example
+     * // Get one Printer_delivery_records
+     * const printer_delivery_records = await prisma.printer_delivery_records.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends printer_delivery_recordsFindUniqueArgs>(args: SelectSubset<T, printer_delivery_recordsFindUniqueArgs<ExtArgs>>): Prisma__printer_delivery_recordsClient<$Result.GetResult<Prisma.$printer_delivery_recordsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Printer_delivery_records that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {printer_delivery_recordsFindUniqueOrThrowArgs} args - Arguments to find a Printer_delivery_records
+     * @example
+     * // Get one Printer_delivery_records
+     * const printer_delivery_records = await prisma.printer_delivery_records.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends printer_delivery_recordsFindUniqueOrThrowArgs>(args: SelectSubset<T, printer_delivery_recordsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__printer_delivery_recordsClient<$Result.GetResult<Prisma.$printer_delivery_recordsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Printer_delivery_records that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {printer_delivery_recordsFindFirstArgs} args - Arguments to find a Printer_delivery_records
+     * @example
+     * // Get one Printer_delivery_records
+     * const printer_delivery_records = await prisma.printer_delivery_records.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends printer_delivery_recordsFindFirstArgs>(args?: SelectSubset<T, printer_delivery_recordsFindFirstArgs<ExtArgs>>): Prisma__printer_delivery_recordsClient<$Result.GetResult<Prisma.$printer_delivery_recordsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Printer_delivery_records that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {printer_delivery_recordsFindFirstOrThrowArgs} args - Arguments to find a Printer_delivery_records
+     * @example
+     * // Get one Printer_delivery_records
+     * const printer_delivery_records = await prisma.printer_delivery_records.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends printer_delivery_recordsFindFirstOrThrowArgs>(args?: SelectSubset<T, printer_delivery_recordsFindFirstOrThrowArgs<ExtArgs>>): Prisma__printer_delivery_recordsClient<$Result.GetResult<Prisma.$printer_delivery_recordsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Printer_delivery_records that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {printer_delivery_recordsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Printer_delivery_records
+     * const printer_delivery_records = await prisma.printer_delivery_records.findMany()
+     * 
+     * // Get first 10 Printer_delivery_records
+     * const printer_delivery_records = await prisma.printer_delivery_records.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const printer_delivery_recordsWithIdOnly = await prisma.printer_delivery_records.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends printer_delivery_recordsFindManyArgs>(args?: SelectSubset<T, printer_delivery_recordsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$printer_delivery_recordsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Printer_delivery_records.
+     * @param {printer_delivery_recordsCreateArgs} args - Arguments to create a Printer_delivery_records.
+     * @example
+     * // Create one Printer_delivery_records
+     * const Printer_delivery_records = await prisma.printer_delivery_records.create({
+     *   data: {
+     *     // ... data to create a Printer_delivery_records
+     *   }
+     * })
+     * 
+     */
+    create<T extends printer_delivery_recordsCreateArgs>(args: SelectSubset<T, printer_delivery_recordsCreateArgs<ExtArgs>>): Prisma__printer_delivery_recordsClient<$Result.GetResult<Prisma.$printer_delivery_recordsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Printer_delivery_records.
+     * @param {printer_delivery_recordsCreateManyArgs} args - Arguments to create many Printer_delivery_records.
+     * @example
+     * // Create many Printer_delivery_records
+     * const printer_delivery_records = await prisma.printer_delivery_records.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends printer_delivery_recordsCreateManyArgs>(args?: SelectSubset<T, printer_delivery_recordsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Printer_delivery_records.
+     * @param {printer_delivery_recordsDeleteArgs} args - Arguments to delete one Printer_delivery_records.
+     * @example
+     * // Delete one Printer_delivery_records
+     * const Printer_delivery_records = await prisma.printer_delivery_records.delete({
+     *   where: {
+     *     // ... filter to delete one Printer_delivery_records
+     *   }
+     * })
+     * 
+     */
+    delete<T extends printer_delivery_recordsDeleteArgs>(args: SelectSubset<T, printer_delivery_recordsDeleteArgs<ExtArgs>>): Prisma__printer_delivery_recordsClient<$Result.GetResult<Prisma.$printer_delivery_recordsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Printer_delivery_records.
+     * @param {printer_delivery_recordsUpdateArgs} args - Arguments to update one Printer_delivery_records.
+     * @example
+     * // Update one Printer_delivery_records
+     * const printer_delivery_records = await prisma.printer_delivery_records.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends printer_delivery_recordsUpdateArgs>(args: SelectSubset<T, printer_delivery_recordsUpdateArgs<ExtArgs>>): Prisma__printer_delivery_recordsClient<$Result.GetResult<Prisma.$printer_delivery_recordsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Printer_delivery_records.
+     * @param {printer_delivery_recordsDeleteManyArgs} args - Arguments to filter Printer_delivery_records to delete.
+     * @example
+     * // Delete a few Printer_delivery_records
+     * const { count } = await prisma.printer_delivery_records.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends printer_delivery_recordsDeleteManyArgs>(args?: SelectSubset<T, printer_delivery_recordsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Printer_delivery_records.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {printer_delivery_recordsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Printer_delivery_records
+     * const printer_delivery_records = await prisma.printer_delivery_records.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends printer_delivery_recordsUpdateManyArgs>(args: SelectSubset<T, printer_delivery_recordsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Printer_delivery_records.
+     * @param {printer_delivery_recordsUpsertArgs} args - Arguments to update or create a Printer_delivery_records.
+     * @example
+     * // Update or create a Printer_delivery_records
+     * const printer_delivery_records = await prisma.printer_delivery_records.upsert({
+     *   create: {
+     *     // ... data to create a Printer_delivery_records
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Printer_delivery_records we want to update
+     *   }
+     * })
+     */
+    upsert<T extends printer_delivery_recordsUpsertArgs>(args: SelectSubset<T, printer_delivery_recordsUpsertArgs<ExtArgs>>): Prisma__printer_delivery_recordsClient<$Result.GetResult<Prisma.$printer_delivery_recordsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Printer_delivery_records.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {printer_delivery_recordsCountArgs} args - Arguments to filter Printer_delivery_records to count.
+     * @example
+     * // Count the number of Printer_delivery_records
+     * const count = await prisma.printer_delivery_records.count({
+     *   where: {
+     *     // ... the filter for the Printer_delivery_records we want to count
+     *   }
+     * })
+    **/
+    count<T extends printer_delivery_recordsCountArgs>(
+      args?: Subset<T, printer_delivery_recordsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Printer_delivery_recordsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Printer_delivery_records.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Printer_delivery_recordsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Printer_delivery_recordsAggregateArgs>(args: Subset<T, Printer_delivery_recordsAggregateArgs>): Prisma.PrismaPromise<GetPrinter_delivery_recordsAggregateType<T>>
+
+    /**
+     * Group by Printer_delivery_records.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {printer_delivery_recordsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends printer_delivery_recordsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: printer_delivery_recordsGroupByArgs['orderBy'] }
+        : { orderBy?: printer_delivery_recordsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, printer_delivery_recordsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPrinter_delivery_recordsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the printer_delivery_records model
+   */
+  readonly fields: printer_delivery_recordsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for printer_delivery_records.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__printer_delivery_recordsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    printorderId<T extends printorder_itemsDefaultArgs<ExtArgs> = {}>(args?: Subset<T, printorder_itemsDefaultArgs<ExtArgs>>): Prisma__printorder_itemsClient<$Result.GetResult<Prisma.$printorder_itemsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the printer_delivery_records model
+   */
+  interface printer_delivery_recordsFieldRefs {
+    readonly id: FieldRef<"printer_delivery_records", 'Int'>
+    readonly printorder_item_id: FieldRef<"printer_delivery_records", 'Int'>
+    readonly storeId: FieldRef<"printer_delivery_records", 'Int'>
+    readonly quantity_deliverd: FieldRef<"printer_delivery_records", 'Int'>
+    readonly approvedByPrinter: FieldRef<"printer_delivery_records", 'Boolean'>
+    readonly approvedByPrinterAt: FieldRef<"printer_delivery_records", 'DateTime'>
+    readonly is_deleted: FieldRef<"printer_delivery_records", 'Boolean'>
+    readonly updatedAt: FieldRef<"printer_delivery_records", 'DateTime'>
+    readonly createdAt: FieldRef<"printer_delivery_records", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * printer_delivery_records findUnique
+   */
+  export type printer_delivery_recordsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the printer_delivery_records
+     */
+    select?: printer_delivery_recordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the printer_delivery_records
+     */
+    omit?: printer_delivery_recordsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: printer_delivery_recordsInclude<ExtArgs> | null
+    /**
+     * Filter, which printer_delivery_records to fetch.
+     */
+    where: printer_delivery_recordsWhereUniqueInput
+  }
+
+  /**
+   * printer_delivery_records findUniqueOrThrow
+   */
+  export type printer_delivery_recordsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the printer_delivery_records
+     */
+    select?: printer_delivery_recordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the printer_delivery_records
+     */
+    omit?: printer_delivery_recordsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: printer_delivery_recordsInclude<ExtArgs> | null
+    /**
+     * Filter, which printer_delivery_records to fetch.
+     */
+    where: printer_delivery_recordsWhereUniqueInput
+  }
+
+  /**
+   * printer_delivery_records findFirst
+   */
+  export type printer_delivery_recordsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the printer_delivery_records
+     */
+    select?: printer_delivery_recordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the printer_delivery_records
+     */
+    omit?: printer_delivery_recordsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: printer_delivery_recordsInclude<ExtArgs> | null
+    /**
+     * Filter, which printer_delivery_records to fetch.
+     */
+    where?: printer_delivery_recordsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of printer_delivery_records to fetch.
+     */
+    orderBy?: printer_delivery_recordsOrderByWithRelationInput | printer_delivery_recordsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for printer_delivery_records.
+     */
+    cursor?: printer_delivery_recordsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` printer_delivery_records from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` printer_delivery_records.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of printer_delivery_records.
+     */
+    distinct?: Printer_delivery_recordsScalarFieldEnum | Printer_delivery_recordsScalarFieldEnum[]
+  }
+
+  /**
+   * printer_delivery_records findFirstOrThrow
+   */
+  export type printer_delivery_recordsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the printer_delivery_records
+     */
+    select?: printer_delivery_recordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the printer_delivery_records
+     */
+    omit?: printer_delivery_recordsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: printer_delivery_recordsInclude<ExtArgs> | null
+    /**
+     * Filter, which printer_delivery_records to fetch.
+     */
+    where?: printer_delivery_recordsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of printer_delivery_records to fetch.
+     */
+    orderBy?: printer_delivery_recordsOrderByWithRelationInput | printer_delivery_recordsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for printer_delivery_records.
+     */
+    cursor?: printer_delivery_recordsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` printer_delivery_records from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` printer_delivery_records.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of printer_delivery_records.
+     */
+    distinct?: Printer_delivery_recordsScalarFieldEnum | Printer_delivery_recordsScalarFieldEnum[]
+  }
+
+  /**
+   * printer_delivery_records findMany
+   */
+  export type printer_delivery_recordsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the printer_delivery_records
+     */
+    select?: printer_delivery_recordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the printer_delivery_records
+     */
+    omit?: printer_delivery_recordsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: printer_delivery_recordsInclude<ExtArgs> | null
+    /**
+     * Filter, which printer_delivery_records to fetch.
+     */
+    where?: printer_delivery_recordsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of printer_delivery_records to fetch.
+     */
+    orderBy?: printer_delivery_recordsOrderByWithRelationInput | printer_delivery_recordsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing printer_delivery_records.
+     */
+    cursor?: printer_delivery_recordsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` printer_delivery_records from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` printer_delivery_records.
+     */
+    skip?: number
+    distinct?: Printer_delivery_recordsScalarFieldEnum | Printer_delivery_recordsScalarFieldEnum[]
+  }
+
+  /**
+   * printer_delivery_records create
+   */
+  export type printer_delivery_recordsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the printer_delivery_records
+     */
+    select?: printer_delivery_recordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the printer_delivery_records
+     */
+    omit?: printer_delivery_recordsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: printer_delivery_recordsInclude<ExtArgs> | null
+    /**
+     * The data needed to create a printer_delivery_records.
+     */
+    data: XOR<printer_delivery_recordsCreateInput, printer_delivery_recordsUncheckedCreateInput>
+  }
+
+  /**
+   * printer_delivery_records createMany
+   */
+  export type printer_delivery_recordsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many printer_delivery_records.
+     */
+    data: printer_delivery_recordsCreateManyInput | printer_delivery_recordsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * printer_delivery_records update
+   */
+  export type printer_delivery_recordsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the printer_delivery_records
+     */
+    select?: printer_delivery_recordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the printer_delivery_records
+     */
+    omit?: printer_delivery_recordsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: printer_delivery_recordsInclude<ExtArgs> | null
+    /**
+     * The data needed to update a printer_delivery_records.
+     */
+    data: XOR<printer_delivery_recordsUpdateInput, printer_delivery_recordsUncheckedUpdateInput>
+    /**
+     * Choose, which printer_delivery_records to update.
+     */
+    where: printer_delivery_recordsWhereUniqueInput
+  }
+
+  /**
+   * printer_delivery_records updateMany
+   */
+  export type printer_delivery_recordsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update printer_delivery_records.
+     */
+    data: XOR<printer_delivery_recordsUpdateManyMutationInput, printer_delivery_recordsUncheckedUpdateManyInput>
+    /**
+     * Filter which printer_delivery_records to update
+     */
+    where?: printer_delivery_recordsWhereInput
+    /**
+     * Limit how many printer_delivery_records to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * printer_delivery_records upsert
+   */
+  export type printer_delivery_recordsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the printer_delivery_records
+     */
+    select?: printer_delivery_recordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the printer_delivery_records
+     */
+    omit?: printer_delivery_recordsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: printer_delivery_recordsInclude<ExtArgs> | null
+    /**
+     * The filter to search for the printer_delivery_records to update in case it exists.
+     */
+    where: printer_delivery_recordsWhereUniqueInput
+    /**
+     * In case the printer_delivery_records found by the `where` argument doesn't exist, create a new printer_delivery_records with this data.
+     */
+    create: XOR<printer_delivery_recordsCreateInput, printer_delivery_recordsUncheckedCreateInput>
+    /**
+     * In case the printer_delivery_records was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<printer_delivery_recordsUpdateInput, printer_delivery_recordsUncheckedUpdateInput>
+  }
+
+  /**
+   * printer_delivery_records delete
+   */
+  export type printer_delivery_recordsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the printer_delivery_records
+     */
+    select?: printer_delivery_recordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the printer_delivery_records
+     */
+    omit?: printer_delivery_recordsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: printer_delivery_recordsInclude<ExtArgs> | null
+    /**
+     * Filter which printer_delivery_records to delete.
+     */
+    where: printer_delivery_recordsWhereUniqueInput
+  }
+
+  /**
+   * printer_delivery_records deleteMany
+   */
+  export type printer_delivery_recordsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which printer_delivery_records to delete
+     */
+    where?: printer_delivery_recordsWhereInput
+    /**
+     * Limit how many printer_delivery_records to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * printer_delivery_records without action
+   */
+  export type printer_delivery_recordsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the printer_delivery_records
+     */
+    select?: printer_delivery_recordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the printer_delivery_records
+     */
+    omit?: printer_delivery_recordsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: printer_delivery_recordsInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model printorder_items
    */
 
@@ -24270,8 +25403,10 @@ export namespace Prisma {
     is_deleted?: boolean
     updatedAt?: boolean
     createdAt?: boolean
+    printer_delivery_records?: boolean | printorder_items$printer_delivery_recordsArgs<ExtArgs>
     printorder?: boolean | printorderDefaultArgs<ExtArgs>
     bookedition?: boolean | bookeditionDefaultArgs<ExtArgs>
+    _count?: boolean | Printorder_itemsCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["printorder_items"]>
 
 
@@ -24292,13 +25427,16 @@ export namespace Prisma {
 
   export type printorder_itemsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "printorder_id" | "bookEditionId" | "quantity" | "price_per_book" | "total_price" | "content" | "status" | "is_deleted" | "updatedAt" | "createdAt", ExtArgs["result"]["printorder_items"]>
   export type printorder_itemsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    printer_delivery_records?: boolean | printorder_items$printer_delivery_recordsArgs<ExtArgs>
     printorder?: boolean | printorderDefaultArgs<ExtArgs>
     bookedition?: boolean | bookeditionDefaultArgs<ExtArgs>
+    _count?: boolean | Printorder_itemsCountOutputTypeDefaultArgs<ExtArgs>
   }
 
   export type $printorder_itemsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "printorder_items"
     objects: {
+      printer_delivery_records: Prisma.$printer_delivery_recordsPayload<ExtArgs>[]
       printorder: Prisma.$printorderPayload<ExtArgs>
       bookedition: Prisma.$bookeditionPayload<ExtArgs>
     }
@@ -24654,6 +25792,7 @@ export namespace Prisma {
    */
   export interface Prisma__printorder_itemsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    printer_delivery_records<T extends printorder_items$printer_delivery_recordsArgs<ExtArgs> = {}>(args?: Subset<T, printorder_items$printer_delivery_recordsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$printer_delivery_recordsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     printorder<T extends printorderDefaultArgs<ExtArgs> = {}>(args?: Subset<T, printorderDefaultArgs<ExtArgs>>): Prisma__printorderClient<$Result.GetResult<Prisma.$printorderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     bookedition<T extends bookeditionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, bookeditionDefaultArgs<ExtArgs>>): Prisma__bookeditionClient<$Result.GetResult<Prisma.$bookeditionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
@@ -25036,6 +26175,30 @@ export namespace Prisma {
      * Limit how many printorder_items to delete.
      */
     limit?: number
+  }
+
+  /**
+   * printorder_items.printer_delivery_records
+   */
+  export type printorder_items$printer_delivery_recordsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the printer_delivery_records
+     */
+    select?: printer_delivery_recordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the printer_delivery_records
+     */
+    omit?: printer_delivery_recordsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: printer_delivery_recordsInclude<ExtArgs> | null
+    where?: printer_delivery_recordsWhereInput
+    orderBy?: printer_delivery_recordsOrderByWithRelationInput | printer_delivery_recordsOrderByWithRelationInput[]
+    cursor?: printer_delivery_recordsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Printer_delivery_recordsScalarFieldEnum | Printer_delivery_recordsScalarFieldEnum[]
   }
 
   /**
@@ -48087,6 +49250,21 @@ export namespace Prisma {
   export type Printorder_paymentsScalarFieldEnum = (typeof Printorder_paymentsScalarFieldEnum)[keyof typeof Printorder_paymentsScalarFieldEnum]
 
 
+  export const Printer_delivery_recordsScalarFieldEnum: {
+    id: 'id',
+    printorder_item_id: 'printorder_item_id',
+    storeId: 'storeId',
+    quantity_deliverd: 'quantity_deliverd',
+    approvedByPrinter: 'approvedByPrinter',
+    approvedByPrinterAt: 'approvedByPrinterAt',
+    is_deleted: 'is_deleted',
+    updatedAt: 'updatedAt',
+    createdAt: 'createdAt'
+  };
+
+  export type Printer_delivery_recordsScalarFieldEnum = (typeof Printer_delivery_recordsScalarFieldEnum)[keyof typeof Printer_delivery_recordsScalarFieldEnum]
+
+
   export const Printorder_itemsScalarFieldEnum: {
     id: 'id',
     printorder_id: 'printorder_id',
@@ -50662,6 +51840,83 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"printorder_payments"> | Date | string
   }
 
+  export type printer_delivery_recordsWhereInput = {
+    AND?: printer_delivery_recordsWhereInput | printer_delivery_recordsWhereInput[]
+    OR?: printer_delivery_recordsWhereInput[]
+    NOT?: printer_delivery_recordsWhereInput | printer_delivery_recordsWhereInput[]
+    id?: IntFilter<"printer_delivery_records"> | number
+    printorder_item_id?: IntFilter<"printer_delivery_records"> | number
+    storeId?: IntNullableFilter<"printer_delivery_records"> | number | null
+    quantity_deliverd?: IntNullableFilter<"printer_delivery_records"> | number | null
+    approvedByPrinter?: BoolFilter<"printer_delivery_records"> | boolean
+    approvedByPrinterAt?: DateTimeNullableFilter<"printer_delivery_records"> | Date | string | null
+    is_deleted?: BoolFilter<"printer_delivery_records"> | boolean
+    updatedAt?: DateTimeFilter<"printer_delivery_records"> | Date | string
+    createdAt?: DateTimeFilter<"printer_delivery_records"> | Date | string
+    printorderId?: XOR<Printorder_itemsScalarRelationFilter, printorder_itemsWhereInput>
+  }
+
+  export type printer_delivery_recordsOrderByWithRelationInput = {
+    id?: SortOrder
+    printorder_item_id?: SortOrder
+    storeId?: SortOrderInput | SortOrder
+    quantity_deliverd?: SortOrderInput | SortOrder
+    approvedByPrinter?: SortOrder
+    approvedByPrinterAt?: SortOrderInput | SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+    printorderId?: printorder_itemsOrderByWithRelationInput
+  }
+
+  export type printer_delivery_recordsWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: printer_delivery_recordsWhereInput | printer_delivery_recordsWhereInput[]
+    OR?: printer_delivery_recordsWhereInput[]
+    NOT?: printer_delivery_recordsWhereInput | printer_delivery_recordsWhereInput[]
+    printorder_item_id?: IntFilter<"printer_delivery_records"> | number
+    storeId?: IntNullableFilter<"printer_delivery_records"> | number | null
+    quantity_deliverd?: IntNullableFilter<"printer_delivery_records"> | number | null
+    approvedByPrinter?: BoolFilter<"printer_delivery_records"> | boolean
+    approvedByPrinterAt?: DateTimeNullableFilter<"printer_delivery_records"> | Date | string | null
+    is_deleted?: BoolFilter<"printer_delivery_records"> | boolean
+    updatedAt?: DateTimeFilter<"printer_delivery_records"> | Date | string
+    createdAt?: DateTimeFilter<"printer_delivery_records"> | Date | string
+    printorderId?: XOR<Printorder_itemsScalarRelationFilter, printorder_itemsWhereInput>
+  }, "id">
+
+  export type printer_delivery_recordsOrderByWithAggregationInput = {
+    id?: SortOrder
+    printorder_item_id?: SortOrder
+    storeId?: SortOrderInput | SortOrder
+    quantity_deliverd?: SortOrderInput | SortOrder
+    approvedByPrinter?: SortOrder
+    approvedByPrinterAt?: SortOrderInput | SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+    _count?: printer_delivery_recordsCountOrderByAggregateInput
+    _avg?: printer_delivery_recordsAvgOrderByAggregateInput
+    _max?: printer_delivery_recordsMaxOrderByAggregateInput
+    _min?: printer_delivery_recordsMinOrderByAggregateInput
+    _sum?: printer_delivery_recordsSumOrderByAggregateInput
+  }
+
+  export type printer_delivery_recordsScalarWhereWithAggregatesInput = {
+    AND?: printer_delivery_recordsScalarWhereWithAggregatesInput | printer_delivery_recordsScalarWhereWithAggregatesInput[]
+    OR?: printer_delivery_recordsScalarWhereWithAggregatesInput[]
+    NOT?: printer_delivery_recordsScalarWhereWithAggregatesInput | printer_delivery_recordsScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"printer_delivery_records"> | number
+    printorder_item_id?: IntWithAggregatesFilter<"printer_delivery_records"> | number
+    storeId?: IntNullableWithAggregatesFilter<"printer_delivery_records"> | number | null
+    quantity_deliverd?: IntNullableWithAggregatesFilter<"printer_delivery_records"> | number | null
+    approvedByPrinter?: BoolWithAggregatesFilter<"printer_delivery_records"> | boolean
+    approvedByPrinterAt?: DateTimeNullableWithAggregatesFilter<"printer_delivery_records"> | Date | string | null
+    is_deleted?: BoolWithAggregatesFilter<"printer_delivery_records"> | boolean
+    updatedAt?: DateTimeWithAggregatesFilter<"printer_delivery_records"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"printer_delivery_records"> | Date | string
+  }
+
   export type printorder_itemsWhereInput = {
     AND?: printorder_itemsWhereInput | printorder_itemsWhereInput[]
     OR?: printorder_itemsWhereInput[]
@@ -50677,6 +51932,7 @@ export namespace Prisma {
     is_deleted?: BoolFilter<"printorder_items"> | boolean
     updatedAt?: DateTimeFilter<"printorder_items"> | Date | string
     createdAt?: DateTimeFilter<"printorder_items"> | Date | string
+    printer_delivery_records?: Printer_delivery_recordsListRelationFilter
     printorder?: XOR<PrintorderScalarRelationFilter, printorderWhereInput>
     bookedition?: XOR<BookeditionScalarRelationFilter, bookeditionWhereInput>
   }
@@ -50693,6 +51949,7 @@ export namespace Prisma {
     is_deleted?: SortOrder
     updatedAt?: SortOrder
     createdAt?: SortOrder
+    printer_delivery_records?: printer_delivery_recordsOrderByRelationAggregateInput
     printorder?: printorderOrderByWithRelationInput
     bookedition?: bookeditionOrderByWithRelationInput
     _relevance?: printorder_itemsOrderByRelevanceInput
@@ -50713,6 +51970,7 @@ export namespace Prisma {
     is_deleted?: BoolFilter<"printorder_items"> | boolean
     updatedAt?: DateTimeFilter<"printorder_items"> | Date | string
     createdAt?: DateTimeFilter<"printorder_items"> | Date | string
+    printer_delivery_records?: Printer_delivery_recordsListRelationFilter
     printorder?: XOR<PrintorderScalarRelationFilter, printorderWhereInput>
     bookedition?: XOR<BookeditionScalarRelationFilter, bookeditionWhereInput>
   }, "id">
@@ -54554,6 +55812,86 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type printer_delivery_recordsCreateInput = {
+    storeId?: number | null
+    quantity_deliverd?: number | null
+    approvedByPrinter?: boolean
+    approvedByPrinterAt?: Date | string | null
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+    printorderId: printorder_itemsCreateNestedOneWithoutPrinter_delivery_recordsInput
+  }
+
+  export type printer_delivery_recordsUncheckedCreateInput = {
+    id?: number
+    printorder_item_id: number
+    storeId?: number | null
+    quantity_deliverd?: number | null
+    approvedByPrinter?: boolean
+    approvedByPrinterAt?: Date | string | null
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type printer_delivery_recordsUpdateInput = {
+    storeId?: NullableIntFieldUpdateOperationsInput | number | null
+    quantity_deliverd?: NullableIntFieldUpdateOperationsInput | number | null
+    approvedByPrinter?: BoolFieldUpdateOperationsInput | boolean
+    approvedByPrinterAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    printorderId?: printorder_itemsUpdateOneRequiredWithoutPrinter_delivery_recordsNestedInput
+  }
+
+  export type printer_delivery_recordsUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    printorder_item_id?: IntFieldUpdateOperationsInput | number
+    storeId?: NullableIntFieldUpdateOperationsInput | number | null
+    quantity_deliverd?: NullableIntFieldUpdateOperationsInput | number | null
+    approvedByPrinter?: BoolFieldUpdateOperationsInput | boolean
+    approvedByPrinterAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type printer_delivery_recordsCreateManyInput = {
+    id?: number
+    printorder_item_id: number
+    storeId?: number | null
+    quantity_deliverd?: number | null
+    approvedByPrinter?: boolean
+    approvedByPrinterAt?: Date | string | null
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type printer_delivery_recordsUpdateManyMutationInput = {
+    storeId?: NullableIntFieldUpdateOperationsInput | number | null
+    quantity_deliverd?: NullableIntFieldUpdateOperationsInput | number | null
+    approvedByPrinter?: BoolFieldUpdateOperationsInput | boolean
+    approvedByPrinterAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type printer_delivery_recordsUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    printorder_item_id?: IntFieldUpdateOperationsInput | number
+    storeId?: NullableIntFieldUpdateOperationsInput | number | null
+    quantity_deliverd?: NullableIntFieldUpdateOperationsInput | number | null
+    approvedByPrinter?: BoolFieldUpdateOperationsInput | boolean
+    approvedByPrinterAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type printorder_itemsCreateInput = {
     quantity?: number
     price_per_book?: number
@@ -54563,6 +55901,7 @@ export namespace Prisma {
     is_deleted?: boolean
     updatedAt?: Date | string
     createdAt?: Date | string
+    printer_delivery_records?: printer_delivery_recordsCreateNestedManyWithoutPrintorderIdInput
     printorder: printorderCreateNestedOneWithoutPrintorder_itemsInput
     bookedition: bookeditionCreateNestedOneWithoutPrintorder_itemsInput
   }
@@ -54579,6 +55918,7 @@ export namespace Prisma {
     is_deleted?: boolean
     updatedAt?: Date | string
     createdAt?: Date | string
+    printer_delivery_records?: printer_delivery_recordsUncheckedCreateNestedManyWithoutPrintorderIdInput
   }
 
   export type printorder_itemsUpdateInput = {
@@ -54590,6 +55930,7 @@ export namespace Prisma {
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    printer_delivery_records?: printer_delivery_recordsUpdateManyWithoutPrintorderIdNestedInput
     printorder?: printorderUpdateOneRequiredWithoutPrintorder_itemsNestedInput
     bookedition?: bookeditionUpdateOneRequiredWithoutPrintorder_itemsNestedInput
   }
@@ -54606,6 +55947,7 @@ export namespace Prisma {
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    printer_delivery_records?: printer_delivery_recordsUncheckedUpdateManyWithoutPrintorderIdNestedInput
   }
 
   export type printorder_itemsCreateManyInput = {
@@ -58480,6 +59822,71 @@ export namespace Prisma {
     bookEditionId?: SortOrder
   }
 
+  export type Printorder_itemsScalarRelationFilter = {
+    is?: printorder_itemsWhereInput
+    isNot?: printorder_itemsWhereInput
+  }
+
+  export type printer_delivery_recordsCountOrderByAggregateInput = {
+    id?: SortOrder
+    printorder_item_id?: SortOrder
+    storeId?: SortOrder
+    quantity_deliverd?: SortOrder
+    approvedByPrinter?: SortOrder
+    approvedByPrinterAt?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type printer_delivery_recordsAvgOrderByAggregateInput = {
+    id?: SortOrder
+    printorder_item_id?: SortOrder
+    storeId?: SortOrder
+    quantity_deliverd?: SortOrder
+  }
+
+  export type printer_delivery_recordsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    printorder_item_id?: SortOrder
+    storeId?: SortOrder
+    quantity_deliverd?: SortOrder
+    approvedByPrinter?: SortOrder
+    approvedByPrinterAt?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type printer_delivery_recordsMinOrderByAggregateInput = {
+    id?: SortOrder
+    printorder_item_id?: SortOrder
+    storeId?: SortOrder
+    quantity_deliverd?: SortOrder
+    approvedByPrinter?: SortOrder
+    approvedByPrinterAt?: SortOrder
+    is_deleted?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type printer_delivery_recordsSumOrderByAggregateInput = {
+    id?: SortOrder
+    printorder_item_id?: SortOrder
+    storeId?: SortOrder
+    quantity_deliverd?: SortOrder
+  }
+
+  export type Printer_delivery_recordsListRelationFilter = {
+    every?: printer_delivery_recordsWhereInput
+    some?: printer_delivery_recordsWhereInput
+    none?: printer_delivery_recordsWhereInput
+  }
+
+  export type printer_delivery_recordsOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type printorder_itemsOrderByRelevanceInput = {
     fields: printorder_itemsOrderByRelevanceFieldEnum | printorder_itemsOrderByRelevanceFieldEnum[]
     sort: SortOrder
@@ -61559,6 +62966,27 @@ export namespace Prisma {
     update?: XOR<XOR<printorderUpdateToOneWithWhereWithoutPrintorder_paymentsInput, printorderUpdateWithoutPrintorder_paymentsInput>, printorderUncheckedUpdateWithoutPrintorder_paymentsInput>
   }
 
+  export type printorder_itemsCreateNestedOneWithoutPrinter_delivery_recordsInput = {
+    create?: XOR<printorder_itemsCreateWithoutPrinter_delivery_recordsInput, printorder_itemsUncheckedCreateWithoutPrinter_delivery_recordsInput>
+    connectOrCreate?: printorder_itemsCreateOrConnectWithoutPrinter_delivery_recordsInput
+    connect?: printorder_itemsWhereUniqueInput
+  }
+
+  export type printorder_itemsUpdateOneRequiredWithoutPrinter_delivery_recordsNestedInput = {
+    create?: XOR<printorder_itemsCreateWithoutPrinter_delivery_recordsInput, printorder_itemsUncheckedCreateWithoutPrinter_delivery_recordsInput>
+    connectOrCreate?: printorder_itemsCreateOrConnectWithoutPrinter_delivery_recordsInput
+    upsert?: printorder_itemsUpsertWithoutPrinter_delivery_recordsInput
+    connect?: printorder_itemsWhereUniqueInput
+    update?: XOR<XOR<printorder_itemsUpdateToOneWithWhereWithoutPrinter_delivery_recordsInput, printorder_itemsUpdateWithoutPrinter_delivery_recordsInput>, printorder_itemsUncheckedUpdateWithoutPrinter_delivery_recordsInput>
+  }
+
+  export type printer_delivery_recordsCreateNestedManyWithoutPrintorderIdInput = {
+    create?: XOR<printer_delivery_recordsCreateWithoutPrintorderIdInput, printer_delivery_recordsUncheckedCreateWithoutPrintorderIdInput> | printer_delivery_recordsCreateWithoutPrintorderIdInput[] | printer_delivery_recordsUncheckedCreateWithoutPrintorderIdInput[]
+    connectOrCreate?: printer_delivery_recordsCreateOrConnectWithoutPrintorderIdInput | printer_delivery_recordsCreateOrConnectWithoutPrintorderIdInput[]
+    createMany?: printer_delivery_recordsCreateManyPrintorderIdInputEnvelope
+    connect?: printer_delivery_recordsWhereUniqueInput | printer_delivery_recordsWhereUniqueInput[]
+  }
+
   export type printorderCreateNestedOneWithoutPrintorder_itemsInput = {
     create?: XOR<printorderCreateWithoutPrintorder_itemsInput, printorderUncheckedCreateWithoutPrintorder_itemsInput>
     connectOrCreate?: printorderCreateOrConnectWithoutPrintorder_itemsInput
@@ -61569,6 +62997,27 @@ export namespace Prisma {
     create?: XOR<bookeditionCreateWithoutPrintorder_itemsInput, bookeditionUncheckedCreateWithoutPrintorder_itemsInput>
     connectOrCreate?: bookeditionCreateOrConnectWithoutPrintorder_itemsInput
     connect?: bookeditionWhereUniqueInput
+  }
+
+  export type printer_delivery_recordsUncheckedCreateNestedManyWithoutPrintorderIdInput = {
+    create?: XOR<printer_delivery_recordsCreateWithoutPrintorderIdInput, printer_delivery_recordsUncheckedCreateWithoutPrintorderIdInput> | printer_delivery_recordsCreateWithoutPrintorderIdInput[] | printer_delivery_recordsUncheckedCreateWithoutPrintorderIdInput[]
+    connectOrCreate?: printer_delivery_recordsCreateOrConnectWithoutPrintorderIdInput | printer_delivery_recordsCreateOrConnectWithoutPrintorderIdInput[]
+    createMany?: printer_delivery_recordsCreateManyPrintorderIdInputEnvelope
+    connect?: printer_delivery_recordsWhereUniqueInput | printer_delivery_recordsWhereUniqueInput[]
+  }
+
+  export type printer_delivery_recordsUpdateManyWithoutPrintorderIdNestedInput = {
+    create?: XOR<printer_delivery_recordsCreateWithoutPrintorderIdInput, printer_delivery_recordsUncheckedCreateWithoutPrintorderIdInput> | printer_delivery_recordsCreateWithoutPrintorderIdInput[] | printer_delivery_recordsUncheckedCreateWithoutPrintorderIdInput[]
+    connectOrCreate?: printer_delivery_recordsCreateOrConnectWithoutPrintorderIdInput | printer_delivery_recordsCreateOrConnectWithoutPrintorderIdInput[]
+    upsert?: printer_delivery_recordsUpsertWithWhereUniqueWithoutPrintorderIdInput | printer_delivery_recordsUpsertWithWhereUniqueWithoutPrintorderIdInput[]
+    createMany?: printer_delivery_recordsCreateManyPrintorderIdInputEnvelope
+    set?: printer_delivery_recordsWhereUniqueInput | printer_delivery_recordsWhereUniqueInput[]
+    disconnect?: printer_delivery_recordsWhereUniqueInput | printer_delivery_recordsWhereUniqueInput[]
+    delete?: printer_delivery_recordsWhereUniqueInput | printer_delivery_recordsWhereUniqueInput[]
+    connect?: printer_delivery_recordsWhereUniqueInput | printer_delivery_recordsWhereUniqueInput[]
+    update?: printer_delivery_recordsUpdateWithWhereUniqueWithoutPrintorderIdInput | printer_delivery_recordsUpdateWithWhereUniqueWithoutPrintorderIdInput[]
+    updateMany?: printer_delivery_recordsUpdateManyWithWhereWithoutPrintorderIdInput | printer_delivery_recordsUpdateManyWithWhereWithoutPrintorderIdInput[]
+    deleteMany?: printer_delivery_recordsScalarWhereInput | printer_delivery_recordsScalarWhereInput[]
   }
 
   export type printorderUpdateOneRequiredWithoutPrintorder_itemsNestedInput = {
@@ -61585,6 +63034,20 @@ export namespace Prisma {
     upsert?: bookeditionUpsertWithoutPrintorder_itemsInput
     connect?: bookeditionWhereUniqueInput
     update?: XOR<XOR<bookeditionUpdateToOneWithWhereWithoutPrintorder_itemsInput, bookeditionUpdateWithoutPrintorder_itemsInput>, bookeditionUncheckedUpdateWithoutPrintorder_itemsInput>
+  }
+
+  export type printer_delivery_recordsUncheckedUpdateManyWithoutPrintorderIdNestedInput = {
+    create?: XOR<printer_delivery_recordsCreateWithoutPrintorderIdInput, printer_delivery_recordsUncheckedCreateWithoutPrintorderIdInput> | printer_delivery_recordsCreateWithoutPrintorderIdInput[] | printer_delivery_recordsUncheckedCreateWithoutPrintorderIdInput[]
+    connectOrCreate?: printer_delivery_recordsCreateOrConnectWithoutPrintorderIdInput | printer_delivery_recordsCreateOrConnectWithoutPrintorderIdInput[]
+    upsert?: printer_delivery_recordsUpsertWithWhereUniqueWithoutPrintorderIdInput | printer_delivery_recordsUpsertWithWhereUniqueWithoutPrintorderIdInput[]
+    createMany?: printer_delivery_recordsCreateManyPrintorderIdInputEnvelope
+    set?: printer_delivery_recordsWhereUniqueInput | printer_delivery_recordsWhereUniqueInput[]
+    disconnect?: printer_delivery_recordsWhereUniqueInput | printer_delivery_recordsWhereUniqueInput[]
+    delete?: printer_delivery_recordsWhereUniqueInput | printer_delivery_recordsWhereUniqueInput[]
+    connect?: printer_delivery_recordsWhereUniqueInput | printer_delivery_recordsWhereUniqueInput[]
+    update?: printer_delivery_recordsUpdateWithWhereUniqueWithoutPrintorderIdInput | printer_delivery_recordsUpdateWithWhereUniqueWithoutPrintorderIdInput[]
+    updateMany?: printer_delivery_recordsUpdateManyWithWhereWithoutPrintorderIdInput | printer_delivery_recordsUpdateManyWithWhereWithoutPrintorderIdInput[]
+    deleteMany?: printer_delivery_recordsScalarWhereInput | printer_delivery_recordsScalarWhereInput[]
   }
 
   export type rolesCreateNestedManyWithoutRoletypesInput = {
@@ -63235,6 +64698,7 @@ export namespace Prisma {
     is_deleted?: boolean
     updatedAt?: Date | string
     createdAt?: Date | string
+    printer_delivery_records?: printer_delivery_recordsCreateNestedManyWithoutPrintorderIdInput
     printorder: printorderCreateNestedOneWithoutPrintorder_itemsInput
   }
 
@@ -63249,6 +64713,7 @@ export namespace Prisma {
     is_deleted?: boolean
     updatedAt?: Date | string
     createdAt?: Date | string
+    printer_delivery_records?: printer_delivery_recordsUncheckedCreateNestedManyWithoutPrintorderIdInput
   }
 
   export type printorder_itemsCreateOrConnectWithoutBookeditionInput = {
@@ -66820,6 +68285,7 @@ export namespace Prisma {
     is_deleted?: boolean
     updatedAt?: Date | string
     createdAt?: Date | string
+    printer_delivery_records?: printer_delivery_recordsCreateNestedManyWithoutPrintorderIdInput
     bookedition: bookeditionCreateNestedOneWithoutPrintorder_itemsInput
   }
 
@@ -66834,6 +68300,7 @@ export namespace Prisma {
     is_deleted?: boolean
     updatedAt?: Date | string
     createdAt?: Date | string
+    printer_delivery_records?: printer_delivery_recordsUncheckedCreateNestedManyWithoutPrintorderIdInput
   }
 
   export type printorder_itemsCreateOrConnectWithoutPrintorderInput = {
@@ -67056,6 +68523,107 @@ export namespace Prisma {
     printorder_items?: printorder_itemsUncheckedUpdateManyWithoutPrintorderNestedInput
   }
 
+  export type printorder_itemsCreateWithoutPrinter_delivery_recordsInput = {
+    quantity?: number
+    price_per_book?: number
+    total_price?: number
+    content?: string | null
+    status?: $Enums.printorder_status
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+    printorder: printorderCreateNestedOneWithoutPrintorder_itemsInput
+    bookedition: bookeditionCreateNestedOneWithoutPrintorder_itemsInput
+  }
+
+  export type printorder_itemsUncheckedCreateWithoutPrinter_delivery_recordsInput = {
+    id?: number
+    printorder_id: number
+    bookEditionId: number
+    quantity?: number
+    price_per_book?: number
+    total_price?: number
+    content?: string | null
+    status?: $Enums.printorder_status
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type printorder_itemsCreateOrConnectWithoutPrinter_delivery_recordsInput = {
+    where: printorder_itemsWhereUniqueInput
+    create: XOR<printorder_itemsCreateWithoutPrinter_delivery_recordsInput, printorder_itemsUncheckedCreateWithoutPrinter_delivery_recordsInput>
+  }
+
+  export type printorder_itemsUpsertWithoutPrinter_delivery_recordsInput = {
+    update: XOR<printorder_itemsUpdateWithoutPrinter_delivery_recordsInput, printorder_itemsUncheckedUpdateWithoutPrinter_delivery_recordsInput>
+    create: XOR<printorder_itemsCreateWithoutPrinter_delivery_recordsInput, printorder_itemsUncheckedCreateWithoutPrinter_delivery_recordsInput>
+    where?: printorder_itemsWhereInput
+  }
+
+  export type printorder_itemsUpdateToOneWithWhereWithoutPrinter_delivery_recordsInput = {
+    where?: printorder_itemsWhereInput
+    data: XOR<printorder_itemsUpdateWithoutPrinter_delivery_recordsInput, printorder_itemsUncheckedUpdateWithoutPrinter_delivery_recordsInput>
+  }
+
+  export type printorder_itemsUpdateWithoutPrinter_delivery_recordsInput = {
+    quantity?: IntFieldUpdateOperationsInput | number
+    price_per_book?: FloatFieldUpdateOperationsInput | number
+    total_price?: FloatFieldUpdateOperationsInput | number
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    printorder?: printorderUpdateOneRequiredWithoutPrintorder_itemsNestedInput
+    bookedition?: bookeditionUpdateOneRequiredWithoutPrintorder_itemsNestedInput
+  }
+
+  export type printorder_itemsUncheckedUpdateWithoutPrinter_delivery_recordsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    printorder_id?: IntFieldUpdateOperationsInput | number
+    bookEditionId?: IntFieldUpdateOperationsInput | number
+    quantity?: IntFieldUpdateOperationsInput | number
+    price_per_book?: FloatFieldUpdateOperationsInput | number
+    total_price?: FloatFieldUpdateOperationsInput | number
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: Enumprintorder_statusFieldUpdateOperationsInput | $Enums.printorder_status
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type printer_delivery_recordsCreateWithoutPrintorderIdInput = {
+    storeId?: number | null
+    quantity_deliverd?: number | null
+    approvedByPrinter?: boolean
+    approvedByPrinterAt?: Date | string | null
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type printer_delivery_recordsUncheckedCreateWithoutPrintorderIdInput = {
+    id?: number
+    storeId?: number | null
+    quantity_deliverd?: number | null
+    approvedByPrinter?: boolean
+    approvedByPrinterAt?: Date | string | null
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type printer_delivery_recordsCreateOrConnectWithoutPrintorderIdInput = {
+    where: printer_delivery_recordsWhereUniqueInput
+    create: XOR<printer_delivery_recordsCreateWithoutPrintorderIdInput, printer_delivery_recordsUncheckedCreateWithoutPrintorderIdInput>
+  }
+
+  export type printer_delivery_recordsCreateManyPrintorderIdInputEnvelope = {
+    data: printer_delivery_recordsCreateManyPrintorderIdInput | printer_delivery_recordsCreateManyPrintorderIdInput[]
+    skipDuplicates?: boolean
+  }
+
   export type printorderCreateWithoutPrintorder_itemsInput = {
     project_name?: string | null
     quality?: string | null
@@ -67186,6 +68754,37 @@ export namespace Prisma {
   export type bookeditionCreateOrConnectWithoutPrintorder_itemsInput = {
     where: bookeditionWhereUniqueInput
     create: XOR<bookeditionCreateWithoutPrintorder_itemsInput, bookeditionUncheckedCreateWithoutPrintorder_itemsInput>
+  }
+
+  export type printer_delivery_recordsUpsertWithWhereUniqueWithoutPrintorderIdInput = {
+    where: printer_delivery_recordsWhereUniqueInput
+    update: XOR<printer_delivery_recordsUpdateWithoutPrintorderIdInput, printer_delivery_recordsUncheckedUpdateWithoutPrintorderIdInput>
+    create: XOR<printer_delivery_recordsCreateWithoutPrintorderIdInput, printer_delivery_recordsUncheckedCreateWithoutPrintorderIdInput>
+  }
+
+  export type printer_delivery_recordsUpdateWithWhereUniqueWithoutPrintorderIdInput = {
+    where: printer_delivery_recordsWhereUniqueInput
+    data: XOR<printer_delivery_recordsUpdateWithoutPrintorderIdInput, printer_delivery_recordsUncheckedUpdateWithoutPrintorderIdInput>
+  }
+
+  export type printer_delivery_recordsUpdateManyWithWhereWithoutPrintorderIdInput = {
+    where: printer_delivery_recordsScalarWhereInput
+    data: XOR<printer_delivery_recordsUpdateManyMutationInput, printer_delivery_recordsUncheckedUpdateManyWithoutPrintorderIdInput>
+  }
+
+  export type printer_delivery_recordsScalarWhereInput = {
+    AND?: printer_delivery_recordsScalarWhereInput | printer_delivery_recordsScalarWhereInput[]
+    OR?: printer_delivery_recordsScalarWhereInput[]
+    NOT?: printer_delivery_recordsScalarWhereInput | printer_delivery_recordsScalarWhereInput[]
+    id?: IntFilter<"printer_delivery_records"> | number
+    printorder_item_id?: IntFilter<"printer_delivery_records"> | number
+    storeId?: IntNullableFilter<"printer_delivery_records"> | number | null
+    quantity_deliverd?: IntNullableFilter<"printer_delivery_records"> | number | null
+    approvedByPrinter?: BoolFilter<"printer_delivery_records"> | boolean
+    approvedByPrinterAt?: DateTimeNullableFilter<"printer_delivery_records"> | Date | string | null
+    is_deleted?: BoolFilter<"printer_delivery_records"> | boolean
+    updatedAt?: DateTimeFilter<"printer_delivery_records"> | Date | string
+    createdAt?: DateTimeFilter<"printer_delivery_records"> | Date | string
   }
 
   export type printorderUpsertWithoutPrintorder_itemsInput = {
@@ -69784,6 +71383,7 @@ export namespace Prisma {
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    printer_delivery_records?: printer_delivery_recordsUpdateManyWithoutPrintorderIdNestedInput
     printorder?: printorderUpdateOneRequiredWithoutPrintorder_itemsNestedInput
   }
 
@@ -69798,6 +71398,7 @@ export namespace Prisma {
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    printer_delivery_records?: printer_delivery_recordsUncheckedUpdateManyWithoutPrintorderIdNestedInput
   }
 
   export type printorder_itemsUncheckedUpdateManyWithoutBookeditionInput = {
@@ -70717,6 +72318,7 @@ export namespace Prisma {
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    printer_delivery_records?: printer_delivery_recordsUpdateManyWithoutPrintorderIdNestedInput
     bookedition?: bookeditionUpdateOneRequiredWithoutPrintorder_itemsNestedInput
   }
 
@@ -70731,6 +72333,7 @@ export namespace Prisma {
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    printer_delivery_records?: printer_delivery_recordsUncheckedUpdateManyWithoutPrintorderIdNestedInput
   }
 
   export type printorder_itemsUncheckedUpdateManyWithoutPrintorderInput = {
@@ -70769,6 +72372,49 @@ export namespace Prisma {
     bookEditionId?: NullableIntFieldUpdateOperationsInput | number | null
     payment_date?: DateTimeFieldUpdateOperationsInput | Date | string
     reference?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type printer_delivery_recordsCreateManyPrintorderIdInput = {
+    id?: number
+    storeId?: number | null
+    quantity_deliverd?: number | null
+    approvedByPrinter?: boolean
+    approvedByPrinterAt?: Date | string | null
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type printer_delivery_recordsUpdateWithoutPrintorderIdInput = {
+    storeId?: NullableIntFieldUpdateOperationsInput | number | null
+    quantity_deliverd?: NullableIntFieldUpdateOperationsInput | number | null
+    approvedByPrinter?: BoolFieldUpdateOperationsInput | boolean
+    approvedByPrinterAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type printer_delivery_recordsUncheckedUpdateWithoutPrintorderIdInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    storeId?: NullableIntFieldUpdateOperationsInput | number | null
+    quantity_deliverd?: NullableIntFieldUpdateOperationsInput | number | null
+    approvedByPrinter?: BoolFieldUpdateOperationsInput | boolean
+    approvedByPrinterAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type printer_delivery_recordsUncheckedUpdateManyWithoutPrintorderIdInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    storeId?: NullableIntFieldUpdateOperationsInput | number | null
+    quantity_deliverd?: NullableIntFieldUpdateOperationsInput | number | null
+    approvedByPrinter?: BoolFieldUpdateOperationsInput | boolean
+    approvedByPrinterAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

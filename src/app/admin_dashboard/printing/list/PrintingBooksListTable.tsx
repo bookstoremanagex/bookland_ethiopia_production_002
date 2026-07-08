@@ -50,6 +50,7 @@ const statusStyles: Record<string, string> = {
 
 interface ListItem {
     id: number;
+    editionId: number;
     orderId: number;
     projectName: string;
     printerName: string;

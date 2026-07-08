@@ -248,42 +248,42 @@ export default function PrinterFullHomeDashboard({ printer }: PrinterFullHomeDas
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-primarycolor/[0.03]">
       {/* Hero Banner */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-primarycolor via-primarycolor/90 to-secondarycolor px-6 pt-12 pb-20 md:px-10 md:pt-16 md:pb-24">
+      <div className="relative overflow-hidden bg-gradient-to-br from-primarycolor via-primarycolor/90 to-secondarycolor px-4 pt-8 pb-16 md:px-10 md:pt-16 md:pb-24">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.15),transparent_60%)]" />
         <div className="absolute -top-24 -right-24 size-96 rounded-full bg-white/5 blur-3xl" />
         <div className="absolute -bottom-32 -left-32 size-80 rounded-full bg-white/5 blur-3xl" />
         <div className="relative z-10 mx-auto max-w-7xl">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-            <div className="space-y-3">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-6">
+            <div className="space-y-2 md:space-y-3 w-full md:w-auto">
               <div className="flex items-center gap-2.5">
-                <div className="size-10 rounded-2xl bg-white/15 backdrop-blur-sm flex items-center justify-center">
-                  <Printer className="size-5 text-white" />
+                <div className="size-8 md:size-10 rounded-2xl bg-white/15 backdrop-blur-sm flex items-center justify-center">
+                  <Printer className="size-4 md:size-5 text-white" />
                 </div>
-                <span className="text-xs font-black uppercase tracking-[0.25em] text-white/60">Printer Portal</span>
+                <span className="text-[9px] md:text-xs font-black uppercase tracking-[0.25em] text-white/60">Printer Portal</span>
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white">
+              <h1 className="text-2xl md:text-5xl font-bold tracking-tight text-white truncate max-w-[280px] md:max-w-none">
                 {printer.name}
               </h1>
-              <p className="text-base md:text-lg font-semibold text-white/70 flex items-center gap-2">
-                <MapPin className="size-4" /> {printer.location}
+              <p className="text-sm md:text-lg font-semibold text-white/70 flex items-center gap-2">
+                <MapPin className="size-3.5 md:size-4" /> {printer.location}
               </p>
             </div>
-            <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md rounded-2xl p-2 md:p-3 border border-white/10">
-              <div className="flex flex-col items-center px-5 py-2">
-                <span className="text-[9px] font-black uppercase tracking-widest text-white/50">Status</span>
-                <div className="flex items-center gap-1.5 mt-1">
-                  <span className={cn("size-2 rounded-full", printer.status === "available" ? "bg-emerald-400" : printer.status === "maintenance" ? "bg-amber-400" : "bg-rose-400")} />
-                  <span className={cn("text-lg font-black", statusColorMap[printer.status] || "text-emerald-400")}>
+            <div className="flex items-center gap-2 md:gap-3 bg-white/10 backdrop-blur-md rounded-xl md:rounded-2xl p-1.5 md:p-3 border border-white/10 w-full md:w-auto justify-center md:justify-start">
+              <div className="flex flex-col items-center px-3 md:px-5 py-1.5 md:py-2">
+                <span className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-white/50">Status</span>
+                <div className="flex items-center gap-1.5 mt-0.5 md:mt-1">
+                  <span className={cn("size-1.5 md:size-2 rounded-full", printer.status === "available" ? "bg-emerald-400" : printer.status === "maintenance" ? "bg-amber-400" : "bg-rose-400")} />
+                  <span className={cn("text-sm md:text-lg font-black capitalize", statusColorMap[printer.status] || "text-emerald-400")}>
                     {printer.status}
                   </span>
                 </div>
               </div>
-              <div className="w-px h-10 bg-white/10" />
-              <div className="flex flex-col items-center px-5 py-2">
-                <span className="text-[9px] font-black uppercase tracking-widest text-white/50">Active Jobs</span>
-                <div className="flex items-center gap-1.5 mt-1">
-                  <Activity className="size-4 text-white/60 animate-pulse" />
-                  <span className="text-lg font-black text-white">{activeOrders.length}</span>
+              <div className="w-px h-8 md:h-10 bg-white/10" />
+              <div className="flex flex-col items-center px-3 md:px-5 py-1.5 md:py-2">
+                <span className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-white/50">Active Jobs</span>
+                <div className="flex items-center gap-1.5 mt-0.5 md:mt-1">
+                  <Activity className="size-3 md:size-4 text-white/60 animate-pulse" />
+                  <span className="text-sm md:text-lg font-black text-white">{activeOrders.length}</span>
                 </div>
               </div>
             </div>
@@ -295,57 +295,57 @@ export default function PrinterFullHomeDashboard({ printer }: PrinterFullHomeDas
       <div className="relative z-20 -mt-12 mx-auto max-w-7xl px-4 md:px-8 space-y-8 pb-12">
 
         {/* Quick Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="group bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300 p-6 relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-5 opacity-[0.04] group-hover:opacity-[0.08] transition-opacity">
-              <Package className="size-20" />
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
+          <div className="group bg-white rounded-xl md:rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300 p-4 md:p-6 relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-3 md:p-5 opacity-[0.04] group-hover:opacity-[0.08] transition-opacity">
+              <Package className="size-16 md:size-20" />
             </div>
             <div className="relative z-10">
-              <div className="size-10 rounded-xl bg-emerald-50 flex items-center justify-center mb-3">
-                <Package className="size-5 text-emerald-500" />
+              <div className="size-9 md:size-10 rounded-xl bg-emerald-50 flex items-center justify-center mb-2 md:mb-3">
+                <Package className="size-4 md:size-5 text-emerald-500" />
               </div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Stock</p>
-              <div className="flex items-end gap-2 mt-1">
-                <span className="text-3xl font-black text-slate-800">{totalStock.toLocaleString()}</span>
-                <span className="text-xs font-bold text-slate-400 mb-1">{stockItems} editions</span>
+              <p className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-slate-400">Total Stock</p>
+              <div className="flex items-end gap-2 mt-1 flex-wrap">
+                <span className="text-2xl md:text-3xl font-black text-slate-800">{totalStock.toLocaleString()}</span>
+                <span className="text-[10px] md:text-xs font-bold text-slate-400 mb-0.5 md:mb-1">{stockItems} editions</span>
               </div>
             </div>
           </div>
 
-          <div className="group bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300 p-6 relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-5 opacity-[0.04] group-hover:opacity-[0.08] transition-opacity">
-              <ClipboardList className="size-20" />
+          <div className="group bg-white rounded-xl md:rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300 p-4 md:p-6 relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-3 md:p-5 opacity-[0.04] group-hover:opacity-[0.08] transition-opacity">
+              <ClipboardList className="size-16 md:size-20" />
             </div>
             <div className="relative z-10">
-              <div className="size-10 rounded-xl bg-indigo-50 flex items-center justify-center mb-3">
-                <ClipboardList className="size-5 text-indigo-500" />
+              <div className="size-9 md:size-10 rounded-xl bg-indigo-50 flex items-center justify-center mb-2 md:mb-3">
+                <ClipboardList className="size-4 md:size-5 text-indigo-500" />
               </div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Orders</p>
-              <div className="flex items-end gap-2 mt-1">
-                <span className="text-3xl font-black text-slate-800">{printer.printorder.length}</span>
-                <span className="text-xs font-bold text-emerald-500 mb-1">{activeOrders.length} active</span>
+              <p className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-slate-400">Total Orders</p>
+              <div className="flex items-end gap-2 mt-1 flex-wrap">
+                <span className="text-2xl md:text-3xl font-black text-slate-800">{printer.printorder.length}</span>
+                <span className="text-[10px] md:text-xs font-bold text-emerald-500 mb-0.5 md:mb-1">{activeOrders.length} active</span>
               </div>
             </div>
           </div>
 
-          <div className="group bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300 p-6 relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-5 opacity-[0.04] group-hover:opacity-[0.08] transition-opacity">
-              <Building2 className="size-20" />
+          <div className="group bg-white rounded-xl md:rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300 p-4 md:p-6 relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-3 md:p-5 opacity-[0.04] group-hover:opacity-[0.08] transition-opacity">
+              <Building2 className="size-16 md:size-20" />
             </div>
             <div className="relative z-10">
-              <div className="size-10 rounded-xl bg-sky-50 flex items-center justify-center mb-3">
-                <Building2 className="size-5 text-sky-500" />
+              <div className="size-9 md:size-10 rounded-xl bg-sky-50 flex items-center justify-center mb-2 md:mb-3">
+                <Building2 className="size-4 md:size-5 text-sky-500" />
               </div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Contact</p>
-              <div className="mt-1 space-y-1">
+              <p className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-slate-400">Contact</p>
+              <div className="mt-1 space-y-0.5 md:space-y-1">
                 {printer.phone && (
-                  <p className="text-sm font-bold text-slate-700 flex items-center gap-1.5">
-                    <Phone className="size-3.5 text-slate-400" /> {printer.phone}
+                  <p className="text-xs md:text-sm font-bold text-slate-700 flex items-center gap-1.5 truncate">
+                    <Phone className="size-3 md:size-3.5 text-slate-400 shrink-0" /> {printer.phone}
                   </p>
                 )}
                 {printer.email && (
-                  <p className="text-sm font-bold text-slate-700 flex items-center gap-1.5 truncate">
-                    <Mail className="size-3.5 text-slate-400" /> {printer.email}
+                  <p className="text-xs md:text-sm font-bold text-slate-700 flex items-center gap-1.5 truncate">
+                    <Mail className="size-3 md:size-3.5 text-slate-400 shrink-0" /> {printer.email}
                   </p>
                 )}
               </div>
@@ -355,15 +355,13 @@ export default function PrinterFullHomeDashboard({ printer }: PrinterFullHomeDas
 
         {/* Books Collective */}
         <div>
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
-              <div className="size-10 rounded-xl bg-primarycolor/10 flex items-center justify-center">
-                <BookOpen className="size-5 text-primarycolor" />
-              </div>
-              <div>
-                <h2 className="text-xl font-black text-slate-800">Books in Collective</h2>
-                <p className="text-xs font-bold text-slate-400">{booksCollective.length} items across {printer.printorder.length} projects</p>
-              </div>
+          <div className="flex items-center gap-3 mb-6">
+            <div className="size-9 md:size-10 rounded-xl bg-primarycolor/10 flex items-center justify-center shrink-0">
+              <BookOpen className="size-4 md:size-5 text-primarycolor" />
+            </div>
+            <div className="min-w-0">
+              <h2 className="text-base md:text-xl font-black text-slate-800 truncate">Books in Collective</h2>
+              <p className="text-[10px] md:text-xs font-bold text-slate-400">{booksCollective.length} items across {printer.printorder.length} projects</p>
             </div>
           </div>
 
@@ -381,25 +379,25 @@ export default function PrinterFullHomeDashboard({ printer }: PrinterFullHomeDas
 
         {/* Print Tracking */}
         <div>
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
             <div className="flex items-center gap-3">
-              <div className="size-10 rounded-xl bg-primarycolor/10 flex items-center justify-center">
-                <Activity className="size-5 text-primarycolor" />
+              <div className="size-9 md:size-10 rounded-xl bg-primarycolor/10 flex items-center justify-center shrink-0">
+                <Activity className="size-4 md:size-5 text-primarycolor" />
               </div>
-              <div>
-                <h2 className="text-xl font-black text-slate-800">Print Tracking</h2>
-                <p className="text-xs font-bold text-slate-400">{totalItems} items across {printer.printorder.length} projects</p>
+              <div className="min-w-0">
+                <h2 className="text-base md:text-xl font-black text-slate-800 truncate">Print Tracking</h2>
+                <p className="text-[10px] md:text-xs font-bold text-slate-400">{totalItems} items across {printer.printorder.length} projects</p>
               </div>
             </div>
-            <div className="flex items-center gap-5 text-[10px] font-black uppercase tracking-widest">
-              <span className="flex items-center gap-1.5 text-slate-400">
-                <Layers className="size-3.5" /> {printer.printorder.length} projects
+            <div className="flex items-center gap-3 md:gap-5 text-[8px] md:text-[10px] font-black uppercase tracking-widest flex-wrap">
+              <span className="flex items-center gap-1 md:gap-1.5 text-slate-400">
+                <Layers className="size-3 md:size-3.5" /> {printer.printorder.length} projects
               </span>
-              <span className="flex items-center gap-1.5 text-emerald-600">
-                <CheckCircle2 className="size-3.5" /> {totalItems - activeItems} done
+              <span className="flex items-center gap-1 md:gap-1.5 text-emerald-600">
+                <CheckCircle2 className="size-3 md:size-3.5" /> {totalItems - activeItems} done
               </span>
-              <span className="flex items-center gap-1.5 text-amber-600">
-                <Clock className="size-3.5" /> {activeItems} active
+              <span className="flex items-center gap-1 md:gap-1.5 text-amber-600">
+                <Clock className="size-3 md:size-3.5" /> {activeItems} active
               </span>
             </div>
           </div>
@@ -421,38 +419,38 @@ export default function PrinterFullHomeDashboard({ printer }: PrinterFullHomeDas
 
                 return (
                   <div key={order.id} className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden transition-all duration-200 hover:shadow-md">
-                    <div className="flex items-stretch">
+                    <div className="flex flex-col sm:flex-row sm:items-stretch">
                       <button
                         type="button"
                         onClick={() => toggleProject(order.id)}
-                        className="flex-1 flex items-center justify-between p-5 md:p-6 hover:bg-slate-50/50 transition-colors text-left"
+                        className="flex-1 flex items-center justify-between p-4 md:p-6 hover:bg-slate-50/50 transition-colors text-left"
                       >
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-3 md:gap-4 min-w-0">
                           <div className={cn(
-                            "size-11 rounded-xl flex items-center justify-center shrink-0 border",
+                            "size-10 md:size-11 rounded-xl flex items-center justify-center shrink-0 border",
                             isProjectCompleted
                               ? "bg-emerald-50 border-emerald-200 text-emerald-500"
                               : "bg-primarycolor/5 border-primarycolor/10 text-primarycolor",
                           )}>
-                            <BookOpen className="size-5" />
+                            <BookOpen className="size-4 md:size-5" />
                           </div>
-                          <div>
-                            <div className="flex items-center gap-2.5">
-                              <h3 className="text-base font-bold text-slate-800">
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <h3 className="text-sm md:text-base font-bold text-slate-800 truncate max-w-[180px] md:max-w-none">
                                 {order.project_name || `Project #${order.id}`}
                               </h3>
                               <div className={cn(
-                                "flex items-center gap-1 px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-widest border",
+                                "flex items-center gap-1 px-1.5 md:px-2 py-0.5 rounded-md text-[8px] md:text-[9px] font-black uppercase tracking-widest border shrink-0",
                                 getStatusStyle(order.status),
                               )}>
-                                <span className={cn("size-1.5 rounded-full", getStatusDot(order.status))} />
+                                <span className={cn("size-1 md:size-1.5 rounded-full", getStatusDot(order.status))} />
                                 {projectStatusOptions.find(o => o.value === order.status)?.label || order.status}
                               </div>
                             </div>
-                            <div className="flex items-center gap-4 mt-1.5">
-                              <span className="text-xs font-bold text-slate-400">{items.length} book{items.length !== 1 ? 's' : ''}</span>
+                            <div className="flex items-center gap-3 md:gap-4 mt-1 flex-wrap">
+                              <span className="text-[10px] md:text-xs font-bold text-slate-400">{items.length} book{items.length !== 1 ? 's' : ''}</span>
                               <span className={cn(
-                                "text-xs font-bold",
+                                "text-[10px] md:text-xs font-bold",
                                 completedItems === items.length ? "text-emerald-600" : "text-slate-400",
                               )}>
                                 {completedItems}/{items.length} completed
@@ -463,11 +461,31 @@ export default function PrinterFullHomeDashboard({ printer }: PrinterFullHomeDas
                             </div>
                           </div>
                         </div>
-                        {isExpanded ? <ChevronUp className="size-5 text-slate-300 shrink-0" /> : <ChevronDown className="size-5 text-slate-300 shrink-0" />}
+                        <div className="flex items-center gap-2 shrink-0 ml-2">
+                          {!isProjectCompleted && (
+                            <div className="sm:hidden">
+                              <select
+                                value={order.status}
+                                onChange={(e) => handleProjectStatusChange(order.id, e.target.value, order.status)}
+                                disabled={updatingProjectId === order.id}
+                                className={cn(
+                                  "h-7 px-2 rounded-lg border text-[8px] font-bold uppercase tracking-widest outline-none appearance-none cursor-pointer transition-all min-w-[75px]",
+                                  updatingProjectId === order.id && "opacity-50 pointer-events-none",
+                                  getStatusStyle(order.status),
+                                )}
+                              >
+                                {projectStatusOptions.map(opt => (
+                                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                ))}
+                              </select>
+                            </div>
+                          )}
+                          {isExpanded ? <ChevronUp className="size-4 md:size-5 text-slate-300 shrink-0" /> : <ChevronDown className="size-4 md:size-5 text-slate-300 shrink-0" />}
+                        </div>
                       </button>
 
                       {!isProjectCompleted && (
-                        <div className="flex items-center px-4 md:px-5 border-l border-slate-100">
+                        <div className="hidden sm:flex items-center px-4 md:px-5 border-l border-slate-100">
                           <div className="space-y-1">
                             <label className="text-[7px] font-black text-slate-400 uppercase tracking-[0.2em] block text-center">Project</label>
                             <select
@@ -620,12 +638,12 @@ export default function PrinterFullHomeDashboard({ printer }: PrinterFullHomeDas
         {/* Payment Tracking */}
         <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="size-9 rounded-xl bg-emerald-50 flex items-center justify-center">
-                <Banknote className="size-4.5 text-emerald-500" />
+              <div className="size-8 md:size-9 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0">
+                <Banknote className="size-4 md:size-4.5 text-emerald-500" />
               </div>
-              <div>
-                <h3 className="text-sm font-black text-slate-800 uppercase tracking-tight">Payment Tracking</h3>
-                <p className="text-[10px] font-bold text-slate-400">{printer.printorder.filter((o: any) => o.total_price).length} projects with pricing</p>
+              <div className="min-w-0">
+                <h3 className="text-xs md:text-sm font-black text-slate-800 uppercase tracking-tight truncate">Payment Tracking</h3>
+                <p className="text-[9px] md:text-[10px] font-bold text-slate-400">{printer.printorder.filter((o: any) => o.total_price).length} projects with pricing</p>
               </div>
             </div>
             {(() => {
@@ -640,31 +658,31 @@ export default function PrinterFullHomeDashboard({ printer }: PrinterFullHomeDas
               }).length
               return (
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div className="bg-rose-50 rounded-2xl border border-rose-200 p-5 flex items-center gap-4">
-                    <div className="size-10 rounded-xl bg-rose-100 flex items-center justify-center text-rose-600 shrink-0">
-                      <Banknote className="size-5" />
+                  <div className="bg-rose-50 rounded-xl md:rounded-2xl border border-rose-200 p-4 md:p-5 flex items-center gap-3 md:gap-4">
+                    <div className="size-9 md:size-10 rounded-xl bg-rose-100 flex items-center justify-center text-rose-600 shrink-0">
+                      <Banknote className="size-4 md:size-5" />
                     </div>
-                    <div>
-                      <p className="text-[9px] font-black uppercase tracking-widest text-rose-400">Total Unpaid</p>
-                      <p className="text-xl font-black text-rose-600">{totalRemaining.toLocaleString()} <span className="text-xs font-bold opacity-60">ETB</span></p>
-                    </div>
-                  </div>
-                  <div className="bg-amber-50 rounded-2xl border border-amber-200 p-5 flex items-center gap-4">
-                    <div className="size-10 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600 shrink-0">
-                      <AlertCircle className="size-5" />
-                    </div>
-                    <div>
-                      <p className="text-[9px] font-black uppercase tracking-widest text-amber-400">Outstanding Projects</p>
-                      <p className="text-xl font-black text-amber-700">{unpaidCount} / {pricedOrders.length}</p>
+                    <div className="min-w-0">
+                      <p className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-rose-400">Total Unpaid</p>
+                      <p className="text-base md:text-xl font-black text-rose-600 truncate">{totalRemaining.toLocaleString()} <span className="text-[9px] md:text-xs font-bold opacity-60">ETB</span></p>
                     </div>
                   </div>
-                  <div className="bg-emerald-50 rounded-2xl border border-emerald-200 p-5 flex items-center gap-4">
-                    <div className="size-10 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
-                      <CheckCircle2 className="size-5" />
+                  <div className="bg-amber-50 rounded-xl md:rounded-2xl border border-amber-200 p-4 md:p-5 flex items-center gap-3 md:gap-4">
+                    <div className="size-9 md:size-10 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600 shrink-0">
+                      <AlertCircle className="size-4 md:size-5" />
                     </div>
-                    <div>
-                      <p className="text-[9px] font-black uppercase tracking-widest text-emerald-400">Fully Paid</p>
-                      <p className="text-xl font-black text-emerald-600">{pricedOrders.length - unpaidCount}</p>
+                    <div className="min-w-0">
+                      <p className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-amber-400">Outstanding Projects</p>
+                      <p className="text-base md:text-xl font-black text-amber-700">{unpaidCount} / {pricedOrders.length}</p>
+                    </div>
+                  </div>
+                  <div className="bg-emerald-50 rounded-xl md:rounded-2xl border border-emerald-200 p-4 md:p-5 flex items-center gap-3 md:gap-4">
+                    <div className="size-9 md:size-10 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
+                      <CheckCircle2 className="size-4 md:size-5" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-emerald-400">Fully Paid</p>
+                      <p className="text-base md:text-xl font-black text-emerald-600">{pricedOrders.length - unpaidCount}</p>
                     </div>
                   </div>
                 </div>
@@ -682,18 +700,18 @@ export default function PrinterFullHomeDashboard({ printer }: PrinterFullHomeDas
                   const remaining = order.total_price - totalPaid
                   const payPct = order.total_price > 0 ? Math.round((totalPaid / order.total_price) * 100) : 0
                   return (
-                    <div key={order.id} className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 space-y-4 hover:shadow-md transition-shadow">
+                    <div key={order.id} className="bg-white rounded-xl md:rounded-2xl border border-slate-100 shadow-sm p-4 md:p-5 space-y-3 md:space-y-4 hover:shadow-md transition-shadow">
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0">
-                          <h4 className="text-sm font-bold text-slate-700 truncate">
+                          <h4 className="text-xs md:text-sm font-bold text-slate-700 truncate">
                             {order.project_name || `Project #${order.id}`}
                           </h4>
-                          <p className="text-[10px] font-bold text-slate-400">
+                          <p className="text-[9px] md:text-[10px] font-bold text-slate-400">
                             {order.printorder_items?.length || 0} items
                           </p>
                         </div>
                         <div className={cn(
-                          "text-xs font-black px-2.5 py-1 rounded-lg border whitespace-nowrap",
+                          "text-[10px] md:text-xs font-black px-2 md:px-2.5 py-1 rounded-lg border whitespace-nowrap shrink-0",
                           remaining <= 0
                             ? "text-emerald-600 border-emerald-200 bg-emerald-50"
                             : "text-rose-600 border-rose-200 bg-rose-50",
@@ -702,8 +720,8 @@ export default function PrinterFullHomeDashboard({ printer }: PrinterFullHomeDas
                         </div>
                       </div>
 
-                      <div className="space-y-1.5">
-                        <div className="flex justify-between text-[9px] font-bold text-slate-400">
+                      <div className="space-y-1">
+                        <div className="flex justify-between text-[8px] md:text-[9px] font-bold text-slate-400">
                           <span>Progress</span>
                           <span>{payPct}%</span>
                         </div>
@@ -717,16 +735,16 @@ export default function PrinterFullHomeDashboard({ printer }: PrinterFullHomeDas
 
                       <div className="grid grid-cols-3 gap-2 text-center">
                         <div>
-                          <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Total</p>
-                          <p className="text-xs font-black text-slate-700">{order.total_price.toLocaleString()}</p>
+                          <p className="text-[7px] md:text-[8px] font-black text-slate-400 uppercase tracking-widest">Total</p>
+                          <p className="text-[11px] md:text-xs font-black text-slate-700">{order.total_price.toLocaleString()}</p>
                         </div>
                         <div>
-                          <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Paid</p>
-                          <p className="text-xs font-black text-emerald-600">{totalPaid.toLocaleString()}</p>
+                          <p className="text-[7px] md:text-[8px] font-black text-slate-400 uppercase tracking-widest">Paid</p>
+                          <p className="text-[11px] md:text-xs font-black text-emerald-600">{totalPaid.toLocaleString()}</p>
                         </div>
                         <div>
-                          <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Due</p>
-                          <p className={cn("text-xs font-black", remaining <= 0 ? "text-emerald-600" : "text-rose-500")}>
+                          <p className="text-[7px] md:text-[8px] font-black text-slate-400 uppercase tracking-widest">Due</p>
+                          <p className={cn("text-[11px] md:text-xs font-black", remaining <= 0 ? "text-emerald-600" : "text-rose-500")}>
                             {remaining <= 0 ? "0" : remaining.toLocaleString()}
                           </p>
                         </div>
@@ -762,57 +780,57 @@ export default function PrinterFullHomeDashboard({ printer }: PrinterFullHomeDas
 
       {/* Detail Modal */}
       {detailItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setDetailItem(null)}>
-          <div className="w-full max-w-2xl bg-white rounded-[2rem] shadow-2xl animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
-            <div className="p-6 md:p-8 space-y-6">
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex items-center gap-4">
-                  <div className="size-12 rounded-2xl bg-primarycolor/10 flex items-center justify-center text-primarycolor shrink-0">
-                    <BookOpen className="size-6" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 md:p-4 bg-black/60 backdrop-blur-sm" onClick={() => setDetailItem(null)}>
+          <div className="w-full max-w-2xl bg-white rounded-2xl md:rounded-[2rem] shadow-2xl animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto mx-0 md:mx-4" onClick={e => e.stopPropagation()}>
+            <div className="p-4 md:p-8 space-y-4 md:space-y-6">
+              <div className="flex items-start justify-between gap-3 md:gap-4">
+                <div className="flex items-center gap-3 md:gap-4 min-w-0">
+                  <div className="size-10 md:size-12 rounded-xl md:rounded-2xl bg-primarycolor/10 flex items-center justify-center text-primarycolor shrink-0">
+                    <BookOpen className="size-5 md:size-6" />
                   </div>
-                  <div>
-                    <h3 className="text-xl font-black text-slate-800">{detailItem.bookTitle}</h3>
-                    <p className="text-sm font-bold text-slate-400">{detailItem.bookAuthor}</p>
+                  <div className="min-w-0">
+                    <h3 className="text-base md:text-xl font-black text-slate-800 truncate">{detailItem.bookTitle}</h3>
+                    <p className="text-xs md:text-sm font-bold text-slate-400 truncate">{detailItem.bookAuthor}</p>
                   </div>
                 </div>
                 <Button variant="ghost" size="icon" onClick={() => setDetailItem(null)} className="rounded-full hover:bg-slate-100 shrink-0">
-                  <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                  <svg className="size-4 md:size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                 </Button>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-slate-50 rounded-xl p-4 text-center">
-                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Edition</p>
-                  <p className="text-sm font-black text-slate-700 mt-1">{detailItem.editionName}</p>
+              <div className="grid grid-cols-2 gap-2 md:gap-4">
+                <div className="bg-slate-50 rounded-xl p-3 md:p-4 text-center">
+                  <p className="text-[8px] md:text-[9px] font-black text-slate-400 uppercase tracking-widest">Edition</p>
+                  <p className="text-[11px] md:text-sm font-black text-slate-700 mt-0.5 md:mt-1 truncate">{detailItem.editionName}</p>
                 </div>
-                <div className="bg-slate-50 rounded-xl p-4 text-center">
-                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Project</p>
-                  <p className="text-sm font-black text-primarycolor mt-1 truncate">{detailItem.projectName}</p>
+                <div className="bg-slate-50 rounded-xl p-3 md:p-4 text-center">
+                  <p className="text-[8px] md:text-[9px] font-black text-slate-400 uppercase tracking-widest">Project</p>
+                  <p className="text-[11px] md:text-sm font-black text-primarycolor mt-0.5 md:mt-1 truncate">{detailItem.projectName}</p>
                 </div>
-                <div className="bg-slate-50 rounded-xl p-4 text-center">
-                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Total Copies</p>
-                  <p className="text-sm font-black text-slate-700 mt-1">{detailItem.quantity.toLocaleString()}</p>
+                <div className="bg-slate-50 rounded-xl p-3 md:p-4 text-center">
+                  <p className="text-[8px] md:text-[9px] font-black text-slate-400 uppercase tracking-widest">Total Copies</p>
+                  <p className="text-[11px] md:text-sm font-black text-slate-700 mt-0.5 md:mt-1">{detailItem.quantity.toLocaleString()}</p>
                 </div>
-                <div className="bg-slate-50 rounded-xl p-4 text-center">
-                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Remaining</p>
-                  <p className={cn("text-sm font-black mt-1", detailItem.remaining != null && detailItem.remaining > 0 ? "text-amber-500" : "text-emerald-500")}>
+                <div className="bg-slate-50 rounded-xl p-3 md:p-4 text-center">
+                  <p className="text-[8px] md:text-[9px] font-black text-slate-400 uppercase tracking-widest">Remaining</p>
+                  <p className={cn("text-[11px] md:text-sm font-black mt-0.5 md:mt-1", detailItem.remaining != null && detailItem.remaining > 0 ? "text-amber-500" : "text-emerald-500")}>
                     {detailItem.remaining != null ? detailItem.remaining.toLocaleString() : "—"}
                   </p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-emerald-50 rounded-xl p-4">
-                  <p className="text-[9px] font-black text-emerald-600 uppercase tracking-widest">Total Cost</p>
-                  <p className="text-lg font-black text-emerald-700 mt-1">{detailItem.totalPrice.toLocaleString(undefined, { minimumFractionDigits: 2 })} ETB</p>
+              <div className="grid grid-cols-2 gap-2 md:gap-4">
+                <div className="bg-emerald-50 rounded-xl p-3 md:p-4">
+                  <p className="text-[8px] md:text-[9px] font-black text-emerald-600 uppercase tracking-widest">Total Cost</p>
+                  <p className="text-sm md:text-lg font-black text-emerald-700 mt-0.5 md:mt-1 truncate">{detailItem.totalPrice.toLocaleString(undefined, { minimumFractionDigits: 2 })} ETB</p>
                 </div>
-                <div className="bg-blue-50 rounded-xl p-4">
-                  <p className="text-[9px] font-black text-blue-600 uppercase tracking-widest">Paid Amount</p>
-                  <div className="flex items-center gap-2 mt-1">
-                    <p className="text-lg font-black text-blue-700">{detailItem.paidAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })} ETB</p>
+                <div className="bg-blue-50 rounded-xl p-3 md:p-4">
+                  <p className="text-[8px] md:text-[9px] font-black text-blue-600 uppercase tracking-widest">Paid Amount</p>
+                  <div className="flex items-center gap-1.5 md:gap-2 mt-0.5 md:mt-1 flex-wrap">
+                    <p className="text-sm md:text-lg font-black text-blue-700 truncate">{detailItem.paidAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })} ETB</p>
                     {detailItem.totalPrice > 0 && (
                       <span className={cn(
-                        "text-[10px] font-black px-2 py-0.5 rounded-md",
+                        "text-[9px] md:text-[10px] font-black px-1.5 md:px-2 py-0.5 rounded-md",
                         (detailItem.paidAmount / detailItem.totalPrice) >= 1
                           ? "bg-emerald-100 text-emerald-700"
                           : (detailItem.paidAmount / detailItem.totalPrice) > 0.5
@@ -827,21 +845,21 @@ export default function PrinterFullHomeDashboard({ printer }: PrinterFullHomeDas
               </div>
 
               {detailItem.payments.length > 0 && (
-                <div className="space-y-3">
-                  <h4 className="text-sm font-black text-slate-700 uppercase tracking-widest">Payment History</h4>
-                  <div className="space-y-2">
+                <div className="space-y-2 md:space-y-3">
+                  <h4 className="text-xs md:text-sm font-black text-slate-700 uppercase tracking-widest">Payment History</h4>
+                  <div className="space-y-1.5 md:space-y-2">
                     {detailItem.payments.map((payment: any) => (
-                      <div key={payment.id} className="bg-slate-50 rounded-xl p-4 border border-slate-100">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-xs font-bold text-slate-500">
+                      <div key={payment.id} className="bg-slate-50 rounded-xl p-3 md:p-4 border border-slate-100">
+                        <div className="flex items-center justify-between gap-2 mb-1 md:mb-2">
+                          <span className="text-[10px] md:text-xs font-bold text-slate-500">
                             {formatDate(new Date(payment.payment_date))}
                           </span>
-                          <span className="text-sm font-black text-emerald-600">
+                          <span className="text-[11px] md:text-sm font-black text-emerald-600 shrink-0">
                             {payment.amount.toLocaleString(undefined, { minimumFractionDigits: 2 })} ETB
                           </span>
                         </div>
                         {payment.reference && (
-                          <p className="text-[10px] font-bold text-slate-400 leading-relaxed">
+                          <p className="text-[9px] md:text-[10px] font-bold text-slate-400 leading-relaxed">
                             {payment.reference}
                           </p>
                         )}
@@ -852,8 +870,8 @@ export default function PrinterFullHomeDashboard({ printer }: PrinterFullHomeDas
               )}
 
               {detailItem.payments.length === 0 && (
-                <div className="text-center py-6">
-                  <p className="text-sm font-bold text-slate-400">No payments recorded for this edition</p>
+                <div className="text-center py-4 md:py-6">
+                  <p className="text-xs md:text-sm font-bold text-slate-400">No payments recorded for this edition</p>
                 </div>
               )}
             </div>
@@ -863,38 +881,38 @@ export default function PrinterFullHomeDashboard({ printer }: PrinterFullHomeDas
 
       {/* Confirmation Dialog */}
       {confirmDialog && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="w-full max-w-md bg-white rounded-2xl p-7 shadow-2xl space-y-6 animate-in zoom-in-95 duration-200">
-            <div className="flex items-center gap-4">
-              <div className="size-14 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-500 border border-emerald-200 shrink-0">
-                <ShieldAlert className="size-7" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 md:p-4 bg-black/60 backdrop-blur-sm">
+          <div className="w-full max-w-md bg-white rounded-xl md:rounded-2xl p-5 md:p-7 shadow-2xl space-y-4 md:space-y-6 animate-in zoom-in-95 duration-200 mx-3 md:mx-0">
+            <div className="flex items-center gap-3 md:gap-4">
+              <div className="size-10 md:size-14 rounded-xl md:rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-500 border border-emerald-200 shrink-0">
+                <ShieldAlert className="size-5 md:size-7" />
               </div>
-              <div className="space-y-0.5">
-                <h3 className="text-lg font-black text-slate-800">Mark as Completed</h3>
-                <p className="text-sm font-bold text-slate-500 leading-snug">
+              <div className="space-y-0.5 min-w-0">
+                <h3 className="text-base md:text-lg font-black text-slate-800">Mark as Completed</h3>
+                <p className="text-xs md:text-sm font-bold text-slate-500 leading-snug">
                   You are about to mark {confirmDialog.label} as completed. This cannot be undone.
                 </p>
               </div>
             </div>
-            <div className="bg-amber-50 rounded-xl border border-amber-200 p-4 flex items-start gap-3">
-              <AlertTriangle className="size-5 text-amber-500 shrink-0 mt-0.5" />
-              <p className="text-xs font-bold text-amber-700 leading-relaxed">
+            <div className="bg-amber-50 rounded-xl border border-amber-200 p-3 md:p-4 flex items-start gap-2 md:gap-3">
+              <AlertTriangle className="size-4 md:size-5 text-amber-500 shrink-0 mt-0.5" />
+              <p className="text-[10px] md:text-xs font-bold text-amber-700 leading-relaxed">
                 Once marked complete, you cannot revert the status back. Please confirm all work is finished.
               </p>
             </div>
-            <div className="flex gap-3 pt-1">
+            <div className="flex gap-2 md:gap-3 pt-1">
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => { setConfirmDialog(null); setPendingStatus(null) }}
-                className="flex-1 h-11 rounded-xl border-2 font-black uppercase tracking-widest text-[11px]"
+                className="flex-1 h-10 md:h-11 rounded-xl border-2 font-black uppercase tracking-widest text-[10px] md:text-[11px]"
               >
                 Cancel
               </Button>
               <Button
                 type="button"
                 onClick={confirmComplete}
-                className="flex-[2] h-11 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-black uppercase tracking-widest text-[11px] shadow-lg shadow-emerald-500/20"
+                className="flex-[2] h-10 md:h-11 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-black uppercase tracking-widest text-[10px] md:text-[11px] shadow-lg shadow-emerald-500/20"
               >
                 Confirm Complete
               </Button>

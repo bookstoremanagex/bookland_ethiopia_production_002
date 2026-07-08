@@ -316,38 +316,6 @@ export function AdminAppSidebar({ accountId }: { accountId?: number }) {
                             </Link>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
-                        <SidebarMenuSubItem>
-                          <SidebarMenuSubButton
-                            asChild
-                            isActive={
-                              isMounted &&
-                              (activePath ===
-                                "/admin_dashboard/checks/follow-up" ||
-                                activePath.startsWith(
-                                  "/admin_dashboard/checks/follow-up/",
-                                ))
-                            }
-                            className={cn(
-                              "transition-all duration-300 rounded-lg h-9 px-4",
-                              "data-[active=true]:bg-primarycolor data-[active=true]:text-white data-[active=true]:font-black data-[active=true]:shadow-md data-[active=true]:shadow-primarycolor/20",
-                              "hover:bg-primarycolor/10 hover:text-primarycolor",
-                            )}
-                          >
-                            <Link href="/admin_dashboard/checks/follow-up">
-                              <FileCheck
-                                className={cn(
-                                  "w-4 h-4",
-                                  isMounted &&
-                                    activePath ===
-                                      "/admin_dashboard/checks/follow-up"
-                                    ? "text-white"
-                                    : "text-primarycolor/70",
-                                )}
-                              />
-                              <span>Follow Up</span>
-                            </Link>
-                          </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
                       </SidebarMenuSub>
                     </CollapsibleContent>
                   </SidebarMenuItem>
@@ -816,6 +784,38 @@ export function AdminAppSidebar({ accountId }: { accountId?: number }) {
                                 )}
                               />
                               <span>Info</span>
+                            </Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                        <SidebarMenuSubItem>
+                          <SidebarMenuSubButton
+                            asChild
+                            isActive={
+                              isMounted &&
+                              (activePath ===
+                                "/admin_dashboard/printing/delivery-records" ||
+                                activePath.startsWith(
+                                  "/admin_dashboard/printing/delivery-records/",
+                                ))
+                            }
+                            className={cn(
+                              "transition-all duration-300 rounded-lg h-9 px-4",
+                              "data-[active=true]:bg-primarycolor data-[active=true]:text-white data-[active=true]:font-black data-[active=true]:shadow-md data-[active=true]:shadow-primarycolor/20",
+                              "hover:bg-primarycolor/10 hover:text-primarycolor",
+                            )}
+                          >
+                            <Link href="/admin_dashboard/printing/delivery-records">
+                              <FileText
+                                className={cn(
+                                  "w-4 h-4",
+                                  isMounted &&
+                                    activePath ===
+                                      "/admin_dashboard/printing/delivery-records"
+                                    ? "text-white"
+                                    : "text-primarycolor/70",
+                                )}
+                              />
+                              <span>Delivery Records</span>
                             </Link>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>

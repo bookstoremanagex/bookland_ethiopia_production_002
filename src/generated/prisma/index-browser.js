@@ -387,6 +387,18 @@ exports.Prisma.Printorder_paymentsScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.Printer_delivery_recordsScalarFieldEnum = {
+  id: 'id',
+  printorder_item_id: 'printorder_item_id',
+  storeId: 'storeId',
+  quantity_deliverd: 'quantity_deliverd',
+  approvedByPrinter: 'approvedByPrinter',
+  approvedByPrinterAt: 'approvedByPrinterAt',
+  is_deleted: 'is_deleted',
+  updatedAt: 'updatedAt',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.Printorder_itemsScalarFieldEnum = {
   id: 'id',
   printorder_id: 'printorder_id',
@@ -1040,6 +1052,7 @@ exports.Prisma.ModelName = {
   printer: 'printer',
   printorder: 'printorder',
   printorder_payments: 'printorder_payments',
+  printer_delivery_records: 'printer_delivery_records',
   printorder_items: 'printorder_items',
   roletypes: 'roletypes',
   roles: 'roles',

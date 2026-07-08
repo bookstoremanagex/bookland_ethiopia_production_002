@@ -16,6 +16,141 @@ export async function getAllStores() {
     }
 }
 
+/**
+ * Find active printorder_items for an edition and record printer delivery records
+ * by distributing the quantity across items starting from the most recent.
+ * If no printorder_items exist, creates a minimal one on the fly.
+ */
+async function recordPrinterDeliveries(
+    tx: any,
+    editionId: number,
+    storeId: number,
+    quantity: number
+) {
+    let items = await tx.printorder_items.findMany({
+        where: {
+            bookEditionId: editionId,
+            is_deleted: false,
+        },
+        orderBy: { createdAt: 'desc' },
+        include: {
+            printer_delivery_records: {
+                where: { is_deleted: false },
+                select: { quantity_deliverd: true },
+            },
+        },
+    });
+
+    // If no printorder_items exist, create a minimal one on the fly
+    if (items.length === 0) {
+        const edition = await tx.bookedition.findUnique({
+            where: { id: editionId },
+            include: { books: true },
+        });
+
+        // Find a printer to satisfy the FK constraint
+        const anyPrinter = await tx.printer.findFirst({
+            where: { is_deleted: false },
+            select: { id: true },
+        });
+
+        if (!anyPrinter) {
+            console.warn(`[recordPrinterDeliveries] No printer found to create fallback printorder for editionId=${editionId}`);
+            return;
+        }
+
+            // Create a dummy printorder to satisfy the FK constraint
+            const dummyOrder = await tx.printorder.create({
+                data: {
+                    project_name: `Auto-delivery for ${edition?.books?.title || `Edition #${editionId}`}`,
+                    printerId: anyPrinter.id,
+                    status: "NOT_STARTED",
+                    quality: "STANDARD",
+                    edition: "SINGLE",
+                    count: quantity,
+                    is_deleted: false,
+                    updatedAt: new Date(),
+                },
+            });
+
+        const dummyItem = await tx.printorder_items.create({
+            data: {
+                printorder_id: dummyOrder.id,
+                bookEditionId: editionId,
+                quantity: quantity,
+                price_per_book: 0,
+                total_price: 0,
+                status: "NOT_STARTED",
+                is_deleted: false,
+            },
+        });
+
+        items = [{
+            ...dummyItem,
+            printer_delivery_records: [],
+        }];
+    }
+
+    let remainingToDeliver = quantity;
+
+    for (const item of items) {
+        if (remainingToDeliver <= 0) break;
+
+        const alreadyDelivered = (item.printer_delivery_records || []).reduce(
+            (sum: number, r: any) => sum + (r.quantity_deliverd || 0),
+            0
+        );
+        const maxDeliverable = (item.quantity || 0) - alreadyDelivered;
+
+        if (maxDeliverable <= 0) continue;
+
+        const deliverNow = Math.min(remainingToDeliver, maxDeliverable);
+
+        await tx.printer_delivery_records.create({
+            data: {
+                printorder_item_id: item.id,
+                storeId: storeId,
+                quantity_deliverd: deliverNow,
+                approvedByPrinter: false,
+                approvedByPrinterAt: null,
+                is_deleted: false,
+            },
+        });
+
+        remainingToDeliver -= deliverNow;
+    }
+
+    // If existing items are exhausted, add a new printorder_item to the same printorder
+    if (remainingToDeliver > 0 && items.length > 0) {
+        const parentOrderId = items[0].printorder_id;
+
+        const newItem = await tx.printorder_items.create({
+            data: {
+                printorder_id: parentOrderId,
+                bookEditionId: editionId,
+                quantity: remainingToDeliver,
+                price_per_book: 0,
+                total_price: 0,
+                status: "NOT_STARTED",
+                is_deleted: false,
+            },
+        });
+
+        await tx.printer_delivery_records.create({
+            data: {
+                printorder_item_id: newItem.id,
+                storeId: storeId,
+                quantity_deliverd: remainingToDeliver,
+                approvedByPrinter: false,
+                approvedByPrinterAt: null,
+                is_deleted: false,
+            },
+        });
+
+        remainingToDeliver = 0;
+    }
+}
+
 export async function assignEditionToStore(data: { editionId: number, storeId: number, quantity: number }) {
     try {
         // Check if already assigned
@@ -43,9 +178,9 @@ export async function assignEditionToStore(data: { editionId: number, storeId: n
             return { success: false, error: "Quantity cannot be negative." };
         }
 
-        // Create assignment and deduct from remaining in a transaction
-        const [assignment] = await (prisma as any).$transaction([
-            (prisma as any).bookeditionstores.create({
+        // Create assignment, deduct from remaining, and record delivery in a transaction
+        const [assignment] = await (prisma as any).$transaction(async (tx: any) => {
+            const created = await tx.bookeditionstores.create({
                 data: {
                     editionId: data.editionId,
                     storeId: data.storeId,
@@ -53,12 +188,17 @@ export async function assignEditionToStore(data: { editionId: number, storeId: n
                     updatedAt: new Date()
                 },
                 include: { stores: true }
-            }),
-            (prisma as any).bookedition.update({
+            });
+
+            await tx.bookedition.update({
                 where: { id: data.editionId },
                 data: { count_remening_for_transfer: { decrement: data.quantity } }
-            })
-        ], { timeout: 15000 });
+            });
+
+            await recordPrinterDeliveries(tx, data.editionId, data.storeId, data.quantity);
+
+            return [created];
+        }, { timeout: 15000 });
 
         const newRemaining = (remaining - data.quantity);
         revalidatePath(`/admin_dashboard/books/editions/${data.editionId}`);
@@ -92,18 +232,25 @@ export async function updateStoreInventory(id: number, quantity: number, edition
         }
 
         // Update store quantity and edition remaining in a transaction
-        // Uses atomic decrement so central inventory always stays in sync
-        const [updated] = await (prisma as any).$transaction([
-            (prisma as any).bookeditionstores.update({
+        const [updated] = await (prisma as any).$transaction(async (tx: any) => {
+            const updatedRecord = await tx.bookeditionstores.update({
                 where: { id },
                 data: { quantity, updatedAt: new Date() },
                 include: { stores: true }
-            }),
-            (prisma as any).bookedition.update({
+            });
+
+            await tx.bookedition.update({
                 where: { id: editionId },
                 data: { count_remening_for_transfer: { decrement: diff } }
-            })
-        ], { timeout: 15000 });
+            });
+
+            // Record delivery only when quantity increased (new books delivered to store)
+            if (diff > 0) {
+                await recordPrinterDeliveries(tx, editionId, current.storeId, diff);
+            }
+
+            return [updatedRecord];
+        }, { timeout: 15000 });
 
         const newRemaining = (remaining - diff);
         revalidatePath(`/admin_dashboard/books/editions/${editionId}`);
@@ -337,17 +484,16 @@ export async function batchAssignEditionToStores(
     }
 
     const now = new Date();
-    await (prisma as any).$transaction(
-      [
-        ...data.stores.map((s: { storeId: number; quantity: number }) => {
-          const existing = existingMap[s.storeId];
-          if (existing) {
-            return (prisma as any).bookeditionstores.update({
-              where: { id: existing.id },
-              data: { quantity: s.quantity, updatedAt: now },
-            });
-          }
-          return (prisma as any).bookeditionstores.create({
+    await (prisma as any).$transaction(async (tx: any) => {
+      for (const s of data.stores) {
+        const existing = existingMap[s.storeId];
+        if (existing) {
+          await tx.bookeditionstores.update({
+            where: { id: existing.id },
+            data: { quantity: s.quantity, updatedAt: now },
+          });
+        } else {
+          await tx.bookeditionstores.create({
             data: {
               editionId: data.editionId,
               storeId: s.storeId,
@@ -355,14 +501,21 @@ export async function batchAssignEditionToStores(
               updatedAt: now,
             },
           });
-        }),
-        (prisma as any).bookedition.update({
-          where: { id: data.editionId },
-          data: { count_remening_for_transfer: { decrement: netDelta } },
-        }),
-      ],
-      { timeout: 15000 }
-    );
+        }
+
+        // Record delivery only if this store's quantity increased
+        const oldQty = existing ? Number(existing.quantity || 0) : 0;
+        const delta = s.quantity - oldQty;
+        if (delta > 0) {
+          await recordPrinterDeliveries(tx, data.editionId, s.storeId, delta);
+        }
+      }
+
+      await tx.bookedition.update({
+        where: { id: data.editionId },
+        data: { count_remening_for_transfer: { decrement: netDelta } },
+      });
+    }, { timeout: 15000 });
 
     // Log activity
     const session = await getCurrentSession();
