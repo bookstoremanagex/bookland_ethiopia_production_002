@@ -241,23 +241,28 @@ const config = {
         "fromEnvVar": null,
         "value": "windows",
         "native": true
+      },
+      {
+        "fromEnvVar": null,
+        "value": "rhel-openssl-3.0.x"
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\kidus\\Desktop\\Projects\\Bookstore Management System\\bookland_ethiopia_production_002\\prisma\\retail_schema.prisma",
+    "sourceFilePath": "C:\\Users\\kidus\\Desktop\\Projects\\Bookstore Management System\\bookland_ethiopia_production_002\\prisma\\retail\\retail_schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
     "rootEnvPath": null,
     "schemaEnvPath": "../../../.env"
   },
-  "relativePath": "../../../prisma",
+  "relativePath": "../../../prisma/retail",
   "clientVersion": "6.19.3",
   "engineVersion": "c2990dca591cba766e3b7ef5d9e8a84796e47ab7",
   "datasourceNames": [
     "retail_db"
   ],
   "activeProvider": "mysql",
+  "postinstall": false,
   "inlineDatasources": {
     "retail_db": {
       "url": {
@@ -266,8 +271,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "generator retail_client {\n  provider = \"prisma-client-js\"\n  output   = \"../src/generated/retail-prisma\"\n}\n\ndatasource retail_db {\n  provider = \"mysql\"\n  url      = env(\"RETAIL_SHOP_DATABASE_URL\")\n}\n\nmodel retail_books {\n  id                            Int                    @id @default(autoincrement())\n  book_id                       Int?\n  title                         String\n  author                        String\n  language                      String\n  category                      String\n  publication_year              String?\n  copyright_registration_number String?\n  book_image_url                String?\n  status                        String                 @default(\"available\")\n  is_deleted                    Boolean                @default(false)\n  updatedAt                     DateTime\n  createdAt                     DateTime               @default(now())\n  deletedAt                     DateTime               @default(now())\n  pen_name                      String?\n  translator_cost               Float?\n  cover_design_cost             Float?\n  text_design_cost              Float?\n  editor_cost                   Float?\n  typewriting_cost              Float?\n  store_cost                    Float?\n  distribution_cost             Float?\n  advertisement_cost            Float?\n  purchasing_right_cost         Float?\n  ourbook                       Boolean                @default(false)\n  bookEditions                  reatil_book_editions[]\n\n  created_at DateTime @default(now())\n  updated_at DateTime @default(now())\n  deleted_at DateTime @default(now())\n}\n\nmodel reatil_book_editions {\n  id           Int             @id @default(autoincrement())\n  edition_name String\n  book_id      Int?\n  books        retail_books?   @relation(fields: [book_id], references: [id], map: \"BookEditions_book_id_fkey\")\n  price        Float?\n  orders       retail_orders[]\n\n  created_at DateTime @default(now())\n  updated_at DateTime @default(now())\n  deleted_at DateTime @default(now())\n\n  @@index([book_id], map: \"BookEditions_book_id_fkey\")\n}\n\nmodel retail_orders {\n  id              Int                  @id @default(autoincrement())\n  book_edition_id Int\n  book            reatil_book_editions @relation(fields: [book_edition_id], references: [id], map: \"RetailOrders_book_edition_id_fkey\")\n  total_price     Float?\n  quantity        Int?\n  customer        customers?           @relation(fields: [customerId], references: [id], map: \"RetailOrders_customer_id_fkey\")\n  customerId      Int?\n\n  created_at DateTime @default(now())\n  updated_at DateTime @default(now())\n  deleted_at DateTime @default(now())\n}\n\nmodel users {\n  id         Int      @id @default(autoincrement())\n  name       String?\n  email      String?\n  password   String?\n  role       String?\n  created_at DateTime @default(now())\n  updated_at DateTime @default(now())\n  deleted_at DateTime @default(now())\n}\n\nmodel customers {\n  id           Int             @id @default(autoincrement())\n  name         String?\n  email        String?\n  password     String?\n  customerType String?\n  orders       retail_orders[]\n\n  created_at DateTime @default(now())\n  updated_at DateTime @default(now())\n  deleted_at DateTime @default(now())\n}\n\nenum customerType {\n  INDVIDUAL\n  DISTRIBUTOR\n  BOOKSHOP\n}\n",
-  "inlineSchemaHash": "9aa57a44483aebff934a6f4b89c2971f707be461e2a551c42d1508d7fcf9a3ad",
+  "inlineSchema": "generator retail_client {\n  provider      = \"prisma-client-js\"\n  output        = \"../../src/generated/retail-prisma\"\n  binaryTargets = [\"native\", \"rhel-openssl-3.0.x\"]\n}\n\ndatasource retail_db {\n  provider = \"mysql\"\n  url      = env(\"RETAIL_SHOP_DATABASE_URL\")\n}\n\nmodel retail_books {\n  id                            Int                    @id @default(autoincrement())\n  book_id                       Int?\n  title                         String\n  author                        String\n  language                      String\n  category                      String\n  publication_year              String?\n  copyright_registration_number String?\n  book_image_url                String?\n  status                        String                 @default(\"available\")\n  is_deleted                    Boolean                @default(false)\n  updatedAt                     DateTime\n  createdAt                     DateTime               @default(now())\n  deletedAt                     DateTime               @default(now())\n  pen_name                      String?\n  translator_cost               Float?\n  cover_design_cost             Float?\n  text_design_cost              Float?\n  editor_cost                   Float?\n  typewriting_cost              Float?\n  store_cost                    Float?\n  distribution_cost             Float?\n  advertisement_cost            Float?\n  purchasing_right_cost         Float?\n  ourbook                       Boolean                @default(false)\n  bookEditions                  reatil_book_editions[]\n\n  created_at DateTime @default(now())\n  updated_at DateTime @default(now())\n  deleted_at DateTime @default(now())\n}\n\nmodel reatil_book_editions {\n  id           Int             @id @default(autoincrement())\n  edition_name String\n  book_id      Int?\n  books        retail_books?   @relation(fields: [book_id], references: [id], map: \"BookEditions_book_id_fkey\")\n  price        Float?\n  orders       retail_orders[]\n\n  created_at DateTime @default(now())\n  updated_at DateTime @default(now())\n  deleted_at DateTime @default(now())\n\n  @@index([book_id], map: \"BookEditions_book_id_fkey\")\n}\n\nmodel retail_orders {\n  id              Int                  @id @default(autoincrement())\n  book_edition_id Int\n  book            reatil_book_editions @relation(fields: [book_edition_id], references: [id], map: \"RetailOrders_book_edition_id_fkey\")\n  total_price     Float?\n  quantity        Int?\n  customer        customers?           @relation(fields: [customerId], references: [id], map: \"RetailOrders_customer_id_fkey\")\n  customerId      Int?\n\n  created_at DateTime @default(now())\n  updated_at DateTime @default(now())\n  deleted_at DateTime @default(now())\n}\n\nmodel users {\n  id         Int      @id @default(autoincrement())\n  name       String?\n  email      String?\n  password   String?\n  role       String?\n  created_at DateTime @default(now())\n  updated_at DateTime @default(now())\n  deleted_at DateTime @default(now())\n}\n\nmodel customers {\n  id           Int             @id @default(autoincrement())\n  name         String?\n  email        String?\n  password     String?\n  customerType String?\n  orders       retail_orders[]\n\n  created_at DateTime @default(now())\n  updated_at DateTime @default(now())\n  deleted_at DateTime @default(now())\n}\n\nenum customerType {\n  INDVIDUAL\n  DISTRIBUTOR\n  BOOKSHOP\n}\n",
+  "inlineSchemaHash": "a6a461fea8139485b27236a1860cd6d87e4ba0e6b2516c9391ca782173e8310d",
   "copyEngine": true
 }
 config.dirname = '/'

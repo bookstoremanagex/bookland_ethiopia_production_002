@@ -1,6 +1,7 @@
 generator retail_client {
-  provider = "prisma-client-js"
-  output   = "../src/generated/retail-prisma"
+  provider      = "prisma-client-js"
+  output        = "../../src/generated/retail-prisma"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource retail_db {
