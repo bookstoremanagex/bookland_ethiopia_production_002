@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import DashboardContainer from "@/components/admin_dashboard_components/home_dashboard/DashboardContainer";
 import { getServerCalendarPref } from "@/lib/server-calendar"
-import { formatDate } from "@/lib/calendar-utils"
+import { formatDate, convertToEthiopian, ETHIOPIAN_MONTHS } from "@/lib/calendar-utils"
 
 const LOW_STOCK_THRESHOLD = 50;
 
@@ -16,7 +16,7 @@ export interface DashboardData {
     lowStockCount: number;
     revenueGrowth: number;
   };
-  financialData: { name: string; revenue: number; debt: number }[];
+  orderMonthsData: { name: string; orders: number }[];
   recentActivities: {
     id: number;
     action: string;
@@ -58,7 +58,7 @@ export default async function AdminHomePage() {
     rawOrders,
     rawLowStock,
     rawLogs,
-    books,
+    rawStores,
     rawPendingPayments,
     rawPendingOrdersCount,
     prevAssignments,
@@ -72,10 +72,13 @@ export default async function AdminHomePage() {
       orderBy: { createdAt: 'desc' },
     }),
     (prisma as any).orders.findMany({
-      where: { is_deleted: false },
-      take: 5,
+      where: {
+        is_deleted: false,
+        is_approved: true,
+        createdAt: { gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) },
+      },
       orderBy: { createdAt: 'desc' },
-      include: { bookshopes: true },
+      include: { bookshopes: true, order_items: true },
     }),
     (prisma as any).bookeditionstores.findMany({
       where: { is_deleted: false, quantity: { lt: LOW_STOCK_THRESHOLD } },
@@ -91,9 +94,13 @@ export default async function AdminHomePage() {
       orderBy: { createdAt: 'desc' },
       include: { account: true },
     }),
-    (prisma as any).books.findMany({
+    (prisma as any).stores.findMany({
       where: { is_deleted: false },
-      select: { productionstatus: true },
+      include: {
+        bookeditionstores: {
+          where: { is_deleted: false },
+        },
+      },
     }),
     (prisma as any).payments.count({
       where: { status: "PENDING", is_deleted: false },
@@ -127,32 +134,40 @@ export default async function AdminHomePage() {
   const prevRevenue = prevAssignments.reduce((acc: any, a: any) => acc + (a.total_price || 0), 0);
   const revenueGrowth = prevRevenue > 0 ? Math.round(((totalRevenue - prevRevenue) / prevRevenue) * 100) : 0;
 
-  // Financial trend — group by month
-  const monthMap: Record<string, { revenue: number; debt: number }> = {};
-  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  for (const month of monthNames) {
-    monthMap[month] = { revenue: 0, debt: 0 };
+  // Orders by date (last 30 days, approved only) — respects calendar preference
+  const GREG_MONTHS_SHORT = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const dayMap = new Map<string, { name: string; orders: number; dateKey: string }>();
+  const now = new Date();
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date(now);
+    d.setDate(d.getDate() - i);
+    let label: string;
+    let key: string;
+    if (calendarPref === "gregorian") {
+      label = `${GREG_MONTHS_SHORT[d.getMonth()]} ${d.getDate()}`;
+      key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    } else {
+      const eth = convertToEthiopian(d);
+      label = `${ETHIOPIAN_MONTHS[eth.month - 1].slice(0, 3)} ${eth.day}`;
+      key = `${eth.year}-${String(eth.month).padStart(2, "0")}-${String(eth.day).padStart(2, "0")}`;
+    }
+    dayMap.set(key, { name: label, orders: 0, dateKey: key });
   }
-  for (const a of assignments) {
-    const d = new Date(a.createdAt);
-    const m = monthNames[d.getMonth()];
-    if (m) {
-      monthMap[m].revenue += a.total_price || 0;
-      monthMap[m].debt += (a.total_price || 0) - (a.already_paid || 0);
+  for (const o of ordersList) {
+    const d = new Date(o.createdAt);
+    let key: string;
+    if (calendarPref === "gregorian") {
+      key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    } else {
+      const eth = convertToEthiopian(d);
+      key = `${eth.year}-${String(eth.month).padStart(2, "0")}-${String(eth.day).padStart(2, "0")}`;
+    }
+    if (dayMap.has(key)) {
+      const dayQty = (o.order_items || []).reduce((sum: number, item: any) => sum + (item.quantity || 0), 0);
+      dayMap.get(key)!.orders += dayQty;
     }
   }
-  const financialData = monthNames
-    .map(name => ({ name, ...monthMap[name] }))
-    .filter(m => m.revenue > 0 || m.debt > 0);
-
-  if (financialData.length === 0) {
-    financialData.push(
-      { name: "Jan", revenue: totalRevenue * 0.4, debt: totalDebt * 0.3 },
-      { name: "Feb", revenue: totalRevenue * 0.6, debt: totalDebt * 0.5 },
-      { name: "Mar", revenue: totalRevenue * 0.8, debt: totalDebt * 0.7 },
-      { name: "Apr", revenue: totalRevenue, debt: totalDebt },
-    );
-  }
+  const orderMonthsData = Array.from(dayMap.values()).sort((a, b) => a.dateKey.localeCompare(b.dateKey));
 
   // Notifications
   const notifications = (rawNotifications as any[]).map((n: any) => ({
@@ -164,8 +179,8 @@ export default async function AdminHomePage() {
     createdAt: n.createdAt instanceof Date ? n.createdAt.toISOString() : n.createdAt,
   }));
 
-  // Recent orders
-  const recentOrders = ordersList.map((o: any) => ({
+  // Recent orders (latest 10)
+  const recentOrders = ordersList.slice(0, 10).map((o: any) => ({
     id: o.id,
     shopName: o.bookshopes?.name || "Unknown",
     totalAmount: o.total_amount || 0,
@@ -189,16 +204,21 @@ export default async function AdminHomePage() {
     date: formatDate(new Date(log.createdAt), calendarPref, "MMM dd"),
   }));
 
-  // Production data
-  const productionMap: Record<string, { status: string; fill: string; count: number }> = {
-    ON_PRODUCTION: { status: "In production", fill: "#408A71", count: 0 },
-    FINISHED: { status: "Completed", fill: "#285A48", count: 0 },
-    CANCELLED: { status: "Cancelled", fill: "#c2410c", count: 0 },
-  };
-  (books as any[]).forEach((b: any) => {
-    const status = b.productionstatus || "ON_PRODUCTION";
-    if (productionMap[status]) productionMap[status].count++;
+  // Production data — stock in stores
+  const STORE_COLORS = ["#408A71", "#285A48", "#B0E4CC", "#059669", "#34D399", "#6EE7B7", "#A7F3D0", "#D1FAE5"];
+  const productionData = (rawStores as any[]).map((store: any, idx: number) => {
+    const totalQty = (store.bookeditionstores || []).reduce(
+      (sum: number, bes: any) => sum + (bes.quantity || 0),
+      0
+    );
+    return {
+      status: store.name,
+      count: totalQty,
+      fill: STORE_COLORS[idx % STORE_COLORS.length],
+    };
   });
+
+  // Shop orders data
 
   const dashboardData: DashboardData = {
     stats: {
@@ -211,9 +231,9 @@ export default async function AdminHomePage() {
       lowStockCount,
       revenueGrowth,
     },
-    financialData,
+    orderMonthsData,
     recentActivities,
-    productionData: Object.values(productionMap),
+    productionData,
     notifications,
     recentOrders,
     lowStockItems,

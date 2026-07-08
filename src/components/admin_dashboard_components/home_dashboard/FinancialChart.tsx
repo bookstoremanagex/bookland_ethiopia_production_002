@@ -24,19 +24,14 @@ import {
 interface FinancialChartProps {
   data: {
     name: string;
-    revenue: number;
-    debt: number;
+    orders: number;
   }[];
 }
 
 const chartConfig = {
-  revenue: {
-    label: "Revenue",
+  orders: {
+    label: "Orders",
     color: "var(--color-primarycolor)",
-  },
-  debt: {
-    label: "Outstanding",
-    color: "var(--color-secondarycolor)",
   },
 } satisfies ChartConfig;
 
@@ -45,10 +40,10 @@ export function FinancialChart({ data }: FinancialChartProps) {
     <Card className="h-full rounded-2xl border border-slate-200/80 bg-white shadow-sm lg:rounded-3xl">
       <CardHeader className="space-y-1 border-b border-slate-100 px-6 pb-4 pt-6 sm:px-8">
         <CardTitle className="text-lg font-semibold tracking-tight text-slate-900 sm:text-xl">
-          Revenue & outstanding
+          Orders by Day (Last 30 Days)
         </CardTitle>
         <CardDescription className="text-sm leading-relaxed text-slate-600">
-          Monthly revenue and pending amounts from shop assignments.
+          Approved order amounts per Ethiopian day in the last 30 days.
         </CardDescription>
       </CardHeader>
       <CardContent className="px-4 pb-6 pt-4 sm:px-8 sm:pb-8">
@@ -65,26 +60,17 @@ export function FinancialChart({ data }: FinancialChartProps) {
               />
               <ChartTooltip cursor={{ fill: "rgba(64, 138, 113, 0.06)" }} content={<ChartTooltipContent indicator="dashed" />} />
               <Bar
-                dataKey="revenue"
+                dataKey="orders"
                 fill="#408A71"
                 radius={[6, 6, 0, 0]}
-                name="Gross revenue"
-              />
-              <Bar
-                dataKey="debt"
-                fill="#285A48"
-                radius={[6, 6, 0, 0]}
-                name="Outstanding"
+                name="Orders"
               />
             </BarChart>
           </ResponsiveContainer>
         </ChartContainer>
         <div className="mt-4 flex flex-wrap gap-4 border-t border-slate-100 pt-4 text-xs text-slate-600">
           <span className="inline-flex items-center gap-2">
-            <span className="size-2.5 rounded-sm bg-[#408A71]" /> Revenue
-          </span>
-          <span className="inline-flex items-center gap-2">
-            <span className="size-2.5 rounded-sm bg-[#285A48]" /> Outstanding
+            <span className="size-2.5 rounded-sm bg-[#408A71]" /> Orders
           </span>
         </div>
       </CardContent>

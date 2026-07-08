@@ -188,7 +188,7 @@ export default function DashboardContainer({ data }: DashboardContainerProps) {
       {/* Chart Row */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-8">
         <div className="lg:col-span-2">
-          <FinancialChart data={data.financialData} />
+          <FinancialChart data={data.orderMonthsData} />
         </div>
         <div className="lg:col-span-1">
           <ProductionOverview data={data.productionData} />
