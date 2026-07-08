@@ -627,6 +627,48 @@ export default function PrinterFullHomeDashboard({ printer }: PrinterFullHomeDas
                 <p className="text-[10px] font-bold text-slate-400">{printer.printorder.filter((o: any) => o.total_price).length} projects with pricing</p>
               </div>
             </div>
+            {(() => {
+              const pricedOrders = printer.printorder.filter((o: any) => o.total_price)
+              const totalRemaining = pricedOrders.reduce((sum: number, o: any) => {
+                const totalPaid = (o.printorder_payments || []).reduce((s: number, p: any) => s + p.amount, 0)
+                return sum + Math.max(0, o.total_price - totalPaid)
+              }, 0)
+              const unpaidCount = pricedOrders.filter((o: any) => {
+                const totalPaid = (o.printorder_payments || []).reduce((sum: number, p: any) => sum + p.amount, 0)
+                return totalPaid < o.total_price
+              }).length
+              return (
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="bg-rose-50 rounded-2xl border border-rose-200 p-5 flex items-center gap-4">
+                    <div className="size-10 rounded-xl bg-rose-100 flex items-center justify-center text-rose-600 shrink-0">
+                      <Banknote className="size-5" />
+                    </div>
+                    <div>
+                      <p className="text-[9px] font-black uppercase tracking-widest text-rose-400">Total Unpaid</p>
+                      <p className="text-xl font-black text-rose-600">{totalRemaining.toLocaleString()} <span className="text-xs font-bold opacity-60">ETB</span></p>
+                    </div>
+                  </div>
+                  <div className="bg-amber-50 rounded-2xl border border-amber-200 p-5 flex items-center gap-4">
+                    <div className="size-10 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600 shrink-0">
+                      <AlertCircle className="size-5" />
+                    </div>
+                    <div>
+                      <p className="text-[9px] font-black uppercase tracking-widest text-amber-400">Outstanding Projects</p>
+                      <p className="text-xl font-black text-amber-700">{unpaidCount} / {pricedOrders.length}</p>
+                    </div>
+                  </div>
+                  <div className="bg-emerald-50 rounded-2xl border border-emerald-200 p-5 flex items-center gap-4">
+                    <div className="size-10 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
+                      <CheckCircle2 className="size-5" />
+                    </div>
+                    <div>
+                      <p className="text-[9px] font-black uppercase tracking-widest text-emerald-400">Fully Paid</p>
+                      <p className="text-xl font-black text-emerald-600">{pricedOrders.length - unpaidCount}</p>
+                    </div>
+                  </div>
+                </div>
+              )
+            })()}
             <div className="space-y-3">
               {printer.printorder.filter((o: any) => o.total_price).length === 0 ? (
                 <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-10 text-center">
