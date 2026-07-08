@@ -33,6 +33,7 @@ export default async function PrintingInfoPage() {
             editionName: item.bookedition?.edition_name || "—",
             quantity: item.quantity || 0,
             status: item.status || "NOT_STARTED",
+            remaining: item.bookedition?.count_remening_for_transfer ?? null,
         }))
     );
 
@@ -52,7 +53,7 @@ export default async function PrintingInfoPage() {
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <div className="bg-white rounded-[2rem] p-6 border-2 border-primarycolor/5 shadow-xl flex items-center gap-5">
                     <div className="size-12 rounded-2xl bg-primarycolor/10 flex items-center justify-center text-primarycolor shrink-0">
                         <BarChart3 className="size-6" />

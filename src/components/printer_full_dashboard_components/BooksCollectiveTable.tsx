@@ -16,6 +16,8 @@ import {
   ChevronLeft,
   ChevronRight,
   BookOpen,
+  ShieldAlert,
+  AlertTriangle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,6 +28,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { updatePrintOrderItemStatus } from "@/app/actions/print-order-actions";
@@ -34,7 +43,6 @@ import { useRouter } from "next/navigation";
 const itemStatusOptions = [
   { value: "NOT_STARTED", label: "Not Started", color: "bg-amber-50 text-amber-600 border-amber-200", dot: "bg-amber-400" },
   { value: "STARTED", label: "Started", color: "bg-blue-50 text-blue-600 border-blue-200", dot: "bg-blue-400" },
-  { value: "ONPROGRESS", label: "In Progress", color: "bg-indigo-50 text-indigo-600 border-indigo-200", dot: "bg-indigo-400" },
   { value: "COMPLETED", label: "Completed", color: "bg-emerald-50 text-emerald-600 border-emerald-200", dot: "bg-emerald-400" },
 ];
 
@@ -68,18 +76,20 @@ export default function BooksCollectiveTable({ books, projectCount }: Props) {
   const router = useRouter();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
   const [updatingId, setUpdatingId] = useState<number | null>(null);
   const [detailItem, setDetailItem] = useState<CollectiveBook | null>(null);
+  const [confirmDialog, setConfirmDialog] = useState<{ id: number; label: string } | null>(null);
 
-  const sortedBooks = useMemo(() => {
-    return [...books].sort((a, b) => {
-      if (a.status === "COMPLETED" && b.status !== "COMPLETED") return 1;
-      if (a.status !== "COMPLETED" && b.status === "COMPLETED") return -1;
-      return 0;
-    });
-  }, [books]);
+  const handleStatusChange = (itemId: number, newStatus: string) => {
+    if (newStatus === "COMPLETED") {
+      setConfirmDialog({ id: itemId, label: "this book item" });
+      return;
+    }
+    applyStatusUpdate(itemId, newStatus);
+  };
 
-  const handleStatusChange = async (itemId: number, newStatus: string) => {
+  const applyStatusUpdate = async (itemId: number, newStatus: string) => {
     setUpdatingId(itemId);
     try {
       const res = await updatePrintOrderItemStatus(itemId, newStatus);
@@ -95,6 +105,18 @@ export default function BooksCollectiveTable({ books, projectCount }: Props) {
       setUpdatingId(null);
     }
   };
+
+  const sortedBooks = useMemo(() => {
+    let filtered = [...books];
+    if (statusFilter) {
+      filtered = filtered.filter((b) => b.status === statusFilter);
+    }
+    return filtered.sort((a, b) => {
+      if (a.status === "COMPLETED" && b.status !== "COMPLETED") return 1;
+      if (a.status !== "COMPLETED" && b.status === "COMPLETED") return -1;
+      return 0;
+    });
+  }, [books, statusFilter]);
 
   const columns: ColumnDef<CollectiveBook>[] = [
     {
@@ -213,15 +235,30 @@ export default function BooksCollectiveTable({ books, projectCount }: Props) {
   return (
     <>
       <div className="space-y-4">
-        {/* Search */}
-        <div className="relative max-w-sm">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
-          <input
-            placeholder="Search by title, project, or edition..."
-            value={globalFilter}
-            onChange={(e) => setGlobalFilter(e.target.value)}
-            className="w-full h-11 pl-10 pr-4 rounded-xl border border-slate-200 bg-slate-50 text-sm font-medium text-slate-700 outline-none placeholder:text-slate-400 focus:border-primarycolor/50 focus:bg-white focus:ring-2 focus:ring-primarycolor/10 transition-all"
-          />
+        {/* Search & Filter */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+          <div className="relative flex-1 max-w-sm">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
+            <input
+              placeholder="Search by title, project, or edition..."
+              value={globalFilter}
+              onChange={(e) => setGlobalFilter(e.target.value)}
+              className="w-full h-11 pl-10 pr-4 rounded-xl border border-slate-200 bg-slate-50 text-sm font-medium text-slate-700 outline-none placeholder:text-slate-400 focus:border-primarycolor/50 focus:bg-white focus:ring-2 focus:ring-primarycolor/10 transition-all"
+            />
+          </div>
+          <Select
+            value={statusFilter || "ALL"}
+            onValueChange={(value) => setStatusFilter(value === "ALL" ? "" : value)}
+          >
+            <SelectTrigger className="h-11 min-w-[160px] rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold uppercase tracking-widest text-slate-700">
+              <SelectValue placeholder="All Statuses" />
+            </SelectTrigger>
+            <SelectContent className="rounded-2xl p-2 border-2">
+              <SelectItem value="ALL" className="rounded-xl h-9 text-[10px] font-bold uppercase tracking-widest">All Statuses</SelectItem>
+              <SelectItem value="NOT_STARTED" className="rounded-xl h-9 text-[10px] font-bold uppercase tracking-widest">Not Started</SelectItem>
+              <SelectItem value="COMPLETED" className="rounded-xl h-9 text-[10px] font-bold uppercase tracking-widest">Completed</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         {/* Desktop Table */}
@@ -435,6 +472,52 @@ export default function BooksCollectiveTable({ books, projectCount }: Props) {
                   <p className="text-sm font-medium text-slate-700 whitespace-pre-wrap leading-relaxed">{detailItem.content}</p>
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Confirmation Dialog */}
+      {confirmDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="w-full max-w-md bg-white rounded-2xl p-7 shadow-2xl space-y-6 animate-in zoom-in-95 duration-200">
+            <div className="flex items-center gap-4">
+              <div className="size-14 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-500 border border-emerald-200 shrink-0">
+                <ShieldAlert className="size-7" />
+              </div>
+              <div className="space-y-0.5">
+                <h3 className="text-lg font-black text-slate-800">Mark as Completed</h3>
+                <p className="text-sm font-bold text-slate-500 leading-snug">
+                  You are about to mark {confirmDialog.label} as completed. This cannot be undone.
+                </p>
+              </div>
+            </div>
+            <div className="bg-amber-50 rounded-xl border border-amber-200 p-4 flex items-start gap-3">
+              <AlertTriangle className="size-5 text-amber-500 shrink-0 mt-0.5" />
+              <p className="text-xs font-bold text-amber-700 leading-relaxed">
+                Once marked complete, you cannot revert the status back. Please confirm all work is finished.
+              </p>
+            </div>
+            <div className="flex gap-3 pt-1">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setConfirmDialog(null)}
+                className="flex-1 h-11 rounded-xl border-2 font-black uppercase tracking-widest text-[11px]"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                onClick={() => {
+                  const dialog = confirmDialog;
+                  setConfirmDialog(null);
+                  applyStatusUpdate(dialog.id, "COMPLETED");
+                }}
+                className="flex-[2] h-11 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-black uppercase tracking-widest text-[11px] shadow-lg shadow-emerald-500/20"
+              >
+                Confirm Complete
+              </Button>
             </div>
           </div>
         </div>

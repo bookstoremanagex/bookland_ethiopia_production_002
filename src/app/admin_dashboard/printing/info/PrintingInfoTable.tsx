@@ -59,6 +59,7 @@ interface ItemRow {
     editionName: string
     quantity: number
     status: string
+    remaining: number | null
 }
 
 const statusStyles: Record<string, string> = {
@@ -488,6 +489,8 @@ export default function PrintingInfoTable({ items }: { items: ItemRow[] }) {
                 </div>
             </div>
 
+            <CompletedRemainingTable items={items} />
+
             {/* Print Options Dialog */}
             <Dialog open={printDialogOpen} onOpenChange={setPrintDialogOpen}>
                 <DialogContent className="sm:max-w-md rounded-[2rem] p-6 sm:p-8">
@@ -549,6 +552,146 @@ export default function PrintingInfoTable({ items }: { items: ItemRow[] }) {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
+        </div>
+    )
+}
+
+function CompletedRemainingTable({ items }: { items: ItemRow[] }) {
+    const completedItems = React.useMemo(
+        () => items.filter((i) => i.status === "COMPLETED" && i.remaining != null && i.remaining > 0),
+        [items],
+    )
+
+    const completedColumns: ColumnDef<ItemRow>[] = [
+        {
+            accessorKey: "bookTitle",
+            header: "Book",
+            cell: ({ row }) => (
+                <div className="flex items-center gap-3">
+                    <div className="size-8 rounded-lg bg-primarycolor/5 flex items-center justify-center text-primarycolor shrink-0">
+                        <BookOpen className="size-4" />
+                    </div>
+                    <div>
+                        <p className="font-black text-primarycolor uppercase text-xs leading-tight">{row.getValue("bookTitle")}</p>
+                        <p className="text-[9px] font-bold text-muted-foreground">{row.original.editionName}</p>
+                    </div>
+                </div>
+            ),
+        },
+        {
+            accessorKey: "projectName",
+            header: "Project",
+            cell: ({ row }) => (
+                <span className="text-xs font-bold text-slate-600">{row.getValue("projectName")}</span>
+            ),
+        },
+        {
+            accessorKey: "printerName",
+            header: "Printer",
+            cell: ({ row }) => (
+                <span className="text-xs font-bold text-primarycolor">{row.getValue("printerName")}</span>
+            ),
+        },
+        {
+            accessorKey: "quantity",
+            header: "Total Qty",
+            cell: ({ row }) => (
+                <div className="font-black text-slate-700">{row.getValue<number>("quantity").toLocaleString()}</div>
+            ),
+        },
+        {
+            accessorKey: "remaining",
+            header: "Remaining",
+            cell: ({ row }) => {
+                const val = row.getValue<number | null>("remaining")
+                return (
+                    <div className={cn("font-black", val != null && val > 0 ? "text-amber-600" : "text-emerald-600")}>
+                        {val != null ? val.toLocaleString() : "—"}
+                    </div>
+                )
+            },
+        },
+    ]
+
+    const [sorting, setSorting] = React.useState<SortingState>([])
+
+    const completedTable = useReactTable({
+        data: completedItems,
+        columns: completedColumns,
+        onSortingChange: setSorting,
+        getCoreRowModel: getCoreRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        state: { sorting },
+        initialState: { pagination: { pageSize: 5 } },
+    })
+
+    if (completedItems.length === 0) return null
+
+    return (
+        <div className="bg-gradient-to-br from-orange-50 to-white rounded-[3rem] p-8 md:p-10 border-2 border-orange-200/60 shadow-xl space-y-6">
+            <div className="flex items-center gap-3 pb-4 border-b border-orange-200/40">
+                <div className="size-9 rounded-xl bg-orange-100 flex items-center justify-center text-orange-500">
+                    <BookOpen className="size-4.5" />
+                </div>
+                <div>
+                    <h3 className="text-sm font-black text-orange-800 uppercase tracking-tight">Completed — Not Yet Transferred</h3>
+                    <p className="text-[10px] font-bold text-orange-500">{completedItems.length} book{completedItems.length !== 1 ? 's' : ''} still have remaining copies in print</p>
+                </div>
+            </div>
+
+            <div className="bg-white/80 rounded-[2.5rem] border border-orange-200/40 shadow-lg overflow-hidden">
+                <Table>
+                    <TableHeader className="bg-orange-50/50">
+                        {completedTable.getHeaderGroups().map((headerGroup) => (
+                            <TableRow key={headerGroup.id} className="hover:bg-transparent border-b-2 border-orange-100">
+                                {headerGroup.headers.map((header) => (
+                                    <TableHead key={header.id} className="h-14 px-6 text-[10px] font-black uppercase tracking-widest text-orange-500/60">
+                                        {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                                    </TableHead>
+                                ))}
+                            </TableRow>
+                        ))}
+                    </TableHeader>
+                    <TableBody>
+                        {completedTable.getRowModel().rows.map((row) => (
+                            <TableRow key={row.id} className="h-16 border-b border-orange-50 hover:bg-orange-50/30 transition-colors">
+                                {row.getVisibleCells().map((cell) => (
+                                    <TableCell key={cell.id} className="px-6">
+                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                    </TableCell>
+                                ))}
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </div>
+
+            <div className="flex items-center justify-between px-2">
+                <div className="text-[10px] font-black text-orange-400 uppercase tracking-widest">
+                    Page {completedTable.getState().pagination.pageIndex + 1} of {completedTable.getPageCount()}
+                </div>
+                <div className="flex items-center space-x-2">
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => completedTable.previousPage()}
+                        disabled={!completedTable.getCanPreviousPage()}
+                        className="rounded-xl h-9 w-9 p-0 border-2 border-orange-200/60 hover:border-orange-300 text-orange-500"
+                    >
+                        <ChevronLeft className="h-3.5 w-3.5" />
+                    </Button>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => completedTable.nextPage()}
+                        disabled={!completedTable.getCanNextPage()}
+                        className="rounded-xl h-9 w-9 p-0 border-2 border-orange-200/60 hover:border-orange-300 text-orange-500"
+                    >
+                        <ChevronRight className="h-3.5 w-3.5" />
+                    </Button>
+                </div>
+            </div>
         </div>
     )
 }
