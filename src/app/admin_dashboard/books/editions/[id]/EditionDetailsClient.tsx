@@ -5,6 +5,7 @@ import {
     updateEdition,
     deleteEdition
 } from '../../../../actions/edition-actions';
+import { uploadBookImageAction } from '../../../../actions/book-actions';
 import { useRouter, usePathname } from 'next/navigation';
 import { toast } from 'sonner';
 import {
@@ -27,7 +28,8 @@ import {
     Languages,
     PlusCircle,
     ShieldAlert,
-    AlertTriangle
+    AlertTriangle,
+    Upload,
 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '../../../../../components/ui/button';
@@ -108,6 +110,9 @@ export default function EditionDetailsClient({ initialEdition, stores }: Edition
     const [isDeleting, setIsDeleting] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [deleteConfirmText, setDeleteConfirmText] = useState("");
+    const [imageFile, setImageFile] = useState<File | null>(null);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [isUploading, setIsUploading] = useState(false);
     const router = useRouter();
     const pathname = usePathname();
     const dashboardRoot = pathname.split('/').slice(0, 2).join('/');
@@ -167,6 +172,53 @@ export default function EditionDetailsClient({ initialEdition, stores }: Edition
             toast.error("An error occurred");
         } finally {
             setIsUpdating(false);
+        }
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        if (file.size > 4 * 1024 * 1024) {
+            toast.error("File size must be less than 4MB");
+            return;
+        }
+        setImageFile(file);
+        const reader = new FileReader();
+        reader.onloadend = () => setImagePreview(reader.result as string);
+        reader.readAsDataURL(file);
+        // Auto-upload
+        handleUploadImage(file);
+    };
+
+    const handleUploadImage = async (file?: File) => {
+        const targetFile = file || imageFile;
+        if (!targetFile) return;
+        setIsUploading(true);
+        try {
+            const formData = new FormData();
+            formData.append("file", targetFile);
+            const uploadRes = await uploadBookImageAction(formData);
+            if (!uploadRes.success) {
+                toast.error(uploadRes.error || "Failed to upload image");
+                return;
+            }
+            const updateRes = await updateEdition(edition.id, {
+                ...formData,
+                book_image_url: uploadRes.url,
+            });
+            if (updateRes.success) {
+                toast.success("Cover image updated");
+                setEdition(updateRes.data);
+                setImageFile(null);
+                setImagePreview(null);
+                router.refresh();
+            } else {
+                toast.error(updateRes.error || "Failed to save image");
+            }
+        } catch {
+            toast.error("An unexpected error occurred");
+        } finally {
+            setIsUploading(false);
         }
     };
 
@@ -324,6 +376,7 @@ export default function EditionDetailsClient({ initialEdition, stores }: Edition
                                             disabled={!isEditing}
                                             value={formData.book_image_url}
                                             onChange={(e) => setFormData({ ...formData, book_image_url: e.target.value })}
+                                            placeholder="Paste image URL..."
                                             className="h-12 md:h-14 px-4 md:px-6 bg-primarycolor/5 border-2 border-transparent focus:border-primarycolor rounded-xl md:rounded-2xl font-black text-sm md:text-base"
                                         />
                                     </div>
@@ -490,16 +543,27 @@ export default function EditionDetailsClient({ initialEdition, stores }: Edition
                     <div className="space-y-8">
                         <div className="bg-white rounded-[1.5rem] md:rounded-[2.5rem] p-6 md:p-8 border-2 border-primarycolor/10 shadow-xl space-y-6">
                             <div className="aspect-3/4 md:aspect-3/4.5 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl border-4 border-white relative group">
-                                {edition.book_image_url ? (
+                                {imagePreview ? (
+                                    <img src={imagePreview} alt="" className="w-full h-full object-cover" />
+                                ) : edition.book_image_url ? (
                                     <img src={edition.book_image_url} alt="" className="w-full h-full object-cover" />
                                 ) : (
                                     <div className="w-full h-full bg-primarycolor/5 flex items-center justify-center text-primarycolor/20">
                                         <Layers className="size-16 md:size-20" />
                                     </div>
                                 )}
-                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                    <span className="text-white text-[8px] md:text-[10px] font-black uppercase tracking-widest bg-white/20 backdrop-blur-md px-3 md:px-4 py-1.5 md:py-2 rounded-lg md:rounded-xl border border-white/30">Cover Preview</span>
-                                </div>
+                                <label className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleFileChange}
+                                        className="hidden"
+                                    />
+                                    <span className="inline-flex items-center gap-2 text-white text-[8px] md:text-[10px] font-black uppercase tracking-widest bg-white/20 backdrop-blur-md px-3 md:px-4 py-1.5 md:py-2 rounded-lg md:rounded-xl border border-white/30 hover:bg-white/40 transition-all">
+                                        <Upload className="size-3 md:size-4" />
+                                        {isUploading ? "Uploading..." : "Upload Image"}
+                                    </span>
+                                </label>
                             </div>
                             <div className="space-y-4">
                                 <div className="p-5 md:p-6 rounded-[1.2rem] md:rounded-3xl bg-secondarycolor/5 border-2 border-secondarycolor/10">
