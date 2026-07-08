@@ -26,6 +26,7 @@ export async function updateAccountAction(id: number, data: {
   email: string;
   type: string;
   status: boolean;
+  phonenumber?: string | null;
 }) {
   try {
     const existing = await (prisma as any).accounts.findFirst({
@@ -47,6 +48,7 @@ export async function updateAccountAction(id: number, data: {
         account_email: data.email,
         account_type: data.type,
         account_status: data.status,
+        phonenumber: data.phonenumber ?? null,
         updatedAt: new Date(),
       },
     });

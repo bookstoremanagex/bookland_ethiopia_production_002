@@ -26,6 +26,7 @@ import {
     Wallet,
     Receipt,
     Plus,
+    X,
     Printer as PrinterIcon
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -59,6 +60,7 @@ interface PrintOrderItem {
     quantity: string;
     total_price: string;
     price_per_book: string;
+    content: string;
     status: string;
 }
 
@@ -103,8 +105,9 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
     const [editRefValue, setEditRefValue] = useState("")
     const [isSavingRef, setIsSavingRef] = useState(false)
     const [isEditingBooks, setIsEditingBooks] = useState(false)
-
-
+    const [contentDialogItem, setContentDialogItem] = useState<PrintOrderItem | null>(null)
+    const [contentDialogValue, setContentDialogValue] = useState("")
+    const [isSavingContent, setIsSavingContent] = useState(false)
 
     // Parse initial items
     const initialItems: PrintOrderItem[] = (order.printorder_items || []).map((item: any) => ({
@@ -114,6 +117,7 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
         quantity: item.quantity.toString(),
         total_price: item.total_price?.toString() || "",
         price_per_book: item.price_per_book.toString(),
+        content: item.content || "",
         status: item.status
     }));
 
@@ -166,6 +170,7 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
             quantity: "",
             total_price: "",
             price_per_book: "",
+            content: "",
             status: "NOT_STARTED"
         }
 
@@ -904,6 +909,7 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
                                                 <th className="text-right py-3.5 px-4 text-[10px] font-black uppercase tracking-widest text-slate-500">Remaining</th>
                                                 <th className="text-right py-3.5 px-4 text-[10px] font-black uppercase tracking-widest text-slate-500">Total Price</th>
                                                 <th className="text-center py-3.5 px-4 text-[10px] font-black uppercase tracking-widest text-slate-500">Status</th>
+                                                <th className="text-center py-3.5 px-4 text-[10px] font-black uppercase tracking-widest text-slate-500">Content</th>
                                                 {isEditingBooks && <th className="text-center py-3.5 px-4 text-[10px] font-black uppercase tracking-widest text-slate-500">Action</th>}
                                             </tr>
                                         </thead>
@@ -980,6 +986,26 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
                                                                     {item.status.replace("_", " ")}
                                                                 </span>
                                                             )}
+                                                        </td>
+                                                        <td className="py-3.5 px-4 text-center">
+                                                            <Button
+                                                                type="button"
+                                                                variant="ghost"
+                                                                size="sm"
+                                                                onClick={() => {
+                                                                    setContentDialogItem(item)
+                                                                    setContentDialogValue(item.content)
+                                                                }}
+                                                                className={cn(
+                                                                    "h-8 px-3 rounded-lg font-black text-[10px] uppercase tracking-widest gap-1.5",
+                                                                    item.content
+                                                                        ? "text-primarycolor bg-primarycolor/5 hover:bg-primarycolor/10"
+                                                                        : "text-slate-300 hover:text-slate-500"
+                                                                )}
+                                                            >
+                                                                <BookOpen className="size-3" />
+                                                                {item.content ? "View" : "Add"}
+                                                            </Button>
                                                         </td>
                                                         {isEditingBooks && (
                                                             <td className="py-3.5 px-4 text-center">
@@ -1082,6 +1108,63 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
                         </div>
                     </form>
                 </div>
+
+                {/* Content Dialog */}
+                {contentDialogItem && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+                        <div className="w-full max-w-lg bg-white rounded-[3rem] p-10 shadow-2xl space-y-6 animate-in zoom-in-95 duration-300">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-4">
+                                    <div className="size-12 rounded-2xl bg-primarycolor/10 flex items-center justify-center text-primarycolor border-2 border-primarycolor/20">
+                                        <BookOpen className="size-6" />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-black text-primarycolor text-lg uppercase tracking-tight">Content Notes</h3>
+                                        <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                                            {books.find(b => b.id === contentDialogItem.bookId)?.title || "Unknown Book"} — {editions.find(e => e.id === contentDialogItem.bookEditionId)?.edition_name || "Unknown Edition"}
+                                        </p>
+                                    </div>
+                                </div>
+                                <Button variant="ghost" size="icon" className="rounded-xl" onClick={() => setContentDialogItem(null)}>
+                                    <X className="size-5" />
+                                </Button>
+                            </div>
+
+                            <textarea
+                                value={contentDialogValue}
+                                onChange={(e) => setContentDialogValue(e.target.value)}
+                                rows={8}
+                                className="w-full p-5 rounded-2xl border-2 border-slate-100 font-bold text-sm outline-none focus:border-primarycolor transition-all resize-y bg-slate-50"
+                                placeholder="Write content notes, specifications, or instructions for this edition..."
+                            />
+
+                            <div className="flex gap-3">
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={() => setContentDialogItem(null)}
+                                    className="flex-1 h-12 rounded-xl border-2 font-black uppercase tracking-widest text-xs"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    type="button"
+                                    disabled={isSavingContent}
+                                    onClick={async () => {
+                                        setIsSavingContent(true)
+                                        updateItem(contentDialogItem.id, 'content', contentDialogValue)
+                                        setContentDialogItem(null)
+                                        setIsSavingContent(false)
+                                        toast.success("Content updated")
+                                    }}
+                                    className="flex-[2] h-12 rounded-xl bg-primarycolor hover:bg-secondarycolor font-black uppercase tracking-widest text-xs gap-2"
+                                >
+                                    {isSavingContent ? "Saving..." : "Save Content"}
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {/* Delete Confirmation Dialog */}
                 {showDeleteConfirm && (

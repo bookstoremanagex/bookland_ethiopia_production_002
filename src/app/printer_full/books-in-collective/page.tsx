@@ -42,6 +42,7 @@ function buildBooksCollective(printer: any) {
         totalPrice: item.total_price || 0,
         remaining: edition?.count_remening_for_transfer ?? null,
         status: item.status || "NOT_STARTED",
+        content: item.content || "",
         paidAmount: paidData?.total || 0,
         payments: paidData?.payments || [],
       });

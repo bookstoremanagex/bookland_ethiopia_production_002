@@ -125,6 +125,7 @@ exports.Prisma.AccountsScalarFieldEnum = {
   id: 'id',
   account_type: 'account_type',
   account_email: 'account_email',
+  phonenumber: 'phonenumber',
   password: 'password',
   account_status: 'account_status',
   is_deleted: 'is_deleted',
@@ -704,16 +705,17 @@ exports.Prisma.SortOrder = {
   desc: 'desc'
 };
 
-exports.Prisma.accountsOrderByRelevanceFieldEnum = {
-  account_type: 'account_type',
-  account_email: 'account_email',
-  password: 'password',
-  name: 'name'
-};
-
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
+};
+
+exports.Prisma.accountsOrderByRelevanceFieldEnum = {
+  account_type: 'account_type',
+  account_email: 'account_email',
+  phonenumber: 'phonenumber',
+  password: 'password',
+  name: 'name'
 };
 
 exports.Prisma.bookeditionOrderByRelevanceFieldEnum = {

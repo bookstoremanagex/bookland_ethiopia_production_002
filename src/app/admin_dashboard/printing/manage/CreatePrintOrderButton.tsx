@@ -67,6 +67,7 @@ interface PrintOrderItem {
     quantity: string;
     total_price: string;
     price_per_book: string;
+    content: string;
     status: string;
     isExistingEdition?: boolean;
 }
@@ -176,6 +177,7 @@ export default function CreatePrintOrderButton({ printers, editions, books }: Cr
             isExistingEdition: true,
             total_price: "",
             price_per_book: "",
+            content: "",
             status: "NOT_STARTED"
         }
 
@@ -326,6 +328,7 @@ export default function CreatePrintOrderButton({ printers, editions, books }: Cr
                 quantity: qty || "",
                 total_price: totalPrice || "",
                 price_per_book: price || "",
+                content: "",
                 status: "NOT_STARTED"
             }
 
@@ -713,6 +716,20 @@ export default function CreatePrintOrderButton({ printers, editions, books }: Cr
                                                                 className="h-10 rounded-lg font-bold"
                                                             />
                                                         </div>
+                                                    </div>
+
+                                                    <div className="space-y-2 mt-4 pt-4 border-t border-slate-100">
+                                                        <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-1.5">
+                                                            <FilePlus className="size-3" />
+                                                            Content
+                                                        </label>
+                                                        <textarea
+                                                            value={item.content}
+                                                            onChange={(e) => updateItem(item.id, 'content', e.target.value)}
+                                                            rows={2}
+                                                            className="w-full p-3 rounded-xl border-2 border-slate-100 font-bold text-xs outline-none focus:border-primarycolor transition-all resize-y bg-transparent"
+                                                            placeholder="Write content notes for this edition..."
+                                                        />
                                                     </div>
 
                                                     <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center mt-4 pt-4 border-t border-slate-100">

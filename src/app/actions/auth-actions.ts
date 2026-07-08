@@ -25,14 +25,59 @@ function getRedirectPath(role: string): string {
 
 export async function loginAction(email: string, password: string) {
   try {
-    // 1. Try main database accounts table first
-    const account = await (prisma as any).accounts.findFirst({
+    // 1. Try accounts table by email
+    let account = await (prisma as any).accounts.findFirst({
       where: {
         account_email: email,
         is_deleted: false,
         account_status: true,
       },
     });
+
+    // 2. Try accounts table by phone number
+    if (!account) {
+      account = await (prisma as any).accounts.findFirst({
+        where: {
+          phonenumber: email,
+          is_deleted: false,
+          account_status: true,
+        },
+      });
+    }
+
+    // 3. If still not found, try matching via printer table (backwards compatibility)
+    if (!account) {
+      const printer = await (prisma as any).printer.findFirst({
+        where: {
+          OR: [
+            { phone: email },
+            { email: email },
+          ],
+          is_deleted: false,
+        },
+      });
+
+      if (printer) {
+        if (printer.email) {
+          account = await (prisma as any).accounts.findFirst({
+            where: {
+              account_email: printer.email,
+              is_deleted: false,
+              account_status: true,
+            },
+          });
+        }
+        if (!account) {
+          account = await (prisma as any).accounts.findFirst({
+            where: {
+              name: printer.name,
+              is_deleted: false,
+              account_status: true,
+            },
+          });
+        }
+      }
+    }
 
     if (account) {
       const isPasswordValid = await bcrypt.compare(password, account.password);
@@ -59,7 +104,7 @@ export async function loginAction(email: string, password: string) {
       }
     }
 
-    // 2. Fall back to retail database users table
+    // 3. Fall back to retail database users table
     const retailUser = await retailPrisma.users.findFirst({
       where: { email },
     });

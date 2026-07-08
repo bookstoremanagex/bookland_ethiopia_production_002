@@ -54,6 +54,7 @@ interface CollectiveBook {
   totalPrice: number;
   remaining: number | null;
   status: string;
+  content: string;
   paidAmount: number;
   payments: any[];
 }
@@ -427,6 +428,13 @@ export default function BooksCollectiveTable({ books, projectCount }: Props) {
                   <p className="text-lg font-black text-blue-700 mt-1">{detailItem.paidAmount.toLocaleString()} ETB</p>
                 </div>
               </div>
+
+              {detailItem.content && (
+                <div className="bg-slate-50 rounded-xl p-5">
+                  <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-2">Content Notes</p>
+                  <p className="text-sm font-medium text-slate-700 whitespace-pre-wrap leading-relaxed">{detailItem.content}</p>
+                </div>
+              )}
             </div>
           </div>
         </div>

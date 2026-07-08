@@ -28,6 +28,7 @@ interface AccountData {
   account_email: string;
   account_type: string;
   account_status: boolean;
+  phonenumber?: string | null;
   roles?: RoleData[];
 }
 
@@ -218,6 +219,7 @@ export default function AccountDetailClient({ account, roletypes }: { account: A
     email: account.account_email,
     type: account.account_type,
     status: account.account_status,
+    phonenumber: account.phonenumber ?? "",
   });
 
   const handleSave = async (e: React.FormEvent) => {
@@ -339,6 +341,21 @@ export default function AccountDetailClient({ account, roletypes }: { account: A
                 </div>
               </div>
 
+              {/* Phone Number Field */}
+              <div className="space-y-3">
+                <label className="text-sm font-bold text-gray-700 ml-2">Phone Number</label>
+                <div className="relative group">
+                  <User className="absolute left-4 top-1/2 -translate-y-1/2 size-5 text-gray-400 group-focus-within:text-primarycolor transition-colors" />
+                  <Input
+                    name="phonenumber"
+                    value={formData.phonenumber}
+                    onChange={handleChange}
+                    placeholder="+251-XXX-XXXXXX"
+                    className="pl-12 h-14 bg-gray-50 border-transparent focus:border-primarycolor focus:bg-white rounded-2xl transition-all shadow-sm text-base"
+                  />
+                </div>
+              </div>
+
               {/* Account Type Field */}
               <div className="space-y-3">
                 <label className="text-sm font-bold text-gray-700 ml-2">Account Role</label>
@@ -393,6 +410,7 @@ export default function AccountDetailClient({ account, roletypes }: { account: A
                     email: account.account_email,
                     type: account.account_type,
                     status: account.account_status,
+                    phonenumber: account.phonenumber ?? "",
                   });
                   setIsEditing(false);
                 }}
@@ -424,6 +442,12 @@ export default function AccountDetailClient({ account, roletypes }: { account: A
                   <Mail className="size-4" /> Email Address
                 </div>
                 <div className="text-xl font-black text-gray-900">{account.account_email}</div>
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-sm font-bold text-gray-500 uppercase tracking-widest">
+                  <User className="size-4" /> Phone Number
+                </div>
+                <div className="text-xl font-black text-gray-900">{account.phonenumber || "—"}</div>
               </div>
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-sm font-bold text-gray-500 uppercase tracking-widest">

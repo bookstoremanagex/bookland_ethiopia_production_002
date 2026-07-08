@@ -100,14 +100,14 @@ export default function LoginPageClient({
 
             <form onSubmit={handleLogin} className="space-y-5">
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider" htmlFor="email">Email</label>
+                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider" htmlFor="email">Email or Phone</label>
                 <div className="relative group">
                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-gray-600 group-focus-within:text-primarycolor transition-colors" />
                   <input
                     className="w-full h-12 pl-11 pr-4 rounded-xl bg-gray-800/50 border border-gray-700/50 text-gray-100 text-sm font-medium outline-none transition-all placeholder:text-gray-600 focus:border-primarycolor/50 focus:bg-gray-800 focus:ring-2 focus:ring-primarycolor/10"
                     id="email"
-                    type="email"
-                    placeholder="admin@bookstore.com"
+                    type="text"
+                    placeholder="email@bookstore.com or phone"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required

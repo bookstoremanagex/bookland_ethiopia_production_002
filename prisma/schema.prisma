@@ -18,6 +18,7 @@ model accounts {
   id             Int            @id @default(autoincrement())
   account_type   String
   account_email  String
+  phonenumber    String?
   password       String
   account_status Boolean        @default(true)
   is_deleted     Boolean        @default(false)

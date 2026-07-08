@@ -62,6 +62,7 @@ export async function createPrintOrder(formData: any) {
               total_price: item.total_price
                 ? parseFloat(item.total_price)
                 : (parseInt(item.quantity) * (parseFloat(item.price_per_book) || 0)),
+              content: item.content || null,
               status: item.status || "NOT_STARTED",
             })) || [],
         },
@@ -119,6 +120,7 @@ export async function updatePrintOrder(id: number, formData: any) {
             total_price: item.total_price
               ? parseFloat(item.total_price)
               : (parseInt(item.quantity) * (parseFloat(item.price_per_book) || 0)),
+            content: item.content || null,
             status: item.status || "NOT_STARTED",
           })),
         });
