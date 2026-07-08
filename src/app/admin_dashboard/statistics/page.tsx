@@ -48,7 +48,6 @@ export default async function StatisticsPage(props: {
     const totalValue = assignments.reduce((acc: any, a: any) => acc + (a.total_price || 0), 0);
     const totalCollected = assignments.reduce((acc: any, a: any) => acc + (a.already_paid || 0), 0);
     const totalDebt = totalValue - totalCollected;
-    const collectionRate = totalValue > 0 ? (totalCollected / totalValue) * 100 : 0;
 
     const shopsCount = await (prisma as any).bookshopes.count({ where: { is_deleted: false } });
     const booksCount = await prisma.books.count({ where: { is_deleted: false } });
@@ -143,7 +142,7 @@ export default async function StatisticsPage(props: {
                         <Clock className="size-4" />
                         <span className="text-[10px] font-black uppercase tracking-widest">Performance Window: {ranges.find(r => r.value === range)?.label}</span>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                         <div>
                             <p className="text-[10px] font-black opacity-60 uppercase tracking-widest mb-1">Gross Distribution</p>
                             <h4 className="text-5xl font-black italic tracking-tighter">{totalValue.toLocaleString()} <span className="text-sm not-italic opacity-40">ETB</span></h4>
@@ -151,15 +150,6 @@ export default async function StatisticsPage(props: {
                         <div>
                             <p className="text-[10px] font-black opacity-60 uppercase tracking-widest mb-1">Collected Revenue</p>
                             <h4 className="text-5xl font-black italic tracking-tighter text-emerald-400">{totalCollected.toLocaleString()} <span className="text-sm not-italic opacity-40">ETB</span></h4>
-                        </div>
-                        <div>
-                            <p className="text-[10px] font-black opacity-60 uppercase tracking-widest mb-1">Collection Rate</p>
-                            <div className="flex items-end gap-4">
-                                <h4 className="text-5xl font-black italic tracking-tighter">{Math.round(collectionRate)}%</h4>
-                                <div className="flex-grow h-2 bg-white/10 rounded-full mb-3 overflow-hidden">
-                                    <div className="h-full bg-white rounded-full" style={{ width: `${collectionRate}%` }} />
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -232,19 +222,7 @@ export default async function StatisticsPage(props: {
                         </div>
                     </div>
 
-                    <div className="w-full lg:w-[400px] bg-white/5 rounded-[2rem] border border-white/10 p-8 space-y-8">
-                        <div className="space-y-4">
-                            <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest opacity-60">
-                                <span>Collection Rate Efficiency</span>
-                                <span>{Math.round(collectionRate)}%</span>
-                            </div>
-                            <div className="h-3 bg-white/10 rounded-full overflow-hidden p-0.5">
-                                <div
-                                    className="h-full bg-gradient-to-r from-emerald-500 to-emerald-300 rounded-full transition-all duration-1000"
-                                    style={{ width: `${collectionRate}%` }}
-                                />
-                            </div>
-                        </div>
+                    <div className="w-full lg:w-[400px] bg-white/5 rounded-[2rem] border border-white/10 p-8">
                         <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest leading-relaxed">
                             Financial data is dynamically aggregated based on your selected performance window. Sync status: <span className="text-emerald-400">OPTIMAL</span>
                         </p>

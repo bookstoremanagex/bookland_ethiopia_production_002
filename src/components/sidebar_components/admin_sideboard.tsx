@@ -34,6 +34,7 @@ import {
   Truck,
   Receipt,
   FileCheck,
+  Banknote,
 } from "lucide-react";
 
 import {
@@ -93,7 +94,6 @@ const menuItems = [
     icon: BadgeDollarSign,
     url: "/admin_dashboard/manage_payment",
   },
-  { title: "Statistics", icon: BarChart3, url: "/admin_dashboard/statistics" },
   {
     title: "Selling to individual",
     icon: ShoppingBag,
@@ -245,6 +245,175 @@ export function AdminAppSidebar({ accountId }: { accountId?: number }) {
                     </SidebarMenuItem>
                   );
                 })}
+
+                {/* Expandable Section: Statistics */}
+                <Collapsible
+                  asChild
+                  className="group/collapsible"
+                  defaultOpen={
+                    isMounted &&
+                    activePath?.includes("/admin_dashboard/statistics")
+                  }
+                >
+                  <SidebarMenuItem>
+                    <CollapsibleTrigger asChild>
+                      <SidebarMenuButton
+                        tooltip="Statistics"
+                        className={cn(
+                          "transition-all duration-300 h-10 px-4",
+                          isMounted &&
+                            activePath?.includes("/admin_dashboard/statistics")
+                            ? "bg-primarycolor/10 text-primarycolor font-black"
+                            : "hover:bg-primarycolor/5 text-foreground",
+                        )}
+                      >
+                        <BarChart3
+                          className={cn(
+                            "w-5 h-5",
+                            isMounted &&
+                              activePath?.includes("/admin_dashboard/statistics")
+                              ? "text-primarycolor"
+                              : "text-primarycolor/70",
+                          )}
+                        />
+                        <span>Statistics</span>
+                        <ChevronRight className="ml-auto w-4 h-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                      </SidebarMenuButton>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <SidebarMenuSub>
+                        <SidebarMenuSubItem>
+                          <SidebarMenuSubButton
+                            asChild
+                            isActive={
+                              isMounted &&
+                              (activePath ===
+                                "/admin_dashboard/statistics" ||
+                                activePath.startsWith(
+                                  "/admin_dashboard/statistics/general",
+                                ))
+                            }
+                            className={cn(
+                              "transition-all duration-300 rounded-lg h-9 px-4",
+                              "data-[active=true]:bg-primarycolor data-[active=true]:text-white data-[active=true]:font-black data-[active=true]:shadow-md data-[active=true]:shadow-primarycolor/20",
+                              "hover:bg-primarycolor/10 hover:text-primarycolor",
+                            )}
+                          >
+                            <Link href="/admin_dashboard/statistics">
+                              <BarChart3
+                                className={cn(
+                                  "w-4 h-4",
+                                  isMounted &&
+                                    activePath ===
+                                      "/admin_dashboard/statistics"
+                                    ? "text-white"
+                                    : "text-primarycolor/70",
+                                )}
+                              />
+                              <span>General</span>
+                            </Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                        <SidebarMenuSubItem>
+                          <SidebarMenuSubButton
+                            asChild
+                            isActive={
+                              isMounted &&
+                              (activePath ===
+                                "/admin_dashboard/statistics/books" ||
+                                activePath.startsWith(
+                                  "/admin_dashboard/statistics/books/",
+                                ))
+                            }
+                            className={cn(
+                              "transition-all duration-300 rounded-lg h-9 px-4",
+                              "data-[active=true]:bg-primarycolor data-[active=true]:text-white data-[active=true]:font-black data-[active=true]:shadow-md data-[active=true]:shadow-primarycolor/20",
+                              "hover:bg-primarycolor/10 hover:text-primarycolor",
+                            )}
+                          >
+                            <Link href="/admin_dashboard/statistics/books">
+                              <BookOpen
+                                className={cn(
+                                  "w-4 h-4",
+                                  isMounted &&
+                                    activePath ===
+                                      "/admin_dashboard/statistics/books"
+                                    ? "text-white"
+                                    : "text-primarycolor/70",
+                                )}
+                              />
+                              <span>Books</span>
+                            </Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                        <SidebarMenuSubItem>
+                          <SidebarMenuSubButton
+                            asChild
+                            isActive={
+                              isMounted &&
+                              (activePath ===
+                                "/admin_dashboard/statistics/stores" ||
+                                activePath.startsWith(
+                                  "/admin_dashboard/statistics/stores/",
+                                ))
+                            }
+                            className={cn(
+                              "transition-all duration-300 rounded-lg h-9 px-4",
+                              "data-[active=true]:bg-primarycolor data-[active=true]:text-white data-[active=true]:font-black data-[active=true]:shadow-md data-[active=true]:shadow-primarycolor/20",
+                              "hover:bg-primarycolor/10 hover:text-primarycolor",
+                            )}
+                          >
+                            <Link href="/admin_dashboard/statistics/stores">
+                              <Store
+                                className={cn(
+                                  "w-4 h-4",
+                                  isMounted &&
+                                    activePath ===
+                                      "/admin_dashboard/statistics/stores"
+                                    ? "text-white"
+                                    : "text-primarycolor/70",
+                                )}
+                              />
+                              <span>Stores</span>
+                            </Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                        <SidebarMenuSubItem>
+                          <SidebarMenuSubButton
+                            asChild
+                            isActive={
+                              isMounted &&
+                              (activePath ===
+                                "/admin_dashboard/statistics/income" ||
+                                activePath.startsWith(
+                                  "/admin_dashboard/statistics/income/",
+                                ))
+                            }
+                            className={cn(
+                              "transition-all duration-300 rounded-lg h-9 px-4",
+                              "data-[active=true]:bg-primarycolor data-[active=true]:text-white data-[active=true]:font-black data-[active=true]:shadow-md data-[active=true]:shadow-primarycolor/20",
+                              "hover:bg-primarycolor/10 hover:text-primarycolor",
+                            )}
+                          >
+                            <Link href="/admin_dashboard/statistics/income">
+                              <Banknote
+                                className={cn(
+                                  "w-4 h-4",
+                                  isMounted &&
+                                    activePath ===
+                                      "/admin_dashboard/statistics/income"
+                                    ? "text-white"
+                                    : "text-primarycolor/70",
+                                )}
+                              />
+                              <span>Income</span>
+                            </Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      </SidebarMenuSub>
+                    </CollapsibleContent>
+                  </SidebarMenuItem>
+                </Collapsible>
 
                 {/* Expandable Section: Manage Checks */}
                 <Collapsible

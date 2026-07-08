@@ -10,6 +10,7 @@ import {
     Package,
     Languages,
     Printer,
+    Banknote,
     BadgeDollarSign,
     FileText,
     PenTool,
@@ -67,7 +68,14 @@ export const ALL_DASHBOARD_MENUS: MenuItem[] = [
     },
     { id: "damaged", title: "Damaged Books", icon: ShieldAlert, path: "books/damaged", menuName: "Damaged Books" },
     { id: "shop", title: "Book Shop", icon: ShoppingBag, path: "book_shops", menuName: "Book Shop" },
-    { id: "statistics", title: "Statistics", icon: BarChart3, path: "statistics", menuName: "Statistics" },
+    { id: "statistics", title: "Statistics", icon: BarChart3, path: "statistics", menuName: "Statistics",
+        subItems: [
+            { title: "General", icon: BarChart3, path: "statistics", menuName: "General" },
+            { title: "Books", icon: BookOpen, path: "statistics/books", menuName: "Books" },
+            { title: "Stores", icon: Store, path: "statistics/stores", menuName: "Stores" },
+            { title: "Income", icon: Banknote, path: "statistics/income", menuName: "Income" },
+        ]
+    },
     { id: "checks", title: "Manage Checks", icon: FileCheck, path: "checks", menuName: "Checks" },
     { id: "manage_orders", title: "Manage Orders", icon: ClipboardList, path: "manage_orders", menuName: "Manage Orders" },
     { id: "manage_payment", title: "Manage Payment", icon: BadgeDollarSign, path: "manage_payment", menuName: "Manage Payments" },
