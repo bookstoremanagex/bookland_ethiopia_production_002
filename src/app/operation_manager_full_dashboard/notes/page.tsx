@@ -26,7 +26,7 @@ export default async function NotesPage() {
                         <h2 className="text-lg font-black uppercase tracking-widest">Notes</h2>
                     </div>
                     {response.success ? (
-                        <NotesTable data={notes as any[]} />
+                        <NotesTable data={notes as any[]} currentUserId={session.id} />
                     ) : (
                         <div className="p-8 text-center text-muted-foreground font-bold">Failed to load notes.</div>
                     )}
