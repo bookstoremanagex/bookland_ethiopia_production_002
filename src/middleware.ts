@@ -20,9 +20,9 @@ export function middleware(request: NextRequest) {
       
       const rolePathMap: Record<string, string> = {
         'ADMIN': '/admin_dashboard',
-        'Operations Manager': '/operation_manager_dashboard',
+        'Operations Manager': '/operation_manager_full_dashboard',
         'Inventory Manager': '/inventory_manager_dashboard',
-        'Finance Officer': '/finance_officer_dashboard',
+        'Finance Officer': '/finance_officer_full_dashboard',
         'Sales Staff': '/sales_staff_dashboard',
         'Retail Manager': '/retail_manager_dashboard',
         'Delivery and Sales Management': '/delivery_and_sales_dashboard',
@@ -67,9 +67,9 @@ export function middleware(request: NextRequest) {
       
       const rolePathMap: Record<string, string> = {
         'ADMIN': '/admin_dashboard',
-        'Operations Manager': '/operation_manager_dashboard',
+        'Operations Manager': '/operation_manager_full_dashboard',
         'Inventory Manager': '/inventory_manager_dashboard',
-        'Finance Officer': '/finance_officer_dashboard',
+        'Finance Officer': '/finance_officer_full_dashboard',
         'Sales Staff': '/sales_staff_dashboard',
         'Retail Manager': '/retail_manager_dashboard',
         'Delivery and Sales Management': '/delivery_and_sales_dashboard',

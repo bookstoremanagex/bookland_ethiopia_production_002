@@ -143,7 +143,8 @@ export const ALL_DASHBOARD_MENUS: MenuItem[] = [
             { title: "Shop Table", icon: TableProperties, path: "finance/shop_table", menuName: "Finance - Shop Table" },
             { title: "Edition Table", icon: BookCopy, path: "finance/edition_table", menuName: "Finance - Edition Table" },
             { title: "Costs", icon: FileText, path: "finance/costs", menuName: "Finance - Costs" },
-            { title: "Printing", icon: Printer, path: "finance/printing", menuName: "Finance - Printing" }
+            { title: "Printing", icon: Printer, path: "finance/printing", menuName: "Finance - Printing" },
+            { title: "Round Info", icon: Repeat, path: "finance/round-info", menuName: "Finance - Round Info" }
         ]
     },
     { 
