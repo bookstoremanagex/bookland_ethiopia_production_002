@@ -29,6 +29,7 @@ import {
     Palette,
     Settings,
     List,
+    Repeat,
 } from "lucide-react"
 
 export interface MenuItem {
