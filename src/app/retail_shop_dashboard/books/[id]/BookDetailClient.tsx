@@ -558,9 +558,9 @@ export function BookDetailClient({ book: initialBook }: { book: Book }) {
             <AlertDialogTitle className="text-base font-black text-primarycolor uppercase tracking-tight italic">
               Delete Book?
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-[10px] font-bold text-muted-foreground space-y-2">
-              <p>This will permanently remove <strong>{book.title}</strong> and all its editions from the retail shop.</p>
-              <p>Type <strong className="text-rose-600">DELETE</strong> to confirm.</p>
+            <AlertDialogDescription className="text-[10px] font-bold text-muted-foreground">
+              <span className="block">This will permanently remove <strong>{book.title}</strong> and all its editions from the retail shop.</span>
+              <span className="block mt-1">Type <strong className="text-rose-600">DELETE</strong> to confirm.</span>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <div className="px-1">
