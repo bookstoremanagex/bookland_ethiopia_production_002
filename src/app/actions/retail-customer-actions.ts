@@ -21,15 +21,14 @@ export async function createCustomer(data: {
   customerType: string;
 }) {
   try {
-    const customer = await retailPrisma.customers.create({
-      data: {
-        name: data.name,
-        email: data.email ?? null,
-        phonenumber: data.phonenumber ?? null,
-        customerType: data.customerType,
-      },
-    });
-    return { success: true, data: JSON.parse(JSON.stringify(customer)) };
+    await retailPrisma.$queryRawUnsafe(
+      "INSERT INTO customers (name, email, phonenumber, customerType, created_at, updated_at) VALUES (?, ?, ?, ?, NOW(), NOW())",
+      data.name,
+      data.email ?? null,
+      data.phonenumber ?? null,
+      data.customerType
+    );
+    return { success: true };
   } catch (error) {
     console.error("createCustomer error:", error);
     return { success: false, error: "Failed to create customer" };
@@ -41,16 +40,15 @@ export async function updateCustomer(
   data: { name: string; email?: string; phonenumber?: string; customerType: string }
 ) {
   try {
-    const customer = await retailPrisma.customers.update({
-      where: { id },
-      data: {
-        name: data.name,
-        email: data.email ?? null,
-        phonenumber: data.phonenumber ?? null,
-        customerType: data.customerType,
-      },
-    });
-    return { success: true, data: JSON.parse(JSON.stringify(customer)) };
+    await retailPrisma.$queryRawUnsafe(
+      "UPDATE customers SET name = ?, email = ?, phonenumber = ?, customerType = ?, updated_at = NOW() WHERE id = ? AND is_deleted = 0",
+      data.name,
+      data.email ?? null,
+      data.phonenumber ?? null,
+      data.customerType,
+      id
+    );
+    return { success: true };
   } catch (error) {
     console.error("updateCustomer error:", error);
     return { success: false, error: "Failed to update customer" };
