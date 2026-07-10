@@ -31,7 +31,7 @@ export default async function PaymentsPage() {
       branch: shop.branch || shop.location || "",
       remaining: totalDebt - totalPaid,
     };
-  });
+  }).sort((a: any, b: any) => b.remaining - a.remaining);
 
   return (
     <div className="min-h-full bg-gradient-to-b from-slate-50 via-white to-primarycolor/[0.04]">

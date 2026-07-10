@@ -99,6 +99,12 @@ import {
     DrawerFooter,
     DrawerClose,
 } from "@/components/ui/drawer";
+import {
+    Accordion,
+    AccordionItem,
+    AccordionTrigger,
+    AccordionContent,
+} from "@/components/ui/accordion";
 
 
 interface CheckInfo {
@@ -304,92 +310,197 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, tota
             </Link>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
-                {/* Shop Info Card */}
-                <div className="lg:col-span-2 bg-white rounded-[2rem] border-2 border-primarycolor/5 p-6 md:p-8 shadow-xl space-y-6">
-                    <div className="flex items-center gap-4">
-                        <div className="size-14 md:size-16 rounded-2xl bg-primarycolor/10 flex items-center justify-center text-primarycolor shadow-inner shrink-0">
-                            <Building2 className="size-7 md:size-8" />
+                {/* Shop Info Card — accordion on mobile, full card on desktop */}
+                <div className="lg:col-span-2 bg-white rounded-[2rem] border-2 border-primarycolor/5 shadow-xl overflow-hidden">
+                    {/* Desktop: full card */}
+                    <div className="hidden md:block p-6 md:p-8 space-y-6">
+                        <div className="flex items-center gap-4">
+                            <div className="size-14 md:size-16 rounded-2xl bg-primarycolor/10 flex items-center justify-center text-primarycolor shadow-inner shrink-0">
+                                <Building2 className="size-7 md:size-8" />
+                            </div>
+                            <div>
+                                <h1 className="text-xl md:text-2xl font-black text-primarycolor uppercase tracking-tight italic">
+                                    {shop.name}
+                                </h1>
+                                {shop.branch && (
+                                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                                        {shop.branch}
+                                    </p>
+                                )}
+                            </div>
                         </div>
-                        <div>
-                            <h1 className="text-xl md:text-2xl font-black text-primarycolor uppercase tracking-tight italic">
-                                {shop.name}
-                            </h1>
-                            {shop.branch && (
-                                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
-                                    {shop.branch}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="flex items-center gap-3 text-sm text-gray-600">
+                                <MapPin className="size-4 text-primarycolor/40" />
+                                <span className="font-semibold">{shop.location}</span>
+                            </div>
+                            {shop.phone && (
+                                <div className="flex items-center gap-3 text-sm text-gray-600">
+                                    <Phone className="size-4 text-primarycolor/40" />
+                                    <span className="font-semibold">{shop.phone}</span>
+                                </div>
+                            )}
+                            {shop.email && (
+                                <div className="flex items-center gap-3 text-sm text-gray-600">
+                                    <Mail className="size-4 text-primarycolor/40" />
+                                    <span className="font-semibold">{shop.email}</span>
+                                </div>
+                            )}
+                            <div className="flex items-center gap-3 text-sm text-gray-600">
+                                <Calendar className="size-4 text-primarycolor/40" />
+                                <span className="font-semibold">Partner since {formatDate(new Date(shop.createdAt), "MMM yyyy")}</span>
+                            </div>
+                        </div>
+                    </div>
+                    {/* Mobile: accordion — just name, expand for details */}
+                    <div className="md:hidden">
+                        <Accordion type="single" collapsible>
+                            <AccordionItem value="shop-info" className="border-0">
+                                <AccordionTrigger className="px-5 py-4 hover:no-underline">
+                                    <div className="flex items-center gap-3">
+                                        <div className="size-10 rounded-xl bg-primarycolor/10 flex items-center justify-center text-primarycolor shrink-0">
+                                            <Building2 className="size-5" />
+                                        </div>
+                                        <div className="text-left min-w-0">
+                                            <h1 className="text-base font-black text-primarycolor uppercase tracking-tight italic truncate">{shop.name}</h1>
+                                            {shop.branch && (
+                                                <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">{shop.branch}</p>
+                                            )}
+                                        </div>
+                                    </div>
+                                </AccordionTrigger>
+                                <AccordionContent className="px-5 pb-5">
+                                    <div className="space-y-2.5 pt-1">
+                                        <div className="flex items-center gap-3 text-xs text-gray-600">
+                                            <MapPin className="size-3.5 text-primarycolor/40 shrink-0" />
+                                            <span className="font-semibold">{shop.location}</span>
+                                        </div>
+                                        {shop.phone && (
+                                            <div className="flex items-center gap-3 text-xs text-gray-600">
+                                                <Phone className="size-3.5 text-primarycolor/40 shrink-0" />
+                                                <span className="font-semibold">{shop.phone}</span>
+                                            </div>
+                                        )}
+                                        {shop.email && (
+                                            <div className="flex items-center gap-3 text-xs text-gray-600">
+                                                <Mail className="size-3.5 text-primarycolor/40 shrink-0" />
+                                                <span className="font-semibold">{shop.email}</span>
+                                            </div>
+                                        )}
+                                        <div className="flex items-center gap-3 text-xs text-gray-600">
+                                            <Calendar className="size-3.5 text-primarycolor/40 shrink-0" />
+                                            <span className="font-semibold">Partner since {formatDate(new Date(shop.createdAt), "MMM yyyy")}</span>
+                                        </div>
+                                    </div>
+                                </AccordionContent>
+                            </AccordionItem>
+                        </Accordion>
+                    </div>
+                </div>
+
+                {/* Totals Card — accordion on mobile showing remaining, full card on desktop */}
+                <div className="bg-primarycolor rounded-[2rem] text-white shadow-xl relative overflow-hidden">
+                    {/* Desktop: full card */}
+                    <div className="hidden md:block p-6 md:p-8 space-y-5">
+                        <div className="absolute top-0 right-0 size-40 bg-white/5 rounded-full -mr-20 -mt-20 blur-2xl" />
+                        <div className="space-y-1 relative">
+                            <div className="flex items-center justify-between">
+                                <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Previous Debt</p>
+                                {isAdmin && (
+                                    <button
+                                        onClick={() => { setDebtInputValue(previousDebtValue.toString()); setIsDebtDialogOpen(true); }}
+                                        className="text-[8px] font-black uppercase tracking-widest text-white/50 hover:text-white transition-colors cursor-pointer"
+                                    >
+                                        Edit
+                                    </button>
+                                )}
+                            </div>
+                            <p className="text-lg font-black">{previousDebtValue.toLocaleString()} ETB</p>
+                        </div>
+                        <div className="space-y-1 relative">
+                            <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Order Debt</p>
+                            <p className="text-xl font-black">{(totals.totalDebt - previousDebtValue).toLocaleString()} ETB</p>
+                        </div>
+                        <div className="pt-4 border-t border-white/20 relative space-y-3">
+                            <div className="flex items-center justify-between">
+                                <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Total Debt</p>
+                                <p className="text-2xl font-black">{totals.totalDebt.toLocaleString()} ETB</p>
+                            </div>
+                            <div className="flex items-center justify-between">
+                                <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Total Paid</p>
+                                <p className="text-xl font-bold text-emerald-200">{totals.totalPaid.toLocaleString()} ETB</p>
+                            </div>
+                            <div className="pt-3 border-t border-white/20">
+                                <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Remaining</p>
+                                <p className={cn(
+                                    "text-3xl font-black mt-1",
+                                    totals.totalRemaining > 0 ? "text-rose-200" : "text-emerald-200"
+                                )}>
+                                    {totals.totalRemaining.toLocaleString()} ETB
                                 </p>
-                            )}
+                            </div>
                         </div>
                     </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div className="flex items-center gap-3 text-sm text-gray-600">
-                            <MapPin className="size-4 text-primarycolor/40" />
-                            <span className="font-semibold">{shop.location}</span>
-                        </div>
-                        {shop.phone && (
-                            <div className="flex items-center gap-3 text-sm text-gray-600">
-                                <Phone className="size-4 text-primarycolor/40" />
-                                <span className="font-semibold">{shop.phone}</span>
-                            </div>
-                        )}
-                        {shop.email && (
-                            <div className="flex items-center gap-3 text-sm text-gray-600">
-                                <Mail className="size-4 text-primarycolor/40" />
-                                <span className="font-semibold">{shop.email}</span>
-                            </div>
-                        )}
-                        <div className="flex items-center gap-3 text-sm text-gray-600">
-                            <Calendar className="size-4 text-primarycolor/40" />
-                            <span className="font-semibold">Partner since {formatDate(new Date(shop.createdAt), "MMM yyyy")}</span>
-                        </div>
+                    {/* Mobile: accordion — just remaining, expand for full breakdown */}
+                    <div className="md:hidden">
+                        <Accordion type="single" collapsible>
+                            <AccordionItem value="payment-info" className="border-0">
+                                <AccordionTrigger className="px-5 py-4 hover:no-underline [&>svg]:text-white/60">
+                                    <div className="flex items-center justify-between w-full">
+                                        <div>
+                                            <p className="text-[8px] font-black uppercase tracking-widest opacity-60 text-left">Remaining</p>
+                                            <p className={cn(
+                                                "text-xl font-black text-left",
+                                                totals.totalRemaining > 0 ? "text-rose-200" : "text-emerald-200"
+                                            )}>
+                                                {totals.totalRemaining.toLocaleString()} ETB
+                                            </p>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="text-[8px] font-black uppercase tracking-widest opacity-60">Debt</p>
+                                            <p className="text-sm font-black">{totals.totalDebt.toLocaleString()} ETB</p>
+                                        </div>
+                                    </div>
+                                </AccordionTrigger>
+                                <AccordionContent className="px-5 pb-5">
+                                    <div className="space-y-4 pt-1">
+                                        <div className="space-y-1">
+                                            <div className="flex items-center justify-between">
+                                                <p className="text-[8px] font-black uppercase tracking-widest opacity-60">Previous Debt</p>
+                                                {isAdmin && (
+                                                    <button
+                                                        onClick={() => { setDebtInputValue(previousDebtValue.toString()); setIsDebtDialogOpen(true); }}
+                                                        className="text-[7px] font-black uppercase tracking-widest text-white/50 hover:text-white transition-colors cursor-pointer"
+                                                    >
+                                                        Edit
+                                                    </button>
+                                                )}
+                                            </div>
+                                            <p className="text-sm font-black">{previousDebtValue.toLocaleString()} ETB</p>
+                                        </div>
+                                        <div className="space-y-1">
+                                            <p className="text-[8px] font-black uppercase tracking-widest opacity-60">Order Debt</p>
+                                            <p className="text-base font-black">{(totals.totalDebt - previousDebtValue).toLocaleString()} ETB</p>
+                                        </div>
+                                        <div className="pt-3 border-t border-white/20 space-y-3">
+                                            <div className="flex items-center justify-between">
+                                                <p className="text-[8px] font-black uppercase tracking-widest opacity-60">Total Debt</p>
+                                                <p className="text-lg font-black">{totals.totalDebt.toLocaleString()} ETB</p>
+                                            </div>
+                                            <div className="flex items-center justify-between">
+                                                <p className="text-[8px] font-black uppercase tracking-widest opacity-60">Total Paid</p>
+                                                <p className="text-base font-bold text-emerald-200">{totals.totalPaid.toLocaleString()} ETB</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </AccordionContent>
+                            </AccordionItem>
+                        </Accordion>
                     </div>
                 </div>
 
-                {/* Totals Card */}
-                <div className="bg-primarycolor rounded-[2rem] p-6 md:p-8 text-white shadow-xl space-y-5 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 size-40 bg-white/5 rounded-full -mr-20 -mt-20 blur-2xl" />
-                    <div className="space-y-1 relative">
-                        <div className="flex items-center justify-between">
-                            <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Previous Debt</p>
-                            {isAdmin && (
-                                <button
-                                    onClick={() => { setDebtInputValue(previousDebtValue.toString()); setIsDebtDialogOpen(true); }}
-                                    className="text-[8px] font-black uppercase tracking-widest text-white/50 hover:text-white transition-colors cursor-pointer"
-                                >
-                                    Edit
-                                </button>
-                            )}
-                        </div>
-                        <p className="text-lg font-black">{previousDebtValue.toLocaleString()} ETB</p>
-                    </div>
-                    <div className="space-y-1 relative">
-                        <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Order Debt</p>
-                        <p className="text-xl font-black">{(totals.totalDebt - previousDebtValue).toLocaleString()} ETB</p>
-                    </div>
-                    <div className="pt-4 border-t border-white/20 relative space-y-3">
-                        <div className="flex items-center justify-between">
-                            <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Total Debt</p>
-                            <p className="text-2xl font-black">{totals.totalDebt.toLocaleString()} ETB</p>
-                        </div>
-                        <div className="flex items-center justify-between">
-                            <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Total Paid</p>
-                            <p className="text-xl font-bold text-emerald-200">{totals.totalPaid.toLocaleString()} ETB</p>
-                        </div>
-                        <div className="pt-3 border-t border-white/20">
-                            <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Remaining</p>
-                            <p className={cn(
-                                "text-3xl font-black mt-1",
-                                totals.totalRemaining > 0 ? "text-rose-200" : "text-emerald-200"
-                            )}>
-                                {totals.totalRemaining.toLocaleString()} ETB
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Check Summary Card */}
-                <div className="bg-white rounded-[2rem] border-2 border-primarycolor/5 p-6 shadow-xl space-y-4">
+                {/* Check Summary Card — hidden on mobile */}
+                <div className="hidden sm:block bg-white rounded-[2rem] border-2 border-primarycolor/5 p-6 shadow-xl space-y-4">
                     <div className="flex items-center gap-2 text-primarycolor mb-1">
                         <Banknote className="size-4" />
                         <h3 className="text-[10px] font-black uppercase tracking-widest">Check Summary</h3>
@@ -429,29 +540,65 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, tota
                     })()}
                 </div>
 
-                {/* Round Books Summary Card */}
-                <div className="bg-white rounded-[2rem] border-2 border-primarycolor/5 p-6 shadow-xl space-y-4">
-                    <div className="flex items-center gap-2 text-indigo-600 mb-1">
-                        <ShoppingBag className="size-4" />
-                        <h3 className="text-[10px] font-black uppercase tracking-widest">Round Books Summary</h3>
+                {/* Round Books Summary Card — Accordion on mobile, regular card on desktop */}
+                <div className="bg-white rounded-[2rem] border-2 border-primarycolor/5 p-0 sm:p-6 shadow-xl">
+                    {/* Desktop: regular card */}
+                    <div className="hidden sm:block space-y-4">
+                        <div className="flex items-center gap-2 text-indigo-600 mb-1">
+                            <ShoppingBag className="size-4" />
+                            <h3 className="text-[10px] font-black uppercase tracking-widest">Round Books Summary</h3>
+                        </div>
+                        <div className="space-y-3">
+                            <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-indigo-50 border border-indigo-100">
+                                <span className="text-[10px] font-bold text-indigo-600">Total Round Orders</span>
+                                <span className="text-sm font-black text-indigo-700">{roundBooksTotals.orderCount}</span>
+                            </div>
+                            <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-primarycolor/5">
+                                <span className="text-[10px] font-bold text-muted-foreground">Total Amount</span>
+                                <span className="text-sm font-black text-primarycolor">{roundBooksTotals.totalAmount.toLocaleString()} ETB</span>
+                            </div>
+                            <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-emerald-50 border border-emerald-100">
+                                <span className="text-[10px] font-bold text-emerald-600">Total Paid</span>
+                                <span className="text-sm font-black text-emerald-700">{roundBooksTotals.totalPaid.toLocaleString()} ETB</span>
+                            </div>
+                            <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-rose-50 border border-rose-100">
+                                <span className="text-[10px] font-bold text-rose-600">Remaining</span>
+                                <span className="text-sm font-black text-rose-700">{roundBooksTotals.remaining.toLocaleString()} ETB</span>
+                            </div>
+                        </div>
                     </div>
-                    <div className="space-y-3">
-                        <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-indigo-50 border border-indigo-100">
-                            <span className="text-[10px] font-bold text-indigo-600">Total Round Orders</span>
-                            <span className="text-sm font-black text-indigo-700">{roundBooksTotals.orderCount}</span>
-                        </div>
-                        <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-primarycolor/5">
-                            <span className="text-[10px] font-bold text-muted-foreground">Total Amount</span>
-                            <span className="text-sm font-black text-primarycolor">{roundBooksTotals.totalAmount.toLocaleString()} ETB</span>
-                        </div>
-                        <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-emerald-50 border border-emerald-100">
-                            <span className="text-[10px] font-bold text-emerald-600">Total Paid</span>
-                            <span className="text-sm font-black text-emerald-700">{roundBooksTotals.totalPaid.toLocaleString()} ETB</span>
-                        </div>
-                        <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-rose-50 border border-rose-100">
-                            <span className="text-[10px] font-bold text-rose-600">Remaining</span>
-                            <span className="text-sm font-black text-rose-700">{roundBooksTotals.remaining.toLocaleString()} ETB</span>
-                        </div>
+                    {/* Mobile: accordion */}
+                    <div className="sm:hidden">
+                        <Accordion type="single" collapsible>
+                            <AccordionItem value="round-books" className="border-0">
+                                <AccordionTrigger className="px-5 py-4 hover:no-underline [&>svg]:text-indigo-600">
+                                    <div className="flex items-center gap-2 text-indigo-600">
+                                        <ShoppingBag className="size-4" />
+                                        <span className="text-[10px] font-black uppercase tracking-widest">Round Books Summary</span>
+                                    </div>
+                                </AccordionTrigger>
+                                <AccordionContent className="px-5 pb-5">
+                                    <div className="space-y-2.5">
+                                        <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-indigo-50 border border-indigo-100">
+                                            <span className="text-[10px] font-bold text-indigo-600">Total Round Orders</span>
+                                            <span className="text-sm font-black text-indigo-700">{roundBooksTotals.orderCount}</span>
+                                        </div>
+                                        <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-primarycolor/5">
+                                            <span className="text-[10px] font-bold text-muted-foreground">Total Amount</span>
+                                            <span className="text-sm font-black text-primarycolor">{roundBooksTotals.totalAmount.toLocaleString()} ETB</span>
+                                        </div>
+                                        <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-emerald-50 border border-emerald-100">
+                                            <span className="text-[10px] font-bold text-emerald-600">Total Paid</span>
+                                            <span className="text-sm font-black text-emerald-700">{roundBooksTotals.totalPaid.toLocaleString()} ETB</span>
+                                        </div>
+                                        <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-rose-50 border border-rose-100">
+                                            <span className="text-[10px] font-bold text-rose-600">Remaining</span>
+                                            <span className="text-sm font-black text-rose-700">{roundBooksTotals.remaining.toLocaleString()} ETB</span>
+                                        </div>
+                                    </div>
+                                </AccordionContent>
+                            </AccordionItem>
+                        </Accordion>
                     </div>
                 </div>
             </div>
@@ -975,7 +1122,8 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, tota
                                             className="h-10 pl-10 rounded-xl border-2 border-slate-100 font-bold text-xs focus:border-primarycolor"
                                         />
                                     </div>
-                                    <div className="rounded-2xl border-2 border-slate-100 overflow-hidden">
+                                    {/* Desktop table */}
+                                    <div className="hidden md:block rounded-2xl border-2 border-slate-100 overflow-hidden">
                                         <Table>
                                             <TableHeader>
                                                 {orderTable.getHeaderGroups().map((hg) => (
@@ -1011,6 +1159,95 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, tota
                                                 )}
                                             </TableBody>
                                         </Table>
+                                    </div>
+                                    {/* Mobile cards */}
+                                    <div className="md:hidden space-y-2.5">
+                                        {orderTable.getRowModel().rows.map((row) => {
+                                            const o = row.original;
+                                            const linkedP = payments.filter(p =>
+                                                p.status === "APPROVED" && p.orderid != null &&
+                                                (p.orderid === String(o.id) || p.orderid === `ORD-${o.id}` || p.orderid.replace(/^ORD-/i, "") === String(o.id))
+                                            );
+                                            const paid = linkedP.reduce((s, p) => s + p.amount, 0);
+                                            const remaining = (o.total_amount || 0) - paid;
+                                            return (
+                                                <div
+                                                    key={row.id}
+                                                    className="rounded-2xl border-2 border-slate-100 bg-slate-50/50 p-3.5 space-y-2.5 cursor-pointer active:scale-[0.98] transition-transform"
+                                                    onClick={() => { setSelectedOrder(o); setIsOrderModalOpen(true); }}
+                                                >
+                                                    {/* Row 1: Order # + Status */}
+                                                    <div className="flex items-center justify-between">
+                                                        <span className="font-black text-primarycolor text-sm">#ORD-{o.id}</span>
+                                                        <div className="flex items-center gap-1.5">
+                                                            <span className={cn(
+                                                                "px-2 py-0.5 rounded-full text-[7px] font-black uppercase tracking-widest",
+                                                                o.order_type === "on round"
+                                                                    ? "bg-indigo-100 text-indigo-600"
+                                                                    : "bg-teal-100 text-teal-600"
+                                                            )}>
+                                                                {o.order_type === "on round" ? "On Round" : "Requested"}
+                                                            </span>
+                                                            <span className={cn(
+                                                                "px-2 py-0.5 rounded-lg text-[7px] font-black uppercase tracking-widest",
+                                                                o.status === "Approved"
+                                                                    ? "bg-emerald-50 text-emerald-600 border border-emerald-200"
+                                                                    : o.status === "Delivered"
+                                                                    ? "bg-blue-50 text-blue-600 border border-blue-200"
+                                                                    : o.status === "Pending"
+                                                                    ? "bg-amber-50 text-amber-600 border border-amber-200"
+                                                                    : "bg-slate-50 text-slate-600 border border-slate-200"
+                                                            )}>
+                                                                {o.status}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    {/* Row 2: Date + Items */}
+                                                    <div className="flex items-center justify-between text-[9px]">
+                                                        <span className="font-bold text-muted-foreground flex items-center gap-1">
+                                                            <Calendar className="size-3" />
+                                                            {formatDate(new Date(o.createdAt), "MMM dd, yyyy")}
+                                                        </span>
+                                                        <span className="font-bold text-slate-600">
+                                                            {o.order_items?.length || 0} items ({o.order_items?.reduce((s, i) => s + (i.quantity || 0), 0) || 0} books)
+                                                        </span>
+                                                    </div>
+                                                    {/* Row 3: Financials */}
+                                                    <div className="flex items-center justify-between">
+                                                        <div className="flex items-center gap-3 text-[9px]">
+                                                            <span className="font-black text-primarycolor">{(o.total_amount || 0).toLocaleString()} ETB</span>
+                                                            <span className="font-bold text-emerald-600">Paid: {paid.toLocaleString()}</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-1.5">
+                                                            {o.hide_remaining ? (
+                                                                <button
+                                                                    onClick={(e) => { e.stopPropagation(); setHideRemToggleOrder(o); }}
+                                                                    className="font-bold text-[9px] px-1.5 py-0.5 rounded cursor-pointer"
+                                                                >
+                                                                    X
+                                                                </button>
+                                                            ) : (
+                                                                <span className={cn("font-bold text-[9px]", remaining > 0 ? "text-rose-500" : "text-emerald-600")}>
+                                                                    Rem: {remaining.toLocaleString()} ETB
+                                                                </span>
+                                                            )}
+                                                            <Button
+                                                                size="sm"
+                                                                onClick={(e) => { e.stopPropagation(); setPaymentOrderId(o.id); setIsOrderPaymentModalOpen(true); }}
+                                                                className="h-6 px-2 rounded-lg bg-primarycolor hover:bg-secondarycolor text-white font-black text-[6px] uppercase tracking-widest gap-0.5"
+                                                            >
+                                                                <Plus className="size-2" /> Pay
+                                                            </Button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                        {orderTable.getRowModel().rows.length === 0 && (
+                                            <div className="py-12 text-center border-2 border-dashed border-slate-100 rounded-2xl bg-slate-50/50">
+                                                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">No orders match your search</p>
+                                            </div>
+                                        )}
                                     </div>
                                     <div className="flex items-center justify-between">
                                         <span className="text-[9px] font-black text-muted-foreground/50 uppercase tracking-widest">
