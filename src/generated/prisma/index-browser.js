@@ -226,7 +226,8 @@ exports.Prisma.BooksScalarFieldEnum = {
   store_cost: 'store_cost',
   distribution_cost: 'distribution_cost',
   advertisement_cost: 'advertisement_cost',
-  purchasing_right_cost: 'purchasing_right_cost'
+  purchasing_right_cost: 'purchasing_right_cost',
+  available_for_retail: 'available_for_retail'
 };
 
 exports.Prisma.Locked_editionsScalarFieldEnum = {

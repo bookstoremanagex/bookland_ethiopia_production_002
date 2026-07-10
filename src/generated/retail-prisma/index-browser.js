@@ -168,6 +168,7 @@ exports.Prisma.Retail_ordersScalarFieldEnum = {
   total_price: 'total_price',
   quantity: 'quantity',
   customerId: 'customerId',
+  phoneNumber: 'phoneNumber',
   created_at: 'created_at',
   updated_at: 'updated_at',
   deleted_at: 'deleted_at'
@@ -189,6 +190,7 @@ exports.Prisma.CustomersScalarFieldEnum = {
   name: 'name',
   email: 'email',
   password: 'password',
+  phonenumber: 'phonenumber',
   customerType: 'customerType',
   created_at: 'created_at',
   updated_at: 'updated_at',
@@ -221,6 +223,10 @@ exports.Prisma.reatil_book_editionsOrderByRelevanceFieldEnum = {
   edition_name: 'edition_name'
 };
 
+exports.Prisma.retail_ordersOrderByRelevanceFieldEnum = {
+  phoneNumber: 'phoneNumber'
+};
+
 exports.Prisma.usersOrderByRelevanceFieldEnum = {
   name: 'name',
   email: 'email',
@@ -232,6 +238,7 @@ exports.Prisma.customersOrderByRelevanceFieldEnum = {
   name: 'name',
   email: 'email',
   password: 'password',
+  phonenumber: 'phonenumber',
   customerType: 'customerType'
 };
 

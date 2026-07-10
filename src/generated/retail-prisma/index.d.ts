@@ -3653,6 +3653,7 @@ export namespace Prisma {
     total_price: number | null
     quantity: number | null
     customerId: number | null
+    phoneNumber: string | null
     created_at: Date | null
     updated_at: Date | null
     deleted_at: Date | null
@@ -3664,6 +3665,7 @@ export namespace Prisma {
     total_price: number | null
     quantity: number | null
     customerId: number | null
+    phoneNumber: string | null
     created_at: Date | null
     updated_at: Date | null
     deleted_at: Date | null
@@ -3675,6 +3677,7 @@ export namespace Prisma {
     total_price: number
     quantity: number
     customerId: number
+    phoneNumber: number
     created_at: number
     updated_at: number
     deleted_at: number
@@ -3704,6 +3707,7 @@ export namespace Prisma {
     total_price?: true
     quantity?: true
     customerId?: true
+    phoneNumber?: true
     created_at?: true
     updated_at?: true
     deleted_at?: true
@@ -3715,6 +3719,7 @@ export namespace Prisma {
     total_price?: true
     quantity?: true
     customerId?: true
+    phoneNumber?: true
     created_at?: true
     updated_at?: true
     deleted_at?: true
@@ -3726,6 +3731,7 @@ export namespace Prisma {
     total_price?: true
     quantity?: true
     customerId?: true
+    phoneNumber?: true
     created_at?: true
     updated_at?: true
     deleted_at?: true
@@ -3824,6 +3830,7 @@ export namespace Prisma {
     total_price: number | null
     quantity: number | null
     customerId: number | null
+    phoneNumber: string | null
     created_at: Date
     updated_at: Date
     deleted_at: Date
@@ -3854,6 +3861,7 @@ export namespace Prisma {
     total_price?: boolean
     quantity?: boolean
     customerId?: boolean
+    phoneNumber?: boolean
     created_at?: boolean
     updated_at?: boolean
     deleted_at?: boolean
@@ -3869,12 +3877,13 @@ export namespace Prisma {
     total_price?: boolean
     quantity?: boolean
     customerId?: boolean
+    phoneNumber?: boolean
     created_at?: boolean
     updated_at?: boolean
     deleted_at?: boolean
   }
 
-  export type retail_ordersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "book_edition_id" | "total_price" | "quantity" | "customerId" | "created_at" | "updated_at" | "deleted_at", ExtArgs["result"]["retail_orders"]>
+  export type retail_ordersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "book_edition_id" | "total_price" | "quantity" | "customerId" | "phoneNumber" | "created_at" | "updated_at" | "deleted_at", ExtArgs["result"]["retail_orders"]>
   export type retail_ordersInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     book?: boolean | reatil_book_editionsDefaultArgs<ExtArgs>
     customer?: boolean | retail_orders$customerArgs<ExtArgs>
@@ -3892,6 +3901,7 @@ export namespace Prisma {
       total_price: number | null
       quantity: number | null
       customerId: number | null
+      phoneNumber: string | null
       created_at: Date
       updated_at: Date
       deleted_at: Date
@@ -4271,6 +4281,7 @@ export namespace Prisma {
     readonly total_price: FieldRef<"retail_orders", 'Float'>
     readonly quantity: FieldRef<"retail_orders", 'Int'>
     readonly customerId: FieldRef<"retail_orders", 'Int'>
+    readonly phoneNumber: FieldRef<"retail_orders", 'String'>
     readonly created_at: FieldRef<"retail_orders", 'DateTime'>
     readonly updated_at: FieldRef<"retail_orders", 'DateTime'>
     readonly deleted_at: FieldRef<"retail_orders", 'DateTime'>
@@ -5628,6 +5639,7 @@ export namespace Prisma {
     name: string | null
     email: string | null
     password: string | null
+    phonenumber: string | null
     customerType: string | null
     created_at: Date | null
     updated_at: Date | null
@@ -5639,6 +5651,7 @@ export namespace Prisma {
     name: string | null
     email: string | null
     password: string | null
+    phonenumber: string | null
     customerType: string | null
     created_at: Date | null
     updated_at: Date | null
@@ -5650,6 +5663,7 @@ export namespace Prisma {
     name: number
     email: number
     password: number
+    phonenumber: number
     customerType: number
     created_at: number
     updated_at: number
@@ -5671,6 +5685,7 @@ export namespace Prisma {
     name?: true
     email?: true
     password?: true
+    phonenumber?: true
     customerType?: true
     created_at?: true
     updated_at?: true
@@ -5682,6 +5697,7 @@ export namespace Prisma {
     name?: true
     email?: true
     password?: true
+    phonenumber?: true
     customerType?: true
     created_at?: true
     updated_at?: true
@@ -5693,6 +5709,7 @@ export namespace Prisma {
     name?: true
     email?: true
     password?: true
+    phonenumber?: true
     customerType?: true
     created_at?: true
     updated_at?: true
@@ -5791,6 +5808,7 @@ export namespace Prisma {
     name: string | null
     email: string | null
     password: string | null
+    phonenumber: string | null
     customerType: string | null
     created_at: Date
     updated_at: Date
@@ -5821,6 +5839,7 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     password?: boolean
+    phonenumber?: boolean
     customerType?: boolean
     created_at?: boolean
     updated_at?: boolean
@@ -5836,13 +5855,14 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     password?: boolean
+    phonenumber?: boolean
     customerType?: boolean
     created_at?: boolean
     updated_at?: boolean
     deleted_at?: boolean
   }
 
-  export type customersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "customerType" | "created_at" | "updated_at" | "deleted_at", ExtArgs["result"]["customers"]>
+  export type customersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "phonenumber" | "customerType" | "created_at" | "updated_at" | "deleted_at", ExtArgs["result"]["customers"]>
   export type customersInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     orders?: boolean | customers$ordersArgs<ExtArgs>
     _count?: boolean | CustomersCountOutputTypeDefaultArgs<ExtArgs>
@@ -5858,6 +5878,7 @@ export namespace Prisma {
       name: string | null
       email: string | null
       password: string | null
+      phonenumber: string | null
       customerType: string | null
       created_at: Date
       updated_at: Date
@@ -6236,6 +6257,7 @@ export namespace Prisma {
     readonly name: FieldRef<"customers", 'String'>
     readonly email: FieldRef<"customers", 'String'>
     readonly password: FieldRef<"customers", 'String'>
+    readonly phonenumber: FieldRef<"customers", 'String'>
     readonly customerType: FieldRef<"customers", 'String'>
     readonly created_at: FieldRef<"customers", 'DateTime'>
     readonly updated_at: FieldRef<"customers", 'DateTime'>
@@ -6692,6 +6714,7 @@ export namespace Prisma {
     total_price: 'total_price',
     quantity: 'quantity',
     customerId: 'customerId',
+    phoneNumber: 'phoneNumber',
     created_at: 'created_at',
     updated_at: 'updated_at',
     deleted_at: 'deleted_at'
@@ -6719,6 +6742,7 @@ export namespace Prisma {
     name: 'name',
     email: 'email',
     password: 'password',
+    phonenumber: 'phonenumber',
     customerType: 'customerType',
     created_at: 'created_at',
     updated_at: 'updated_at',
@@ -6766,6 +6790,13 @@ export namespace Prisma {
   export type reatil_book_editionsOrderByRelevanceFieldEnum = (typeof reatil_book_editionsOrderByRelevanceFieldEnum)[keyof typeof reatil_book_editionsOrderByRelevanceFieldEnum]
 
 
+  export const retail_ordersOrderByRelevanceFieldEnum: {
+    phoneNumber: 'phoneNumber'
+  };
+
+  export type retail_ordersOrderByRelevanceFieldEnum = (typeof retail_ordersOrderByRelevanceFieldEnum)[keyof typeof retail_ordersOrderByRelevanceFieldEnum]
+
+
   export const usersOrderByRelevanceFieldEnum: {
     name: 'name',
     email: 'email',
@@ -6780,6 +6811,7 @@ export namespace Prisma {
     name: 'name',
     email: 'email',
     password: 'password',
+    phonenumber: 'phonenumber',
     customerType: 'customerType'
   };
 
@@ -7082,6 +7114,7 @@ export namespace Prisma {
     total_price?: FloatNullableFilter<"retail_orders"> | number | null
     quantity?: IntNullableFilter<"retail_orders"> | number | null
     customerId?: IntNullableFilter<"retail_orders"> | number | null
+    phoneNumber?: StringNullableFilter<"retail_orders"> | string | null
     created_at?: DateTimeFilter<"retail_orders"> | Date | string
     updated_at?: DateTimeFilter<"retail_orders"> | Date | string
     deleted_at?: DateTimeFilter<"retail_orders"> | Date | string
@@ -7095,11 +7128,13 @@ export namespace Prisma {
     total_price?: SortOrderInput | SortOrder
     quantity?: SortOrderInput | SortOrder
     customerId?: SortOrderInput | SortOrder
+    phoneNumber?: SortOrderInput | SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     deleted_at?: SortOrder
     book?: reatil_book_editionsOrderByWithRelationInput
     customer?: customersOrderByWithRelationInput
+    _relevance?: retail_ordersOrderByRelevanceInput
   }
 
   export type retail_ordersWhereUniqueInput = Prisma.AtLeast<{
@@ -7111,6 +7146,7 @@ export namespace Prisma {
     total_price?: FloatNullableFilter<"retail_orders"> | number | null
     quantity?: IntNullableFilter<"retail_orders"> | number | null
     customerId?: IntNullableFilter<"retail_orders"> | number | null
+    phoneNumber?: StringNullableFilter<"retail_orders"> | string | null
     created_at?: DateTimeFilter<"retail_orders"> | Date | string
     updated_at?: DateTimeFilter<"retail_orders"> | Date | string
     deleted_at?: DateTimeFilter<"retail_orders"> | Date | string
@@ -7124,6 +7160,7 @@ export namespace Prisma {
     total_price?: SortOrderInput | SortOrder
     quantity?: SortOrderInput | SortOrder
     customerId?: SortOrderInput | SortOrder
+    phoneNumber?: SortOrderInput | SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     deleted_at?: SortOrder
@@ -7143,6 +7180,7 @@ export namespace Prisma {
     total_price?: FloatNullableWithAggregatesFilter<"retail_orders"> | number | null
     quantity?: IntNullableWithAggregatesFilter<"retail_orders"> | number | null
     customerId?: IntNullableWithAggregatesFilter<"retail_orders"> | number | null
+    phoneNumber?: StringNullableWithAggregatesFilter<"retail_orders"> | string | null
     created_at?: DateTimeWithAggregatesFilter<"retail_orders"> | Date | string
     updated_at?: DateTimeWithAggregatesFilter<"retail_orders"> | Date | string
     deleted_at?: DateTimeWithAggregatesFilter<"retail_orders"> | Date | string
@@ -7226,6 +7264,7 @@ export namespace Prisma {
     name?: StringNullableFilter<"customers"> | string | null
     email?: StringNullableFilter<"customers"> | string | null
     password?: StringNullableFilter<"customers"> | string | null
+    phonenumber?: StringNullableFilter<"customers"> | string | null
     customerType?: StringNullableFilter<"customers"> | string | null
     created_at?: DateTimeFilter<"customers"> | Date | string
     updated_at?: DateTimeFilter<"customers"> | Date | string
@@ -7238,6 +7277,7 @@ export namespace Prisma {
     name?: SortOrderInput | SortOrder
     email?: SortOrderInput | SortOrder
     password?: SortOrderInput | SortOrder
+    phonenumber?: SortOrderInput | SortOrder
     customerType?: SortOrderInput | SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -7254,6 +7294,7 @@ export namespace Prisma {
     name?: StringNullableFilter<"customers"> | string | null
     email?: StringNullableFilter<"customers"> | string | null
     password?: StringNullableFilter<"customers"> | string | null
+    phonenumber?: StringNullableFilter<"customers"> | string | null
     customerType?: StringNullableFilter<"customers"> | string | null
     created_at?: DateTimeFilter<"customers"> | Date | string
     updated_at?: DateTimeFilter<"customers"> | Date | string
@@ -7266,6 +7307,7 @@ export namespace Prisma {
     name?: SortOrderInput | SortOrder
     email?: SortOrderInput | SortOrder
     password?: SortOrderInput | SortOrder
+    phonenumber?: SortOrderInput | SortOrder
     customerType?: SortOrderInput | SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -7285,6 +7327,7 @@ export namespace Prisma {
     name?: StringNullableWithAggregatesFilter<"customers"> | string | null
     email?: StringNullableWithAggregatesFilter<"customers"> | string | null
     password?: StringNullableWithAggregatesFilter<"customers"> | string | null
+    phonenumber?: StringNullableWithAggregatesFilter<"customers"> | string | null
     customerType?: StringNullableWithAggregatesFilter<"customers"> | string | null
     created_at?: DateTimeWithAggregatesFilter<"customers"> | Date | string
     updated_at?: DateTimeWithAggregatesFilter<"customers"> | Date | string
@@ -7582,6 +7625,7 @@ export namespace Prisma {
   export type retail_ordersCreateInput = {
     total_price?: number | null
     quantity?: number | null
+    phoneNumber?: string | null
     created_at?: Date | string
     updated_at?: Date | string
     deleted_at?: Date | string
@@ -7595,6 +7639,7 @@ export namespace Prisma {
     total_price?: number | null
     quantity?: number | null
     customerId?: number | null
+    phoneNumber?: string | null
     created_at?: Date | string
     updated_at?: Date | string
     deleted_at?: Date | string
@@ -7603,6 +7648,7 @@ export namespace Prisma {
   export type retail_ordersUpdateInput = {
     total_price?: NullableFloatFieldUpdateOperationsInput | number | null
     quantity?: NullableIntFieldUpdateOperationsInput | number | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     deleted_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7616,6 +7662,7 @@ export namespace Prisma {
     total_price?: NullableFloatFieldUpdateOperationsInput | number | null
     quantity?: NullableIntFieldUpdateOperationsInput | number | null
     customerId?: NullableIntFieldUpdateOperationsInput | number | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     deleted_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7627,6 +7674,7 @@ export namespace Prisma {
     total_price?: number | null
     quantity?: number | null
     customerId?: number | null
+    phoneNumber?: string | null
     created_at?: Date | string
     updated_at?: Date | string
     deleted_at?: Date | string
@@ -7635,6 +7683,7 @@ export namespace Prisma {
   export type retail_ordersUpdateManyMutationInput = {
     total_price?: NullableFloatFieldUpdateOperationsInput | number | null
     quantity?: NullableIntFieldUpdateOperationsInput | number | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     deleted_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7646,6 +7695,7 @@ export namespace Prisma {
     total_price?: NullableFloatFieldUpdateOperationsInput | number | null
     quantity?: NullableIntFieldUpdateOperationsInput | number | null
     customerId?: NullableIntFieldUpdateOperationsInput | number | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     deleted_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7729,6 +7779,7 @@ export namespace Prisma {
     name?: string | null
     email?: string | null
     password?: string | null
+    phonenumber?: string | null
     customerType?: string | null
     created_at?: Date | string
     updated_at?: Date | string
@@ -7741,6 +7792,7 @@ export namespace Prisma {
     name?: string | null
     email?: string | null
     password?: string | null
+    phonenumber?: string | null
     customerType?: string | null
     created_at?: Date | string
     updated_at?: Date | string
@@ -7752,6 +7804,7 @@ export namespace Prisma {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     password?: NullableStringFieldUpdateOperationsInput | string | null
+    phonenumber?: NullableStringFieldUpdateOperationsInput | string | null
     customerType?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7764,6 +7817,7 @@ export namespace Prisma {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     password?: NullableStringFieldUpdateOperationsInput | string | null
+    phonenumber?: NullableStringFieldUpdateOperationsInput | string | null
     customerType?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7776,6 +7830,7 @@ export namespace Prisma {
     name?: string | null
     email?: string | null
     password?: string | null
+    phonenumber?: string | null
     customerType?: string | null
     created_at?: Date | string
     updated_at?: Date | string
@@ -7786,6 +7841,7 @@ export namespace Prisma {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     password?: NullableStringFieldUpdateOperationsInput | string | null
+    phonenumber?: NullableStringFieldUpdateOperationsInput | string | null
     customerType?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7797,6 +7853,7 @@ export namespace Prisma {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     password?: NullableStringFieldUpdateOperationsInput | string | null
+    phonenumber?: NullableStringFieldUpdateOperationsInput | string | null
     customerType?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -8203,12 +8260,19 @@ export namespace Prisma {
     isNot?: customersWhereInput | null
   }
 
+  export type retail_ordersOrderByRelevanceInput = {
+    fields: retail_ordersOrderByRelevanceFieldEnum | retail_ordersOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
   export type retail_ordersCountOrderByAggregateInput = {
     id?: SortOrder
     book_edition_id?: SortOrder
     total_price?: SortOrder
     quantity?: SortOrder
     customerId?: SortOrder
+    phoneNumber?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     deleted_at?: SortOrder
@@ -8228,6 +8292,7 @@ export namespace Prisma {
     total_price?: SortOrder
     quantity?: SortOrder
     customerId?: SortOrder
+    phoneNumber?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     deleted_at?: SortOrder
@@ -8239,6 +8304,7 @@ export namespace Prisma {
     total_price?: SortOrder
     quantity?: SortOrder
     customerId?: SortOrder
+    phoneNumber?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     deleted_at?: SortOrder
@@ -8310,6 +8376,7 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     password?: SortOrder
+    phonenumber?: SortOrder
     customerType?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -8325,6 +8392,7 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     password?: SortOrder
+    phonenumber?: SortOrder
     customerType?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -8336,6 +8404,7 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     password?: SortOrder
+    phonenumber?: SortOrder
     customerType?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -8881,6 +8950,7 @@ export namespace Prisma {
   export type retail_ordersCreateWithoutBookInput = {
     total_price?: number | null
     quantity?: number | null
+    phoneNumber?: string | null
     created_at?: Date | string
     updated_at?: Date | string
     deleted_at?: Date | string
@@ -8892,6 +8962,7 @@ export namespace Prisma {
     total_price?: number | null
     quantity?: number | null
     customerId?: number | null
+    phoneNumber?: string | null
     created_at?: Date | string
     updated_at?: Date | string
     deleted_at?: Date | string
@@ -9004,6 +9075,7 @@ export namespace Prisma {
     total_price?: FloatNullableFilter<"retail_orders"> | number | null
     quantity?: IntNullableFilter<"retail_orders"> | number | null
     customerId?: IntNullableFilter<"retail_orders"> | number | null
+    phoneNumber?: StringNullableFilter<"retail_orders"> | string | null
     created_at?: DateTimeFilter<"retail_orders"> | Date | string
     updated_at?: DateTimeFilter<"retail_orders"> | Date | string
     deleted_at?: DateTimeFilter<"retail_orders"> | Date | string
@@ -9037,6 +9109,7 @@ export namespace Prisma {
     name?: string | null
     email?: string | null
     password?: string | null
+    phonenumber?: string | null
     customerType?: string | null
     created_at?: Date | string
     updated_at?: Date | string
@@ -9048,6 +9121,7 @@ export namespace Prisma {
     name?: string | null
     email?: string | null
     password?: string | null
+    phonenumber?: string | null
     customerType?: string | null
     created_at?: Date | string
     updated_at?: Date | string
@@ -9104,6 +9178,7 @@ export namespace Prisma {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     password?: NullableStringFieldUpdateOperationsInput | string | null
+    phonenumber?: NullableStringFieldUpdateOperationsInput | string | null
     customerType?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9115,6 +9190,7 @@ export namespace Prisma {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     password?: NullableStringFieldUpdateOperationsInput | string | null
+    phonenumber?: NullableStringFieldUpdateOperationsInput | string | null
     customerType?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9124,6 +9200,7 @@ export namespace Prisma {
   export type retail_ordersCreateWithoutCustomerInput = {
     total_price?: number | null
     quantity?: number | null
+    phoneNumber?: string | null
     created_at?: Date | string
     updated_at?: Date | string
     deleted_at?: Date | string
@@ -9135,6 +9212,7 @@ export namespace Prisma {
     book_edition_id: number
     total_price?: number | null
     quantity?: number | null
+    phoneNumber?: string | null
     created_at?: Date | string
     updated_at?: Date | string
     deleted_at?: Date | string
@@ -9208,6 +9286,7 @@ export namespace Prisma {
     total_price?: number | null
     quantity?: number | null
     customerId?: number | null
+    phoneNumber?: string | null
     created_at?: Date | string
     updated_at?: Date | string
     deleted_at?: Date | string
@@ -9216,6 +9295,7 @@ export namespace Prisma {
   export type retail_ordersUpdateWithoutBookInput = {
     total_price?: NullableFloatFieldUpdateOperationsInput | number | null
     quantity?: NullableIntFieldUpdateOperationsInput | number | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     deleted_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9227,6 +9307,7 @@ export namespace Prisma {
     total_price?: NullableFloatFieldUpdateOperationsInput | number | null
     quantity?: NullableIntFieldUpdateOperationsInput | number | null
     customerId?: NullableIntFieldUpdateOperationsInput | number | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     deleted_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9237,6 +9318,7 @@ export namespace Prisma {
     total_price?: NullableFloatFieldUpdateOperationsInput | number | null
     quantity?: NullableIntFieldUpdateOperationsInput | number | null
     customerId?: NullableIntFieldUpdateOperationsInput | number | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     deleted_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9247,6 +9329,7 @@ export namespace Prisma {
     book_edition_id: number
     total_price?: number | null
     quantity?: number | null
+    phoneNumber?: string | null
     created_at?: Date | string
     updated_at?: Date | string
     deleted_at?: Date | string
@@ -9255,6 +9338,7 @@ export namespace Prisma {
   export type retail_ordersUpdateWithoutCustomerInput = {
     total_price?: NullableFloatFieldUpdateOperationsInput | number | null
     quantity?: NullableIntFieldUpdateOperationsInput | number | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     deleted_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9266,6 +9350,7 @@ export namespace Prisma {
     book_edition_id?: IntFieldUpdateOperationsInput | number
     total_price?: NullableFloatFieldUpdateOperationsInput | number | null
     quantity?: NullableIntFieldUpdateOperationsInput | number | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     deleted_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9276,6 +9361,7 @@ export namespace Prisma {
     book_edition_id?: IntFieldUpdateOperationsInput | number
     total_price?: NullableFloatFieldUpdateOperationsInput | number | null
     quantity?: NullableIntFieldUpdateOperationsInput | number | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     deleted_at?: DateTimeFieldUpdateOperationsInput | Date | string

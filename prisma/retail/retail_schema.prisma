@@ -37,7 +37,7 @@ model retail_books {
   purchasing_right_cost           Float?
 ourbook Boolean @default(false)
   bookEditions reatil_book_editions[]
-
+ is_deleted_retail_book                    Boolean                 @default(false)
   created_at DateTime @default(now())
 updated_at DateTime @default(now())
 deleted_at DateTime @default(now())
@@ -50,7 +50,7 @@ model reatil_book_editions {
   books        retail_books?  @relation(fields: [book_id], references: [id], map: "BookEditions_book_id_fkey")
   price        Float?
   orders retail_orders[]
-
+ is_deleted                    Boolean                 @default(false)
   created_at DateTime @default(now())
 updated_at DateTime @default(now())
 deleted_at DateTime @default(now())
@@ -67,7 +67,8 @@ model retail_orders  {
   quantity Int?
   customer customers? @relation(fields: [customerId], references: [id], map: "RetailOrders_customer_id_fkey")
   customerId Int?
-  
+  phoneNumber String?
+  is_deleted                    Boolean                 @default(false)
 created_at DateTime @default(now())
 updated_at DateTime @default(now())
 deleted_at DateTime @default(now())
@@ -79,6 +80,7 @@ model users {
   email String?
   password String?
   role String?
+    is_deleted                    Boolean                 @default(false)
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
   deleted_at DateTime @default(now())
@@ -89,9 +91,10 @@ model customers {
   name String?
   email String?
   password String?
+  phonenumber String?
   customerType String?
   orders retail_orders[]
-
+ is_deleted                    Boolean                 @default(false)
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
   deleted_at DateTime @default(now())

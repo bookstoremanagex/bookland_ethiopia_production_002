@@ -65,10 +65,10 @@ model retail_orders {
   quantity        Int?
   customer        customers?           @relation(fields: [customerId], references: [id], map: "RetailOrders_customer_id_fkey")
   customerId      Int?
-
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now())
-  deleted_at DateTime @default(now())
+  phoneNumber     String?
+  created_at      DateTime             @default(now())
+  updated_at      DateTime             @default(now())
+  deleted_at      DateTime             @default(now())
 }
 
 model users {
@@ -87,6 +87,7 @@ model customers {
   name         String?
   email        String?
   password     String?
+  phonenumber  String?
   customerType String?
   orders       retail_orders[]
 

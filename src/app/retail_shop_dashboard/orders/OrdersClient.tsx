@@ -53,6 +53,7 @@ export function OrdersClient({
   const [customerType, setCustomerType] = useState<"individual" | "known">("individual");
   const [customerSearch, setCustomerSearch] = useState("");
   const [selectedCustomer, setSelectedCustomer] = useState<RetailCustomer | null>(null);
+  const [phoneNumber, setPhoneNumber] = useState("");
 
   const filtered = useMemo(
     () =>
@@ -122,6 +123,10 @@ export function OrdersClient({
 
   const handleSubmit = async () => {
     if (cart.length === 0) return;
+    if (customerType === "individual" && !phoneNumber.trim()) {
+      toast.error("Phone number is required for individual customers");
+      return;
+    }
     setIsSubmitting(true);
     try {
       for (const item of cart) {
@@ -130,6 +135,7 @@ export function OrdersClient({
           quantity: item.quantity,
           total_price: item.quantity * item.price,
           customerId: customerType === "known" ? selectedCustomer?.id : null,
+          phoneNumber: customerType === "individual" ? phoneNumber.trim() : undefined,
         });
         if (!res.success) {
           toast.error(`Failed to create order for ${item.bookTitle}`);
@@ -141,6 +147,7 @@ export function OrdersClient({
       setCart([]);
       setSelectedCustomer(null);
       setCustomerType("individual");
+      setPhoneNumber("");
     } catch {
       toast.error("Failed to create orders");
     } finally {
@@ -247,6 +254,20 @@ export function OrdersClient({
               Known Customer
             </button>
           </div>
+
+          {customerType === "individual" && (
+            <div className="space-y-2">
+              <div className="relative">
+                <input
+                  className="w-full h-9 pl-3 pr-3 rounded-lg border border-slate-200 bg-slate-50 text-xs font-medium text-slate-700 outline-none placeholder:text-slate-400 focus:border-primarycolor/50 focus:bg-white focus:ring-2 focus:ring-primarycolor/10 transition-all"
+                  placeholder="Phone number *"
+                  type="tel"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                />
+              </div>
+            </div>
+          )}
 
           {customerType === "known" && (
             <div className="space-y-2">
@@ -365,7 +386,7 @@ export function OrdersClient({
                       </button>
                     </div>
                     <div className="flex items-center gap-1 ml-auto">
-                      <span className="text-[10px] font-bold text-slate-400">$</span>
+                      <span className="text-[10px] font-bold text-slate-400">ETB</span>
                       <input
                         type="number"
                         min="0"

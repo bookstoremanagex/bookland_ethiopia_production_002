@@ -71,4 +71,6 @@ export const MODULE_MAP: Record<string, any> = {
     "retail_management": dynamic(() => import("@/app/admin_dashboard/retail_management/page")),
     "retail_management/detail": dynamic(() => import("@/app/admin_dashboard/retail_management/[id]/page")),
     "retail-shop": dynamic(() => import("@/app/admin_dashboard/retail-shop/page")),
+    "retail-shop/our-books": dynamic(() => import("@/app/admin_dashboard/retail-shop/our-books/page")),
+    "retail-shop/orders": dynamic(() => import("@/app/admin_dashboard/retail-shop/orders/page")),
 }

@@ -147,6 +147,7 @@ model books {
   distribution_cost             Float?
   advertisement_cost            Float?
   purchasing_right_cost         Float?
+  available_for_retail          Boolean                 @default(false)
   bookedition                   bookedition[]
   damagedbooks                  damagedbooks[]
   translatorbook                translatorbook[]

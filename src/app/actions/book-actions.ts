@@ -205,3 +205,81 @@ export async function deleteBook(id: string) {
     return { success: false, error: "Failed to delete book" };
   }
 }
+
+export async function getRetailEligibleBooks(search?: string, page: number = 1, pageSize: number = 20) {
+  try {
+    const where: any = {
+      is_deleted: false,
+      productionstatus: "SALES",
+    };
+
+    if (search) {
+      where.OR = [
+        { title: { contains: search } },
+        { author: { contains: search } },
+      ];
+    }
+
+    const [books, totalCount] = await Promise.all([
+      (prisma as any).books.findMany({
+        where,
+        select: {
+          id: true,
+          title: true,
+          author: true,
+          available_for_retail: true,
+          productionstatus: true,
+        },
+        orderBy: { title: "asc" },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+      }),
+      (prisma as any).books.count({ where }),
+    ]);
+
+    return { success: true, data: books, totalCount, page, pageSize };
+  } catch (error) {
+    console.error("Get retail eligible books error:", error);
+    return { success: false, error: "Failed to fetch books" };
+  }
+}
+
+export async function setBookRetailAvailability(bookId: number, available: boolean) {
+  try {
+    const session = await getCurrentSession();
+    if (!session || session.role !== "ADMIN") {
+      return { success: false, error: "Only administrators can modify retail availability" };
+    }
+
+    await (prisma as any).books.update({
+      where: { id: bookId },
+      data: { available_for_retail: available, updatedAt: new Date() },
+    });
+
+    revalidatePath("/admin_dashboard/retail-shop/our-books");
+    return { success: true };
+  } catch (error) {
+    console.error("Set retail availability error:", error);
+    return { success: false, error: "Failed to update retail availability" };
+  }
+}
+
+export async function setAllBooksRetailAvailability(available: boolean) {
+  try {
+    const session = await getCurrentSession();
+    if (!session || session.role !== "ADMIN") {
+      return { success: false, error: "Only administrators can modify retail availability" };
+    }
+
+    await (prisma as any).books.updateMany({
+      where: { is_deleted: false, productionstatus: "SALES" },
+      data: { available_for_retail: available, updatedAt: new Date() },
+    });
+
+    revalidatePath("/admin_dashboard/retail-shop/our-books");
+    return { success: true };
+  } catch (error) {
+    console.error("Set all books retail availability error:", error);
+    return { success: false, error: "Failed to update retail availability" };
+  }
+}

@@ -1,8 +1,22 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, User, ShoppingCart, BookOpen, Clock, Pencil } from "lucide-react";
+import { ArrowLeft, User, ShoppingCart, BookOpen, Clock, Pencil, Trash2, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { deleteCustomer } from "@/app/actions/retail-customer-actions";
+import { toast } from "sonner";
 
 interface CustomerDetail {
   id: number;
@@ -25,6 +39,30 @@ interface CustomerDetail {
 
 export function CustomerDetailClient({ customer }: { customer: CustomerDetail }) {
   const router = useRouter();
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [deleting, setDeleting] = useState(false);
+
+  const handleDelete = async () => {
+    if (deleteConfirmText !== "DELETE") return;
+    setDeleting(true);
+    try {
+      const res = await deleteCustomer(customer.id);
+      if (res.success) {
+        toast.success("Customer deleted");
+        router.push("/retail_shop_dashboard/customers");
+        router.refresh();
+      } else {
+        toast.error(res.error || "Failed to delete customer");
+      }
+    } catch {
+      toast.error("Failed to delete customer");
+    } finally {
+      setDeleting(false);
+      setShowDeleteDialog(false);
+      setDeleteConfirmText("");
+    }
+  };
 
   const badgeColor =
     customer.customerType === "DISTRIBUTOR"
@@ -72,15 +110,24 @@ export function CustomerDetailClient({ customer }: { customer: CustomerDetail })
               </div>
             </div>
           </div>
-          <button
-            onClick={() =>
-              router.push(`/retail_shop_dashboard/customers/${customer.id}/edit`)
-            }
-            className="size-10 rounded-xl bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all flex items-center justify-center shrink-0"
-            title="Edit"
-          >
-            <Pencil className="size-4" />
-          </button>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={() =>
+                router.push(`/retail_shop_dashboard/customers/${customer.id}/edit`)
+              }
+              className="size-10 rounded-xl bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all flex items-center justify-center"
+              title="Edit"
+            >
+              <Pencil className="size-4" />
+            </button>
+            <button
+              onClick={() => setShowDeleteDialog(true)}
+              className="size-10 rounded-xl bg-rose-50 text-rose-500 hover:bg-rose-100 transition-all flex items-center justify-center"
+              title="Delete"
+            >
+              <Trash2 className="size-4" />
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-slate-100">
@@ -160,6 +207,46 @@ export function CustomerDetailClient({ customer }: { customer: CustomerDetail })
           </div>
         )}
       </div>
+
+      {/* Delete customer confirmation */}
+      <AlertDialog open={showDeleteDialog} onOpenChange={(o) => { if (!o) { setShowDeleteDialog(false); setDeleteConfirmText(""); } }}>
+        <AlertDialogContent className="rounded-2xl border-2 border-primarycolor/5">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-base font-black text-primarycolor uppercase tracking-tight italic">
+              Delete Customer?
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-[10px] font-bold text-muted-foreground space-y-2">
+              <p>This will permanently remove <strong>{customer.name ?? "this customer"}</strong> from the retail shop.</p>
+              <p>Type <strong className="text-rose-600">DELETE</strong> to confirm.</p>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="px-1">
+            <input
+              type="text"
+              value={deleteConfirmText}
+              onChange={(e) => setDeleteConfirmText(e.target.value)}
+              placeholder='Type "DELETE" to confirm'
+              className="w-full h-10 px-4 rounded-xl border-2 border-slate-200 text-sm font-bold text-gray-700 outline-none focus:border-rose-400 transition-colors"
+            />
+          </div>
+          <AlertDialogFooter className="gap-2">
+            <AlertDialogCancel asChild>
+              <Button variant="outline" className="rounded-xl h-10 px-5 font-black text-[9px] uppercase tracking-widest">
+                Cancel
+              </Button>
+            </AlertDialogCancel>
+            <AlertDialogAction asChild>
+              <Button
+                onClick={handleDelete}
+                disabled={deleteConfirmText !== "DELETE" || deleting}
+                className="rounded-xl h-10 px-5 font-black text-[9px] uppercase tracking-widest bg-rose-600 hover:bg-rose-700 text-white disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                {deleting ? <Loader2 className="size-3 animate-spin" /> : "Delete Customer"}
+              </Button>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

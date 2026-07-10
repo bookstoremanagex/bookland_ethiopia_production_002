@@ -13,6 +13,7 @@ interface CustomerData {
   id: number;
   name: string | null;
   email: string | null;
+  phonenumber: string | null;
   customerType: string | null;
 }
 
@@ -22,6 +23,7 @@ export function EditCustomerClient({ customer }: { customer: CustomerData }) {
   const [form, setForm] = useState({
     name: customer.name ?? "",
     email: customer.email ?? "",
+    phonenumber: customer.phonenumber ?? "",
     customerType: customer.customerType ?? "INDIVIDUAL",
   });
 
@@ -40,6 +42,7 @@ export function EditCustomerClient({ customer }: { customer: CustomerData }) {
       const res = await updateCustomer(customer.id, {
         name: form.name.trim(),
         email: form.email.trim() || undefined,
+        phonenumber: form.phonenumber.trim() || undefined,
         customerType: form.customerType,
       });
       if (res.success) {
@@ -96,6 +99,17 @@ export function EditCustomerClient({ customer }: { customer: CustomerData }) {
                 value={form.email}
                 onChange={handleChange}
                 placeholder="customer@example.com"
+                className="w-full h-12 pl-4 pr-4 rounded-xl bg-gray-50 border border-transparent text-sm font-medium text-gray-700 outline-none placeholder:text-gray-400 focus:border-primarycolor/50 focus:bg-white focus:ring-2 focus:ring-primarycolor/10 transition-all"
+              />
+            </div>
+            <div className="space-y-3">
+              <label className="text-sm font-bold text-gray-700 ml-2">Phone Number</label>
+              <input
+                name="phonenumber"
+                type="tel"
+                value={form.phonenumber}
+                onChange={handleChange}
+                placeholder="+251 9XX XXX XXX"
                 className="w-full h-12 pl-4 pr-4 rounded-xl bg-gray-50 border border-transparent text-sm font-medium text-gray-700 outline-none placeholder:text-gray-400 focus:border-primarycolor/50 focus:bg-white focus:ring-2 focus:ring-primarycolor/10 transition-all"
               />
             </div>

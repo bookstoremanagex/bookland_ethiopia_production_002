@@ -39,7 +39,7 @@ export default async function RetailShopHomePage() {
 
   return (
     <div className="min-h-full bg-white p-4 md:p-6">
-      <div className="w-full max-w-5xl mx-auto space-y-8">
+      <div className="w-full max-w-5xl mx-auto flex flex-col gap-8">
         <div>
           <h1 className="text-2xl font-black text-slate-800 uppercase tracking-tight">
             Retail Dashboard
@@ -49,29 +49,8 @@ export default async function RetailShopHomePage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {cards.map((card) => (
-            <Link
-              key={card.label}
-              href={card.href}
-              className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300"
-            >
-              <div className="flex items-center justify-between mb-4">
-                <div className={`size-10 rounded-xl ${card.color} flex items-center justify-center shadow-lg shadow-${card.color}/20`}>
-                  <card.icon className="size-5 text-white" />
-                </div>
-              </div>
-              <p className="text-2xl font-black text-slate-800">
-                {card.value}
-              </p>
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mt-1">
-                {card.label}
-              </p>
-            </Link>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Action buttons — top on mobile, below stats on desktop */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 order-first sm:order-last">
           <Link
             href="/retail_shop_dashboard/orders"
             className="group rounded-2xl border border-slate-200 bg-gradient-to-br from-primarycolor/5 to-transparent p-6 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300"
@@ -109,6 +88,29 @@ export default async function RetailShopHomePage() {
               </div>
             </div>
           </Link>
+        </div>
+
+        {/* Stats — below buttons on mobile, above buttons on desktop */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 order-last sm:order-first">
+          {cards.map((card) => (
+            <Link
+              key={card.label}
+              href={card.href}
+              className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className={`size-10 rounded-xl ${card.color} flex items-center justify-center shadow-lg shadow-${card.color}/20`}>
+                  <card.icon className="size-5 text-white" />
+                </div>
+              </div>
+              <p className="text-2xl font-black text-slate-800">
+                {card.value}
+              </p>
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mt-1">
+                {card.label}
+              </p>
+            </Link>
+          ))}
         </div>
       </div>
     </div>

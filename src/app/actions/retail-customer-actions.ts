@@ -17,6 +17,7 @@ export async function getCustomers() {
 export async function createCustomer(data: {
   name: string;
   email?: string;
+  phonenumber?: string;
   customerType: string;
 }) {
   try {
@@ -24,6 +25,7 @@ export async function createCustomer(data: {
       data: {
         name: data.name,
         email: data.email ?? null,
+        phonenumber: data.phonenumber ?? null,
         customerType: data.customerType,
       },
     });
@@ -36,7 +38,7 @@ export async function createCustomer(data: {
 
 export async function updateCustomer(
   id: number,
-  data: { name: string; email?: string; customerType: string }
+  data: { name: string; email?: string; phonenumber?: string; customerType: string }
 ) {
   try {
     const customer = await retailPrisma.customers.update({
@@ -44,6 +46,7 @@ export async function updateCustomer(
       data: {
         name: data.name,
         email: data.email ?? null,
+        phonenumber: data.phonenumber ?? null,
         customerType: data.customerType,
       },
     });
