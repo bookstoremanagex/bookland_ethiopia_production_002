@@ -696,35 +696,35 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
     return (
         <>
         <Dialog open={isOpen} onOpenChange={open => !open && onClose()}>
-            <DialogContent className="sm:max-w-5xl w-[95vw] rounded-[2.5rem] border-4 border-primarycolor/5 bg-[#F8FAFC] p-0 overflow-hidden shadow-2xl flex flex-col max-h-[92vh]">
+            <DialogContent className="sm:max-w-5xl w-full sm:w-[95vw] h-[100dvh] sm:h-auto sm:max-h-[92vh] rounded-none sm:rounded-[2.5rem] border-0 sm:border-4 border-primarycolor/5 bg-[#F8FAFC] p-0 overflow-hidden shadow-2xl flex flex-col">
                 {/* Header */}
-                <DialogHeader className="bg-white p-8 pb-6 border-b border-slate-100 shrink-0">
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div className="flex items-center gap-4">
-                            <div className="size-12 rounded-2xl bg-primarycolor/10 flex items-center justify-center text-primarycolor shrink-0">
-                                <ShoppingBag className="size-6" />
+                <DialogHeader className="bg-white p-3 sm:p-8 sm:pb-6 border-b border-slate-100 shrink-0">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
+                        <div className="flex items-center gap-2 sm:gap-4">
+                            <div className="size-8 sm:size-12 rounded-2xl bg-primarycolor/10 flex items-center justify-center text-primarycolor shrink-0">
+                                <ShoppingBag className="size-4 sm:size-6" />
                             </div>
-                            <div>
-                                <DialogTitle className="text-2xl md:text-3xl font-black text-primarycolor uppercase italic">
+                            <div className="min-w-0">
+                                <DialogTitle className="text-base sm:text-2xl md:text-3xl font-black text-primarycolor uppercase italic">
                                     Order <span className="text-secondarycolor not-italic">#ORD-{order.id}</span>
                                 </DialogTitle>
-                                <DialogDescription className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                                <DialogDescription className="text-[7px] sm:text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                                     {order.is_approved ? "View complete order information" : "Review & allocate stock to approve this order"}
                                 </DialogDescription>
                             </div>
                         </div>
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-1.5 sm:gap-3 flex-wrap shrink-0">
                             {order.is_approved ? (
-                                <div className="px-4 py-2 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5">
-                                    <CheckCircle2 className="size-3.5" /> Approved
+                                <div className="px-2 sm:px-4 py-1 sm:py-2 rounded-full bg-emerald-100 text-emerald-700 text-[7px] sm:text-[10px] font-black uppercase tracking-widest flex items-center gap-1">
+                                    <CheckCircle2 className="size-3" /> Approved
                                 </div>
                             ) : (
-                                <div className="px-4 py-2 rounded-full bg-amber-100 text-amber-700 text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 animate-pulse">
-                                    <Clock className="size-3.5" /> Pending Approval
+                                <div className="px-2 sm:px-4 py-1 sm:py-2 rounded-full bg-amber-100 text-amber-700 text-[7px] sm:text-[10px] font-black uppercase tracking-widest flex items-center gap-1 animate-pulse">
+                                    <Clock className="size-3" /> Pending
                                 </div>
                             )}
                             <div className={cn(
-                                "px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest",
+                                "px-2 sm:px-4 py-1 sm:py-2 rounded-full text-[7px] sm:text-[10px] font-black uppercase tracking-widest",
                                 order.order_type === "requested" ? "bg-blue-100 text-blue-700" : "bg-purple-100 text-purple-700"
                             )}>
                                 {order.order_type}
@@ -733,34 +733,35 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                     </div>
                 </DialogHeader>
 
-                <div className="flex-1 overflow-y-auto p-6 bg-[#F8FAFC] space-y-6">
+                <div className="flex-1 overflow-y-auto p-3 sm:p-6 pb-20 sm:pb-6 bg-[#F8FAFC] space-y-3 sm:space-y-6">
                     {order.is_approved ? (
                         /* ── APPROVED: Read-only order summary ── */
-                        <div className="space-y-6">
+                        <div className="space-y-4 sm:space-y-6">
                             {/* Financial summary */}
-                            <div className="bg-white rounded-[2rem] p-6 border-2 border-primarycolor/5 shadow-sm">
-                                <div className="grid grid-cols-3 gap-4">
-                                    <div className="text-center p-3 rounded-xl bg-slate-50 border border-slate-100">
-                                        <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Total</p>
-                                        <p className="font-black text-primarycolor text-lg mt-0.5">{order.total_amount.toLocaleString()} <span className="text-[8px]">ETB</span></p>
+                            <div className="bg-white rounded-2xl sm:rounded-[2rem] p-4 sm:p-6 border-2 border-primarycolor/5 shadow-sm">
+                                <div className="grid grid-cols-3 gap-2 sm:gap-4">
+                                    <div className="text-center p-2.5 sm:p-3 rounded-xl bg-slate-50 border border-slate-100">
+                                        <p className="text-[7px] sm:text-[8px] font-black text-muted-foreground uppercase tracking-widest">Total</p>
+                                        <p className="font-black text-primarycolor text-sm sm:text-lg mt-0.5">{order.total_amount.toLocaleString()} <span className="text-[7px] sm:text-[8px]">ETB</span></p>
                                     </div>
-                                    <div className="text-center p-3 rounded-xl bg-emerald-50 border border-emerald-100">
-                                        <p className="text-[8px] font-black text-emerald-700 uppercase tracking-widest">Paid</p>
-                                        <p className="font-black text-emerald-800 text-lg mt-0.5">{order.amount_paid.toLocaleString()} <span className="text-[8px]">ETB</span></p>
+                                    <div className="text-center p-2.5 sm:p-3 rounded-xl bg-emerald-50 border border-emerald-100">
+                                        <p className="text-[7px] sm:text-[8px] font-black text-emerald-700 uppercase tracking-widest">Paid</p>
+                                        <p className="font-black text-emerald-800 text-sm sm:text-lg mt-0.5">{order.amount_paid.toLocaleString()} <span className="text-[7px] sm:text-[8px]">ETB</span></p>
                                     </div>
-                                    <div className="text-center p-3 rounded-xl bg-rose-50 border border-rose-100">
-                                        <p className="text-[8px] font-black text-rose-700 uppercase tracking-widest">Remaining</p>
-                                        <p className="font-black text-rose-800 text-lg mt-0.5">{(order.total_amount - order.amount_paid).toLocaleString()} <span className="text-[8px]">ETB</span></p>
+                                    <div className="text-center p-2.5 sm:p-3 rounded-xl bg-rose-50 border border-rose-100">
+                                        <p className="text-[7px] sm:text-[8px] font-black text-rose-700 uppercase tracking-widest">Remaining</p>
+                                        <p className="font-black text-rose-800 text-sm sm:text-lg mt-0.5">{(order.total_amount - order.amount_paid).toLocaleString()} <span className="text-[7px] sm:text-[8px]">ETB</span></p>
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Ordered items table */}
-                            <div className="bg-white rounded-[2rem] border-2 border-primarycolor/5 shadow-sm overflow-hidden">
-                                <div className="p-5 border-b border-slate-100">
-                                    <h4 className="font-black text-primarycolor uppercase italic text-sm">Ordered Items</h4>
+                            {/* Ordered items — table on desktop, cards on mobile */}
+                            <div className="bg-white rounded-2xl sm:rounded-[2rem] border-2 border-primarycolor/5 shadow-sm overflow-hidden">
+                                <div className="p-3 sm:p-5 border-b border-slate-100">
+                                    <h4 className="font-black text-primarycolor uppercase italic text-xs sm:text-sm">Ordered Items</h4>
                                 </div>
-                                <div className="overflow-x-auto">
+                                {/* Desktop table */}
+                                <div className="hidden sm:block overflow-x-auto">
                                     <table className="w-full text-left border-collapse">
                                         <thead>
                                             <tr className="bg-slate-50 border-b border-slate-100">
@@ -797,37 +798,68 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                                         </tbody>
                                     </table>
                                 </div>
+                                {/* Mobile cards */}
+                                <div className="sm:hidden divide-y divide-slate-50">
+                                    {order.order_items.map((item, i) => (
+                                        <div key={item.id || i} className="p-3 space-y-1.5">
+                                            <div className="flex items-start justify-between gap-2">
+                                                <div className="min-w-0">
+                                                    <p className="font-black text-primarycolor text-[11px] uppercase italic leading-tight truncate">{item.bookedition?.books?.title || "Unknown"}</p>
+                                                    <p className="text-[7px] font-bold text-muted-foreground uppercase tracking-widest">{item.bookedition?.edition_name}</p>
+                                                </div>
+                                                <div className="shrink-0 flex items-center gap-1">
+                                                    <span className="px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[6px] font-black uppercase">Approved</span>
+                                                    {order.delivery ? (
+                                                        <span className="px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[6px] font-black uppercase">Delivered</span>
+                                                    ) : (
+                                                        <span className="px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700 text-[6px] font-black uppercase">Pending</span>
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center justify-between text-[9px]">
+                                                <div className="flex items-center gap-2">
+                                                    <span className="font-bold text-slate-600">x{item.quantity}</span>
+                                                    <span className="text-muted-foreground">@</span>
+                                                    <span className="font-bold text-slate-600">{item.price_at_order.toLocaleString()} ETB</span>
+                                                </div>
+                                                <span className="font-black text-primarycolor">{(item.quantity * item.price_at_order).toLocaleString()} ETB</span>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
 
                             {/* Allocation summary */}
                             {order.allocation_summary && (
-                                <div className="bg-white rounded-[2rem] p-6 border-2 border-emerald-100 shadow-sm">
-                                    <div className="flex items-center gap-2 mb-4 text-emerald-700">
-                                        <Truck className="size-4" />
-                                        <h4 className="font-black uppercase tracking-widest text-xs italic">Store Allocation Breakdown</h4>
+                                <div className="bg-white rounded-2xl sm:rounded-[2rem] p-3 sm:p-6 border-2 border-emerald-100 shadow-sm">
+                                    <div className="flex items-center gap-2 mb-2 sm:mb-4 text-emerald-700">
+                                        <Truck className="size-3.5 sm:size-4" />
+                                        <h4 className="font-black uppercase tracking-widest text-[10px] sm:text-xs italic">Store Allocation Breakdown</h4>
                                     </div>
-                                    <div className="bg-emerald-50/50 rounded-2xl p-5 border border-emerald-100">
+                                    <div className="bg-emerald-50/50 rounded-xl sm:rounded-2xl p-3 sm:p-5 border border-emerald-100">
                                         {order.allocation_summary.split('\n').map((line: string, i: number) => {
                                             if (line.startsWith('📖')) {
-                                                return <p key={i} className="font-black text-primarycolor text-sm uppercase italic mt-3 first:mt-0 mb-1">{line.replace('📖 ', '')}</p>;
+                                                return <p key={i} className="font-black text-primarycolor text-[11px] sm:text-sm uppercase italic mt-2 sm:mt-3 first:mt-0 mb-0.5 sm:mb-1">{line.replace('📖 ', '')}</p>;
                                             }
                                             if (line.trim() === '') return null;
-                                            return <p key={i} className="text-[11px] font-bold text-slate-700 ml-4 py-0.5">{line}</p>;
+                                            return <p key={i} className="text-[9px] sm:text-[11px] font-bold text-slate-700 ml-2 sm:ml-4 py-0.5">{line}</p>;
                                         })}
                                     </div>
                                 </div>
                             )}
 
                             {/* Shop info */}
-                            <div className="bg-white rounded-[2rem] p-6 border-2 border-primarycolor/5 shadow-sm flex items-center gap-4">
-                                <Building2 className="size-6 text-primarycolor/60 shrink-0" />
-                                <div>
-                                    <p className="font-black text-primarycolor uppercase">{order.bookshopes?.name}</p>
-                                    <p className="text-[9px] font-bold text-muted-foreground">{order.bookshopes?.location}</p>
-                                </div>
-                                <div className="ml-auto text-right">
-                                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Placed on</p>
-                                    <p className="font-bold text-slate-700 text-sm">{formatDate(new Date(order.createdAt))}</p>
+                            <div className="bg-white rounded-2xl sm:rounded-[2rem] p-3 sm:p-6 border-2 border-primarycolor/5 shadow-sm">
+                                <div className="flex items-center gap-3 sm:gap-4">
+                                    <Building2 className="size-5 sm:size-6 text-primarycolor/60 shrink-0" />
+                                    <div className="min-w-0 flex-1">
+                                        <p className="font-black text-primarycolor uppercase text-xs sm:text-base truncate">{order.bookshopes?.name}</p>
+                                        <p className="text-[8px] sm:text-[9px] font-bold text-muted-foreground truncate">{order.bookshopes?.location}</p>
+                                    </div>
+                                    <div className="text-right shrink-0">
+                                        <p className="text-[7px] sm:text-[8px] font-black text-muted-foreground uppercase tracking-widest">Placed on</p>
+                                        <p className="font-bold text-slate-700 text-[10px] sm:text-sm">{formatDate(new Date(order.createdAt))}</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -843,14 +875,14 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                     ) : (
                         <>
                         {/* Global Store Selector */}
-                        <div className="bg-white rounded-[2rem] p-6 border-2 border-primarycolor/5 shadow-sm space-y-4">
+                        <div className="bg-white rounded-2xl sm:rounded-[2rem] p-3 sm:p-6 border-2 border-primarycolor/5 shadow-sm space-y-3 sm:space-y-4">
                             <div className="flex items-center gap-2 text-primarycolor">
                                 <Store className="size-4" />
-                                <h4 className="font-black uppercase tracking-widest text-xs italic">Select Store for Allocation</h4>
+                                <h4 className="font-black uppercase tracking-widest text-[10px] sm:text-xs italic">Select Store for Allocation</h4>
                             </div>
-                            <div className="flex flex-wrap gap-2">
+                            <div className="flex flex-wrap gap-1.5 sm:gap-2">
                                 <label className={cn(
-                                    "flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 cursor-pointer transition-colors",
+                                    "flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg sm:rounded-xl border-2 cursor-pointer transition-colors",
                                     selectedGlobalStoreId === null
                                         ? "border-primarycolor bg-primarycolor/5"
                                         : "border-slate-100 bg-white hover:border-slate-200"
@@ -860,15 +892,15 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                                         name="global-store"
                                         checked={selectedGlobalStoreId === null}
                                         onChange={() => handleGlobalStoreChange(null)}
-                                        className="size-4 accent-primarycolor"
+                                        className="size-3.5 sm:size-4 accent-primarycolor"
                                     />
-                                    <span className="font-black text-slate-700 text-xs uppercase">None</span>
+                                    <span className="font-black text-slate-700 text-[10px] sm:text-xs uppercase">None</span>
                                 </label>
                                                                 {allStores.map(st => (
                                                                     <label
                                                                         key={st.storeId}
                                                                         className={cn(
-                                                                            "flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 cursor-pointer transition-colors",
+                                                                            "flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg sm:rounded-xl border-2 cursor-pointer transition-colors",
                                                                             selectedGlobalStoreId === st.storeId
                                                                                 ? "border-emerald-300 bg-emerald-50"
                                                                                 : "border-slate-100 bg-white hover:border-slate-200"
@@ -879,16 +911,16 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                                                                             name="global-store"
                                                                             checked={selectedGlobalStoreId === st.storeId}
                                                                             onChange={() => handleGlobalStoreChange(st.storeId)}
-                                                                            className="size-4 accent-emerald-600"
+                                                                            className="size-3.5 sm:size-4 accent-emerald-600"
                                                                         />
                                         {st.type === "printer" ? (
-                                            <Printer className="size-4 text-purple-500 shrink-0" />
+                                            <Printer className="size-3 sm:size-4 text-purple-500 shrink-0" />
                                         ) : (
-                                            <Building2 className="size-4 text-primarycolor/60 shrink-0" />
+                                            <Building2 className="size-3 sm:size-4 text-primarycolor/60 shrink-0" />
                                         )}
-                                        <span className="font-black text-slate-700 text-xs">{st.storeName}</span>
+                                        <span className="font-black text-slate-700 text-[10px] sm:text-xs truncate max-w-[100px] sm:max-w-none">{st.storeName}</span>
                                         {st.type === "printer" && (
-                                            <span className="px-1.5 py-0.5 rounded bg-purple-100 text-purple-700 text-[7px] font-black uppercase tracking-widest">Printer</span>
+                                            <span className="px-1 sm:px-1.5 py-0.5 rounded bg-purple-100 text-purple-700 text-[6px] sm:text-[7px] font-black uppercase tracking-widest hidden sm:inline">Printer</span>
                                         )}
                                     </label>
                                 ))}
@@ -903,13 +935,13 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                                     onClick={handleAutoFillAll}
                                     disabled={selectedGlobalStoreId === null}
                                     className={cn(
-                                        "rounded-xl h-9 px-4 gap-2 border-2 font-black uppercase tracking-widest text-[9px]",
+                                        "rounded-xl h-8 sm:h-9 px-3 sm:px-4 gap-1.5 sm:gap-2 border-2 font-black uppercase tracking-widest text-[8px] sm:text-[9px]",
                                         selectedGlobalStoreId === null
                                             ? "border-slate-200 text-slate-300 cursor-not-allowed"
                                             : "border-primarycolor/20 text-primarycolor hover:bg-primarycolor/5"
                                     )}
                                 >
-                                    <Sparkles className="size-3.5" /> Auto-Fill All
+                                    <Sparkles className="size-3 sm:size-3.5" /> Auto-Fill All
                                 </Button>
                             )}
                         </div>
@@ -924,11 +956,11 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                             })();
                             return (
                                 <div key={bd.bookId} className={cn(
-                                    "bg-white rounded-[2rem] border-2 shadow-sm flex overflow-hidden",
+                                    "bg-white rounded-2xl sm:rounded-[2rem] border-2 shadow-sm overflow-hidden",
                                     isBookValid ? "border-emerald-100" : "border-amber-100"
                                 )}>
-                                    {/* Book Image */}
-                                    <div className="w-1/4 shrink-0 bg-white p-5 flex items-center justify-center border-r-2 border-slate-100">
+                                    {/* Book Image — horizontal on desktop, compact top bar on mobile */}
+                                    <div className="hidden sm:flex w-1/4 shrink-0 bg-white p-5 items-center justify-center border-r-2 border-slate-100">
                                         <div className="w-full max-w-[200px]">
                                             {imageUrl ? (
                                                 <img src={imageUrl} alt={bd.bookTitle} className="w-full h-auto rounded-xl" />
@@ -942,12 +974,40 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                                             )}
                                         </div>
                                     </div>
+                                    {/* Mobile: compact image strip */}
+                                    {imageUrl && (
+                                        <div className="flex sm:hidden items-center gap-3 p-3 bg-slate-50 border-b border-slate-100">
+                                            <img src={imageUrl} alt={bd.bookTitle} className="size-12 rounded-lg object-cover shrink-0" />
+                                            <div className="min-w-0 flex-1">
+                                                <p className="font-black text-primarycolor text-xs uppercase italic truncate">{bd.bookTitle}</p>
+                                                <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">
+                                                    Requested: {bd.requestedQty} | Allocated: <span className={cn(isBookValid ? "text-emerald-600" : "text-amber-600")}>{allocatedTotal}</span>
+                                                </p>
+                                            </div>
+                                            <div className="shrink-0">
+                                                {ignoredBookIds.includes(bd.bookId) ? (
+                                                    <div className="px-2 py-1 bg-slate-200 text-slate-600 rounded-full text-[7px] font-black uppercase">Ignored</div>
+                                                ) : isBookValid ? (
+                                                    <div className="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-full text-[7px] font-black uppercase flex items-center gap-0.5">
+                                                        <CheckCircle2 className="size-2.5" /> OK
+                                                    </div>
+                                                ) : (
+                                                    <div className="px-2 py-1 bg-amber-50 text-amber-700 rounded-full text-[7px] font-black uppercase flex items-center gap-0.5">
+                                                        <AlertTriangle className="size-2.5" /> {bd.requestedQty - allocatedTotal}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
 
                                     {/* Book Details */}
-                                    <div className="flex-1 p-6 space-y-5">
-                                        {/* Book header */}
-                                        <div className="flex items-start justify-between gap-4">
-                                            <div>
+                                    <div className="flex-1 p-3 sm:p-6 space-y-3 sm:space-y-5">
+                                        {/* Book header — compact on mobile when image exists, full otherwise */}
+                                        <div className={cn(
+                                            "items-start justify-between gap-3 sm:gap-4",
+                                            imageUrl ? "hidden sm:flex" : "flex"
+                                        )}>
+                                            <div className="min-w-0">
                                                 <h5 className="font-black text-primarycolor uppercase italic text-base">{bd.bookTitle}</h5>
                                                 <div className="flex flex-wrap items-center gap-2 mt-2">
                                                     <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">
@@ -1010,11 +1070,20 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                                                 </button>
                                             </div>
                                         </div>
+                                        {/* Mobile: advanced button row */}
+                                        <div className="flex sm:hidden items-center justify-end -mt-1 mb-1">
+                                            <button
+                                                onClick={() => setAdvancedBookId(bd.bookId)}
+                                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border-2 border-slate-200 text-muted-foreground text-[8px] font-black uppercase tracking-widest hover:bg-slate-50 hover:border-primarycolor/30 hover:text-primarycolor transition-all active:scale-95"
+                                            >
+                                                <Settings2 className="size-3" /> Advanced
+                                            </button>
+                                        </div>
 
                                         {/* Editions */}
                                         <div className={cn("space-y-4", ignoredBookIds.includes(bd.bookId) && "opacity-40 pointer-events-none")}>
                                             {bd.editions.length === 0 ? (
-                                                <p className="text-[10px] text-muted-foreground italic p-4 bg-slate-50 rounded-xl text-center">No stock available for this book</p>
+                                                <p className="text-[9px] sm:text-[10px] text-muted-foreground italic p-3 sm:p-4 bg-slate-50 rounded-lg sm:rounded-xl text-center">No stock available for this book</p>
                                             ) : (
                                                 ba && ba.editions.map((edAlloc, edIdx) => {
                                                     const editionData = bd.editions[edIdx];
@@ -1027,42 +1096,42 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
 
                                                     return (
                                                         <div key={editionData.editionId} className={cn(
-                                                            "bg-slate-50 rounded-2xl p-5 border space-y-3",
+                                                            "bg-slate-50 rounded-xl sm:rounded-2xl p-3 sm:p-5 border space-y-2 sm:space-y-3",
                                                             isEditionValid ? "border-emerald-100" : "border-amber-100"
                                                         )}>
                                                             {/* Edition header */}
-                                                            <div className="flex items-center justify-between gap-4">
-                                                                <div className="flex items-center gap-3">
-                                                                    <div className="size-8 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center text-[10px] font-black shrink-0">
+                                                            <div className="flex items-center justify-between gap-2 sm:gap-4">
+                                                                <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                                                                    <div className="size-7 sm:size-8 rounded-lg sm:rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center text-[9px] sm:text-[10px] font-black shrink-0">
                                                                         {edIdx + 1}
                                                                     </div>
-                                                                    <div>
-                                                                        <p className="font-black text-slate-700 text-sm">{editionData.editionName}</p>
-                                                                        <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">
+                                                                    <div className="min-w-0">
+                                                                        <p className="font-black text-slate-700 text-xs sm:text-sm truncate">{editionData.editionName}</p>
+                                                                        <p className="text-[8px] sm:text-[9px] font-bold text-muted-foreground uppercase tracking-widest">
                                                                             {editionData.price.toLocaleString()} ETB / unit
                                                                         </p>
                                                                         {editionData.lockedAmount > 0 && (
-                                                                            <p className="text-[8px] font-bold text-rose-600 uppercase tracking-widest mt-0.5">
+                                                                            <p className="text-[7px] sm:text-[8px] font-bold text-rose-600 uppercase tracking-widest mt-0.5">
                                                                                 Locked: {editionData.lockedAmount} units
                                                                             </p>
                                                                         )}
                                                                     </div>
                                                                 </div>
                                                                 <div className={cn(
-                                                                    "text-right px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-0.5",
+                                                                    "text-right px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-[8px] sm:text-[10px] font-black uppercase tracking-widest flex items-center gap-0.5 shrink-0",
                                                                     isEditionValid ? "bg-emerald-100 text-emerald-700" : "bg-amber-50 text-amber-700"
                                                                 )}>
                                                                     <span>{editionTotal}</span>
                                                                     <span className="text-muted-foreground mx-0.5">/</span>
                                                                     <span>{requiredQty}</span>
-                                                                    <span className="ml-1">required</span>
+                                                                    <span className="ml-0.5 sm:ml-1 hidden xs:inline">required</span>
                                                                 </div>
                                                             </div>
 
                                                             {/* Store allocation inputs */}
-                                                            <div className="space-y-2">
-                                                                <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Allocate from stores</p>
-                                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                                            <div className="space-y-1.5 sm:space-y-2">
+                                                                <p className="text-[7px] sm:text-[8px] font-black text-muted-foreground uppercase tracking-widest">Allocate from stores</p>
+                                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2">
                                                                     {editionData.stores.map((store, stIdx) => {
                                                                         const storeAlloc = edAlloc.storeAllocations[stIdx];
                                                                         const currentQty = storeAlloc?.quantity ?? 0;
@@ -1071,7 +1140,7 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                                                                             <div
                                                                                 key={store.storeStockId}
                                                                                 className={cn(
-                                                                                    "border-2 rounded-xl p-3 space-y-2 transition-colors",
+                                                                                    "border-2 rounded-xl p-2.5 sm:p-3 space-y-1.5 sm:space-y-2 transition-colors",
                                                                                     currentQty > 0
                                                                                         ? isValid ? "border-emerald-200 bg-emerald-50" : "border-rose-200 bg-rose-50"
                                                                                         : "border-slate-100 bg-white"
@@ -1081,17 +1150,17 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                                                                                     <div className="min-w-0">
                                                                                         <div className="flex items-center gap-1.5">
                                                                                             {store.type === "printer" ? (
-                                                                                                <Printer className="size-3.5 text-purple-500 shrink-0" />
+                                                                                                <Printer className="size-3 sm:size-3.5 text-purple-500 shrink-0" />
                                                                                             ) : (
-                                                                                                <Building2 className="size-3.5 text-primarycolor/60 shrink-0" />
+                                                                                                <Building2 className="size-3 sm:size-3.5 text-primarycolor/60 shrink-0" />
                                                                                             )}
-                                                                                            <p className="font-black text-slate-700 text-xs truncate">{store.storeName}</p>
+                                                                                            <p className="font-black text-slate-700 text-[10px] sm:text-xs truncate">{store.storeName}</p>
                                                                                         </div>
-                                                                                        <div className="flex items-center gap-1.5 mt-0.5">
+                                                                                        <div className="flex items-center gap-1 sm:gap-1.5 mt-0.5">
                                                                                             {store.type === "printer" && (
-                                                                                                <span className="px-1.5 py-0.5 rounded bg-purple-100 text-purple-700 text-[7px] font-black uppercase tracking-widest">Printer</span>
+                                                                                                <span className="px-1 sm:px-1.5 py-0.5 rounded bg-purple-100 text-purple-700 text-[6px] sm:text-[7px] font-black uppercase tracking-widest">Printer</span>
                                                                                             )}
-                                                                                            <p className="text-[8px] text-muted-foreground uppercase tracking-widest">
+                                                                                            <p className="text-[7px] sm:text-[8px] text-muted-foreground uppercase tracking-widest">
                                                                                                 Available: <span className="font-black text-slate-600">{store.availableQty}</span>
                                                                                             </p>
                                                                                         </div>
@@ -1109,15 +1178,16 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                                                                                         parseInt(e.target.value) || 0
                                                                                     )}
                                                                                     onWheel={e => e.currentTarget.blur()}
+                                                                                    inputMode="numeric"
                                                                                     className={cn(
-                                                                                        "h-10 text-center rounded-lg font-bold border-2 text-sm",
+                                                                                        "h-9 sm:h-10 text-center rounded-lg font-bold border-2 text-sm",
                                                                                         currentQty > 0
                                                                                             ? isValid ? "border-emerald-300 focus:border-emerald-500" : "border-rose-300 focus:border-rose-500"
                                                                                             : "border-slate-100 focus:border-primarycolor"
                                                                                     )}
                                                                                 />
                                                                                 {currentQty > 0 && (
-                                                                                    <div className="text-[9px] font-bold text-slate-600 text-center">
+                                                                                    <div className="text-[8px] sm:text-[9px] font-bold text-slate-600 text-center">
                                                                                         Subtotal: {(currentQty * editionData.price).toLocaleString()} ETB
                                                                                     </div>
                                                                                 )}
@@ -1141,8 +1211,8 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                             );
                         })}
                         {!canApprove && bookBreakdowns.length > 0 && (
-                            <div className="flex items-center gap-3 bg-amber-50 border border-amber-200 rounded-2xl p-4">
-                                <AlertTriangle className="size-5 text-amber-600 shrink-0" />
+                            <div className="flex items-start gap-2 sm:gap-3 bg-amber-50 border border-amber-200 rounded-xl sm:rounded-2xl p-3 sm:p-4">
+                                <AlertTriangle className="size-4 sm:size-5 text-amber-600 shrink-0 mt-0.5" />
                                 <div>
                                     <p className="text-[10px] font-black text-amber-800 uppercase tracking-widest">
                                         Allocation amounts must match requested quantities
@@ -1167,16 +1237,17 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
 
                     {/* Payments linked to this order */}
                     {filteredPayments.length > 0 && (
-                        <div className="bg-white rounded-[2rem] border-2 border-primarycolor/5 shadow-sm overflow-hidden">
-                            <div className="p-5 border-b border-slate-100">
+                        <div className="bg-white rounded-2xl sm:rounded-[2rem] border-2 border-primarycolor/5 shadow-sm overflow-hidden">
+                            <div className="p-3 sm:p-5 border-b border-slate-100">
                                 <div className="flex items-center gap-2 text-primarycolor">
-                                    <Banknote className="size-4" />
-                                    <h4 className="font-black uppercase tracking-widest text-xs italic">
+                                    <Banknote className="size-3.5 sm:size-4" />
+                                    <h4 className="font-black uppercase tracking-widest text-[10px] sm:text-xs italic">
                                         Payments ({filteredPayments.length})
                                     </h4>
                                 </div>
                             </div>
-                            <div className="overflow-x-auto">
+                            {/* Desktop table */}
+                            <div className="hidden sm:block overflow-x-auto">
                                 <table className="w-full text-left border-collapse">
                                     <thead>
                                         <tr className="bg-slate-50 border-b border-slate-100">
@@ -1226,33 +1297,67 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                                     </tbody>
                                 </table>
                             </div>
+                            {/* Mobile cards */}
+                            <div className="sm:hidden divide-y divide-slate-50">
+                                {filteredPayments.map((payment) => (
+                                    <div key={payment.id} className="p-3 space-y-1.5">
+                                        <div className="flex items-center justify-between">
+                                            <span className="font-black text-primarycolor text-xs">{payment.amount.toLocaleString()} ETB</span>
+                                            <div className="flex items-center gap-1">
+                                                <span className={cn(
+                                                    "px-1.5 py-0.5 rounded-full text-[6px] font-black uppercase",
+                                                    payment.payment_type === "CHECK"
+                                                        ? "bg-purple-100 text-purple-600"
+                                                        : "bg-blue-100 text-blue-600"
+                                                )}>
+                                                    {payment.payment_type}
+                                                </span>
+                                                <span className={cn(
+                                                    "px-1.5 py-0.5 rounded text-[6px] font-black uppercase",
+                                                    payment.status === "APPROVED"
+                                                        ? "bg-emerald-100 text-emerald-700"
+                                                        : payment.status === "PENDING"
+                                                        ? "bg-amber-100 text-amber-700"
+                                                        : "bg-rose-100 text-rose-700"
+                                                )}>
+                                                    {payment.status}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center justify-between text-[8px]">
+                                            <span className="font-bold text-muted-foreground">{formatDate(new Date(payment.createdAt), "MMM dd, yyyy")}</span>
+                                            {payment.memo && <span className="text-muted-foreground/70 italic truncate max-w-[60%] text-right">{payment.memo}</span>}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     )}
                 </div>
 
                 {/* Footer */}
-                <DialogFooter className="bg-white p-6 border-t border-slate-100 shrink-0 flex flex-row items-center justify-between gap-4">
-                    <div className="flex items-center gap-2">
+                <DialogFooter className="bg-white p-3 sm:p-6 border-t border-slate-100 shrink-0 flex flex-col sm:flex-row items-center sm:items-center justify-center sm:justify-between gap-2 sm:gap-4">
+                    <div className="flex items-center justify-center gap-1.5 sm:gap-2">
                         <Button
                             variant="outline"
                             onClick={onClose}
-                            className="rounded-2xl h-12 px-8 font-black uppercase tracking-widest text-[10px] border-2"
+                            className="rounded-xl sm:rounded-2xl h-10 sm:h-12 px-4 sm:px-8 font-black uppercase tracking-widest text-[8px] sm:text-[10px] border-2 shrink-0"
                         >
                             {order.is_approved ? "Close" : "Cancel"}
                         </Button>
                         <Button
                             variant="outline"
                             onClick={handlePrint}
-                            className="rounded-2xl h-12 px-5 font-black uppercase tracking-widest text-[10px] border-2 gap-2"
+                            className="rounded-xl sm:rounded-2xl h-10 sm:h-12 px-3 sm:px-5 font-black uppercase tracking-widest text-[8px] sm:text-[10px] border-2 gap-1.5 sm:gap-2 shrink-0"
                         >
-                            <Printer className="size-4" /> Print
+                            <Printer className="size-3.5 sm:size-4" /> Print
                         </Button>
                         <Button
                             variant="outline"
                             onClick={() => setPrintOptionsOpen(true)}
-                            className="rounded-2xl h-12 px-5 font-black uppercase tracking-widest text-[10px] border-2 gap-2"
+                            className="rounded-xl sm:rounded-2xl h-10 sm:h-12 px-3 sm:px-5 font-black uppercase tracking-widest text-[8px] sm:text-[10px] border-2 gap-1.5 sm:gap-2 shrink-0"
                         >
-                            <Settings2 className="size-4" /> Print with Options
+                            <Settings2 className="size-3.5 sm:size-4" /> Options
                         </Button>
                     </div>
                     {!order.is_approved && (
@@ -1260,16 +1365,16 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                             onClick={handleApprove}
                             disabled={!canApprove || isApproving}
                             className={cn(
-                                "rounded-2xl h-12 px-10 font-black uppercase tracking-widest text-[10px] shadow-xl gap-2",
+                                "rounded-xl sm:rounded-2xl h-10 sm:h-12 px-6 sm:px-10 font-black uppercase tracking-widest text-[9px] sm:text-[10px] shadow-xl gap-1.5 sm:gap-2 w-full sm:w-auto",
                                 canApprove
                                     ? "bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-600/20"
                                     : "bg-slate-200 text-slate-400 cursor-not-allowed"
                             )}
                         >
                             {isApproving ? (
-                                <><Loader2 className="size-4 animate-spin" /> Approving...</>
+                                <><Loader2 className="size-3.5 sm:size-4 animate-spin" /> Approving...</>
                             ) : (
-                                <><CheckCircle2 className="size-4" /> Approve Order</>
+                                <><CheckCircle2 className="size-3.5 sm:size-4" /> Approve Order</>
                             )}
                         </Button>
                     )}
@@ -1279,23 +1384,23 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
 
         {/* Print Options Dialog */}
         <Dialog open={printOptionsOpen} onOpenChange={setPrintOptionsOpen}>
-            <DialogContent className="sm:max-w-5xl w-[95vw] rounded-[2.5rem] border-4 border-primarycolor/5 bg-[#F8FAFC] p-0 overflow-hidden shadow-2xl">
-                <DialogHeader className="bg-white p-4 pb-3 border-b border-slate-100 shrink-0">
-                    <div className="flex items-center gap-3">
-                        <div className="size-8 rounded-2xl bg-primarycolor/10 flex items-center justify-center text-primarycolor shrink-0">
-                            <Settings2 className="size-4" />
+            <DialogContent className="sm:max-w-5xl w-full sm:w-[95vw] max-h-[90dvh] sm:max-h-[85vh] rounded-none sm:rounded-[2.5rem] border-0 sm:border-4 border-primarycolor/5 bg-[#F8FAFC] p-0 overflow-hidden shadow-2xl">
+                <DialogHeader className="bg-white p-3 sm:p-4 pb-2 sm:pb-3 border-b border-slate-100 shrink-0">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                        <div className="size-7 sm:size-8 rounded-xl sm:rounded-2xl bg-primarycolor/10 flex items-center justify-center text-primarycolor shrink-0">
+                            <Settings2 className="size-3.5 sm:size-4" />
                         </div>
                         <div>
-                            <DialogTitle className="text-base font-black text-primarycolor uppercase italic">
+                            <DialogTitle className="text-sm sm:text-base font-black text-primarycolor uppercase italic">
                                 Print <span className="text-secondarycolor not-italic">Options</span>
                             </DialogTitle>
                         </div>
                     </div>
                 </DialogHeader>
 
-                <div className="p-4 space-y-3 overflow-y-auto">
+                <div className="p-3 sm:p-4 space-y-2 sm:space-y-3 overflow-y-auto">
                     {/* Top row: mode toggle + font size + page width */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
                         {/* Mode toggle */}
                         <div className="bg-white rounded-2xl p-2.5 border-2 border-primarycolor/5">
                             <p className="text-[7px] font-black text-primarycolor uppercase tracking-widest italic mb-1.5">Print Mode</p>
@@ -1422,12 +1527,12 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                     </div>
                 </div>
 
-                <DialogFooter className="bg-white p-3 border-t border-slate-100 shrink-0">
+                <DialogFooter className="bg-white p-2.5 sm:p-3 border-t border-slate-100 shrink-0">
                     <div className="flex gap-2 w-full">
                         <Button
                             variant="outline"
                             onClick={() => setPrintOptionsOpen(false)}
-                            className="flex-1 rounded-2xl h-10 font-black uppercase tracking-widest text-[8px] border-2"
+                            className="flex-1 rounded-xl sm:rounded-2xl h-9 sm:h-10 font-black uppercase tracking-widest text-[7px] sm:text-[8px] border-2"
                         >
                             Cancel
                         </Button>
@@ -1436,7 +1541,7 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                                 setPrintOptionsOpen(false);
                                 handlePrintWithOptions();
                             }}
-                            className="flex-1 rounded-2xl h-10 font-black uppercase tracking-widest text-[8px] bg-primarycolor hover:bg-secondarycolor text-white shadow-lg gap-1.5"
+                            className="flex-1 rounded-xl sm:rounded-2xl h-9 sm:h-10 font-black uppercase tracking-widest text-[7px] sm:text-[8px] bg-primarycolor hover:bg-secondarycolor text-white shadow-lg gap-1.5"
                         >
                             <Printer className="size-3" /> Print
                         </Button>
@@ -1447,10 +1552,10 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
 
         {/* Advanced Operation Dialog */}
         <Dialog open={advancedBookId !== null} onOpenChange={o => { if (!o) setAdvancedBookId(null); }}>
-            <DialogContent className="sm:max-w-lg rounded-[2.5rem] border-4 border-primarycolor/5 p-0 overflow-hidden shadow-2xl">
-                <DialogHeader className="bg-white p-6 pb-4 border-b border-slate-100">
-                    <DialogTitle className="text-base font-black text-primarycolor uppercase italic flex items-center gap-2">
-                        <Settings2 className="size-5" /> Advanced Operation
+            <DialogContent className="sm:max-w-lg w-full sm:w-[95vw] max-h-[90dvh] rounded-none sm:rounded-[2.5rem] border-0 sm:border-4 border-primarycolor/5 p-0 overflow-hidden shadow-2xl flex flex-col">
+                <DialogHeader className="bg-white p-5 sm:p-6 pb-4 sm:pb-4 border-b border-slate-100 shrink-0">
+                    <DialogTitle className="text-sm sm:text-base font-black text-primarycolor uppercase italic flex items-center gap-2">
+                        <Settings2 className="size-4 sm:size-5" /> Advanced Operation
                     </DialogTitle>
                     <DialogDescription className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground">
                         {(() => {
@@ -1460,9 +1565,9 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                     </DialogDescription>
                 </DialogHeader>
                 {removeConfirmOpen ? (
-                    <div className="p-6 space-y-5">
-                        <div className="flex items-center gap-3 bg-rose-50 border-2 border-rose-200 rounded-2xl p-5">
-                            <AlertTriangle className="size-8 text-rose-500 shrink-0" />
+                    <div className="p-5 sm:p-6 space-y-5 sm:space-y-5">
+                        <div className="flex items-start gap-3 bg-rose-50 border-2 border-rose-200 rounded-2xl p-4 sm:p-5">
+                            <AlertTriangle className="size-7 sm:size-8 text-rose-500 shrink-0" />
                             <div>
                                 <p className="font-black text-rose-800 text-sm uppercase">Remove this book?</p>
                                 <p className="text-[10px] font-bold text-rose-600 mt-1">
@@ -1470,11 +1575,11 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                                 </p>
                             </div>
                         </div>
-                        <div className="flex gap-2">
+                        <div className="flex gap-3">
                             <Button
                                 variant="outline"
                                 onClick={() => setRemoveConfirmOpen(false)}
-                                className="flex-1 rounded-2xl h-11 font-black uppercase tracking-widest text-[9px] border-2"
+                                className="flex-1 rounded-2xl h-12 font-black uppercase tracking-widest text-[9px] sm:text-[9px] border-2"
                             >
                                 Cancel
                             </Button>
@@ -1494,14 +1599,14 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                                         }
                                     }
                                 }}
-                                className="flex-1 rounded-2xl h-11 font-black uppercase tracking-widest text-[9px] bg-rose-600 hover:bg-rose-700 text-white shadow-lg"
+                                className="flex-1 rounded-2xl h-12 font-black uppercase tracking-widest text-[9px] sm:text-[9px] bg-rose-600 hover:bg-rose-700 text-white shadow-lg"
                             >
                                 Remove
                             </Button>
                         </div>
                     </div>
                 ) : (
-                <div className="p-6 space-y-4 max-h-[60vh] overflow-y-auto">
+                <div className="p-5 sm:p-6 space-y-4 sm:space-y-4 max-h-[60vh] overflow-y-auto flex-1">
                     {(() => {
                         const bd = bookBreakdowns.find(b => b.bookId === advancedBookId);
                         if (!bd) return <p className="text-sm text-muted-foreground">Book not found</p>;
@@ -1511,22 +1616,23 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                         const fifoTotal = ebd.reduce((s, e) => s + e.quantity * e.price, 0);
                         const editedTotal = ebd.reduce((s, e) => s + (customQtys[e.editionId] ?? e.quantity) * e.price, 0);
                         return (
-                            <div className="space-y-3">
-                                <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Edition Quantities</p>
+                            <div className="space-y-2 sm:space-y-3">
+                                <p className="text-[8px] sm:text-[9px] font-black uppercase tracking-widest text-muted-foreground">Edition Quantities</p>
                                 {ebd.map((ed) => {
                                     const currentVal = customQtys[ed.editionId] ?? ed.quantity;
                                     return (
-                                        <div key={ed.editionId} className="flex items-center gap-3 bg-slate-50 rounded-2xl p-4 border-2 border-slate-100">
+                                        <div key={ed.editionId} className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 bg-slate-50 rounded-2xl p-4 border-2 border-slate-100">
                                             <div className="flex-1 min-w-0">
                                                 <p className="font-black text-slate-700 text-sm">{ed.editionName}</p>
                                                 <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">{ed.price.toLocaleString()} ETB / unit</p>
                                             </div>
-                                            <div className="flex items-center gap-2">
+                                            <div className="flex items-center gap-3">
                                                 <Input
                                                     type="number"
                                                     min={0}
                                                     max={bd.requestedQty}
                                                     value={currentVal}
+                                                    inputMode="numeric"
                                                     onChange={e => {
                                                         const v = Math.max(0, Math.min(bd.requestedQty, parseInt(e.target.value) || 0));
                                                         setEditedEditionQtys(prev => ({
@@ -1534,7 +1640,7 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                                                             [bd.bookId]: { ...(prev[bd.bookId] || {}), [ed.editionId]: v },
                                                         }));
                                                     }}
-                                                    className="w-20 h-10 text-center font-black text-sm rounded-xl border-2 border-primarycolor/20 tabular-nums [-moz-appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                                                    className="w-20 h-11 text-center font-black text-base rounded-xl border-2 border-primarycolor/20 tabular-nums [-moz-appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                                                 />
                                                 <span className="text-[9px] font-bold text-muted-foreground tabular-nums w-20 text-right">
                                                     = {(currentVal * ed.price).toLocaleString()} ETB
@@ -1544,11 +1650,11 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                                     );
                                 })}
                                 <div className="h-px bg-slate-100" />
-                                <div className="flex items-center justify-between text-sm">
+                                <div className="flex items-center justify-between text-sm px-1">
                                     <p className="font-bold text-muted-foreground">FIFO Total</p>
                                     <p className="font-black text-slate-700 tabular-nums">{fifoTotal.toLocaleString()} ETB</p>
                                 </div>
-                                <div className="flex items-center justify-between text-sm">
+                                <div className="flex items-center justify-between text-sm px-1">
                                     <p className="font-bold text-muted-foreground">Edited Total</p>
                                     <p className={cn("font-black tabular-nums", editedTotal !== fifoTotal ? "text-amber-600" : "text-slate-700")}>
                                         {editedTotal.toLocaleString()} ETB
@@ -1559,18 +1665,18 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                     })()}
                 </div>
                 )}
-                <DialogFooter className="bg-white p-4 border-t border-slate-100 shrink-0">
-                    <div className="flex gap-2 w-full">
+                <DialogFooter className="bg-white p-5 sm:p-4 border-t border-slate-100 shrink-0">
+                    <div className="flex gap-3 w-full">
                         <Button
                             variant="outline"
                             onClick={() => setRemoveConfirmOpen(true)}
-                            className="flex-1 rounded-2xl h-11 font-black uppercase tracking-widest text-[9px] border-2 border-rose-200 text-rose-600 hover:bg-rose-50"
+                            className="flex-1 rounded-2xl h-12 font-black uppercase tracking-widest text-[9px] border-2 border-rose-200 text-rose-600 hover:bg-rose-50"
                         >
                             Remove Order
                         </Button>
                         <Button
                             onClick={() => setAdvancedBookId(null)}
-                            className="flex-1 rounded-2xl h-11 font-black uppercase tracking-widest text-[9px] bg-primarycolor hover:bg-secondarycolor text-white shadow-lg"
+                            className="flex-1 rounded-2xl h-12 font-black uppercase tracking-widest text-[9px] bg-primarycolor hover:bg-secondarycolor text-white shadow-lg"
                         >
                             Confirm
                         </Button>
