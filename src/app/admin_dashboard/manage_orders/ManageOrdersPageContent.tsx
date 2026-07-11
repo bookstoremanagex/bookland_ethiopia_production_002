@@ -103,6 +103,25 @@ export default function ManageOrdersPageContent({
   const [selectedOrder, setSelectedOrder] = useState<AdminOrder | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [orderList, setOrderList] = useState<AdminOrder[]>(orders);
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
+
+  // Restore page after revalidatePath re-renders with fresh server data
+  useEffect(() => {
+    const saved = localStorage.getItem("mo_page");
+    if (saved) {
+      localStorage.removeItem("mo_page");
+      const savedIndex = parseInt(saved);
+      if (!isNaN(savedIndex) && savedIndex >= 0) {
+        setPagination((prev) => ({ ...prev, pageIndex: savedIndex }));
+      }
+    }
+  }, [orders]);
+
+  // Save page index before modal opens
+  const openOrderModal = (order: AdminOrder) => {
+    setSelectedOrder(order);
+    setIsModalOpen(true);
+  };
 
   // Auto-open order detail modal from notification link
   useEffect(() => {
@@ -242,13 +261,14 @@ export default function ManageOrdersPageContent({
     data: orderList,
     columns,
     onSortingChange: setSorting,
+    onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    state: { sorting, globalFilter },
+    state: { sorting, globalFilter, pagination },
     onGlobalFilterChange: setGlobalFilter,
-    initialState: { pagination: { pageSize: 10 } },
+    pageCount: Math.ceil(orderList.length / pagination.pageSize),
   });
 
   return (
@@ -389,10 +409,7 @@ export default function ManageOrdersPageContent({
                         ? "hover:bg-amber-50/30"
                         : "hover:bg-primarycolor/[0.02]",
                     )}
-                    onClick={() => {
-                      setSelectedOrder(row.original);
-                      setIsModalOpen(true);
-                    }}
+                    onClick={() => openOrderModal(row.original)}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id} className="px-6">
@@ -433,10 +450,7 @@ export default function ManageOrdersPageContent({
                     "bg-white rounded-2xl p-4 border-2 shadow-sm cursor-pointer active:scale-[0.98] transition-transform",
                     o.is_approved ? "border-emerald-100" : "border-amber-100"
                   )}
-                  onClick={() => {
-                    setSelectedOrder(o);
-                    setIsModalOpen(true);
-                  }}
+                  onClick={() => openOrderModal(o)}
                 >
                   {/* Row 1: Order # + Status */}
                   <div className="flex items-center justify-between mb-2">
@@ -532,6 +546,8 @@ export default function ManageOrdersPageContent({
         onClose={() => setIsModalOpen(false)}
         order={selectedOrder}
         onApproved={(updatedOrder) => {
+          // Save current page to localStorage before revalidatePath remounts the component
+          localStorage.setItem("mo_page", String(table.getState().pagination.pageIndex));
           setOrderList((prev) =>
             prev.map((o) =>
               o.id === updatedOrder.id
