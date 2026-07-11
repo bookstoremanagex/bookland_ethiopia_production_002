@@ -152,6 +152,7 @@ export default function ManageOrdersPageContent({
     },
     {
       id: "shop",
+      accessorFn: (row) => `${row.bookshopes?.name || ""} ${row.bookshopes?.location || ""}`,
       header: "Book Shop",
       cell: ({ row }) => (
         <div className="flex items-center gap-3 min-w-0">
