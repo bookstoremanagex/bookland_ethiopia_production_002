@@ -45,7 +45,7 @@ export async function createCheck(formData: {
     bankname: string
     type: string
     amount: string
-    recordeddate: string
+    expirydate?: string
     memo: string
     imageUrl?: string
 }) {
@@ -56,7 +56,7 @@ export async function createCheck(formData: {
                 bankname: formData.bankname || null,
                 type: formData.type || null,
                 amount: formData.amount || null,
-                recordeddate: formData.recordeddate ? new Date(formData.recordeddate) : null,
+                expirydate: formData.expirydate ? new Date(formData.expirydate) : null,
                 memo: formData.memo || null,
                 imageUrl: formData.imageUrl || null,
                 updatedAt: new Date(),
@@ -209,6 +209,9 @@ export async function updateCheckDetails(checkId: number, data: {
     type?: string;
     amount?: string;
     recordeddate?: string | null;
+    expirydate?: string | null;
+    imageUrl?: string | null;
+    memo?: string | null;
 }) {
     try {
         const session = await getCurrentSession();
@@ -225,6 +228,9 @@ export async function updateCheckDetails(checkId: number, data: {
         if (data.type !== undefined) updateData.type = data.type;
         if (data.amount !== undefined && existing?.status !== "CLEARED") updateData.amount = data.amount;
         if (data.recordeddate !== undefined) updateData.recordeddate = data.recordeddate ? new Date(data.recordeddate) : null;
+        if (data.expirydate !== undefined) updateData.expirydate = data.expirydate ? new Date(data.expirydate) : null;
+        if (data.imageUrl !== undefined) updateData.imageUrl = data.imageUrl;
+        if (data.memo !== undefined) updateData.memo = data.memo;
 
         await (prisma as any).checks.update({
             where: { id: checkId },

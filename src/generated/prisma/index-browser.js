@@ -665,6 +665,7 @@ exports.Prisma.ChecksScalarFieldEnum = {
   type: 'type',
   amount: 'amount',
   recordeddate: 'recordeddate',
+  expirydate: 'expirydate',
   memo: 'memo',
   imageUrl: 'imageUrl',
   status: 'status',

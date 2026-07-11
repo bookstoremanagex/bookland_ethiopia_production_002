@@ -77,7 +77,17 @@ export const ALL_DASHBOARD_MENUS: MenuItem[] = [
             { title: "Income", icon: Banknote, path: "statistics/income", menuName: "Income" },
         ]
     },
-    { id: "checks", title: "Manage Checks", icon: FileCheck, path: "checks", menuName: "Checks" },
+    { 
+        id: "checks", 
+        title: "Manage Checks", 
+        icon: FileCheck, 
+        path: "checks", 
+        menuName: "Checks",
+        subItems: [
+            { title: "List", icon: FileCheck, path: "checks", menuName: "Checks List" },
+            { title: "Check Dates", icon: Clock, path: "checks/dates", menuName: "Check Dates" },
+        ]
+    },
     { id: "manage_orders", title: "Manage Orders", icon: ClipboardList, path: "manage_orders", menuName: "Manage Orders" },
     { id: "manage_payment", title: "Manage Payment", icon: BadgeDollarSign, path: "manage_payment", menuName: "Manage Payments" },
     { id: "retail_management", title: "Selling to individual", icon: ShoppingBag, path: "retail_management", menuName: "Selling to individual" },

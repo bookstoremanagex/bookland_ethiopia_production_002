@@ -695,6 +695,7 @@ model checks {
   type         check_types?
   amount       String?
   recordeddate DateTime?
+  expirydate   DateTime?
   memo         String?
   imageUrl     String?      @db.Text
   status       check_status @default(PENDING)

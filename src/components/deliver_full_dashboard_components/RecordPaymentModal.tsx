@@ -56,6 +56,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { getChecks, createCheck } from "@/app/actions/check-actions";
 import { createPayment } from "@/app/actions/payment-actions";
+import { DateInput } from "@/components/ui/date-input";
 
 interface Props {
   shopId: number;
@@ -88,7 +89,7 @@ export default function RecordPaymentModal({ shopId, shopName, trigger, orderId 
     bankname: "",
     type: "PAYMENT",
     amount: "",
-    recordeddate: "",
+    expirydate: "",
     memo: "",
   });
   const [isCreatingCheck, setIsCreatingCheck] = useState(false);
@@ -202,14 +203,14 @@ export default function RecordPaymentModal({ shopId, shopName, trigger, orderId 
         bankname: newCheck.bankname,
         type: "PAYMENT",
         amount: newCheck.amount,
-        recordeddate: newCheck.recordeddate || new Date().toISOString().split("T")[0],
+        expirydate: newCheck.expirydate || undefined,
         memo: newCheck.memo || "",
         imageUrl: checkImageUrl || undefined,
       });
       if (res.success) {
         toast.success("Check created successfully");
         setShowNewCheck(false);
-        setNewCheck({ username: "", bankname: "", type: "PAYMENT", amount: "", recordeddate: "", memo: "" });
+        setNewCheck({ username: "", bankname: "", type: "PAYMENT", amount: "", expirydate: "", memo: "" });
         setCheckImageUrl("");
         setUploadProgress(0);
         await loadChecks();
@@ -632,16 +633,12 @@ export default function RecordPaymentModal({ shopId, shopName, trigger, orderId 
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-[8px] font-black uppercase tracking-widest text-purple-700 ml-1">Check Date <span className="text-purple-400 font-normal normal-case">(optional)</span></label>
-                      <div className="relative">
-                        <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-purple-400" />
-                        <Input
-                          type="date"
-                          value={newCheck.recordeddate}
-                          onChange={(e) => setNewCheck({ ...newCheck, recordeddate: e.target.value })}
-                          className="h-12 pl-11 rounded-2xl border-2 border-purple-200 bg-white font-bold text-sm"
-                        />
-                      </div>
+                      <label className="text-[8px] font-black uppercase tracking-widest text-purple-700 ml-1">Expiry Date <span className="text-purple-400 font-normal normal-case">(optional)</span></label>
+                      <DateInput
+                        value={newCheck.expirydate}
+                        onChange={(e) => setNewCheck({ ...newCheck, expirydate: e.target.value })}
+                        className="h-12 px-4 rounded-2xl border-2 border-purple-200 bg-white font-bold text-sm"
+                      />
                     </div>
 
                     <div className="space-y-1.5">

@@ -47,8 +47,10 @@ import {
     FileText,
     X,
     ListOrdered,
+    Upload,
 } from "lucide-react";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { getChecks, createCheck } from "@/app/actions/check-actions";
 import { createPayment } from "@/app/actions/payment-actions";
@@ -79,16 +81,26 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName, 
         bankname: "",
         type: "PAYMENT",
         amount: "",
-        recordeddate: "",
+        expirydate: "",
         memo: "",
     });
     const [isCreatingCheck, setIsCreatingCheck] = useState(false);
+    const [checkImageUrl, setCheckImageUrl] = useState("");
+    const [uploading, setUploading] = useState(false);
+    const [uploadProgress, setUploadProgress] = useState(0);
 
     useEffect(() => {
         if (isOpen && paymentType === "CHECK") {
             loadChecks();
         }
     }, [isOpen, paymentType]);
+
+    // Auto-sync check amount with payment amount when opening new check form
+    useEffect(() => {
+        if (showNewCheck && amount) {
+            setNewCheck((prev) => ({ ...prev, amount }));
+        }
+    }, [showNewCheck]);
 
     const loadChecks = async () => {
         const res = await getChecks();
@@ -97,9 +109,45 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName, 
         }
     };
 
+    const handleCheckImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        setUploading(true);
+        setUploadProgress(0);
+
+        const xhr = new XMLHttpRequest();
+        const formData = new FormData();
+        formData.append("file", file);
+
+        xhr.upload.onprogress = (event) => {
+            if (event.lengthComputable) {
+                setUploadProgress(Math.round((event.loaded / event.total) * 100));
+            }
+        };
+
+        xhr.onload = () => {
+            if (xhr.status === 200) {
+                const res = JSON.parse(xhr.responseText);
+                if (res.success) {
+                    setCheckImageUrl(res.url);
+                    setUploadProgress(100);
+                }
+            }
+            setUploading(false);
+        };
+
+        xhr.onerror = () => {
+            setUploading(false);
+            toast.error("Failed to upload image");
+        };
+
+        xhr.open("POST", "/api/upload-check-image");
+        xhr.send(formData);
+    };
+
     const handleCreateCheck = async () => {
         if (!newCheck.username || !newCheck.bankname || !newCheck.amount) {
-            toast.error("Username and Bank Name are required");
+            toast.error("Username, Bank Name, and Amount are required");
             return;
         }
         setIsCreatingCheck(true);
@@ -107,15 +155,18 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName, 
             const res = await createCheck({
                 username: newCheck.username,
                 bankname: newCheck.bankname,
-                type: "PAYMENT",
+                type: newCheck.type,
                 amount: newCheck.amount,
-                recordeddate: newCheck.recordeddate || new Date().toISOString().split("T")[0],
+                expirydate: newCheck.expirydate || undefined,
                 memo: newCheck.memo || "",
+                imageUrl: checkImageUrl || undefined,
             });
             if (res.success) {
                 toast.success("Check created successfully");
                 setShowNewCheck(false);
-                setNewCheck({ username: "", bankname: "", type: "PAYMENT", amount: "", recordeddate: "", memo: "" });
+                setNewCheck({ username: "", bankname: "", type: "PAYMENT", amount: "", expirydate: "", memo: "" });
+                setCheckImageUrl("");
+                setUploadProgress(0);
                 await loadChecks();
                 setSelectedCheck(res.data);
             } else {
@@ -411,15 +462,79 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName, 
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-[9px] font-black uppercase tracking-widest text-primarycolor ml-1">Recorded Date</label>
-                                        <div className="relative">
-                                            <Calendar className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 size-3.5 md:size-4 text-muted-foreground" />
-                                            <DateInput
-                                                value={newCheck.recordeddate}
-                                                onChange={(e) => setNewCheck({ ...newCheck, recordeddate: e.target.value })}
-                                                className="h-11 md:h-12 pl-9 md:pl-10 rounded-xl border-2 border-purple-200 font-bold text-xs"
+                                        <label className="text-[9px] font-black uppercase tracking-widest text-primarycolor ml-1">Expiry Date</label>
+                                        <DateInput
+                                            value={newCheck.expirydate}
+                                            onChange={(e) => setNewCheck({ ...newCheck, expirydate: e.target.value })}
+                                            className="h-11 md:h-12 px-4 rounded-xl border-2 border-purple-200 font-bold text-xs"
+                                        />
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="text-[9px] font-black uppercase tracking-widest text-primarycolor ml-1">Check Image</label>
+                                        <div className="space-y-2">
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={handleCheckImageUpload}
+                                                disabled={uploading}
+                                                className="hidden"
+                                                id="check-image-upload-manage"
                                             />
+                                            <label
+                                                htmlFor="check-image-upload-manage"
+                                                className={cn(
+                                                    "flex items-center gap-3 h-11 md:h-12 px-4 rounded-xl border-2 border-dashed bg-white font-bold text-xs cursor-pointer transition-all",
+                                                    checkImageUrl
+                                                        ? "border-emerald-300 bg-emerald-50/50"
+                                                        : uploading
+                                                            ? "border-purple-300 bg-purple-50/50"
+                                                            : "border-purple-200 hover:border-purple-300"
+                                                )}
+                                            >
+                                                {checkImageUrl ? (
+                                                    <>
+                                                        <div className="size-8 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
+                                                            <CheckCircle2 className="size-4" />
+                                                        </div>
+                                                        <span className="text-emerald-700 text-[10px] font-bold truncate">Image uploaded</span>
+                                                    </>
+                                                ) : uploading ? (
+                                                    <>
+                                                        <div className="size-8 rounded-lg bg-purple-100 flex items-center justify-center text-purple-600 shrink-0">
+                                                            <Loader2 className="size-4 animate-spin" />
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <div className="flex items-center justify-between mb-1">
+                                                                <span className="text-purple-700 text-[10px] font-bold">Uploading...</span>
+                                                                <span className="text-purple-600 text-[9px] font-black">{uploadProgress}%</span>
+                                                            </div>
+                                                            <div className="h-1.5 rounded-full bg-purple-200 overflow-hidden">
+                                                                <div className="h-full rounded-full bg-purple-600 transition-all duration-300" style={{ width: `${uploadProgress}%` }} />
+                                                            </div>
+                                                        </div>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <div className="size-8 rounded-lg bg-purple-100 flex items-center justify-center text-purple-600 shrink-0">
+                                                            <Upload className="size-4" />
+                                                        </div>
+                                                        <span className="text-purple-700 text-[10px] font-bold">Upload check image</span>
+                                                    </>
+                                                )}
+                                            </label>
                                         </div>
+                                        {checkImageUrl && (
+                                            <div className="rounded-xl overflow-hidden border-2 border-emerald-200 bg-emerald-50/50 relative">
+                                                <img src={checkImageUrl} alt="Check" className="w-full h-28 object-contain bg-white" />
+                                                <button
+                                                    onClick={() => setCheckImageUrl("")}
+                                                    className="absolute top-1.5 right-1.5 size-6 rounded-full bg-white/90 flex items-center justify-center text-rose-500 hover:bg-white shadow-sm"
+                                                >
+                                                    <X className="size-3" />
+                                                </button>
+                                            </div>
+                                        )}
                                     </div>
 
                                     <div className="space-y-2">
@@ -436,6 +551,7 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName, 
                                     </div>
 
                                     <Button
+                                        type="button"
                                         onClick={handleCreateCheck}
                                         disabled={isCreatingCheck}
                                         className="w-full h-11 md:h-12 rounded-xl bg-purple-700 hover:bg-purple-800 text-white font-black text-[10px] uppercase tracking-widest shadow-lg gap-2"

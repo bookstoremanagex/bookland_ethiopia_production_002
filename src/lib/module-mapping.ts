@@ -41,6 +41,7 @@ export const MODULE_MAP: Record<string, any> = {
     "notifications": dynamic(() => import("@/app/admin_dashboard/notifications/page")),
     "notes": dynamic(() => import("@/app/admin_dashboard/notes/page")),
     "checks": dynamic(() => import("@/app/admin_dashboard/checks/page")),
+    "checks/dates": dynamic(() => import("@/app/admin_dashboard/checks/dates/page")),
     "manage_orders": dynamic(() => import("@/app/admin_dashboard/manage_orders/page")),
     "activity_log": dynamic(() => import("@/app/admin_dashboard/activity_log/page")),
     "delivery_sample": dynamic(() => import("@/app/admin_dashboard/delivery_sample/page")),

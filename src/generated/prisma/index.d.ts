@@ -44705,6 +44705,7 @@ export namespace Prisma {
     type: $Enums.check_types | null
     amount: string | null
     recordeddate: Date | null
+    expirydate: Date | null
     memo: string | null
     imageUrl: string | null
     status: $Enums.check_status | null
@@ -44721,6 +44722,7 @@ export namespace Prisma {
     type: $Enums.check_types | null
     amount: string | null
     recordeddate: Date | null
+    expirydate: Date | null
     memo: string | null
     imageUrl: string | null
     status: $Enums.check_status | null
@@ -44737,6 +44739,7 @@ export namespace Prisma {
     type: number
     amount: number
     recordeddate: number
+    expirydate: number
     memo: number
     imageUrl: number
     status: number
@@ -44763,6 +44766,7 @@ export namespace Prisma {
     type?: true
     amount?: true
     recordeddate?: true
+    expirydate?: true
     memo?: true
     imageUrl?: true
     status?: true
@@ -44779,6 +44783,7 @@ export namespace Prisma {
     type?: true
     amount?: true
     recordeddate?: true
+    expirydate?: true
     memo?: true
     imageUrl?: true
     status?: true
@@ -44795,6 +44800,7 @@ export namespace Prisma {
     type?: true
     amount?: true
     recordeddate?: true
+    expirydate?: true
     memo?: true
     imageUrl?: true
     status?: true
@@ -44898,6 +44904,7 @@ export namespace Prisma {
     type: $Enums.check_types | null
     amount: string | null
     recordeddate: Date | null
+    expirydate: Date | null
     memo: string | null
     imageUrl: string | null
     status: $Enums.check_status
@@ -44933,6 +44940,7 @@ export namespace Prisma {
     type?: boolean
     amount?: boolean
     recordeddate?: boolean
+    expirydate?: boolean
     memo?: boolean
     imageUrl?: boolean
     status?: boolean
@@ -44954,6 +44962,7 @@ export namespace Prisma {
     type?: boolean
     amount?: boolean
     recordeddate?: boolean
+    expirydate?: boolean
     memo?: boolean
     imageUrl?: boolean
     status?: boolean
@@ -44963,7 +44972,7 @@ export namespace Prisma {
     createdAt?: boolean
   }
 
-  export type checksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "username" | "bankname" | "type" | "amount" | "recordeddate" | "memo" | "imageUrl" | "status" | "is_deleted" | "deletedAt" | "updatedAt" | "createdAt", ExtArgs["result"]["checks"]>
+  export type checksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "username" | "bankname" | "type" | "amount" | "recordeddate" | "expirydate" | "memo" | "imageUrl" | "status" | "is_deleted" | "deletedAt" | "updatedAt" | "createdAt", ExtArgs["result"]["checks"]>
   export type checksInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     payments?: boolean | checks$paymentsArgs<ExtArgs>
     orders?: boolean | checks$ordersArgs<ExtArgs>
@@ -44983,6 +44992,7 @@ export namespace Prisma {
       type: $Enums.check_types | null
       amount: string | null
       recordeddate: Date | null
+      expirydate: Date | null
       memo: string | null
       imageUrl: string | null
       status: $Enums.check_status
@@ -45367,6 +45377,7 @@ export namespace Prisma {
     readonly type: FieldRef<"checks", 'check_types'>
     readonly amount: FieldRef<"checks", 'String'>
     readonly recordeddate: FieldRef<"checks", 'DateTime'>
+    readonly expirydate: FieldRef<"checks", 'DateTime'>
     readonly memo: FieldRef<"checks", 'String'>
     readonly imageUrl: FieldRef<"checks", 'String'>
     readonly status: FieldRef<"checks", 'check_status'>
@@ -49610,6 +49621,7 @@ export namespace Prisma {
     type: 'type',
     amount: 'amount',
     recordeddate: 'recordeddate',
+    expirydate: 'expirydate',
     memo: 'memo',
     imageUrl: 'imageUrl',
     status: 'status',
@@ -53592,6 +53604,7 @@ export namespace Prisma {
     type?: Enumcheck_typesNullableFilter<"checks"> | $Enums.check_types | null
     amount?: StringNullableFilter<"checks"> | string | null
     recordeddate?: DateTimeNullableFilter<"checks"> | Date | string | null
+    expirydate?: DateTimeNullableFilter<"checks"> | Date | string | null
     memo?: StringNullableFilter<"checks"> | string | null
     imageUrl?: StringNullableFilter<"checks"> | string | null
     status?: Enumcheck_statusFilter<"checks"> | $Enums.check_status
@@ -53610,6 +53623,7 @@ export namespace Prisma {
     type?: SortOrderInput | SortOrder
     amount?: SortOrderInput | SortOrder
     recordeddate?: SortOrderInput | SortOrder
+    expirydate?: SortOrderInput | SortOrder
     memo?: SortOrderInput | SortOrder
     imageUrl?: SortOrderInput | SortOrder
     status?: SortOrder
@@ -53632,6 +53646,7 @@ export namespace Prisma {
     type?: Enumcheck_typesNullableFilter<"checks"> | $Enums.check_types | null
     amount?: StringNullableFilter<"checks"> | string | null
     recordeddate?: DateTimeNullableFilter<"checks"> | Date | string | null
+    expirydate?: DateTimeNullableFilter<"checks"> | Date | string | null
     memo?: StringNullableFilter<"checks"> | string | null
     imageUrl?: StringNullableFilter<"checks"> | string | null
     status?: Enumcheck_statusFilter<"checks"> | $Enums.check_status
@@ -53650,6 +53665,7 @@ export namespace Prisma {
     type?: SortOrderInput | SortOrder
     amount?: SortOrderInput | SortOrder
     recordeddate?: SortOrderInput | SortOrder
+    expirydate?: SortOrderInput | SortOrder
     memo?: SortOrderInput | SortOrder
     imageUrl?: SortOrderInput | SortOrder
     status?: SortOrder
@@ -53674,6 +53690,7 @@ export namespace Prisma {
     type?: Enumcheck_typesNullableWithAggregatesFilter<"checks"> | $Enums.check_types | null
     amount?: StringNullableWithAggregatesFilter<"checks"> | string | null
     recordeddate?: DateTimeNullableWithAggregatesFilter<"checks"> | Date | string | null
+    expirydate?: DateTimeNullableWithAggregatesFilter<"checks"> | Date | string | null
     memo?: StringNullableWithAggregatesFilter<"checks"> | string | null
     imageUrl?: StringNullableWithAggregatesFilter<"checks"> | string | null
     status?: Enumcheck_statusWithAggregatesFilter<"checks"> | $Enums.check_status
@@ -57708,6 +57725,7 @@ export namespace Prisma {
     type?: $Enums.check_types | null
     amount?: string | null
     recordeddate?: Date | string | null
+    expirydate?: Date | string | null
     memo?: string | null
     imageUrl?: string | null
     status?: $Enums.check_status
@@ -57726,6 +57744,7 @@ export namespace Prisma {
     type?: $Enums.check_types | null
     amount?: string | null
     recordeddate?: Date | string | null
+    expirydate?: Date | string | null
     memo?: string | null
     imageUrl?: string | null
     status?: $Enums.check_status
@@ -57743,6 +57762,7 @@ export namespace Prisma {
     type?: NullableEnumcheck_typesFieldUpdateOperationsInput | $Enums.check_types | null
     amount?: NullableStringFieldUpdateOperationsInput | string | null
     recordeddate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expirydate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: Enumcheck_statusFieldUpdateOperationsInput | $Enums.check_status
@@ -57761,6 +57781,7 @@ export namespace Prisma {
     type?: NullableEnumcheck_typesFieldUpdateOperationsInput | $Enums.check_types | null
     amount?: NullableStringFieldUpdateOperationsInput | string | null
     recordeddate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expirydate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: Enumcheck_statusFieldUpdateOperationsInput | $Enums.check_status
@@ -57779,6 +57800,7 @@ export namespace Prisma {
     type?: $Enums.check_types | null
     amount?: string | null
     recordeddate?: Date | string | null
+    expirydate?: Date | string | null
     memo?: string | null
     imageUrl?: string | null
     status?: $Enums.check_status
@@ -57794,6 +57816,7 @@ export namespace Prisma {
     type?: NullableEnumcheck_typesFieldUpdateOperationsInput | $Enums.check_types | null
     amount?: NullableStringFieldUpdateOperationsInput | string | null
     recordeddate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expirydate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: Enumcheck_statusFieldUpdateOperationsInput | $Enums.check_status
@@ -57810,6 +57833,7 @@ export namespace Prisma {
     type?: NullableEnumcheck_typesFieldUpdateOperationsInput | $Enums.check_types | null
     amount?: NullableStringFieldUpdateOperationsInput | string | null
     recordeddate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expirydate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: Enumcheck_statusFieldUpdateOperationsInput | $Enums.check_status
@@ -61162,6 +61186,7 @@ export namespace Prisma {
     type?: SortOrder
     amount?: SortOrder
     recordeddate?: SortOrder
+    expirydate?: SortOrder
     memo?: SortOrder
     imageUrl?: SortOrder
     status?: SortOrder
@@ -61182,6 +61207,7 @@ export namespace Prisma {
     type?: SortOrder
     amount?: SortOrder
     recordeddate?: SortOrder
+    expirydate?: SortOrder
     memo?: SortOrder
     imageUrl?: SortOrder
     status?: SortOrder
@@ -61198,6 +61224,7 @@ export namespace Prisma {
     type?: SortOrder
     amount?: SortOrder
     recordeddate?: SortOrder
+    expirydate?: SortOrder
     memo?: SortOrder
     imageUrl?: SortOrder
     status?: SortOrder
@@ -66838,6 +66865,7 @@ export namespace Prisma {
     type?: $Enums.check_types | null
     amount?: string | null
     recordeddate?: Date | string | null
+    expirydate?: Date | string | null
     memo?: string | null
     imageUrl?: string | null
     status?: $Enums.check_status
@@ -66855,6 +66883,7 @@ export namespace Prisma {
     type?: $Enums.check_types | null
     amount?: string | null
     recordeddate?: Date | string | null
+    expirydate?: Date | string | null
     memo?: string | null
     imageUrl?: string | null
     status?: $Enums.check_status
@@ -66970,6 +66999,7 @@ export namespace Prisma {
     type?: NullableEnumcheck_typesFieldUpdateOperationsInput | $Enums.check_types | null
     amount?: NullableStringFieldUpdateOperationsInput | string | null
     recordeddate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expirydate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: Enumcheck_statusFieldUpdateOperationsInput | $Enums.check_status
@@ -66987,6 +67017,7 @@ export namespace Prisma {
     type?: NullableEnumcheck_typesFieldUpdateOperationsInput | $Enums.check_types | null
     amount?: NullableStringFieldUpdateOperationsInput | string | null
     recordeddate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expirydate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: Enumcheck_statusFieldUpdateOperationsInput | $Enums.check_status
@@ -70547,6 +70578,7 @@ export namespace Prisma {
     type?: $Enums.check_types | null
     amount?: string | null
     recordeddate?: Date | string | null
+    expirydate?: Date | string | null
     memo?: string | null
     imageUrl?: string | null
     status?: $Enums.check_status
@@ -70564,6 +70596,7 @@ export namespace Prisma {
     type?: $Enums.check_types | null
     amount?: string | null
     recordeddate?: Date | string | null
+    expirydate?: Date | string | null
     memo?: string | null
     imageUrl?: string | null
     status?: $Enums.check_status
@@ -70640,6 +70673,7 @@ export namespace Prisma {
     type?: NullableEnumcheck_typesFieldUpdateOperationsInput | $Enums.check_types | null
     amount?: NullableStringFieldUpdateOperationsInput | string | null
     recordeddate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expirydate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: Enumcheck_statusFieldUpdateOperationsInput | $Enums.check_status
@@ -70657,6 +70691,7 @@ export namespace Prisma {
     type?: NullableEnumcheck_typesFieldUpdateOperationsInput | $Enums.check_types | null
     amount?: NullableStringFieldUpdateOperationsInput | string | null
     recordeddate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expirydate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: Enumcheck_statusFieldUpdateOperationsInput | $Enums.check_status

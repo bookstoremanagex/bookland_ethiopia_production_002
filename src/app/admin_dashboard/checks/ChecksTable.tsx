@@ -129,12 +129,12 @@ export default function ChecksTable({ data }: { data: any[] }) {
       },
     },
     {
-      accessorKey: "recordeddate",
-      header: "Recorded Date",
+      accessorKey: "expirydate",
+      header: "Expiry Date",
       cell: ({ row }) => (
         <span className="text-xs font-bold text-muted-foreground">
-          {row.original.recordeddate
-            ? formatDate(new Date(row.original.recordeddate))
+          {row.original.expirydate
+            ? formatDate(new Date(row.original.expirydate))
             : "—"}
         </span>
       ),
@@ -316,9 +316,9 @@ export default function ChecksTable({ data }: { data: any[] }) {
                       Amount: <span className="text-primarycolor/60">{item.amount || "—"}</span>
                     </span>
                   </div>
-                  {item.recordeddate && (
+                  {item.expirydate && (
                     <div className="text-[10px] font-bold text-muted-foreground">
-                      {formatDate(new Date(item.recordeddate))}
+                      {formatDate(new Date(item.expirydate))}
                     </div>
                   )}
                 </div>
