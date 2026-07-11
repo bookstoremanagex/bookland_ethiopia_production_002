@@ -40,6 +40,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
+import { useCalendar } from "@/lib/calendar-context";
 
 interface OrderItem {
   id: number;
@@ -81,16 +82,7 @@ export function RetailOrdersTable({ groups }: Props) {
   const [globalFilter, setGlobalFilter] = useState("");
   const [selectedGroup, setSelectedGroup] = useState<OrderGroup | null>(null);
 
-  const formatDate = (date: string | Date) => {
-    const d = new Date(date);
-    return d.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
+  const { formatDateTime } = useCalendar();
 
   const columns: ColumnDef<OrderGroup>[] = [
     {
@@ -169,7 +161,7 @@ export function RetailOrdersTable({ groups }: Props) {
       header: "Date",
       cell: ({ row }) => (
         <span className="text-[10px] font-bold text-muted-foreground whitespace-nowrap">
-          {formatDate(row.original.createdAt)}
+          {formatDateTime(new Date(row.original.createdAt))}
         </span>
       ),
     },
@@ -373,7 +365,7 @@ export function RetailOrdersTable({ groups }: Props) {
                       {order.book?.books?.title ?? "Unknown"}
                     </p>
                     <p className="text-[10px] text-muted-foreground">
-                      {order.book?.edition_name} &middot; Qty: {order.quantity} &middot; {formatDate(order.created_at)}
+                      {order.book?.edition_name} &middot; Qty: {order.quantity} &middot; {formatDateTime(new Date(order.created_at))}
                     </p>
                   </div>
                   <span className="font-black text-primarycolor text-xs shrink-0 ml-3">
