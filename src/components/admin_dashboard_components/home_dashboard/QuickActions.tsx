@@ -1,7 +1,7 @@
 import {
   ShoppingCart,
   BadgeDollarSign,
-  Store,
+  Clock,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -26,10 +26,10 @@ const actions = [
     badge: (props: QuickActionsProps) => props.pendingPayments,
   },
   {
-    label: "Stores",
-    href: "/admin_dashboard/stores",
-    icon: Store,
-    color: "bg-blue-50 text-blue-700",
+    label: "Check Dates",
+    href: "/admin_dashboard/checks/dates",
+    icon: Clock,
+    color: "bg-amber-50 text-amber-700",
     badge: () => null,
   },
 ];
