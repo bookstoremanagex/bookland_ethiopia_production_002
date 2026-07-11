@@ -81,6 +81,7 @@ export default async function RetailShopOverviewPage() {
           </p>
         </div>
 
+
         <div className="rounded-2xl border border-slate-200 bg-white p-5">
           <div className="flex items-center gap-3 mb-2">
             <div className="size-10 rounded-xl bg-blue-50 flex items-center justify-center">
