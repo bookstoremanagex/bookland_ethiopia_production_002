@@ -70,14 +70,16 @@ function EthiopianDateInput({
   ...props
 }: DateInputProps) {
   const hiddenRef = useRef<HTMLInputElement>(null)
-  const initial = safeInitial(value)
+  const initialValue = typeof value === "string" ? value : undefined
+  const initial = safeInitial(initialValue)
   const [ethYear, setEthYear] = useState(initial.year)
   const [ethMonth, setEthMonth] = useState(initial.month)
   const [ethDay, setEthDay] = useState(initial.day)
 
   useEffect(() => {
-    if (value) {
-      const d = new Date(value + "T12:00:00")
+    const strValue = typeof value === "string" ? value : undefined
+    if (strValue) {
+      const d = new Date(strValue + "T12:00:00")
       if (!isNaN(d.getTime())) {
         const e = convertToEthiopian(d)
         if (!isNaN(e.year)) setEthYear(e.year)
@@ -112,7 +114,7 @@ function EthiopianDateInput({
 
   return (
     <div className={cn("relative", containerClassName)}>
-      <input ref={hiddenRef} type="hidden" value={value} readOnly aria-hidden />
+      <input ref={hiddenRef} type="hidden" value={initialValue || ""} readOnly aria-hidden />
       <div className={cn("flex gap-1", className)}>
         <select
           value={safeMonth}
@@ -159,9 +161,9 @@ function EthiopianDateInput({
           max={2200}
         />
       </div>
-      {showECLabel && value && (
+      {showECLabel && initialValue && (
         <p className="text-[10px] font-bold text-secondarycolor/80 mt-0.5">
-          GC: {value}
+          GC: {initialValue}
         </p>
       )}
     </div>
