@@ -182,7 +182,8 @@ export default function EditionsInfo({ book }: EditionsInfoProps) {
           </Button>
         </div>
 
-        <div className="overflow-hidden rounded-3xl border-2 border-primarycolor/5 shadow-sm">
+        {/* Desktop Table */}
+        <div className="hidden md:block overflow-hidden rounded-3xl border-2 border-primarycolor/5 shadow-sm">
           <table className="w-full text-left border-collapse">
             <thead className="bg-primarycolor/5 border-b-2 border-primarycolor/5">
               <tr>
@@ -329,7 +330,7 @@ export default function EditionsInfo({ book }: EditionsInfoProps) {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={4} className="p-20 text-center">
+                  <td colSpan={5} className="p-20 text-center">
                     <div className="flex flex-col items-center gap-6 opacity-30">
                       <div className="size-24 rounded-full bg-primarycolor/10 flex items-center justify-center border-4 border-dashed border-primarycolor/20">
                         <Layers className="size-12 text-primarycolor" />
@@ -348,6 +349,119 @@ export default function EditionsInfo({ book }: EditionsInfoProps) {
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile Cards */}
+        <div className="md:hidden space-y-3">
+          {editions.length > 0 ? (
+            editions.map((edition: any) => {
+              const bep = (edition.bookeditionprinters?.length > 0)
+                ? edition.bookeditionprinters[0]
+                : null;
+              const printerName = bep
+                ? bep.printer?.name
+                : edition.printorder_items?.[0]?.printorder?.printer?.name;
+              return (
+                <div
+                  key={edition.id}
+                  className="bg-white rounded-2xl border-2 border-primarycolor/5 p-4 space-y-3"
+                >
+                  {/* Header: image + name */}
+                  <div className="flex items-center gap-3">
+                    <div className="size-12 rounded-xl bg-white border-2 border-primarycolor/10 flex items-center justify-center text-primarycolor shadow-md overflow-hidden shrink-0">
+                      {edition.book_image_url ? (
+                        <img src={edition.book_image_url} alt="" className="w-full h-full object-cover" />
+                      ) : (
+                        <Layers className="size-5 opacity-40" />
+                      )}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="font-black text-primarycolor text-sm tracking-tight uppercase truncate">
+                        {edition.edition_name}
+                      </div>
+                      <div className="text-[9px] text-muted-foreground font-bold uppercase tracking-widest truncate">
+                        {edition.memo || "No memo"}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Stats row */}
+                  <div className="grid grid-cols-3 gap-2">
+                    <div className="flex items-center justify-center gap-1.5 px-2 py-2 rounded-xl bg-primarycolor/5 text-primarycolor border border-primarycolor/10">
+                      <Activity className="size-3 shrink-0" />
+                      <span className="text-[9px] font-black">
+                        {edition.total_print_count?.toLocaleString() || 0} Units
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-center gap-1.5 px-2 py-2 rounded-xl bg-secondarycolor/10 text-secondarycolor border border-secondarycolor/20">
+                      <Store className="size-3 shrink-0" />
+                      <span className="text-[9px] font-black">
+                        {edition.count_remening_for_transfer?.toLocaleString() || 0} Left
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-center gap-1.5 px-2 py-2 rounded-xl bg-slate-50 text-slate-500 border border-slate-200">
+                      <Printer className="size-3 shrink-0" />
+                      <span className="text-[9px] font-black truncate">
+                        {printerName || "N/A"}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Pages + Actions */}
+                  <div className="flex items-center justify-between">
+                    <span className="text-[9px] text-muted-foreground font-bold uppercase tracking-widest">
+                      {edition.number_of_pages || 0} Pages
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        asChild
+                        variant="outline"
+                        className="h-8 px-3 border-2 rounded-lg font-black uppercase tracking-widest text-[9px] hover:bg-primarycolor hover:text-white transition-all"
+                      >
+                        <Link href={`${dashboardRoot}/books/editions/${edition.id}`}>
+                          View
+                        </Link>
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        onClick={async () => {
+                          setSheetEdition(edition);
+                          setSheetStep(1);
+                          setSelectedStoreIds([]);
+                          setStoreQuantities({});
+                          setIsSheetLoading(true);
+                          const res = await getAllStores();
+                          if (res.success) {
+                            setAllStores(res.data);
+                          }
+                          setIsSheetLoading(false);
+                        }}
+                        className="h-8 px-3 rounded-lg font-black uppercase tracking-widest text-[9px] text-secondarycolor hover:bg-secondarycolor/10 border-2 border-secondarycolor/10"
+                      >
+                        Add to
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })
+          ) : (
+            <div className="py-16 text-center">
+              <div className="flex flex-col items-center gap-4 opacity-30">
+                <div className="size-20 rounded-full bg-primarycolor/10 flex items-center justify-center border-4 border-dashed border-primarycolor/20">
+                  <Layers className="size-10 text-primarycolor" />
+                </div>
+                <div>
+                  <p className="text-base font-black uppercase tracking-[0.2em] text-primarycolor">
+                    No Specialized Editions
+                  </p>
+                  <p className="font-bold text-muted-foreground text-sm">
+                    Define different print versions for this title.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -596,7 +710,7 @@ export default function EditionsInfo({ book }: EditionsInfoProps) {
                   type="submit"
                   form="add-edition-form"
                   disabled={isSubmitting}
-                  className="flex-2 h-16 rounded-2xl bg-primarycolor hover:bg-secondarycolor font-black uppercase tracking-widest shadow-2xl shadow-primarycolor/20 transition-all text-white"
+                  className="flex-2 py-2 rounded-2xl bg-primarycolor hover:bg-secondarycolor font-black uppercase tracking-widest shadow-2xl shadow-primarycolor/20 transition-all text-white"
                 >
                   {isSubmitting ? "Generating..." : "Create Edition"}
                 </Button>
@@ -604,7 +718,7 @@ export default function EditionsInfo({ book }: EditionsInfoProps) {
                   type="button"
                   variant="outline"
                   onClick={() => setIsAdding(false)}
-                  className="flex-1 h-16 rounded-2xl border-2 font-black uppercase tracking-widest"
+                  className="flex-1 py-2 rounded-2xl border-2 font-black uppercase tracking-widest"
                 >
                   Cancel
                 </Button>
