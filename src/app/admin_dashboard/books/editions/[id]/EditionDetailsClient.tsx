@@ -294,6 +294,19 @@ export default function EditionDetailsClient({ initialEdition, stores }: Edition
                             <p className="text-muted-foreground font-bold tracking-tight text-xs md:text-base mt-0.5 md:mt-1">
                                 Configuration for <span className="text-primarycolor italic">"{edition.books.title}"</span>
                             </p>
+                            {(() => {
+                                const bep = edition.bookeditionprinters?.[0];
+                                const printerName = bep
+                                    ? bep.printer?.name
+                                    : edition.printorder_items?.[0]?.printorder?.printer?.name;
+                                if (!printerName) return null;
+                                return (
+                                    <div className="flex items-center gap-1.5 mt-1.5 md:mt-2">
+                                        <Printer className="size-3 md:size-3.5 text-primarycolor/50" />
+                                        <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-primarycolor/60">{printerName}</span>
+                                    </div>
+                                );
+                            })()}
                         </div>
                     </div>
 

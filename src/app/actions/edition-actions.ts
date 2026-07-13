@@ -63,11 +63,23 @@ export async function getEditionById(id: number) {
     try {
         const edition = await (prisma as any).bookedition.findUnique({
             where: { id },
-            include: { 
+            include: {
                 books: true,
                 bookeditionstores: {
                     where: { is_deleted: false },
                     include: { stores: true }
+                },
+                bookeditionprinters: {
+                    where: { is_deleted: false },
+                    include: { printer: true }
+                },
+                printorder_items: {
+                    where: { is_deleted: false },
+                    include: {
+                        printorder: {
+                            include: { printer: true }
+                        }
+                    }
                 }
             }
         });
