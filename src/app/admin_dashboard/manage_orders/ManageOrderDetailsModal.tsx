@@ -49,7 +49,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useCalendar } from "@/lib/calendar-context";
 import { toast } from "sonner";
-import { getBookStockBreakdown, approveOrder, markOrderDelivered, removeBookFromOrder } from "@/app/actions/order-actions";
+import { getBookStockBreakdown, approveOrder, markOrderDelivered, removeBookFromOrder, getShopTotalDebt } from "@/app/actions/order-actions";
 import type { AdminOrder } from "./ManageOrdersPageContent";
 
 interface StoreOption {
@@ -133,6 +133,7 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
     const [editedEditionQtys, setEditedEditionQtys] = useState<Record<number, Record<number, number>>>({});
     const [advancedBookId, setAdvancedBookId] = useState<number | null>(null);
     const [removeConfirmOpen, setRemoveConfirmOpen] = useState(false);
+    const [shopDebt, setShopDebt] = useState<{ requestedDebt: number; roundDebt: number; totalDebt: number; totalPaid: number } | null>(null);
 
     // Group order_items by bookId → collect unique books
     const uniqueBooks = React.useMemo(() => {
@@ -270,10 +271,17 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
     useEffect(() => {
         if (isOpen && order) {
             loadStockBreakdowns();
+            // Fetch shop total debt (orders + rounds)
+            getShopTotalDebt(order.bookshopes?.id).then((res) => {
+                if (res.success) {
+                    setShopDebt({ requestedDebt: res.requestedDebt, roundDebt: res.roundDebt, totalDebt: res.totalDebt, totalPaid: res.totalPaid });
+                }
+            });
         }
         if (!isOpen) {
             setBookBreakdowns([]);
             setBookAllocations([]);
+            setShopDebt(null);
         }
     }, [isOpen, order]);
 
@@ -573,8 +581,12 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
     const remainingBalance = order.total_amount - order.amount_paid;
     const paymentPct = order.total_amount > 0 ? Math.round((order.amount_paid / order.total_amount) * 100) : 0;
     const filteredPayments = (payments || []).filter(
-        (p) => p.orderid?.replace(/^ORD-/i, "") === String(order.id)
+        (p) => p.status === "APPROVED" && (
+            p.orderid?.replace(/^ORD-/i, "") === String(order.id) ||
+            p.orderid === String(order.id)
+        )
     );
+    const calculatedPaid = filteredPayments.reduce((sum, p) => sum + (p.amount || 0), 0);
 
     // Calculate totals per book and per edition
     const bookTotals = bookAllocations.map(ba => {
@@ -737,6 +749,30 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                     {order.is_approved ? (
                         /* ── APPROVED: Read-only order summary ── */
                         <div className="space-y-4 sm:space-y-6">
+                            {/* Shop info */}
+                            <div className="bg-white rounded-2xl sm:rounded-[2rem] p-3 sm:p-6 border-2 border-primarycolor/5 shadow-sm">
+                                <div className="flex items-center gap-3 sm:gap-4">
+                                    <Building2 className="size-5 sm:size-6 text-primarycolor/60 shrink-0" />
+                                    <div className="min-w-0 flex-1">
+                                        <p className="font-black text-primarycolor uppercase text-xs sm:text-base truncate">{order.bookshopes?.name}</p>
+                                        <p className="text-[8px] sm:text-[9px] font-bold text-muted-foreground truncate">{order.bookshopes?.location}</p>
+                                    </div>
+                                    <div className="text-right shrink-0">
+                                        <p className="text-[7px] sm:text-[8px] font-black text-muted-foreground uppercase tracking-widest">Placed on</p>
+                                        <p className="font-bold text-slate-700 text-[10px] sm:text-sm">{formatDate(new Date(order.createdAt))}</p>
+                                    </div>
+                                </div>
+                                {shopDebt && shopDebt.totalDebt > 0 && (
+                                    <div className="mt-2 sm:mt-3 pt-2 sm:pt-3 border-t border-slate-100 flex items-center gap-2">
+                                        <span className="text-[7px] sm:text-[8px] font-black text-muted-foreground uppercase tracking-widest">Total Remaining</span>
+                                        <span className="font-black text-rose-600 text-[10px] sm:text-sm">{(shopDebt.totalDebt - shopDebt.totalPaid).toLocaleString()} ETB</span>
+                                        <span className="text-[6px] sm:text-[7px] font-bold text-muted-foreground">
+                                            (Requested: {shopDebt.requestedDebt.toLocaleString()} | On Round: {shopDebt.roundDebt.toLocaleString()})
+                                        </span>
+                                    </div>
+                                )}
+                            </div>
+
                             {/* Financial summary */}
                             <div className="bg-white rounded-2xl sm:rounded-[2rem] p-4 sm:p-6 border-2 border-primarycolor/5 shadow-sm">
                                 <div className="grid grid-cols-3 gap-2 sm:gap-4">
@@ -746,11 +782,11 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                                     </div>
                                     <div className="text-center p-2.5 sm:p-3 rounded-xl bg-emerald-50 border border-emerald-100">
                                         <p className="text-[7px] sm:text-[8px] font-black text-emerald-700 uppercase tracking-widest">Paid</p>
-                                        <p className="font-black text-emerald-800 text-sm sm:text-lg mt-0.5">{order.amount_paid.toLocaleString()} <span className="text-[7px] sm:text-[8px]">ETB</span></p>
+                                        <p className="font-black text-emerald-800 text-sm sm:text-lg mt-0.5">{calculatedPaid.toLocaleString()} <span className="text-[7px] sm:text-[8px]">ETB</span></p>
                                     </div>
                                     <div className="text-center p-2.5 sm:p-3 rounded-xl bg-rose-50 border border-rose-100">
                                         <p className="text-[7px] sm:text-[8px] font-black text-rose-700 uppercase tracking-widest">Remaining</p>
-                                        <p className="font-black text-rose-800 text-sm sm:text-lg mt-0.5">{(order.total_amount - order.amount_paid).toLocaleString()} <span className="text-[7px] sm:text-[8px]">ETB</span></p>
+                                        <p className="font-black text-rose-800 text-sm sm:text-lg mt-0.5">{(order.total_amount - calculatedPaid).toLocaleString()} <span className="text-[7px] sm:text-[8px]">ETB</span></p>
                                     </div>
                                 </div>
                             </div>
@@ -847,21 +883,6 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                                     </div>
                                 </div>
                             )}
-
-                            {/* Shop info */}
-                            <div className="bg-white rounded-2xl sm:rounded-[2rem] p-3 sm:p-6 border-2 border-primarycolor/5 shadow-sm">
-                                <div className="flex items-center gap-3 sm:gap-4">
-                                    <Building2 className="size-5 sm:size-6 text-primarycolor/60 shrink-0" />
-                                    <div className="min-w-0 flex-1">
-                                        <p className="font-black text-primarycolor uppercase text-xs sm:text-base truncate">{order.bookshopes?.name}</p>
-                                        <p className="text-[8px] sm:text-[9px] font-bold text-muted-foreground truncate">{order.bookshopes?.location}</p>
-                                    </div>
-                                    <div className="text-right shrink-0">
-                                        <p className="text-[7px] sm:text-[8px] font-black text-muted-foreground uppercase tracking-widest">Placed on</p>
-                                        <p className="font-bold text-slate-700 text-[10px] sm:text-sm">{formatDate(new Date(order.createdAt))}</p>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     ) : isLoadingStock ? (
                         <div className="flex items-center justify-center py-20 gap-3 text-muted-foreground">
@@ -1235,102 +1256,31 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                         </>
                     )}
 
-                    {/* Payments linked to this order */}
-                    {filteredPayments.length > 0 && (
-                        <div className="bg-white rounded-2xl sm:rounded-[2rem] border-2 border-primarycolor/5 shadow-sm overflow-hidden">
-                            <div className="p-3 sm:p-5 border-b border-slate-100">
-                                <div className="flex items-center gap-2 text-primarycolor">
-                                    <Banknote className="size-3.5 sm:size-4" />
-                                    <h4 className="font-black uppercase tracking-widest text-[10px] sm:text-xs italic">
-                                        Payments ({filteredPayments.length})
-                                    </h4>
-                                </div>
+                    {/* Payment Summary */}
+                    {calculatedPaid > 0 && (
+                        <div className="bg-white rounded-2xl sm:rounded-[2rem] p-3 sm:p-5 border-2 border-emerald-100 shadow-sm">
+                            <div className="flex items-center gap-2 text-emerald-700 mb-2 sm:mb-3">
+                                <Banknote className="size-3.5 sm:size-4" />
+                                <h4 className="font-black uppercase tracking-widest text-[10px] sm:text-xs italic">Payment Summary</h4>
                             </div>
-                            {/* Desktop table */}
-                            <div className="hidden sm:block overflow-x-auto">
-                                <table className="w-full text-left border-collapse">
-                                    <thead>
-                                        <tr className="bg-slate-50 border-b border-slate-100">
-                                            <th className="p-3 text-[9px] font-black uppercase tracking-widest text-primarycolor/60">Amount</th>
-                                            <th className="p-3 text-[9px] font-black uppercase tracking-widest text-primarycolor/60">Type</th>
-                                            <th className="p-3 text-[9px] font-black uppercase tracking-widest text-primarycolor/60">Status</th>
-                                            <th className="p-3 text-[9px] font-black uppercase tracking-widest text-primarycolor/60">Date</th>
-                                            <th className="p-3 text-[9px] font-black uppercase tracking-widest text-primarycolor/60">Memo</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {filteredPayments.map((payment) => (
-                                            <tr key={payment.id} className="border-b border-slate-50 hover:bg-slate-50/50">
-                                                <td className="p-3 font-black text-primarycolor text-sm">
-                                                    {payment.amount.toLocaleString()} ETB
-                                                </td>
-                                                <td className="p-3">
-                                                    <span className={cn(
-                                                        "px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest",
-                                                        payment.payment_type === "CHECK"
-                                                            ? "bg-purple-100 text-purple-600"
-                                                            : "bg-blue-100 text-blue-600"
-                                                    )}>
-                                                        {payment.payment_type}
-                                                    </span>
-                                                </td>
-                                                <td className="p-3">
-                                                    <span className={cn(
-                                                        "px-2 py-1 rounded text-[8px] font-black uppercase tracking-widest",
-                                                        payment.status === "APPROVED"
-                                                            ? "bg-emerald-100 text-emerald-700"
-                                                            : payment.status === "PENDING"
-                                                            ? "bg-amber-100 text-amber-700"
-                                                            : "bg-rose-100 text-rose-700"
-                                                    )}>
-                                                        {payment.status}
-                                                    </span>
-                                                </td>
-                                                <td className="p-3 text-[10px] font-bold text-muted-foreground">
-                                                    {formatDate(new Date(payment.createdAt), "MMM dd, yyyy")}
-                                                </td>
-                                                <td className="p-3 text-[10px] text-muted-foreground/70 italic max-w-[200px] truncate">
-                                                    {payment.memo || "—"}
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                            <div className="flex items-center justify-between">
+                                <span className="text-[9px] sm:text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Total Paid</span>
+                                <span className="font-black text-emerald-700 text-sm sm:text-base">{calculatedPaid.toLocaleString()} ETB</span>
                             </div>
-                            {/* Mobile cards */}
-                            <div className="sm:hidden divide-y divide-slate-50">
-                                {filteredPayments.map((payment) => (
-                                    <div key={payment.id} className="p-3 space-y-1.5">
-                                        <div className="flex items-center justify-between">
-                                            <span className="font-black text-primarycolor text-xs">{payment.amount.toLocaleString()} ETB</span>
-                                            <div className="flex items-center gap-1">
-                                                <span className={cn(
-                                                    "px-1.5 py-0.5 rounded-full text-[6px] font-black uppercase",
-                                                    payment.payment_type === "CHECK"
-                                                        ? "bg-purple-100 text-purple-600"
-                                                        : "bg-blue-100 text-blue-600"
-                                                )}>
-                                                    {payment.payment_type}
-                                                </span>
-                                                <span className={cn(
-                                                    "px-1.5 py-0.5 rounded text-[6px] font-black uppercase",
-                                                    payment.status === "APPROVED"
-                                                        ? "bg-emerald-100 text-emerald-700"
-                                                        : payment.status === "PENDING"
-                                                        ? "bg-amber-100 text-amber-700"
-                                                        : "bg-rose-100 text-rose-700"
-                                                )}>
-                                                    {payment.status}
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div className="flex items-center justify-between text-[8px]">
+                            <div className="flex items-center justify-between mt-1">
+                                <span className="text-[9px] sm:text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Remaining</span>
+                                <span className="font-black text-rose-600 text-sm sm:text-base">{(order.total_amount - calculatedPaid).toLocaleString()} ETB</span>
+                            </div>
+                            {filteredPayments.length > 0 && (
+                                <div className="mt-3 pt-3 border-t border-emerald-100 space-y-1.5">
+                                    {filteredPayments.map((payment) => (
+                                        <div key={payment.id} className="flex items-center justify-between text-[9px]">
                                             <span className="font-bold text-muted-foreground">{formatDate(new Date(payment.createdAt), "MMM dd, yyyy")}</span>
-                                            {payment.memo && <span className="text-muted-foreground/70 italic truncate max-w-[60%] text-right">{payment.memo}</span>}
+                                            <span className="font-black text-emerald-700">{payment.amount.toLocaleString()} ETB</span>
                                         </div>
-                                    </div>
-                                ))}
-                            </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>

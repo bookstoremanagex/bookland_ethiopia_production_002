@@ -30,6 +30,53 @@ export async function getShopRemainingBalance(shopId: number) {
     }
 }
 
+export async function getShopTotalDebt(shopId: number) {
+    try {
+        const shop = await (prisma as any).bookshopes.findUnique({
+            where: { id: shopId },
+            select: { previousDebt: true },
+        });
+        const previousDebt = shop?.previousDebt || 0;
+
+        const orders = await (prisma as any).orders.findMany({
+            where: { bookShopId: shopId, is_deleted: false },
+            select: { total_amount: true, order_type: true },
+        });
+
+        // Total paid = sum of all approved payments (same as manage payment page)
+        const approvedPayments = await (prisma as any).payments.findMany({
+            where: { shopId, is_deleted: false, status: "APPROVED" },
+            select: { amount: true },
+        });
+        const totalPaid = approvedPayments.reduce((sum: number, p: any) => sum + (p.amount || 0), 0);
+
+        // Total debt = sum of all order totals + previous debt
+        const orderTotal = orders.reduce((sum: number, o: any) => sum + (o.total_amount || 0), 0);
+        const totalDebt = orderTotal + previousDebt;
+        const totalRemaining = totalDebt - totalPaid;
+
+        // Breakdown by order type
+        let requestedTotal = 0;
+        let roundTotal = 0;
+        for (const o of orders) {
+            if (o.order_type === "on round") {
+                roundTotal += (o.total_amount || 0);
+            } else {
+                requestedTotal += (o.total_amount || 0);
+            }
+        }
+
+        // Proportional paid per type (if totalOrderTotal > 0)
+        const requestedDebt = requestedTotal > 0 ? Math.max(0, requestedTotal - (totalPaid * (requestedTotal / orderTotal))) : 0;
+        const roundDebt = roundTotal > 0 ? Math.max(0, roundTotal - (totalPaid * (roundTotal / orderTotal))) : 0;
+
+        return { success: true, requestedDebt, roundDebt, totalDebt, totalPaid, previousDebt };
+    } catch (error) {
+        console.error("Error fetching shop total debt:", error);
+        return { success: false, error: "Failed to fetch total debt" };
+    }
+}
+
 export async function getOrdersByShopId(shopId: number) {
   try {
     const orders = await (prisma as any).orders.findMany({

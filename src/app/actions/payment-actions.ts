@@ -125,27 +125,51 @@ export async function approvePayment(paymentId: number) {
             data: { status: "APPROVED" }
         });
 
-        // Distribute the payment across the shop's unpaid orders (oldest first)
+        // Distribute the payment: linked order first, then remaining across other orders (oldest first)
         try {
             let remaining = payment.amount;
-            const shopOrders = await (prisma as any).orders.findMany({
-                where: {
-                    bookShopId: payment.shopId,
-                    is_deleted: false,
-                },
-                orderBy: { createdAt: 'asc' }
-            });
+            const orderIdNum = payment.orderid ? parseInt(payment.orderid.replace(/^ORD-/i, "")) : null;
 
-            for (const order of shopOrders) {
-                if (remaining <= 0) break;
-                const orderRemaining = (order.total_amount || 0) - (order.amount_paid || 0);
-                if (orderRemaining <= 0) continue;
-                const toApply = Math.min(remaining, orderRemaining);
-                await (prisma as any).orders.update({
-                    where: { id: order.id },
-                    data: { amount_paid: (order.amount_paid || 0) + toApply }
+            // 1. Apply to linked order first (if exists and has remaining balance)
+            if (orderIdNum) {
+                const linkedOrder = await (prisma as any).orders.findFirst({
+                    where: { id: orderIdNum, bookShopId: payment.shopId, is_deleted: false }
                 });
-                remaining -= toApply;
+                if (linkedOrder) {
+                    const orderRemaining = (linkedOrder.total_amount || 0) - (linkedOrder.amount_paid || 0);
+                    if (orderRemaining > 0) {
+                        const toApply = Math.min(remaining, orderRemaining);
+                        await (prisma as any).orders.update({
+                            where: { id: linkedOrder.id },
+                            data: { amount_paid: (linkedOrder.amount_paid || 0) + toApply }
+                        });
+                        remaining -= toApply;
+                    }
+                }
+            }
+
+            // 2. Distribute remaining across other unpaid orders (oldest first)
+            if (remaining > 0) {
+                const shopOrders = await (prisma as any).orders.findMany({
+                    where: {
+                        bookShopId: payment.shopId,
+                        is_deleted: false,
+                        ...(orderIdNum ? { id: { not: orderIdNum } } : {}),
+                    },
+                    orderBy: { createdAt: 'asc' }
+                });
+
+                for (const order of shopOrders) {
+                    if (remaining <= 0) break;
+                    const orderRemaining = (order.total_amount || 0) - (order.amount_paid || 0);
+                    if (orderRemaining <= 0) continue;
+                    const toApply = Math.min(remaining, orderRemaining);
+                    await (prisma as any).orders.update({
+                        where: { id: order.id },
+                        data: { amount_paid: (order.amount_paid || 0) + toApply }
+                    });
+                    remaining -= toApply;
+                }
             }
         } catch (deductError) {
             // Revert the approval if deduction fails
@@ -278,6 +302,57 @@ export async function setPaymentPending(paymentId: number) {
             data: { status: "PENDING" }
         });
 
+        // Reverse the payment from orders' amount_paid if it was approved (linked order first)
+        if (payment.status === "APPROVED") {
+            try {
+                let remaining = payment.amount;
+                const orderIdNum = payment.orderid ? parseInt(payment.orderid.replace(/^ORD-/i, "")) : null;
+
+                // 1. Reverse from linked order first
+                if (orderIdNum) {
+                    const linkedOrder = await (prisma as any).orders.findFirst({
+                        where: { id: orderIdNum, bookShopId: payment.shopId, is_deleted: false }
+                    });
+                    if (linkedOrder) {
+                        const paid = linkedOrder.amount_paid || 0;
+                        if (paid > 0) {
+                            const toReverse = Math.min(remaining, paid);
+                            await (prisma as any).orders.update({
+                                where: { id: linkedOrder.id },
+                                data: { amount_paid: paid - toReverse }
+                            });
+                            remaining -= toReverse;
+                        }
+                    }
+                }
+
+                // 2. Reverse remaining from other orders (newest first)
+                if (remaining > 0) {
+                    const shopOrders = await (prisma as any).orders.findMany({
+                        where: {
+                            bookShopId: payment.shopId,
+                            is_deleted: false,
+                            ...(orderIdNum ? { id: { not: orderIdNum } } : {}),
+                        },
+                        orderBy: { createdAt: 'desc' }
+                    });
+                    for (const order of shopOrders) {
+                        if (remaining <= 0) break;
+                        const paid = order.amount_paid || 0;
+                        if (paid <= 0) continue;
+                        const toReverse = Math.min(remaining, paid);
+                        await (prisma as any).orders.update({
+                            where: { id: order.id },
+                            data: { amount_paid: paid - toReverse }
+                        });
+                        remaining -= toReverse;
+                    }
+                }
+            } catch (reverseError) {
+                console.error("Error reversing payment from orders:", reverseError);
+            }
+        }
+
         await (prisma as any).activityLogs.create({
             data: {
                 accountId: session.id,
@@ -311,6 +386,57 @@ export async function deletePayment(paymentId: number) {
             where: { id: paymentId },
             data: { is_deleted: true }
         });
+
+        // Reverse the payment from orders' amount_paid if it was approved (linked order first)
+        if (payment.status === "APPROVED") {
+            try {
+                let remaining = payment.amount;
+                const orderIdNum = payment.orderid ? parseInt(payment.orderid.replace(/^ORD-/i, "")) : null;
+
+                // 1. Reverse from linked order first
+                if (orderIdNum) {
+                    const linkedOrder = await (prisma as any).orders.findFirst({
+                        where: { id: orderIdNum, bookShopId: payment.shopId, is_deleted: false }
+                    });
+                    if (linkedOrder) {
+                        const paid = linkedOrder.amount_paid || 0;
+                        if (paid > 0) {
+                            const toReverse = Math.min(remaining, paid);
+                            await (prisma as any).orders.update({
+                                where: { id: linkedOrder.id },
+                                data: { amount_paid: paid - toReverse }
+                            });
+                            remaining -= toReverse;
+                        }
+                    }
+                }
+
+                // 2. Reverse remaining from other orders (newest first)
+                if (remaining > 0) {
+                    const shopOrders = await (prisma as any).orders.findMany({
+                        where: {
+                            bookShopId: payment.shopId,
+                            is_deleted: false,
+                            ...(orderIdNum ? { id: { not: orderIdNum } } : {}),
+                        },
+                        orderBy: { createdAt: 'desc' }
+                    });
+                    for (const order of shopOrders) {
+                        if (remaining <= 0) break;
+                        const paid = order.amount_paid || 0;
+                        if (paid <= 0) continue;
+                        const toReverse = Math.min(remaining, paid);
+                        await (prisma as any).orders.update({
+                            where: { id: order.id },
+                            data: { amount_paid: paid - toReverse }
+                        });
+                        remaining -= toReverse;
+                    }
+                }
+            } catch (reverseError) {
+                console.error("Error reversing payment from orders:", reverseError);
+            }
+        }
 
         await (prisma as any).activityLogs.create({
             data: {
