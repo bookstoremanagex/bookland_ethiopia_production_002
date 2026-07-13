@@ -746,34 +746,33 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                 </DialogHeader>
 
                 <div className="flex-1 overflow-y-auto p-3 sm:p-6 pb-20 sm:pb-6 bg-[#F8FAFC] space-y-3 sm:space-y-6">
+                    {/* Shop info — always visible */}
+                    <div className="bg-white rounded-2xl sm:rounded-[2rem] p-3 sm:p-6 border-2 border-primarycolor/5 shadow-sm">
+                        <div className="flex items-center gap-3 sm:gap-4">
+                            <Building2 className="size-5 sm:size-6 text-primarycolor/60 shrink-0" />
+                            <div className="min-w-0 flex-1">
+                                <p className="font-black text-primarycolor uppercase text-xs sm:text-base truncate">{order.bookshopes?.name}</p>
+                                <p className="text-[8px] sm:text-[9px] font-bold text-muted-foreground truncate">{order.bookshopes?.location}</p>
+                            </div>
+                            <div className="text-right shrink-0">
+                                <p className="text-[7px] sm:text-[8px] font-black text-muted-foreground uppercase tracking-widest">Placed on</p>
+                                <p className="font-bold text-slate-700 text-[10px] sm:text-sm">{formatDate(new Date(order.createdAt))}</p>
+                            </div>
+                        </div>
+                        {shopDebt && shopDebt.totalDebt > 0 && (
+                            <div className="mt-2 sm:mt-3 pt-2 sm:pt-3 border-t border-slate-100 flex items-center gap-2">
+                                <span className="text-[7px] sm:text-[8px] font-black text-muted-foreground uppercase tracking-widest">Total Remaining</span>
+                                <span className="font-black text-rose-600 text-[10px] sm:text-sm">{(shopDebt.totalDebt - shopDebt.totalPaid).toLocaleString()} ETB</span>
+                                <span className="text-[8px] sm:text-[9px] font-bold text-muted-foreground">
+                                    (Requested: {shopDebt.requestedDebt.toLocaleString()} | On Round: {shopDebt.roundDebt.toLocaleString()})
+                                </span>
+                            </div>
+                        )}
+                    </div>
+
                     {order.is_approved ? (
                         /* ── APPROVED: Read-only order summary ── */
                         <div className="space-y-4 sm:space-y-6">
-                            {/* Shop info */}
-                            <div className="bg-white rounded-2xl sm:rounded-[2rem] p-3 sm:p-6 border-2 border-primarycolor/5 shadow-sm">
-                                <div className="flex items-center gap-3 sm:gap-4">
-                                    <Building2 className="size-5 sm:size-6 text-primarycolor/60 shrink-0" />
-                                    <div className="min-w-0 flex-1">
-                                        <p className="font-black text-primarycolor uppercase text-xs sm:text-base truncate">{order.bookshopes?.name}</p>
-                                        <p className="text-[8px] sm:text-[9px] font-bold text-muted-foreground truncate">{order.bookshopes?.location}</p>
-                                    </div>
-                                    <div className="text-right shrink-0">
-                                        <p className="text-[7px] sm:text-[8px] font-black text-muted-foreground uppercase tracking-widest">Placed on</p>
-                                        <p className="font-bold text-slate-700 text-[10px] sm:text-sm">{formatDate(new Date(order.createdAt))}</p>
-                                    </div>
-                                </div>
-                                {shopDebt && shopDebt.totalDebt > 0 && (
-                                    <div className="mt-2 sm:mt-3 pt-2 sm:pt-3 border-t border-slate-100 flex items-center gap-2">
-                                        <span className="text-[7px] sm:text-[8px] font-black text-muted-foreground uppercase tracking-widest">Total Remaining</span>
-                                        <span className="font-black text-rose-600 text-[10px] sm:text-sm">{(shopDebt.totalDebt - shopDebt.totalPaid).toLocaleString()} ETB</span>
-                                        <span className="text-[6px] sm:text-[7px] font-bold text-muted-foreground">
-                                            (Requested: {shopDebt.requestedDebt.toLocaleString()} | On Round: {shopDebt.roundDebt.toLocaleString()})
-                                        </span>
-                                    </div>
-                                )}
-                            </div>
-
-                            {/* Financial summary */}
                             <div className="bg-white rounded-2xl sm:rounded-[2rem] p-4 sm:p-6 border-2 border-primarycolor/5 shadow-sm">
                                 <div className="grid grid-cols-3 gap-2 sm:gap-4">
                                     <div className="text-center p-2.5 sm:p-3 rounded-xl bg-slate-50 border border-slate-100">
