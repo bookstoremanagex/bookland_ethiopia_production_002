@@ -274,7 +274,7 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
             // Fetch shop total debt (orders + rounds)
             getShopTotalDebt(order.bookshopes?.id).then((res) => {
                 if (res.success) {
-                    setShopDebt({ requestedDebt: res.requestedDebt, roundDebt: res.roundDebt, totalDebt: res.totalDebt, totalPaid: res.totalPaid });
+                    setShopDebt({ requestedDebt: res.requestedDebt ?? 0, roundDebt: res.roundDebt ?? 0, totalDebt: res.totalDebt ?? 0, totalPaid: res.totalPaid ?? 0 });
                 }
             });
         }
