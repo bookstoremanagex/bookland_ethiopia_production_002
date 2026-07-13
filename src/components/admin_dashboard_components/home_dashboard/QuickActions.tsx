@@ -2,6 +2,10 @@ import {
   ShoppingCart,
   BadgeDollarSign,
   Clock,
+  Store,
+  Printer,
+  Repeat,
+  ShoppingBag,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -32,6 +36,34 @@ const actions = [
     color: "bg-amber-50 text-amber-700",
     badge: () => null,
   },
+  {
+    label: "Store Options",
+    href: "/admin_dashboard/stores/options",
+    icon: Store,
+    color: "bg-emerald-50 text-emerald-700",
+    badge: () => null,
+  },
+  {
+    label: "Manage Printing",
+    href: "/admin_dashboard/printing/manage",
+    icon: Printer,
+    color: "bg-purple-50 text-purple-700",
+    badge: () => null,
+  },
+  {
+    label: "Manage Rounds",
+    href: "/admin_dashboard/round-books",
+    icon: Repeat,
+    color: "bg-blue-50 text-blue-700",
+    badge: () => null,
+  },
+  {
+    label: "Book Shops",
+    href: "/admin_dashboard/book_shops",
+    icon: ShoppingBag,
+    color: "bg-rose-50 text-rose-700",
+    badge: () => null,
+  },
 ];
 
 export function QuickActions({ pendingOrders, pendingPayments }: QuickActionsProps) {
@@ -42,7 +74,7 @@ export function QuickActions({ pendingOrders, pendingPayments }: QuickActionsPro
       <h2 className="text-base font-semibold tracking-tight text-slate-900 mb-4 px-1">
         Quick Actions
       </h2>
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
         {actions.map((action) => {
           const badgeValue = action.badge(props);
           return (
