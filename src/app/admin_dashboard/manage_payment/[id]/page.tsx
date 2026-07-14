@@ -195,6 +195,7 @@ export default async function ManagePaymentDetailPage({ params }: { params: Prom
                     status: p.status,
                     createdAt: p.createdAt,
                     check: p.check ? {
+                        id: p.check.id,
                         bankname: p.check.bankname,
                         username: p.check.username,
                         amount: p.check.amount,

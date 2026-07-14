@@ -186,6 +186,7 @@ interface RoundRecord {
         status: string;
         createdAt: string;
         check: {
+            id: number;
             bankname: string | null;
             username: string | null;
             amount: string | null;
