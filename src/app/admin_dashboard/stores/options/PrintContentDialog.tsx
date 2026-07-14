@@ -42,12 +42,14 @@ export default function PrintContentDialog({ open, onOpenChange }: PrintContentD
     const [storeLoading, setStoreLoading] = useState(false);
     const [selectedStoreIds, setSelectedStoreIds] = useState<number[]>([]);
     const [fontSize, setFontSize] = useState<FontSize>("medium");
+    const [editionLimit, setEditionLimit] = useState(false);
     const [generating, setGenerating] = useState(false);
 
     useEffect(() => {
         if (open) {
             setSelectedStoreIds([]);
             setFontSize("medium");
+            setEditionLimit(false);
             setStoreLoading(true);
             getStores().then(res => {
                 if (res.success) setStores(res.data as any[]);
@@ -112,8 +114,15 @@ export default function PrintContentDialog({ open, onOpenChange }: PrintContentD
 
             return `<div class="store-col">
                 <div class="store-header">${escapeHtml(inv.storeName)}</div>
-                ${bookEntries.map(entry => `
-                    <div class="book-group">
+                ${bookEntries.map(entry => {
+                    if (editionLimit && entry.editions.length === 1) {
+                        const ed = entry.editions[0];
+                        const totalQty = ed.quantity ?? 0;
+                        return `<div class="book-group">
+                            <div class="book-title book-title-inline">${escapeHtml(entry.bookTitle)}${entry.author ? ` <span class="author">by ${escapeHtml(entry.author)}</span>` : ""} <span class="edition-tag">[${escapeHtml(ed.bookedition?.edition_name || "N/A")}]</span> <span class="edition-qty-inline">${totalQty}</span></div>
+                        </div>`;
+                    }
+                    return `<div class="book-group">
                         <div class="book-title">${escapeHtml(entry.bookTitle)}${entry.author ? ` <span class="author">by ${escapeHtml(entry.author)}</span>` : ""}</div>
                         ${entry.editions.map((ed: any) => `
                             <div class="edition-row">
@@ -121,8 +130,8 @@ export default function PrintContentDialog({ open, onOpenChange }: PrintContentD
                                 <span class="edition-qty">${ed.quantity ?? 0}</span>
                             </div>
                         `).join("")}
-                    </div>
-                `).join("")}
+                    </div>`;
+                }).join("")}
             </div>`;
         }).join("");
 
@@ -249,6 +258,28 @@ export default function PrintContentDialog({ open, onOpenChange }: PrintContentD
             font-size: ${fontSizePx}px;
             line-height: 1.8;
         }
+        .book-title-inline {
+            display: inline;
+        }
+        .edition-tag {
+            font-weight: 600;
+            color: #6366f1;
+        }
+        .edition-qty-inline {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 1.8em;
+            padding: 0 8px;
+            border-radius: 999px;
+            background: #eef2ff;
+            color: #6366f1;
+            font-weight: 700;
+            font-size: ${fontSizePx}px;
+            line-height: 1.6;
+            vertical-align: middle;
+            margin-left: 4px;
+        }
         .empty-msg {
             color: #94a3b8;
             font-style: italic;
@@ -256,7 +287,7 @@ export default function PrintContentDialog({ open, onOpenChange }: PrintContentD
             text-align: center;
         }
         @media print {
-            @page { margin: 12mm; size: A4 landscape; }
+            @page { margin: 12mm; size: A4; }
             body { padding: 0; }
         }
     </style>
@@ -370,6 +401,28 @@ export default function PrintContentDialog({ open, onOpenChange }: PrintContentD
                             ))}
                         </div>
                     </div>
+
+                    <label className="flex items-center justify-between p-4 rounded-xl border-2 border-slate-100 cursor-pointer hover:border-primarycolor/30 transition-colors">
+                        <div>
+                            <span className="font-black text-xs text-foreground">Edition Limit</span>
+                            <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mt-0.5">Single edition shown inline</p>
+                        </div>
+                        <div className={cn(
+                            "relative w-11 h-6 rounded-full transition-colors",
+                            editionLimit ? "bg-primarycolor" : "bg-slate-200"
+                        )}>
+                            <input
+                                type="checkbox"
+                                checked={editionLimit}
+                                onChange={(e) => setEditionLimit(e.target.checked)}
+                                className="sr-only"
+                            />
+                            <div className={cn(
+                                "absolute top-0.5 left-0.5 size-5 rounded-full bg-white shadow-md transition-transform",
+                                editionLimit && "translate-x-5"
+                            )} />
+                        </div>
+                    </label>
 
                     <Button
                         onClick={handleGeneratePrint}
