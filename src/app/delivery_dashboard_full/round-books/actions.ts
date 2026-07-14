@@ -1,6 +1,7 @@
 "use server";
 
 import prisma from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
 
 export async function getRoundBooks() {
   try {
@@ -247,10 +248,25 @@ export async function createRoundPayment(data: {
 
 export async function approveRoundPayment(paymentId: number) {
   try {
+    const payment = await (prisma as any).round_payments.findUnique({
+      where: { id: paymentId },
+      include: { check: true },
+    });
+
+    if (!payment) return { success: false, error: "Payment not found" };
+
+    // If it's a check payment, verify the check is cleared first
+    if (payment.payment_type === "CHECK" && payment.checkId) {
+      if (payment.check?.status !== "CLEARED") {
+        return { success: false, error: "The linked check must be cleared before this payment can be approved." };
+      }
+    }
+
     await (prisma as any).round_payments.update({
       where: { id: paymentId },
-      data: { status: "APPROVED" },
+      data: { status: "APPROVED", updatedAt: new Date() },
     });
+    revalidatePath("/admin_dashboard", "layout");
     return { success: true };
   } catch (error: any) {
     return { success: false, error: error.message };
@@ -265,6 +281,46 @@ export async function deleteRoundPayment(paymentId: number) {
     });
     return { success: true };
   } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+}
+
+export async function updateRoundCheckStatus(checkId: number, status: string) {
+  try {
+    // First verify the check exists
+    const existingCheck = await (prisma as any).round_checks.findUnique({
+      where: { id: checkId },
+      select: { id: true, status: true },
+    });
+
+    if (!existingCheck) {
+      return { success: false, error: "Check not found" };
+    }
+
+    // Update the check status
+    const updated = await (prisma as any).round_checks.update({
+      where: { id: checkId },
+      data: { status: status, updatedAt: new Date() },
+    });
+
+    // When check is cleared, approve all linked pending round payments
+    if (status === "CLEARED") {
+      const linkedPayments = await (prisma as any).round_payments.findMany({
+        where: { checkId: checkId, status: "PENDING", is_deleted: false },
+      });
+
+      for (const payment of linkedPayments) {
+        await (prisma as any).round_payments.update({
+          where: { id: payment.id },
+          data: { status: "APPROVED", updatedAt: new Date() },
+        });
+      }
+    }
+
+    revalidatePath("/admin_dashboard", "layout");
+    return { success: true, data: updated };
+  } catch (error: any) {
+    console.error("Error updating round check status:", error);
     return { success: false, error: error.message };
   }
 }

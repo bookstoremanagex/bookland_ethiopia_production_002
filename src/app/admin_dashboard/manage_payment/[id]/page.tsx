@@ -2,6 +2,8 @@ import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import ManagePaymentDetailClient from "./ManagePaymentDetailClient";
 
+export const dynamic = "force-dynamic";
+
 export default async function ManagePaymentDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
     const shopId = parseInt(id);
@@ -176,6 +178,7 @@ export default async function ManagePaymentDetailPage({ params }: { params: Prom
             }))}
             roundRecords={roundRecords.map((r: any) => ({
                 id: r.id,
+                shopId: r.bookshop_id ?? 0,
                 totalprice: r.totalprice ?? 0,
                 status: r.status,
                 createdAt: r.createdAt,

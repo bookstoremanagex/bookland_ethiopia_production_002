@@ -61,11 +61,10 @@ import { useCalendar } from "@/lib/calendar-context";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { approvePayment, checkIsAdminUser, rejectPayment, deletePayment, setPaymentPending, updatePaymentMemo } from "@/app/actions/payment-actions";
-import { approveRoundPayment as approveRoundPaymentAction, deleteRoundPayment, createRoundPayment, createRoundCheck } from "@/app/delivery_dashboard_full/round-books/actions";
+import { approveRoundPayment as approveRoundPaymentAction, deleteRoundPayment, createRoundPayment, createRoundCheck, updateRoundCheckStatus } from "@/app/delivery_dashboard_full/round-books/actions";
 import { setOrderHideRemaining } from "@/app/actions/order-actions";
 import { updateCheckStatus, updateCheckDetails } from "@/app/actions/check-actions";
 import { updateShopPreviousDebt } from "@/app/actions/book-shop-actions";
-import { DateInput } from "@/components/ui/date-input";
 import {
   Select,
   SelectContent,
@@ -170,6 +169,7 @@ interface RoundBooksTotals {
 
 interface RoundRecord {
     id: number;
+    shopId: number;
     totalprice: number;
     status: string;
     createdAt: string;
@@ -248,6 +248,7 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
     const [approvingId, setApprovingId] = useState<number | null>(null);
     const [selectedCheck, setSelectedCheck] = useState<CheckInfo | null>(null);
+    const [isRoundCheckSelected, setIsRoundCheckSelected] = useState(false);
     const [isCheckDrawerOpen, setIsCheckDrawerOpen] = useState(false);
     const [clearingCheckId, setClearingCheckId] = useState<number | null>(null);
     const [editingCheck, setEditingCheck] = useState(false);
@@ -338,12 +339,19 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
     };
 
     const handleApproveRoundPayment = async (paymentId: number) => {
+        // Check if this is a check payment and if the check is cleared
+        const roundPayment = roundPayments.find(p => p.id === paymentId);
+        if (roundPayment?.payment_type === "CHECK" && roundPayment.check?.status !== "CLEARED") {
+            toast.error("Cannot approve this payment. The linked check must be delivered and cleared first.");
+            return;
+        }
+
         setApprovingRoundPaymentId(paymentId);
         try {
             const res = await approveRoundPaymentAction(paymentId);
             if (res.success) {
                 toast.success("Payment approved");
-                router.refresh();
+                window.location.reload();
             } else {
                 toast.error(res.error || "Failed to approve");
             }
@@ -384,6 +392,46 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
                 router.refresh();
             } else {
                 toast.error(res.error);
+            }
+        } catch {
+            toast.error("Failed to clear check");
+        } finally {
+            setClearingCheckId(null);
+        }
+    };
+
+    const handleDeliverRoundCheck = async (checkId: number) => {
+        setClearingCheckId(checkId);
+        try {
+            const res = await updateRoundCheckStatus(checkId, "DELIVERED");
+            if (res.success) {
+                toast.success("Check marked as delivered");
+                setIsCheckDrawerOpen(false);
+                setSelectedCheck(null);
+                setIsRoundCheckSelected(false);
+                router.refresh();
+            } else {
+                toast.error(res.error || "Failed to mark check as delivered");
+            }
+        } catch {
+            toast.error("Failed to mark check as delivered");
+        } finally {
+            setClearingCheckId(null);
+        }
+    };
+
+    const handleClearRoundCheck = async (checkId: number) => {
+        setClearingCheckId(checkId);
+        try {
+            const res = await updateRoundCheckStatus(checkId, "CLEARED");
+            if (res.success) {
+                toast.success("Check cleared and payments approved");
+                setIsCheckDrawerOpen(false);
+                setSelectedCheck(null);
+                setIsRoundCheckSelected(false);
+                router.refresh();
+            } else {
+                toast.error(res.error || "Failed to clear check");
             }
         } catch {
             toast.error("Failed to clear check");
@@ -867,6 +915,7 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
                                                         <button
                                                             onClick={() => {
                                                                 setSelectedCheck(payment.check!);
+                                                                setIsRoundCheckSelected(payment.source === "round");
                                                                 setIsCheckDrawerOpen(true);
                                                             }}
                                                             className="p-1 rounded-lg hover:bg-slate-100 text-muted-foreground hover:text-primarycolor transition-all cursor-pointer"
@@ -973,12 +1022,15 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
                                             <Button
                                                 variant="outline"
                                                 size="sm"
-                                                onClick={() => handleApprove(payment.id)}
-                                                disabled={approvingId === payment.id}
+                                                onClick={() => payment.source === "round"
+                                                    ? handleApproveRoundPayment(payment.id)
+                                                    : handleApprove(payment.id)
+                                                }
+                                                disabled={approvingId === payment.id || approvingRoundPaymentId === payment.id}
                                                 className="h-9 px-4 rounded-xl border-emerald-200 text-emerald-600 hover:bg-emerald-50 font-black text-[10px] uppercase tracking-widest gap-1.5"
                                             >
                                                 <CheckCircle2 className="size-3.5" />
-                                                {approvingId === payment.id ? "..." : "Approve"}
+                                                {(approvingId === payment.id || approvingRoundPaymentId === payment.id) ? "..." : "Approve"}
                                             </Button>
                                         )}
                                         {(payment.status === "PENDING" || payment.status === "REJECTED") && isAdmin && (
@@ -1554,6 +1606,31 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
                                                                                             <span className="flex items-center gap-1"><Clock className="size-2.5" /> Pending</span>
                                                                                         )}
                                                                                     </span>
+                                                                                    {/* Check status buttons */}
+                                                                                    {p.payment_type === "CHECK" && p.check && isAdmin && p.status === "PENDING" && (
+                                                                                        <div className="flex items-center gap-1">
+                                                                                            {p.check.status === "PENDING" && (
+                                                                                                <button
+                                                                                                    onClick={() => handleDeliverRoundCheck(p.check!.id)}
+                                                                                                    disabled={clearingCheckId === p.check!.id}
+                                                                                                    className="h-7 px-2 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-600 font-black text-[7px] uppercase tracking-widest flex items-center gap-1 transition-all"
+                                                                                                >
+                                                                                                    <Truck className="size-3" />
+                                                                                                    {clearingCheckId === p.check!.id ? "..." : "Deliver"}
+                                                                                                </button>
+                                                                                            )}
+                                                                                            {p.check.status === "DELIVERED" && (
+                                                                                                <button
+                                                                                                    onClick={() => handleClearRoundCheck(p.check!.id)}
+                                                                                                    disabled={clearingCheckId === p.check!.id}
+                                                                                                    className="h-7 px-2 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-600 font-black text-[7px] uppercase tracking-widest flex items-center gap-1 transition-all"
+                                                                                                >
+                                                                                                    <CheckCircle2 className="size-3" />
+                                                                                                    {clearingCheckId === p.check!.id ? "..." : "Clear"}
+                                                                                                </button>
+                                                                                            )}
+                                                                                        </div>
+                                                                                    )}
                                                                                 </div>
                                                                             </div>
                                                                         ))}
@@ -1810,7 +1887,7 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
             />
 
             {/* Check Detail Drawer */}
-            <Drawer open={isCheckDrawerOpen} onOpenChange={(o) => { if (!o) { setIsCheckDrawerOpen(false); setSelectedCheck(null); setEditingCheck(false); } }}>
+            <Drawer open={isCheckDrawerOpen} onOpenChange={(o) => { if (!o) { setIsCheckDrawerOpen(false); setSelectedCheck(null); setIsRoundCheckSelected(false); setEditingCheck(false); } }}>
                 <DrawerContent className="rounded-t-[2rem] border-t-4 border-primarycolor/5">
                     <DrawerHeader className="text-left px-6 pt-6 pb-2">
                         <div className="flex items-center justify-between">
@@ -2030,7 +2107,7 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
                         </DrawerClose>
                         {!editingCheck && selectedCheck && selectedCheck.status === "PENDING" && isAdmin && (
                             <Button
-                                onClick={() => handleDeliverCheck(selectedCheck.id)}
+                                onClick={() => isRoundCheckSelected ? handleDeliverRoundCheck(selectedCheck.id) : handleDeliverCheck(selectedCheck.id)}
                                 disabled={clearingCheckId === selectedCheck.id}
                                 className="flex-[2] h-12 rounded-2xl bg-amber-600 hover:bg-amber-700 text-white font-black uppercase tracking-widest text-[10px] shadow-xl shadow-amber-600/20 gap-2"
                             >
@@ -2044,7 +2121,7 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
                         )}
                         {!editingCheck && selectedCheck && selectedCheck.status === "DELIVERED" && isAdmin && (
                             <Button
-                                onClick={() => handleClearCheck(selectedCheck.id)}
+                                onClick={() => isRoundCheckSelected ? handleClearRoundCheck(selectedCheck.id) : handleClearCheck(selectedCheck.id)}
                                 disabled={clearingCheckId === selectedCheck.id}
                                 className="flex-[2] h-12 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black uppercase tracking-widest text-[10px] shadow-xl shadow-emerald-600/20 gap-2"
                             >
@@ -2229,7 +2306,7 @@ function RoundPaymentForm({ roundRecord, onSuccess, onCancel }: {
 
             const res = await createRoundPayment({
                 roundRecordId: roundRecord.id,
-                shopId: 0, // Will be set by the action based on roundRecord
+                shopId: roundRecord.shopId,
                 amount: parsedAmount,
                 paymentType: paymentType as "DIRECT" | "CHECK",
                 checkId,
@@ -2311,7 +2388,7 @@ function RoundPaymentForm({ roundRecord, onSuccess, onCancel }: {
                         </div>
                         <div className="space-y-2 col-span-2 sm:col-span-1">
                             <p className="text-[7px] font-black text-muted-foreground uppercase tracking-widest">Date</p>
-                            <DateInput value={checkDate} onChange={(e) => setCheckDate(e.target.value)} className="h-11 px-4 rounded-2xl border-2 border-purple-200 bg-white font-bold text-sm" showECLabel={false} />
+                            <Input type="date" value={checkDate} onChange={(e) => setCheckDate(e.target.value)} className="h-11 px-4 rounded-2xl border-2 border-purple-200 bg-white font-bold text-sm" />
                         </div>
                     </div>
                     <div className="space-y-2">

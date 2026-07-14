@@ -146,6 +146,7 @@ export async function updateCheckStatus(checkId: number, status: string) {
         }
 
         if (status === "CLEARED") {
+            // Approve linked regular payments
             const linkedPayments = await (prisma as any).payments.findMany({
                 where: { checkId, status: "PENDING", is_deleted: false },
                 include: { shop: true }
@@ -176,10 +177,24 @@ export async function updateCheckStatus(checkId: number, status: string) {
                 }
             }
 
+            // Approve linked round payments
+            const linkedRoundPayments = await (prisma as any).round_payments.findMany({
+                where: { checkId, status: "PENDING", is_deleted: false },
+            });
+
+            for (const roundPayment of linkedRoundPayments) {
+                await (prisma as any).round_payments.update({
+                    where: { id: roundPayment.id },
+                    data: { status: "APPROVED", updatedAt: new Date() }
+                });
+            }
+
+            const totalApprovedPayments = linkedPayments.length + linkedRoundPayments.length;
+
             await createNotification({
                 title: `Check #${checkId} Cleared`,
-                message: `Check from ${check.bankname} (${check.username}) for ${check.amount} ETB has been cleared. ${linkedPayments.length} payment(s) approved and deducted from shop debt.`,
-                details: JSON.stringify({ checkId, bankname: check.bankname, username: check.username, amount: check.amount, approvedPayments: linkedPayments.length }),
+                message: `Check from ${check.bankname} (${check.username}) for ${check.amount} ETB has been cleared. ${linkedPayments.length} order payment(s) and ${linkedRoundPayments.length} round payment(s) approved.`,
+                details: JSON.stringify({ checkId, bankname: check.bankname, username: check.username, amount: check.amount, approvedPayments: totalApprovedPayments }),
                 type: "CHECK",
                 notification_to: "ADMIN",
                 notification_from: session?.name || "System",
@@ -188,8 +203,8 @@ export async function updateCheckStatus(checkId: number, status: string) {
             await (prisma as any).activityLogs.create({
                 data: {
                     accountId: session.id,
-                    action: `Cleared check #${checkId} from ${check.bankname} - ${check.username} — approved ${linkedPayments.length} payment(s)`,
-                    details: JSON.stringify({ checkId, bankname: check.bankname, username: check.username, amount: check.amount, approvedPayments: linkedPayments.length }),
+                    action: `Cleared check #${checkId} from ${check.bankname} - ${check.username} — approved ${totalApprovedPayments} payment(s)`,
+                    details: JSON.stringify({ checkId, bankname: check.bankname, username: check.username, amount: check.amount, approvedPayments: totalApprovedPayments }),
                     updatedAt: new Date(),
                 }
             });
