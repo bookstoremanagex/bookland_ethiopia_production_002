@@ -114,14 +114,14 @@ import {
 
 interface CheckInfo {
     id: number;
-    bankname: string;
-    username: string;
+    bankname: string | null;
+    username: string | null;
     status: string;
-    type?: string;
-    amount?: string;
-    recordeddate?: string | Date;
-    memo?: string;
-    imageUrl?: string;
+    type?: string | null;
+    amount?: string | null;
+    recordeddate?: string | Date | null;
+    memo?: string | null;
+    imageUrl?: string | null;
 }
 
 interface Payment {
