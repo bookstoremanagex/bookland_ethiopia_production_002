@@ -4408,6 +4408,7 @@ export namespace Prisma {
     order_items: number
     retail_purchase_items: number
     printorder_items: number
+    round_books: number
   }
 
   export type BookeditionCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4419,6 +4420,7 @@ export namespace Prisma {
     order_items?: boolean | BookeditionCountOutputTypeCountOrder_itemsArgs
     retail_purchase_items?: boolean | BookeditionCountOutputTypeCountRetail_purchase_itemsArgs
     printorder_items?: boolean | BookeditionCountOutputTypeCountPrintorder_itemsArgs
+    round_books?: boolean | BookeditionCountOutputTypeCountRound_booksArgs
   }
 
   // Custom InputTypes
@@ -4486,6 +4488,13 @@ export namespace Prisma {
    */
   export type BookeditionCountOutputTypeCountPrintorder_itemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: printorder_itemsWhereInput
+  }
+
+  /**
+   * BookeditionCountOutputType without action
+   */
+  export type BookeditionCountOutputTypeCountRound_booksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: roundbooksWhereInput
   }
 
 
@@ -6721,6 +6730,7 @@ export namespace Prisma {
     order_items?: boolean | bookedition$order_itemsArgs<ExtArgs>
     retail_purchase_items?: boolean | bookedition$retail_purchase_itemsArgs<ExtArgs>
     printorder_items?: boolean | bookedition$printorder_itemsArgs<ExtArgs>
+    round_books?: boolean | bookedition$round_booksArgs<ExtArgs>
     _count?: boolean | BookeditionCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["bookedition"]>
 
@@ -6771,6 +6781,7 @@ export namespace Prisma {
     order_items?: boolean | bookedition$order_itemsArgs<ExtArgs>
     retail_purchase_items?: boolean | bookedition$retail_purchase_itemsArgs<ExtArgs>
     printorder_items?: boolean | bookedition$printorder_itemsArgs<ExtArgs>
+    round_books?: boolean | bookedition$round_booksArgs<ExtArgs>
     _count?: boolean | BookeditionCountOutputTypeDefaultArgs<ExtArgs>
   }
 
@@ -6786,6 +6797,7 @@ export namespace Prisma {
       order_items: Prisma.$order_itemsPayload<ExtArgs>[]
       retail_purchase_items: Prisma.$retail_purchase_itemsPayload<ExtArgs>[]
       printorder_items: Prisma.$printorder_itemsPayload<ExtArgs>[]
+      round_books: Prisma.$roundbooksPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -7168,6 +7180,7 @@ export namespace Prisma {
     order_items<T extends bookedition$order_itemsArgs<ExtArgs> = {}>(args?: Subset<T, bookedition$order_itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$order_itemsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     retail_purchase_items<T extends bookedition$retail_purchase_itemsArgs<ExtArgs> = {}>(args?: Subset<T, bookedition$retail_purchase_itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$retail_purchase_itemsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     printorder_items<T extends bookedition$printorder_itemsArgs<ExtArgs> = {}>(args?: Subset<T, bookedition$printorder_itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$printorder_itemsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    round_books<T extends bookedition$round_booksArgs<ExtArgs> = {}>(args?: Subset<T, bookedition$round_booksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$roundbooksPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7760,6 +7773,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: Printorder_itemsScalarFieldEnum | Printorder_itemsScalarFieldEnum[]
+  }
+
+  /**
+   * bookedition.round_books
+   */
+  export type bookedition$round_booksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the roundbooks
+     */
+    select?: roundbooksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the roundbooks
+     */
+    omit?: roundbooksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: roundbooksInclude<ExtArgs> | null
+    where?: roundbooksWhereInput
+    orderBy?: roundbooksOrderByWithRelationInput | roundbooksOrderByWithRelationInput[]
+    cursor?: roundbooksWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: RoundbooksScalarFieldEnum | RoundbooksScalarFieldEnum[]
   }
 
   /**
@@ -35494,6 +35531,7 @@ export namespace Prisma {
   export type RoundbooksAvgAggregateOutputType = {
     id: number | null
     bookId: number | null
+    editionId: number | null
     starting_amount: number | null
     returned_amount: number | null
   }
@@ -35501,6 +35539,7 @@ export namespace Prisma {
   export type RoundbooksSumAggregateOutputType = {
     id: number | null
     bookId: number | null
+    editionId: number | null
     starting_amount: number | null
     returned_amount: number | null
   }
@@ -35509,6 +35548,7 @@ export namespace Prisma {
     id: number | null
     status: boolean | null
     bookId: number | null
+    editionId: number | null
     starting_amount: number | null
     returned_amount: number | null
     allocated: boolean | null
@@ -35521,6 +35561,7 @@ export namespace Prisma {
     id: number | null
     status: boolean | null
     bookId: number | null
+    editionId: number | null
     starting_amount: number | null
     returned_amount: number | null
     allocated: boolean | null
@@ -35533,6 +35574,7 @@ export namespace Prisma {
     id: number
     status: number
     bookId: number
+    editionId: number
     starting_amount: number
     returned_amount: number
     allocated: number
@@ -35546,6 +35588,7 @@ export namespace Prisma {
   export type RoundbooksAvgAggregateInputType = {
     id?: true
     bookId?: true
+    editionId?: true
     starting_amount?: true
     returned_amount?: true
   }
@@ -35553,6 +35596,7 @@ export namespace Prisma {
   export type RoundbooksSumAggregateInputType = {
     id?: true
     bookId?: true
+    editionId?: true
     starting_amount?: true
     returned_amount?: true
   }
@@ -35561,6 +35605,7 @@ export namespace Prisma {
     id?: true
     status?: true
     bookId?: true
+    editionId?: true
     starting_amount?: true
     returned_amount?: true
     allocated?: true
@@ -35573,6 +35618,7 @@ export namespace Prisma {
     id?: true
     status?: true
     bookId?: true
+    editionId?: true
     starting_amount?: true
     returned_amount?: true
     allocated?: true
@@ -35585,6 +35631,7 @@ export namespace Prisma {
     id?: true
     status?: true
     bookId?: true
+    editionId?: true
     starting_amount?: true
     returned_amount?: true
     allocated?: true
@@ -35684,6 +35731,7 @@ export namespace Prisma {
     id: number
     status: boolean
     bookId: number
+    editionId: number | null
     starting_amount: number | null
     returned_amount: number | null
     allocated: boolean
@@ -35715,12 +35763,14 @@ export namespace Prisma {
     id?: boolean
     status?: boolean
     bookId?: boolean
+    editionId?: boolean
     starting_amount?: boolean
     returned_amount?: boolean
     allocated?: boolean
     is_deleted?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    editions?: boolean | roundbooks$editionsArgs<ExtArgs>
     book?: boolean | booksDefaultArgs<ExtArgs>
     round_records?: boolean | roundbooks$round_recordsArgs<ExtArgs>
     _count?: boolean | RoundbooksCountOutputTypeDefaultArgs<ExtArgs>
@@ -35732,6 +35782,7 @@ export namespace Prisma {
     id?: boolean
     status?: boolean
     bookId?: boolean
+    editionId?: boolean
     starting_amount?: boolean
     returned_amount?: boolean
     allocated?: boolean
@@ -35740,8 +35791,9 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type roundbooksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "status" | "bookId" | "starting_amount" | "returned_amount" | "allocated" | "is_deleted" | "createdAt" | "updatedAt", ExtArgs["result"]["roundbooks"]>
+  export type roundbooksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "status" | "bookId" | "editionId" | "starting_amount" | "returned_amount" | "allocated" | "is_deleted" | "createdAt" | "updatedAt", ExtArgs["result"]["roundbooks"]>
   export type roundbooksInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    editions?: boolean | roundbooks$editionsArgs<ExtArgs>
     book?: boolean | booksDefaultArgs<ExtArgs>
     round_records?: boolean | roundbooks$round_recordsArgs<ExtArgs>
     _count?: boolean | RoundbooksCountOutputTypeDefaultArgs<ExtArgs>
@@ -35750,6 +35802,7 @@ export namespace Prisma {
   export type $roundbooksPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "roundbooks"
     objects: {
+      editions: Prisma.$bookeditionPayload<ExtArgs> | null
       book: Prisma.$booksPayload<ExtArgs>
       round_records: Prisma.$roundrecordsPayload<ExtArgs>[]
     }
@@ -35757,6 +35810,7 @@ export namespace Prisma {
       id: number
       status: boolean
       bookId: number
+      editionId: number | null
       starting_amount: number | null
       returned_amount: number | null
       allocated: boolean
@@ -36103,6 +36157,7 @@ export namespace Prisma {
    */
   export interface Prisma__roundbooksClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    editions<T extends roundbooks$editionsArgs<ExtArgs> = {}>(args?: Subset<T, roundbooks$editionsArgs<ExtArgs>>): Prisma__bookeditionClient<$Result.GetResult<Prisma.$bookeditionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     book<T extends booksDefaultArgs<ExtArgs> = {}>(args?: Subset<T, booksDefaultArgs<ExtArgs>>): Prisma__booksClient<$Result.GetResult<Prisma.$booksPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     round_records<T extends roundbooks$round_recordsArgs<ExtArgs> = {}>(args?: Subset<T, roundbooks$round_recordsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$roundrecordsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
@@ -36137,6 +36192,7 @@ export namespace Prisma {
     readonly id: FieldRef<"roundbooks", 'Int'>
     readonly status: FieldRef<"roundbooks", 'Boolean'>
     readonly bookId: FieldRef<"roundbooks", 'Int'>
+    readonly editionId: FieldRef<"roundbooks", 'Int'>
     readonly starting_amount: FieldRef<"roundbooks", 'Int'>
     readonly returned_amount: FieldRef<"roundbooks", 'Int'>
     readonly allocated: FieldRef<"roundbooks", 'Boolean'>
@@ -36483,6 +36539,25 @@ export namespace Prisma {
      * Limit how many roundbooks to delete.
      */
     limit?: number
+  }
+
+  /**
+   * roundbooks.editions
+   */
+  export type roundbooks$editionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the bookedition
+     */
+    select?: bookeditionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the bookedition
+     */
+    omit?: bookeditionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: bookeditionInclude<ExtArgs> | null
+    where?: bookeditionWhereInput
   }
 
   /**
@@ -49466,6 +49541,7 @@ export namespace Prisma {
     id: 'id',
     status: 'status',
     bookId: 'bookId',
+    editionId: 'editionId',
     starting_amount: 'starting_amount',
     returned_amount: 'returned_amount',
     allocated: 'allocated',
@@ -50283,6 +50359,7 @@ export namespace Prisma {
     order_items?: Order_itemsListRelationFilter
     retail_purchase_items?: Retail_purchase_itemsListRelationFilter
     printorder_items?: Printorder_itemsListRelationFilter
+    round_books?: RoundbooksListRelationFilter
   }
 
   export type bookeditionOrderByWithRelationInput = {
@@ -50326,6 +50403,7 @@ export namespace Prisma {
     order_items?: order_itemsOrderByRelationAggregateInput
     retail_purchase_items?: retail_purchase_itemsOrderByRelationAggregateInput
     printorder_items?: printorder_itemsOrderByRelationAggregateInput
+    round_books?: roundbooksOrderByRelationAggregateInput
     _relevance?: bookeditionOrderByRelevanceInput
   }
 
@@ -50373,6 +50451,7 @@ export namespace Prisma {
     order_items?: Order_itemsListRelationFilter
     retail_purchase_items?: Retail_purchase_itemsListRelationFilter
     printorder_items?: Printorder_itemsListRelationFilter
+    round_books?: RoundbooksListRelationFilter
   }, "id">
 
   export type bookeditionOrderByWithAggregationInput = {
@@ -52818,12 +52897,14 @@ export namespace Prisma {
     id?: IntFilter<"roundbooks"> | number
     status?: BoolFilter<"roundbooks"> | boolean
     bookId?: IntFilter<"roundbooks"> | number
+    editionId?: IntNullableFilter<"roundbooks"> | number | null
     starting_amount?: IntNullableFilter<"roundbooks"> | number | null
     returned_amount?: IntNullableFilter<"roundbooks"> | number | null
     allocated?: BoolFilter<"roundbooks"> | boolean
     is_deleted?: BoolFilter<"roundbooks"> | boolean
     createdAt?: DateTimeFilter<"roundbooks"> | Date | string
     updatedAt?: DateTimeFilter<"roundbooks"> | Date | string
+    editions?: XOR<BookeditionNullableScalarRelationFilter, bookeditionWhereInput> | null
     book?: XOR<BooksScalarRelationFilter, booksWhereInput>
     round_records?: RoundrecordsListRelationFilter
   }
@@ -52832,12 +52913,14 @@ export namespace Prisma {
     id?: SortOrder
     status?: SortOrder
     bookId?: SortOrder
+    editionId?: SortOrderInput | SortOrder
     starting_amount?: SortOrderInput | SortOrder
     returned_amount?: SortOrderInput | SortOrder
     allocated?: SortOrder
     is_deleted?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    editions?: bookeditionOrderByWithRelationInput
     book?: booksOrderByWithRelationInput
     round_records?: roundrecordsOrderByRelationAggregateInput
   }
@@ -52849,12 +52932,14 @@ export namespace Prisma {
     NOT?: roundbooksWhereInput | roundbooksWhereInput[]
     status?: BoolFilter<"roundbooks"> | boolean
     bookId?: IntFilter<"roundbooks"> | number
+    editionId?: IntNullableFilter<"roundbooks"> | number | null
     starting_amount?: IntNullableFilter<"roundbooks"> | number | null
     returned_amount?: IntNullableFilter<"roundbooks"> | number | null
     allocated?: BoolFilter<"roundbooks"> | boolean
     is_deleted?: BoolFilter<"roundbooks"> | boolean
     createdAt?: DateTimeFilter<"roundbooks"> | Date | string
     updatedAt?: DateTimeFilter<"roundbooks"> | Date | string
+    editions?: XOR<BookeditionNullableScalarRelationFilter, bookeditionWhereInput> | null
     book?: XOR<BooksScalarRelationFilter, booksWhereInput>
     round_records?: RoundrecordsListRelationFilter
   }, "id">
@@ -52863,6 +52948,7 @@ export namespace Prisma {
     id?: SortOrder
     status?: SortOrder
     bookId?: SortOrder
+    editionId?: SortOrderInput | SortOrder
     starting_amount?: SortOrderInput | SortOrder
     returned_amount?: SortOrderInput | SortOrder
     allocated?: SortOrder
@@ -52883,6 +52969,7 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"roundbooks"> | number
     status?: BoolWithAggregatesFilter<"roundbooks"> | boolean
     bookId?: IntWithAggregatesFilter<"roundbooks"> | number
+    editionId?: IntNullableWithAggregatesFilter<"roundbooks"> | number | null
     starting_amount?: IntNullableWithAggregatesFilter<"roundbooks"> | number | null
     returned_amount?: IntNullableWithAggregatesFilter<"roundbooks"> | number | null
     allocated?: BoolWithAggregatesFilter<"roundbooks"> | boolean
@@ -54109,6 +54196,7 @@ export namespace Prisma {
     order_items?: order_itemsCreateNestedManyWithoutBookeditionInput
     retail_purchase_items?: retail_purchase_itemsCreateNestedManyWithoutEditionInput
     printorder_items?: printorder_itemsCreateNestedManyWithoutBookeditionInput
+    round_books?: roundbooksCreateNestedManyWithoutEditionsInput
   }
 
   export type bookeditionUncheckedCreateInput = {
@@ -54151,6 +54239,7 @@ export namespace Prisma {
     order_items?: order_itemsUncheckedCreateNestedManyWithoutBookeditionInput
     retail_purchase_items?: retail_purchase_itemsUncheckedCreateNestedManyWithoutEditionInput
     printorder_items?: printorder_itemsUncheckedCreateNestedManyWithoutBookeditionInput
+    round_books?: roundbooksUncheckedCreateNestedManyWithoutEditionsInput
   }
 
   export type bookeditionUpdateInput = {
@@ -54192,6 +54281,7 @@ export namespace Prisma {
     order_items?: order_itemsUpdateManyWithoutBookeditionNestedInput
     retail_purchase_items?: retail_purchase_itemsUpdateManyWithoutEditionNestedInput
     printorder_items?: printorder_itemsUpdateManyWithoutBookeditionNestedInput
+    round_books?: roundbooksUpdateManyWithoutEditionsNestedInput
   }
 
   export type bookeditionUncheckedUpdateInput = {
@@ -54234,6 +54324,7 @@ export namespace Prisma {
     order_items?: order_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
     retail_purchase_items?: retail_purchase_itemsUncheckedUpdateManyWithoutEditionNestedInput
     printorder_items?: printorder_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
+    round_books?: roundbooksUncheckedUpdateManyWithoutEditionsNestedInput
   }
 
   export type bookeditionCreateManyInput = {
@@ -56872,6 +56963,7 @@ export namespace Prisma {
     is_deleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    editions?: bookeditionCreateNestedOneWithoutRound_booksInput
     book: booksCreateNestedOneWithoutRound_bookInput
     round_records?: roundrecordsCreateNestedManyWithoutRoundBooksInput
   }
@@ -56880,6 +56972,7 @@ export namespace Prisma {
     id?: number
     status?: boolean
     bookId: number
+    editionId?: number | null
     starting_amount?: number | null
     returned_amount?: number | null
     allocated?: boolean
@@ -56897,6 +56990,7 @@ export namespace Prisma {
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    editions?: bookeditionUpdateOneWithoutRound_booksNestedInput
     book?: booksUpdateOneRequiredWithoutRound_bookNestedInput
     round_records?: roundrecordsUpdateManyWithoutRoundBooksNestedInput
   }
@@ -56905,6 +56999,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     status?: BoolFieldUpdateOperationsInput | boolean
     bookId?: IntFieldUpdateOperationsInput | number
+    editionId?: NullableIntFieldUpdateOperationsInput | number | null
     starting_amount?: NullableIntFieldUpdateOperationsInput | number | null
     returned_amount?: NullableIntFieldUpdateOperationsInput | number | null
     allocated?: BoolFieldUpdateOperationsInput | boolean
@@ -56918,6 +57013,7 @@ export namespace Prisma {
     id?: number
     status?: boolean
     bookId: number
+    editionId?: number | null
     starting_amount?: number | null
     returned_amount?: number | null
     allocated?: boolean
@@ -56940,6 +57036,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     status?: BoolFieldUpdateOperationsInput | boolean
     bookId?: IntFieldUpdateOperationsInput | number
+    editionId?: NullableIntFieldUpdateOperationsInput | number | null
     starting_amount?: NullableIntFieldUpdateOperationsInput | number | null
     returned_amount?: NullableIntFieldUpdateOperationsInput | number | null
     allocated?: BoolFieldUpdateOperationsInput | boolean
@@ -58415,6 +58512,12 @@ export namespace Prisma {
     none?: printorder_itemsWhereInput
   }
 
+  export type RoundbooksListRelationFilter = {
+    every?: roundbooksWhereInput
+    some?: roundbooksWhereInput
+    none?: roundbooksWhereInput
+  }
+
   export type locked_editionsOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -58440,6 +58543,10 @@ export namespace Prisma {
   }
 
   export type printorder_itemsOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type roundbooksOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -58753,12 +58860,6 @@ export namespace Prisma {
     not?: NestedEnumbooks_productionstatusNullableFilter<$PrismaModel> | $Enums.books_productionstatus | null
   }
 
-  export type RoundbooksListRelationFilter = {
-    every?: roundbooksWhereInput
-    some?: roundbooksWhereInput
-    none?: roundbooksWhereInput
-  }
-
   export type BookeditionListRelationFilter = {
     every?: bookeditionWhereInput
     some?: bookeditionWhereInput
@@ -58769,10 +58870,6 @@ export namespace Prisma {
     every?: translatorbookWhereInput
     some?: translatorbookWhereInput
     none?: translatorbookWhereInput
-  }
-
-  export type roundbooksOrderByRelationAggregateInput = {
-    _count?: SortOrder
   }
 
   export type bookeditionOrderByRelationAggregateInput = {
@@ -60592,6 +60689,7 @@ export namespace Prisma {
     id?: SortOrder
     status?: SortOrder
     bookId?: SortOrder
+    editionId?: SortOrder
     starting_amount?: SortOrder
     returned_amount?: SortOrder
     allocated?: SortOrder
@@ -60603,6 +60701,7 @@ export namespace Prisma {
   export type roundbooksAvgOrderByAggregateInput = {
     id?: SortOrder
     bookId?: SortOrder
+    editionId?: SortOrder
     starting_amount?: SortOrder
     returned_amount?: SortOrder
   }
@@ -60611,6 +60710,7 @@ export namespace Prisma {
     id?: SortOrder
     status?: SortOrder
     bookId?: SortOrder
+    editionId?: SortOrder
     starting_amount?: SortOrder
     returned_amount?: SortOrder
     allocated?: SortOrder
@@ -60623,6 +60723,7 @@ export namespace Prisma {
     id?: SortOrder
     status?: SortOrder
     bookId?: SortOrder
+    editionId?: SortOrder
     starting_amount?: SortOrder
     returned_amount?: SortOrder
     allocated?: SortOrder
@@ -60634,6 +60735,7 @@ export namespace Prisma {
   export type roundbooksSumOrderByAggregateInput = {
     id?: SortOrder
     bookId?: SortOrder
+    editionId?: SortOrder
     starting_amount?: SortOrder
     returned_amount?: SortOrder
   }
@@ -61690,6 +61792,13 @@ export namespace Prisma {
     connect?: printorder_itemsWhereUniqueInput | printorder_itemsWhereUniqueInput[]
   }
 
+  export type roundbooksCreateNestedManyWithoutEditionsInput = {
+    create?: XOR<roundbooksCreateWithoutEditionsInput, roundbooksUncheckedCreateWithoutEditionsInput> | roundbooksCreateWithoutEditionsInput[] | roundbooksUncheckedCreateWithoutEditionsInput[]
+    connectOrCreate?: roundbooksCreateOrConnectWithoutEditionsInput | roundbooksCreateOrConnectWithoutEditionsInput[]
+    createMany?: roundbooksCreateManyEditionsInputEnvelope
+    connect?: roundbooksWhereUniqueInput | roundbooksWhereUniqueInput[]
+  }
+
   export type locked_editionsUncheckedCreateNestedManyWithoutBookeditionInput = {
     create?: XOR<locked_editionsCreateWithoutBookeditionInput, locked_editionsUncheckedCreateWithoutBookeditionInput> | locked_editionsCreateWithoutBookeditionInput[] | locked_editionsUncheckedCreateWithoutBookeditionInput[]
     connectOrCreate?: locked_editionsCreateOrConnectWithoutBookeditionInput | locked_editionsCreateOrConnectWithoutBookeditionInput[]
@@ -61744,6 +61853,13 @@ export namespace Prisma {
     connectOrCreate?: printorder_itemsCreateOrConnectWithoutBookeditionInput | printorder_itemsCreateOrConnectWithoutBookeditionInput[]
     createMany?: printorder_itemsCreateManyBookeditionInputEnvelope
     connect?: printorder_itemsWhereUniqueInput | printorder_itemsWhereUniqueInput[]
+  }
+
+  export type roundbooksUncheckedCreateNestedManyWithoutEditionsInput = {
+    create?: XOR<roundbooksCreateWithoutEditionsInput, roundbooksUncheckedCreateWithoutEditionsInput> | roundbooksCreateWithoutEditionsInput[] | roundbooksUncheckedCreateWithoutEditionsInput[]
+    connectOrCreate?: roundbooksCreateOrConnectWithoutEditionsInput | roundbooksCreateOrConnectWithoutEditionsInput[]
+    createMany?: roundbooksCreateManyEditionsInputEnvelope
+    connect?: roundbooksWhereUniqueInput | roundbooksWhereUniqueInput[]
   }
 
   export type NullableFloatFieldUpdateOperationsInput = {
@@ -61882,6 +61998,20 @@ export namespace Prisma {
     deleteMany?: printorder_itemsScalarWhereInput | printorder_itemsScalarWhereInput[]
   }
 
+  export type roundbooksUpdateManyWithoutEditionsNestedInput = {
+    create?: XOR<roundbooksCreateWithoutEditionsInput, roundbooksUncheckedCreateWithoutEditionsInput> | roundbooksCreateWithoutEditionsInput[] | roundbooksUncheckedCreateWithoutEditionsInput[]
+    connectOrCreate?: roundbooksCreateOrConnectWithoutEditionsInput | roundbooksCreateOrConnectWithoutEditionsInput[]
+    upsert?: roundbooksUpsertWithWhereUniqueWithoutEditionsInput | roundbooksUpsertWithWhereUniqueWithoutEditionsInput[]
+    createMany?: roundbooksCreateManyEditionsInputEnvelope
+    set?: roundbooksWhereUniqueInput | roundbooksWhereUniqueInput[]
+    disconnect?: roundbooksWhereUniqueInput | roundbooksWhereUniqueInput[]
+    delete?: roundbooksWhereUniqueInput | roundbooksWhereUniqueInput[]
+    connect?: roundbooksWhereUniqueInput | roundbooksWhereUniqueInput[]
+    update?: roundbooksUpdateWithWhereUniqueWithoutEditionsInput | roundbooksUpdateWithWhereUniqueWithoutEditionsInput[]
+    updateMany?: roundbooksUpdateManyWithWhereWithoutEditionsInput | roundbooksUpdateManyWithWhereWithoutEditionsInput[]
+    deleteMany?: roundbooksScalarWhereInput | roundbooksScalarWhereInput[]
+  }
+
   export type locked_editionsUncheckedUpdateManyWithoutBookeditionNestedInput = {
     create?: XOR<locked_editionsCreateWithoutBookeditionInput, locked_editionsUncheckedCreateWithoutBookeditionInput> | locked_editionsCreateWithoutBookeditionInput[] | locked_editionsUncheckedCreateWithoutBookeditionInput[]
     connectOrCreate?: locked_editionsCreateOrConnectWithoutBookeditionInput | locked_editionsCreateOrConnectWithoutBookeditionInput[]
@@ -61992,6 +62122,20 @@ export namespace Prisma {
     update?: printorder_itemsUpdateWithWhereUniqueWithoutBookeditionInput | printorder_itemsUpdateWithWhereUniqueWithoutBookeditionInput[]
     updateMany?: printorder_itemsUpdateManyWithWhereWithoutBookeditionInput | printorder_itemsUpdateManyWithWhereWithoutBookeditionInput[]
     deleteMany?: printorder_itemsScalarWhereInput | printorder_itemsScalarWhereInput[]
+  }
+
+  export type roundbooksUncheckedUpdateManyWithoutEditionsNestedInput = {
+    create?: XOR<roundbooksCreateWithoutEditionsInput, roundbooksUncheckedCreateWithoutEditionsInput> | roundbooksCreateWithoutEditionsInput[] | roundbooksUncheckedCreateWithoutEditionsInput[]
+    connectOrCreate?: roundbooksCreateOrConnectWithoutEditionsInput | roundbooksCreateOrConnectWithoutEditionsInput[]
+    upsert?: roundbooksUpsertWithWhereUniqueWithoutEditionsInput | roundbooksUpsertWithWhereUniqueWithoutEditionsInput[]
+    createMany?: roundbooksCreateManyEditionsInputEnvelope
+    set?: roundbooksWhereUniqueInput | roundbooksWhereUniqueInput[]
+    disconnect?: roundbooksWhereUniqueInput | roundbooksWhereUniqueInput[]
+    delete?: roundbooksWhereUniqueInput | roundbooksWhereUniqueInput[]
+    connect?: roundbooksWhereUniqueInput | roundbooksWhereUniqueInput[]
+    update?: roundbooksUpdateWithWhereUniqueWithoutEditionsInput | roundbooksUpdateWithWhereUniqueWithoutEditionsInput[]
+    updateMany?: roundbooksUpdateManyWithWhereWithoutEditionsInput | roundbooksUpdateManyWithWhereWithoutEditionsInput[]
+    deleteMany?: roundbooksScalarWhereInput | roundbooksScalarWhereInput[]
   }
 
   export type bookeditionCreateNestedOneWithoutBookeditionstoresInput = {
@@ -63396,6 +63540,12 @@ export namespace Prisma {
     update?: XOR<XOR<accountsUpdateToOneWithWhereWithoutNotesInput, accountsUpdateWithoutNotesInput>, accountsUncheckedUpdateWithoutNotesInput>
   }
 
+  export type bookeditionCreateNestedOneWithoutRound_booksInput = {
+    create?: XOR<bookeditionCreateWithoutRound_booksInput, bookeditionUncheckedCreateWithoutRound_booksInput>
+    connectOrCreate?: bookeditionCreateOrConnectWithoutRound_booksInput
+    connect?: bookeditionWhereUniqueInput
+  }
+
   export type booksCreateNestedOneWithoutRound_bookInput = {
     create?: XOR<booksCreateWithoutRound_bookInput, booksUncheckedCreateWithoutRound_bookInput>
     connectOrCreate?: booksCreateOrConnectWithoutRound_bookInput
@@ -63414,6 +63564,16 @@ export namespace Prisma {
     connectOrCreate?: roundrecordsCreateOrConnectWithoutRoundBooksInput | roundrecordsCreateOrConnectWithoutRoundBooksInput[]
     createMany?: roundrecordsCreateManyRoundBooksInputEnvelope
     connect?: roundrecordsWhereUniqueInput | roundrecordsWhereUniqueInput[]
+  }
+
+  export type bookeditionUpdateOneWithoutRound_booksNestedInput = {
+    create?: XOR<bookeditionCreateWithoutRound_booksInput, bookeditionUncheckedCreateWithoutRound_booksInput>
+    connectOrCreate?: bookeditionCreateOrConnectWithoutRound_booksInput
+    upsert?: bookeditionUpsertWithoutRound_booksInput
+    disconnect?: bookeditionWhereInput | boolean
+    delete?: bookeditionWhereInput | boolean
+    connect?: bookeditionWhereUniqueInput
+    update?: XOR<XOR<bookeditionUpdateToOneWithWhereWithoutRound_booksInput, bookeditionUpdateWithoutRound_booksInput>, bookeditionUncheckedUpdateWithoutRound_booksInput>
   }
 
   export type booksUpdateOneRequiredWithoutRound_bookNestedInput = {
@@ -64810,6 +64970,41 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type roundbooksCreateWithoutEditionsInput = {
+    status?: boolean
+    starting_amount?: number | null
+    returned_amount?: number | null
+    allocated?: boolean
+    is_deleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    book: booksCreateNestedOneWithoutRound_bookInput
+    round_records?: roundrecordsCreateNestedManyWithoutRoundBooksInput
+  }
+
+  export type roundbooksUncheckedCreateWithoutEditionsInput = {
+    id?: number
+    status?: boolean
+    bookId: number
+    starting_amount?: number | null
+    returned_amount?: number | null
+    allocated?: boolean
+    is_deleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    round_records?: roundrecordsUncheckedCreateNestedManyWithoutRoundBooksInput
+  }
+
+  export type roundbooksCreateOrConnectWithoutEditionsInput = {
+    where: roundbooksWhereUniqueInput
+    create: XOR<roundbooksCreateWithoutEditionsInput, roundbooksUncheckedCreateWithoutEditionsInput>
+  }
+
+  export type roundbooksCreateManyEditionsInputEnvelope = {
+    data: roundbooksCreateManyEditionsInput | roundbooksCreateManyEditionsInput[]
+    skipDuplicates?: boolean
+  }
+
   export type locked_editionsUpsertWithWhereUniqueWithoutBookeditionInput = {
     where: locked_editionsWhereUniqueInput
     update: XOR<locked_editionsUpdateWithoutBookeditionInput, locked_editionsUncheckedUpdateWithoutBookeditionInput>
@@ -65134,6 +65329,38 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"printorder_items"> | Date | string
   }
 
+  export type roundbooksUpsertWithWhereUniqueWithoutEditionsInput = {
+    where: roundbooksWhereUniqueInput
+    update: XOR<roundbooksUpdateWithoutEditionsInput, roundbooksUncheckedUpdateWithoutEditionsInput>
+    create: XOR<roundbooksCreateWithoutEditionsInput, roundbooksUncheckedCreateWithoutEditionsInput>
+  }
+
+  export type roundbooksUpdateWithWhereUniqueWithoutEditionsInput = {
+    where: roundbooksWhereUniqueInput
+    data: XOR<roundbooksUpdateWithoutEditionsInput, roundbooksUncheckedUpdateWithoutEditionsInput>
+  }
+
+  export type roundbooksUpdateManyWithWhereWithoutEditionsInput = {
+    where: roundbooksScalarWhereInput
+    data: XOR<roundbooksUpdateManyMutationInput, roundbooksUncheckedUpdateManyWithoutEditionsInput>
+  }
+
+  export type roundbooksScalarWhereInput = {
+    AND?: roundbooksScalarWhereInput | roundbooksScalarWhereInput[]
+    OR?: roundbooksScalarWhereInput[]
+    NOT?: roundbooksScalarWhereInput | roundbooksScalarWhereInput[]
+    id?: IntFilter<"roundbooks"> | number
+    status?: BoolFilter<"roundbooks"> | boolean
+    bookId?: IntFilter<"roundbooks"> | number
+    editionId?: IntNullableFilter<"roundbooks"> | number | null
+    starting_amount?: IntNullableFilter<"roundbooks"> | number | null
+    returned_amount?: IntNullableFilter<"roundbooks"> | number | null
+    allocated?: BoolFilter<"roundbooks"> | boolean
+    is_deleted?: BoolFilter<"roundbooks"> | boolean
+    createdAt?: DateTimeFilter<"roundbooks"> | Date | string
+    updatedAt?: DateTimeFilter<"roundbooks"> | Date | string
+  }
+
   export type bookeditionCreateWithoutBookeditionstoresInput = {
     edition_name: string
     selling_price?: number | null
@@ -65172,6 +65399,7 @@ export namespace Prisma {
     order_items?: order_itemsCreateNestedManyWithoutBookeditionInput
     retail_purchase_items?: retail_purchase_itemsCreateNestedManyWithoutEditionInput
     printorder_items?: printorder_itemsCreateNestedManyWithoutBookeditionInput
+    round_books?: roundbooksCreateNestedManyWithoutEditionsInput
   }
 
   export type bookeditionUncheckedCreateWithoutBookeditionstoresInput = {
@@ -65213,6 +65441,7 @@ export namespace Prisma {
     order_items?: order_itemsUncheckedCreateNestedManyWithoutBookeditionInput
     retail_purchase_items?: retail_purchase_itemsUncheckedCreateNestedManyWithoutEditionInput
     printorder_items?: printorder_itemsUncheckedCreateNestedManyWithoutBookeditionInput
+    round_books?: roundbooksUncheckedCreateNestedManyWithoutEditionsInput
   }
 
   export type bookeditionCreateOrConnectWithoutBookeditionstoresInput = {
@@ -65301,6 +65530,7 @@ export namespace Prisma {
     order_items?: order_itemsUpdateManyWithoutBookeditionNestedInput
     retail_purchase_items?: retail_purchase_itemsUpdateManyWithoutEditionNestedInput
     printorder_items?: printorder_itemsUpdateManyWithoutBookeditionNestedInput
+    round_books?: roundbooksUpdateManyWithoutEditionsNestedInput
   }
 
   export type bookeditionUncheckedUpdateWithoutBookeditionstoresInput = {
@@ -65342,6 +65572,7 @@ export namespace Prisma {
     order_items?: order_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
     retail_purchase_items?: retail_purchase_itemsUncheckedUpdateManyWithoutEditionNestedInput
     printorder_items?: printorder_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
+    round_books?: roundbooksUncheckedUpdateManyWithoutEditionsNestedInput
   }
 
   export type storesUpsertWithoutBookeditionstoresInput = {
@@ -65420,6 +65651,7 @@ export namespace Prisma {
     order_items?: order_itemsCreateNestedManyWithoutBookeditionInput
     retail_purchase_items?: retail_purchase_itemsCreateNestedManyWithoutEditionInput
     printorder_items?: printorder_itemsCreateNestedManyWithoutBookeditionInput
+    round_books?: roundbooksCreateNestedManyWithoutEditionsInput
   }
 
   export type bookeditionUncheckedCreateWithoutBookeditionprintersInput = {
@@ -65461,6 +65693,7 @@ export namespace Prisma {
     order_items?: order_itemsUncheckedCreateNestedManyWithoutBookeditionInput
     retail_purchase_items?: retail_purchase_itemsUncheckedCreateNestedManyWithoutEditionInput
     printorder_items?: printorder_itemsUncheckedCreateNestedManyWithoutBookeditionInput
+    round_books?: roundbooksUncheckedCreateNestedManyWithoutEditionsInput
   }
 
   export type bookeditionCreateOrConnectWithoutBookeditionprintersInput = {
@@ -65551,6 +65784,7 @@ export namespace Prisma {
     order_items?: order_itemsUpdateManyWithoutBookeditionNestedInput
     retail_purchase_items?: retail_purchase_itemsUpdateManyWithoutEditionNestedInput
     printorder_items?: printorder_itemsUpdateManyWithoutBookeditionNestedInput
+    round_books?: roundbooksUpdateManyWithoutEditionsNestedInput
   }
 
   export type bookeditionUncheckedUpdateWithoutBookeditionprintersInput = {
@@ -65592,6 +65826,7 @@ export namespace Prisma {
     order_items?: order_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
     retail_purchase_items?: retail_purchase_itemsUncheckedUpdateManyWithoutEditionNestedInput
     printorder_items?: printorder_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
+    round_books?: roundbooksUncheckedUpdateManyWithoutEditionsNestedInput
   }
 
   export type printerUpsertWithoutBookeditionprintersInput = {
@@ -65642,12 +65877,14 @@ export namespace Prisma {
     is_deleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    editions?: bookeditionCreateNestedOneWithoutRound_booksInput
     round_records?: roundrecordsCreateNestedManyWithoutRoundBooksInput
   }
 
   export type roundbooksUncheckedCreateWithoutBookInput = {
     id?: number
     status?: boolean
+    editionId?: number | null
     starting_amount?: number | null
     returned_amount?: number | null
     allocated?: boolean
@@ -65705,6 +65942,7 @@ export namespace Prisma {
     order_items?: order_itemsCreateNestedManyWithoutBookeditionInput
     retail_purchase_items?: retail_purchase_itemsCreateNestedManyWithoutEditionInput
     printorder_items?: printorder_itemsCreateNestedManyWithoutBookeditionInput
+    round_books?: roundbooksCreateNestedManyWithoutEditionsInput
   }
 
   export type bookeditionUncheckedCreateWithoutBooksInput = {
@@ -65746,6 +65984,7 @@ export namespace Prisma {
     order_items?: order_itemsUncheckedCreateNestedManyWithoutBookeditionInput
     retail_purchase_items?: retail_purchase_itemsUncheckedCreateNestedManyWithoutEditionInput
     printorder_items?: printorder_itemsUncheckedCreateNestedManyWithoutBookeditionInput
+    round_books?: roundbooksUncheckedCreateNestedManyWithoutEditionsInput
   }
 
   export type bookeditionCreateOrConnectWithoutBooksInput = {
@@ -65852,21 +66091,6 @@ export namespace Prisma {
   export type roundbooksUpdateManyWithWhereWithoutBookInput = {
     where: roundbooksScalarWhereInput
     data: XOR<roundbooksUpdateManyMutationInput, roundbooksUncheckedUpdateManyWithoutBookInput>
-  }
-
-  export type roundbooksScalarWhereInput = {
-    AND?: roundbooksScalarWhereInput | roundbooksScalarWhereInput[]
-    OR?: roundbooksScalarWhereInput[]
-    NOT?: roundbooksScalarWhereInput | roundbooksScalarWhereInput[]
-    id?: IntFilter<"roundbooks"> | number
-    status?: BoolFilter<"roundbooks"> | boolean
-    bookId?: IntFilter<"roundbooks"> | number
-    starting_amount?: IntNullableFilter<"roundbooks"> | number | null
-    returned_amount?: IntNullableFilter<"roundbooks"> | number | null
-    allocated?: BoolFilter<"roundbooks"> | boolean
-    is_deleted?: BoolFilter<"roundbooks"> | boolean
-    createdAt?: DateTimeFilter<"roundbooks"> | Date | string
-    updatedAt?: DateTimeFilter<"roundbooks"> | Date | string
   }
 
   export type bookeditionUpsertWithWhereUniqueWithoutBooksInput = {
@@ -66012,6 +66236,7 @@ export namespace Prisma {
     order_items?: order_itemsCreateNestedManyWithoutBookeditionInput
     retail_purchase_items?: retail_purchase_itemsCreateNestedManyWithoutEditionInput
     printorder_items?: printorder_itemsCreateNestedManyWithoutBookeditionInput
+    round_books?: roundbooksCreateNestedManyWithoutEditionsInput
   }
 
   export type bookeditionUncheckedCreateWithoutLocked_editionsInput = {
@@ -66053,6 +66278,7 @@ export namespace Prisma {
     order_items?: order_itemsUncheckedCreateNestedManyWithoutBookeditionInput
     retail_purchase_items?: retail_purchase_itemsUncheckedCreateNestedManyWithoutEditionInput
     printorder_items?: printorder_itemsUncheckedCreateNestedManyWithoutBookeditionInput
+    round_books?: roundbooksUncheckedCreateNestedManyWithoutEditionsInput
   }
 
   export type bookeditionCreateOrConnectWithoutLocked_editionsInput = {
@@ -66155,6 +66381,7 @@ export namespace Prisma {
     order_items?: order_itemsUpdateManyWithoutBookeditionNestedInput
     retail_purchase_items?: retail_purchase_itemsUpdateManyWithoutEditionNestedInput
     printorder_items?: printorder_itemsUpdateManyWithoutBookeditionNestedInput
+    round_books?: roundbooksUpdateManyWithoutEditionsNestedInput
   }
 
   export type bookeditionUncheckedUpdateWithoutLocked_editionsInput = {
@@ -66196,6 +66423,7 @@ export namespace Prisma {
     order_items?: order_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
     retail_purchase_items?: retail_purchase_itemsUncheckedUpdateManyWithoutEditionNestedInput
     printorder_items?: printorder_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
+    round_books?: roundbooksUncheckedUpdateManyWithoutEditionsNestedInput
   }
 
   export type ordersUpsertWithoutLocked_editionsInput = {
@@ -66288,6 +66516,7 @@ export namespace Prisma {
     order_items?: order_itemsCreateNestedManyWithoutBookeditionInput
     retail_purchase_items?: retail_purchase_itemsCreateNestedManyWithoutEditionInput
     printorder_items?: printorder_itemsCreateNestedManyWithoutBookeditionInput
+    round_books?: roundbooksCreateNestedManyWithoutEditionsInput
   }
 
   export type bookeditionUncheckedCreateWithoutBookshopeditionsInput = {
@@ -66329,6 +66558,7 @@ export namespace Prisma {
     order_items?: order_itemsUncheckedCreateNestedManyWithoutBookeditionInput
     retail_purchase_items?: retail_purchase_itemsUncheckedCreateNestedManyWithoutEditionInput
     printorder_items?: printorder_itemsUncheckedCreateNestedManyWithoutBookeditionInput
+    round_books?: roundbooksUncheckedCreateNestedManyWithoutEditionsInput
   }
 
   export type bookeditionCreateOrConnectWithoutBookshopeditionsInput = {
@@ -66423,6 +66653,7 @@ export namespace Prisma {
     order_items?: order_itemsUpdateManyWithoutBookeditionNestedInput
     retail_purchase_items?: retail_purchase_itemsUpdateManyWithoutEditionNestedInput
     printorder_items?: printorder_itemsUpdateManyWithoutBookeditionNestedInput
+    round_books?: roundbooksUpdateManyWithoutEditionsNestedInput
   }
 
   export type bookeditionUncheckedUpdateWithoutBookshopeditionsInput = {
@@ -66464,6 +66695,7 @@ export namespace Prisma {
     order_items?: order_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
     retail_purchase_items?: retail_purchase_itemsUncheckedUpdateManyWithoutEditionNestedInput
     printorder_items?: printorder_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
+    round_books?: roundbooksUncheckedUpdateManyWithoutEditionsNestedInput
   }
 
   export type bookshopesUpsertWithoutBookshopeditionsInput = {
@@ -67128,6 +67360,7 @@ export namespace Prisma {
     damagedbooks?: damagedbooksCreateNestedManyWithoutBookeditionInput
     retail_purchase_items?: retail_purchase_itemsCreateNestedManyWithoutEditionInput
     printorder_items?: printorder_itemsCreateNestedManyWithoutBookeditionInput
+    round_books?: roundbooksCreateNestedManyWithoutEditionsInput
   }
 
   export type bookeditionUncheckedCreateWithoutOrder_itemsInput = {
@@ -67169,6 +67402,7 @@ export namespace Prisma {
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutBookeditionInput
     retail_purchase_items?: retail_purchase_itemsUncheckedCreateNestedManyWithoutEditionInput
     printorder_items?: printorder_itemsUncheckedCreateNestedManyWithoutBookeditionInput
+    round_books?: roundbooksUncheckedCreateNestedManyWithoutEditionsInput
   }
 
   export type bookeditionCreateOrConnectWithoutOrder_itemsInput = {
@@ -67277,6 +67511,7 @@ export namespace Prisma {
     damagedbooks?: damagedbooksUpdateManyWithoutBookeditionNestedInput
     retail_purchase_items?: retail_purchase_itemsUpdateManyWithoutEditionNestedInput
     printorder_items?: printorder_itemsUpdateManyWithoutBookeditionNestedInput
+    round_books?: roundbooksUpdateManyWithoutEditionsNestedInput
   }
 
   export type bookeditionUncheckedUpdateWithoutOrder_itemsInput = {
@@ -67318,6 +67553,7 @@ export namespace Prisma {
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutBookeditionNestedInput
     retail_purchase_items?: retail_purchase_itemsUncheckedUpdateManyWithoutEditionNestedInput
     printorder_items?: printorder_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
+    round_books?: roundbooksUncheckedUpdateManyWithoutEditionsNestedInput
   }
 
   export type accountsCreateWithoutDamagedbooksInput = {
@@ -67484,6 +67720,7 @@ export namespace Prisma {
     order_items?: order_itemsCreateNestedManyWithoutBookeditionInput
     retail_purchase_items?: retail_purchase_itemsCreateNestedManyWithoutEditionInput
     printorder_items?: printorder_itemsCreateNestedManyWithoutBookeditionInput
+    round_books?: roundbooksCreateNestedManyWithoutEditionsInput
   }
 
   export type bookeditionUncheckedCreateWithoutDamagedbooksInput = {
@@ -67525,6 +67762,7 @@ export namespace Prisma {
     order_items?: order_itemsUncheckedCreateNestedManyWithoutBookeditionInput
     retail_purchase_items?: retail_purchase_itemsUncheckedCreateNestedManyWithoutEditionInput
     printorder_items?: printorder_itemsUncheckedCreateNestedManyWithoutBookeditionInput
+    round_books?: roundbooksUncheckedCreateNestedManyWithoutEditionsInput
   }
 
   export type bookeditionCreateOrConnectWithoutDamagedbooksInput = {
@@ -67785,6 +68023,7 @@ export namespace Prisma {
     order_items?: order_itemsUpdateManyWithoutBookeditionNestedInput
     retail_purchase_items?: retail_purchase_itemsUpdateManyWithoutEditionNestedInput
     printorder_items?: printorder_itemsUpdateManyWithoutBookeditionNestedInput
+    round_books?: roundbooksUpdateManyWithoutEditionsNestedInput
   }
 
   export type bookeditionUncheckedUpdateWithoutDamagedbooksInput = {
@@ -67826,6 +68065,7 @@ export namespace Prisma {
     order_items?: order_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
     retail_purchase_items?: retail_purchase_itemsUncheckedUpdateManyWithoutEditionNestedInput
     printorder_items?: printorder_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
+    round_books?: roundbooksUncheckedUpdateManyWithoutEditionsNestedInput
   }
 
   export type storesUpsertWithoutDamagedbooksInput = {
@@ -68805,6 +69045,7 @@ export namespace Prisma {
     damagedbooks?: damagedbooksCreateNestedManyWithoutBookeditionInput
     order_items?: order_itemsCreateNestedManyWithoutBookeditionInput
     retail_purchase_items?: retail_purchase_itemsCreateNestedManyWithoutEditionInput
+    round_books?: roundbooksCreateNestedManyWithoutEditionsInput
   }
 
   export type bookeditionUncheckedCreateWithoutPrintorder_itemsInput = {
@@ -68846,6 +69087,7 @@ export namespace Prisma {
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutBookeditionInput
     order_items?: order_itemsUncheckedCreateNestedManyWithoutBookeditionInput
     retail_purchase_items?: retail_purchase_itemsUncheckedCreateNestedManyWithoutEditionInput
+    round_books?: roundbooksUncheckedCreateNestedManyWithoutEditionsInput
   }
 
   export type bookeditionCreateOrConnectWithoutPrintorder_itemsInput = {
@@ -68985,6 +69227,7 @@ export namespace Prisma {
     damagedbooks?: damagedbooksUpdateManyWithoutBookeditionNestedInput
     order_items?: order_itemsUpdateManyWithoutBookeditionNestedInput
     retail_purchase_items?: retail_purchase_itemsUpdateManyWithoutEditionNestedInput
+    round_books?: roundbooksUpdateManyWithoutEditionsNestedInput
   }
 
   export type bookeditionUncheckedUpdateWithoutPrintorder_itemsInput = {
@@ -69026,6 +69269,7 @@ export namespace Prisma {
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutBookeditionNestedInput
     order_items?: order_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
     retail_purchase_items?: retail_purchase_itemsUncheckedUpdateManyWithoutEditionNestedInput
+    round_books?: roundbooksUncheckedUpdateManyWithoutEditionsNestedInput
   }
 
   export type rolesCreateWithoutRoletypesInput = {
@@ -69774,6 +70018,94 @@ export namespace Prisma {
     roles?: rolesUncheckedUpdateManyWithoutAccountsNestedInput
   }
 
+  export type bookeditionCreateWithoutRound_booksInput = {
+    edition_name: string
+    selling_price?: number | null
+    production_price?: number | null
+    printing_cost?: number | null
+    binding_cost?: number | null
+    design_cost?: number | null
+    translation_cost?: number | null
+    memo?: string | null
+    book_image_url?: string | null
+    total_print_count?: number | null
+    book_id?: number | null
+    number_of_pages?: number | null
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    editing_cost?: number | null
+    other_expenses?: number | null
+    transportation_cost?: number | null
+    count_remening_for_transfer?: number | null
+    translator_cost?: number | null
+    cover_design_cost?: number | null
+    text_design_cost?: number | null
+    editor_cost?: number | null
+    typewriting_cost?: number | null
+    store_cost?: number | null
+    distribution_cost?: number | null
+    advertisement_cost?: number | null
+    purchasing_right_cost?: number | null
+    locked_editions?: locked_editionsCreateNestedManyWithoutBookeditionInput
+    books: booksCreateNestedOneWithoutBookeditionInput
+    bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
+    bookeditionprinters?: bookeditionprintersCreateNestedManyWithoutBookeditionInput
+    bookshopeditions?: bookshopeditionsCreateNestedManyWithoutBookeditionInput
+    damagedbooks?: damagedbooksCreateNestedManyWithoutBookeditionInput
+    order_items?: order_itemsCreateNestedManyWithoutBookeditionInput
+    retail_purchase_items?: retail_purchase_itemsCreateNestedManyWithoutEditionInput
+    printorder_items?: printorder_itemsCreateNestedManyWithoutBookeditionInput
+  }
+
+  export type bookeditionUncheckedCreateWithoutRound_booksInput = {
+    id?: number
+    edition_name: string
+    selling_price?: number | null
+    production_price?: number | null
+    printing_cost?: number | null
+    binding_cost?: number | null
+    design_cost?: number | null
+    translation_cost?: number | null
+    memo?: string | null
+    book_image_url?: string | null
+    total_print_count?: number | null
+    book_id?: number | null
+    number_of_pages?: number | null
+    bookId: number
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    editing_cost?: number | null
+    other_expenses?: number | null
+    transportation_cost?: number | null
+    count_remening_for_transfer?: number | null
+    translator_cost?: number | null
+    cover_design_cost?: number | null
+    text_design_cost?: number | null
+    editor_cost?: number | null
+    typewriting_cost?: number | null
+    store_cost?: number | null
+    distribution_cost?: number | null
+    advertisement_cost?: number | null
+    purchasing_right_cost?: number | null
+    locked_editions?: locked_editionsUncheckedCreateNestedManyWithoutBookeditionInput
+    bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
+    bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutBookeditionInput
+    bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookeditionInput
+    damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutBookeditionInput
+    order_items?: order_itemsUncheckedCreateNestedManyWithoutBookeditionInput
+    retail_purchase_items?: retail_purchase_itemsUncheckedCreateNestedManyWithoutEditionInput
+    printorder_items?: printorder_itemsUncheckedCreateNestedManyWithoutBookeditionInput
+  }
+
+  export type bookeditionCreateOrConnectWithoutRound_booksInput = {
+    where: bookeditionWhereUniqueInput
+    create: XOR<bookeditionCreateWithoutRound_booksInput, bookeditionUncheckedCreateWithoutRound_booksInput>
+  }
+
   export type booksCreateWithoutRound_bookInput = {
     book_sort_index?: number | null
     unique_identification_code: string
@@ -69891,6 +70223,100 @@ export namespace Prisma {
   export type roundrecordsCreateManyRoundBooksInputEnvelope = {
     data: roundrecordsCreateManyRoundBooksInput | roundrecordsCreateManyRoundBooksInput[]
     skipDuplicates?: boolean
+  }
+
+  export type bookeditionUpsertWithoutRound_booksInput = {
+    update: XOR<bookeditionUpdateWithoutRound_booksInput, bookeditionUncheckedUpdateWithoutRound_booksInput>
+    create: XOR<bookeditionCreateWithoutRound_booksInput, bookeditionUncheckedCreateWithoutRound_booksInput>
+    where?: bookeditionWhereInput
+  }
+
+  export type bookeditionUpdateToOneWithWhereWithoutRound_booksInput = {
+    where?: bookeditionWhereInput
+    data: XOR<bookeditionUpdateWithoutRound_booksInput, bookeditionUncheckedUpdateWithoutRound_booksInput>
+  }
+
+  export type bookeditionUpdateWithoutRound_booksInput = {
+    edition_name?: StringFieldUpdateOperationsInput | string
+    selling_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    production_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    printing_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    binding_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    total_print_count?: NullableIntFieldUpdateOperationsInput | number | null
+    book_id?: NullableIntFieldUpdateOperationsInput | number | null
+    number_of_pages?: NullableIntFieldUpdateOperationsInput | number | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    editing_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
+    transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
+    translator_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    text_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    editor_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    typewriting_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    store_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    locked_editions?: locked_editionsUpdateManyWithoutBookeditionNestedInput
+    books?: booksUpdateOneRequiredWithoutBookeditionNestedInput
+    bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
+    bookeditionprinters?: bookeditionprintersUpdateManyWithoutBookeditionNestedInput
+    bookshopeditions?: bookshopeditionsUpdateManyWithoutBookeditionNestedInput
+    damagedbooks?: damagedbooksUpdateManyWithoutBookeditionNestedInput
+    order_items?: order_itemsUpdateManyWithoutBookeditionNestedInput
+    retail_purchase_items?: retail_purchase_itemsUpdateManyWithoutEditionNestedInput
+    printorder_items?: printorder_itemsUpdateManyWithoutBookeditionNestedInput
+  }
+
+  export type bookeditionUncheckedUpdateWithoutRound_booksInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    edition_name?: StringFieldUpdateOperationsInput | string
+    selling_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    production_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    printing_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    binding_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    total_print_count?: NullableIntFieldUpdateOperationsInput | number | null
+    book_id?: NullableIntFieldUpdateOperationsInput | number | null
+    number_of_pages?: NullableIntFieldUpdateOperationsInput | number | null
+    bookId?: IntFieldUpdateOperationsInput | number
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    editing_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    other_expenses?: NullableFloatFieldUpdateOperationsInput | number | null
+    transportation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    count_remening_for_transfer?: NullableIntFieldUpdateOperationsInput | number | null
+    translator_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    text_design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    editor_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    typewriting_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    store_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    locked_editions?: locked_editionsUncheckedUpdateManyWithoutBookeditionNestedInput
+    bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
+    bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutBookeditionNestedInput
+    bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookeditionNestedInput
+    damagedbooks?: damagedbooksUncheckedUpdateManyWithoutBookeditionNestedInput
+    order_items?: order_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
+    retail_purchase_items?: retail_purchase_itemsUncheckedUpdateManyWithoutEditionNestedInput
+    printorder_items?: printorder_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
   }
 
   export type booksUpsertWithoutRound_bookInput = {
@@ -70011,6 +70437,7 @@ export namespace Prisma {
     is_deleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    editions?: bookeditionCreateNestedOneWithoutRound_booksInput
     book: booksCreateNestedOneWithoutRound_bookInput
   }
 
@@ -70018,6 +70445,7 @@ export namespace Prisma {
     id?: number
     status?: boolean
     bookId: number
+    editionId?: number | null
     starting_amount?: number | null
     returned_amount?: number | null
     allocated?: boolean
@@ -70127,6 +70555,7 @@ export namespace Prisma {
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    editions?: bookeditionUpdateOneWithoutRound_booksNestedInput
     book?: booksUpdateOneRequiredWithoutRound_bookNestedInput
   }
 
@@ -70134,6 +70563,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     status?: BoolFieldUpdateOperationsInput | boolean
     bookId?: IntFieldUpdateOperationsInput | number
+    editionId?: NullableIntFieldUpdateOperationsInput | number | null
     starting_amount?: NullableIntFieldUpdateOperationsInput | number | null
     returned_amount?: NullableIntFieldUpdateOperationsInput | number | null
     allocated?: BoolFieldUpdateOperationsInput | boolean
@@ -70815,6 +71245,7 @@ export namespace Prisma {
     damagedbooks?: damagedbooksCreateNestedManyWithoutBookeditionInput
     order_items?: order_itemsCreateNestedManyWithoutBookeditionInput
     printorder_items?: printorder_itemsCreateNestedManyWithoutBookeditionInput
+    round_books?: roundbooksCreateNestedManyWithoutEditionsInput
   }
 
   export type bookeditionUncheckedCreateWithoutRetail_purchase_itemsInput = {
@@ -70856,6 +71287,7 @@ export namespace Prisma {
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutBookeditionInput
     order_items?: order_itemsUncheckedCreateNestedManyWithoutBookeditionInput
     printorder_items?: printorder_itemsUncheckedCreateNestedManyWithoutBookeditionInput
+    round_books?: roundbooksUncheckedCreateNestedManyWithoutEditionsInput
   }
 
   export type bookeditionCreateOrConnectWithoutRetail_purchase_itemsInput = {
@@ -70952,6 +71384,7 @@ export namespace Prisma {
     damagedbooks?: damagedbooksUpdateManyWithoutBookeditionNestedInput
     order_items?: order_itemsUpdateManyWithoutBookeditionNestedInput
     printorder_items?: printorder_itemsUpdateManyWithoutBookeditionNestedInput
+    round_books?: roundbooksUpdateManyWithoutEditionsNestedInput
   }
 
   export type bookeditionUncheckedUpdateWithoutRetail_purchase_itemsInput = {
@@ -70993,6 +71426,7 @@ export namespace Prisma {
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutBookeditionNestedInput
     order_items?: order_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
     printorder_items?: printorder_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
+    round_books?: roundbooksUncheckedUpdateManyWithoutEditionsNestedInput
   }
 
   export type activityLogsCreateManyAccountInput = {
@@ -71264,6 +71698,18 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type roundbooksCreateManyEditionsInput = {
+    id?: number
+    status?: boolean
+    bookId: number
+    starting_amount?: number | null
+    returned_amount?: number | null
+    allocated?: boolean
+    is_deleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type locked_editionsUpdateWithoutBookeditionInput = {
     amount_locked?: IntFieldUpdateOperationsInput | number
     status?: Enumlocked_editions_statusFieldUpdateOperationsInput | $Enums.locked_editions_status
@@ -71525,9 +71971,47 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type roundbooksUpdateWithoutEditionsInput = {
+    status?: BoolFieldUpdateOperationsInput | boolean
+    starting_amount?: NullableIntFieldUpdateOperationsInput | number | null
+    returned_amount?: NullableIntFieldUpdateOperationsInput | number | null
+    allocated?: BoolFieldUpdateOperationsInput | boolean
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    book?: booksUpdateOneRequiredWithoutRound_bookNestedInput
+    round_records?: roundrecordsUpdateManyWithoutRoundBooksNestedInput
+  }
+
+  export type roundbooksUncheckedUpdateWithoutEditionsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    status?: BoolFieldUpdateOperationsInput | boolean
+    bookId?: IntFieldUpdateOperationsInput | number
+    starting_amount?: NullableIntFieldUpdateOperationsInput | number | null
+    returned_amount?: NullableIntFieldUpdateOperationsInput | number | null
+    allocated?: BoolFieldUpdateOperationsInput | boolean
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    round_records?: roundrecordsUncheckedUpdateManyWithoutRoundBooksNestedInput
+  }
+
+  export type roundbooksUncheckedUpdateManyWithoutEditionsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    status?: BoolFieldUpdateOperationsInput | boolean
+    bookId?: IntFieldUpdateOperationsInput | number
+    starting_amount?: NullableIntFieldUpdateOperationsInput | number | null
+    returned_amount?: NullableIntFieldUpdateOperationsInput | number | null
+    allocated?: BoolFieldUpdateOperationsInput | boolean
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type roundbooksCreateManyBookInput = {
     id?: number
     status?: boolean
+    editionId?: number | null
     starting_amount?: number | null
     returned_amount?: number | null
     allocated?: boolean
@@ -71608,12 +72092,14 @@ export namespace Prisma {
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    editions?: bookeditionUpdateOneWithoutRound_booksNestedInput
     round_records?: roundrecordsUpdateManyWithoutRoundBooksNestedInput
   }
 
   export type roundbooksUncheckedUpdateWithoutBookInput = {
     id?: IntFieldUpdateOperationsInput | number
     status?: BoolFieldUpdateOperationsInput | boolean
+    editionId?: NullableIntFieldUpdateOperationsInput | number | null
     starting_amount?: NullableIntFieldUpdateOperationsInput | number | null
     returned_amount?: NullableIntFieldUpdateOperationsInput | number | null
     allocated?: BoolFieldUpdateOperationsInput | boolean
@@ -71626,6 +72112,7 @@ export namespace Prisma {
   export type roundbooksUncheckedUpdateManyWithoutBookInput = {
     id?: IntFieldUpdateOperationsInput | number
     status?: BoolFieldUpdateOperationsInput | boolean
+    editionId?: NullableIntFieldUpdateOperationsInput | number | null
     starting_amount?: NullableIntFieldUpdateOperationsInput | number | null
     returned_amount?: NullableIntFieldUpdateOperationsInput | number | null
     allocated?: BoolFieldUpdateOperationsInput | boolean
@@ -71672,6 +72159,7 @@ export namespace Prisma {
     order_items?: order_itemsUpdateManyWithoutBookeditionNestedInput
     retail_purchase_items?: retail_purchase_itemsUpdateManyWithoutEditionNestedInput
     printorder_items?: printorder_itemsUpdateManyWithoutBookeditionNestedInput
+    round_books?: roundbooksUpdateManyWithoutEditionsNestedInput
   }
 
   export type bookeditionUncheckedUpdateWithoutBooksInput = {
@@ -71713,6 +72201,7 @@ export namespace Prisma {
     order_items?: order_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
     retail_purchase_items?: retail_purchase_itemsUncheckedUpdateManyWithoutEditionNestedInput
     printorder_items?: printorder_itemsUncheckedUpdateManyWithoutBookeditionNestedInput
+    round_books?: roundbooksUncheckedUpdateManyWithoutEditionsNestedInput
   }
 
   export type bookeditionUncheckedUpdateManyWithoutBooksInput = {

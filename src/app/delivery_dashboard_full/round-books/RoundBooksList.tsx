@@ -16,6 +16,7 @@ import {
   CheckIcon,
   Eye,
   Trash2,
+  Layers,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
@@ -67,6 +68,7 @@ export default function RoundBooksList({ initialData }: { initialData: RoundBook
   const [availableBooks, setAvailableBooks] = useState<any[]>([]);
   const [bookSearch, setBookSearch] = useState("");
   const [selectedBook, setSelectedBook] = useState<any>(null);
+  const [selectedEdition, setSelectedEdition] = useState<any>(null);
   const [startingAmount, setStartingAmount] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -96,6 +98,7 @@ export default function RoundBooksList({ initialData }: { initialData: RoundBook
   useEffect(() => {
     if (showStartDialog) {
       setSelectedBook(null);
+      setSelectedEdition(null);
       setBookSearch("");
       setStartingAmount("");
       getBooksForRound().then((res) => {
@@ -121,10 +124,15 @@ export default function RoundBooksList({ initialData }: { initialData: RoundBook
       toast.error("Please select a book");
       return;
     }
+    if (!selectedEdition) {
+      toast.error("Please select an edition");
+      return;
+    }
     setIsSubmitting(true);
     try {
       const res = await createRoundBook({
         bookId: selectedBook.id,
+        editionId: selectedEdition.id,
         starting_amount: startingAmount ? parseInt(startingAmount, 10) : null,
       });
       if (res.success) {
@@ -468,7 +476,7 @@ export default function RoundBooksList({ initialData }: { initialData: RoundBook
                 <DialogTitle className="text-base font-black uppercase italic text-left leading-tight text-primarycolor">
                   Start New Round Book
                 </DialogTitle>
-                <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">Select book and set starting amount</p>
+                <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">Select book, edition & starting amount</p>
               </div>
             </div>
           </DialogHeader>
@@ -498,7 +506,7 @@ export default function RoundBooksList({ initialData }: { initialData: RoundBook
                       <button
                         key={book.id}
                         type="button"
-                        onClick={() => setSelectedBook(isSelected ? null : book)}
+                        onClick={() => { setSelectedBook(isSelected ? null : book); setSelectedEdition(null); }}
                         className={cn(
                           "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all",
                           isSelected
@@ -528,24 +536,69 @@ export default function RoundBooksList({ initialData }: { initialData: RoundBook
               </div>
             </div>
 
+            {/* Edition selection */}
+            {selectedBook && selectedBook.bookedition && selectedBook.bookedition.length > 0 && (
+              <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
+                <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Select Edition</p>
+                <div className="max-h-36 overflow-y-auto space-y-1 rounded-2xl border-2 border-primarycolor/5 p-1.5">
+                  {selectedBook.bookedition.map((edition: any) => {
+                    const isSelected = selectedEdition?.id === edition.id;
+                    return (
+                      <button
+                        key={edition.id}
+                        type="button"
+                        onClick={() => setSelectedEdition(isSelected ? null : edition)}
+                        className={cn(
+                          "w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl text-left transition-all",
+                          isSelected
+                            ? "bg-emerald-50 border-2 border-emerald-200"
+                            : "bg-transparent border-2 border-transparent hover:bg-emerald-50/50",
+                        )}
+                      >
+                        <div className="flex items-center gap-2">
+                          <div className={cn(
+                            "size-7 rounded-lg flex items-center justify-center shrink-0 transition-all",
+                            isSelected ? "bg-emerald-500 text-white" : "bg-emerald-50 text-emerald-600",
+                          )}>
+                            {isSelected ? <CheckIcon className="size-3.5" /> : <Layers className="size-3.5" />}
+                          </div>
+                          <span className={cn(
+                            "font-bold text-sm",
+                            isSelected ? "text-emerald-700" : "text-slate-700",
+                          )}>{edition.edition_name}</span>
+                        </div>
+                        {edition.selling_price != null && (
+                          <span className="text-[9px] font-bold text-muted-foreground">
+                            {edition.selling_price.toLocaleString()} ETB
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             {/* Starting amount */}
-            <div className="space-y-2">
-              <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Starting Amount</p>
-              <Input
-                type="number"
-                value={startingAmount}
-                onChange={(e) => setStartingAmount(e.target.value)}
-                placeholder="0"
-                min={0}
-                className="h-12 px-4 rounded-2xl border-2 border-primarycolor/5 bg-primarycolor/[0.02] font-bold text-sm focus:border-primarycolor [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-              />
-            </div>
+            {selectedEdition && (
+              <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
+                <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Starting Amount</p>
+                <Input
+                  type="number"
+                  value={startingAmount}
+                  onChange={(e) => setStartingAmount(e.target.value)}
+                  placeholder="0"
+                  min={0}
+                  className="h-12 px-4 rounded-2xl border-2 border-primarycolor/5 bg-primarycolor/[0.02] font-bold text-sm focus:border-primarycolor [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                />
+              </div>
+            )}
 
             {/* Submit */}
             <div className="flex items-center gap-3 pt-2">
               <button
                 onClick={handleStartRound}
-                disabled={isSubmitting || !selectedBook}
+                disabled={isSubmitting || !selectedBook || !selectedEdition}
                 className="flex-1 h-14 rounded-2xl bg-primarycolor hover:bg-secondarycolor text-white font-black text-sm shadow-lg shadow-primarycolor/20 flex items-center justify-center gap-2 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (

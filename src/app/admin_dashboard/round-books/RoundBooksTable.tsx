@@ -17,7 +17,6 @@ import { Search, ChevronLeft, ChevronRight, Eye, BookOpen, Store } from "lucide-
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import RoundDetailDialog from "./RoundDetailDialog";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -47,8 +46,6 @@ interface RoundBooksTableProps {
 }
 
 export function RoundBooksTable({ data }: RoundBooksTableProps) {
-  const [detailRoundId, setDetailRoundId] = React.useState<number | null>(null);
-
   const columns = React.useMemo<ColumnDef<RoundBook>[]>(() => [
     {
       accessorKey: "id",
@@ -128,14 +125,12 @@ export function RoundBooksTable({ data }: RoundBooksTableProps) {
       cell: ({ row }) => {
         const round = row.original;
         return (
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setDetailRoundId(round.id)}
-            className="size-10 hover:text-primarycolor hover:bg-primarycolor/10 rounded-full transition-all active:scale-90"
+          <Link
+            href={`/admin_dashboard/round-books/${round.id}`}
+            className="inline-flex items-center justify-center size-10 hover:text-primarycolor hover:bg-primarycolor/10 rounded-full transition-all active:scale-90"
           >
             <Eye className="size-5" />
-          </Button>
+          </Link>
         );
       },
     },
@@ -271,15 +266,13 @@ export function RoundBooksTable({ data }: RoundBooksTableProps) {
                   </div>
                 </div>
                 <div className="mt-5 pt-4 border-t-2 border-primarycolor/5">
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => setDetailRoundId(r.id)}
-                    className="text-primarycolor font-black hover:bg-primarycolor/10 rounded-2xl gap-2 w-full h-11"
+                  <Link
+                    href={`/admin_dashboard/round-books/${r.id}`}
+                    className="flex items-center justify-center gap-2 w-full h-11 rounded-2xl text-primarycolor font-black hover:bg-primarycolor/10 transition-all"
                   >
                     <Eye className="size-4" />
                     View Details
-                  </Button>
+                  </Link>
                 </div>
               </div>
             );
@@ -324,12 +317,6 @@ export function RoundBooksTable({ data }: RoundBooksTableProps) {
           </Button>
         </div>
       </div>
-
-      <RoundDetailDialog
-        open={detailRoundId !== null}
-        onClose={() => setDetailRoundId(null)}
-        roundId={detailRoundId}
-      />
     </div>
   );
 }

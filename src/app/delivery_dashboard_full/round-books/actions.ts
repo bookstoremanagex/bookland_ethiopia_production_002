@@ -62,6 +62,11 @@ export async function getBooksForRound() {
         author: true,
         unique_identification_code: true,
         book_sku: true,
+        bookedition: {
+          where: { is_deleted: false },
+          select: { id: true, edition_name: true, selling_price: true },
+          orderBy: { createdAt: "asc" as const },
+        },
       },
       orderBy: { title: "asc" as const },
     });
@@ -73,12 +78,14 @@ export async function getBooksForRound() {
 
 export async function createRoundBook(data: {
   bookId: number;
+  editionId?: number | null;
   starting_amount?: number | null;
 }) {
   try {
     const roundbook = await (prisma as any).roundbooks.create({
       data: {
         bookId: data.bookId,
+        editionId: data.editionId || null,
         starting_amount: data.starting_amount ?? 0,
         returned_amount: 0,
         status: true,
@@ -212,6 +219,56 @@ export async function createRoundRecord(data: {
   }
 }
 
+export async function createRoundPayment(data: {
+  roundRecordId: number;
+  shopId: number;
+  amount: number;
+  paymentType: "DIRECT" | "CHECK";
+  checkId?: number | null;
+  memo?: string | null;
+}) {
+  try {
+    const payment = await (prisma as any).round_payments.create({
+      data: {
+        roundrecordId: data.roundRecordId,
+        shopId: data.shopId,
+        amount: data.amount,
+        payment_type: data.paymentType,
+        checkId: data.checkId || null,
+        memo: data.memo || null,
+        status: "PENDING",
+      },
+    });
+    return { success: true, data: payment };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+}
+
+export async function approveRoundPayment(paymentId: number) {
+  try {
+    await (prisma as any).round_payments.update({
+      where: { id: paymentId },
+      data: { status: "APPROVED" },
+    });
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+}
+
+export async function deleteRoundPayment(paymentId: number) {
+  try {
+    await (prisma as any).round_payments.update({
+      where: { id: paymentId },
+      data: { is_deleted: true },
+    });
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+}
+
 export async function getRoundRecordDetail(recordId: number) {
   try {
     const record = await (prisma as any).roundrecords.findFirst({
@@ -281,6 +338,17 @@ export async function getRoundRecordDetail(recordId: number) {
 
 export async function getShopRoundPaymentInfo(shopId: number) {
   try {
+    // 1. Unpaid on-round orders
+    const onRoundOrders = await (prisma as any).orders.findMany({
+      where: { bookShopId: shopId, order_type: "on round", is_deleted: false },
+      select: { total_amount: true, amount_paid: true },
+    });
+    const orderRemaining = onRoundOrders.reduce(
+      (sum: number, o: any) => sum + ((o.total_amount || 0) - (o.amount_paid || 0)),
+      0
+    );
+
+    // 2. Round records remaining
     const records = await (prisma as any).roundrecords.findMany({
       where: { bookshop_id: shopId, is_deleted: false },
       include: {
@@ -311,13 +379,20 @@ export async function getShopRoundPaymentInfo(shopId: number) {
       };
     });
 
-    const totalRemaining = breakdown.reduce((sum: number, b: any) => sum + b.remaining, 0);
+    const roundRecordsRemaining = breakdown.reduce((sum: number, b: any) => sum + b.remaining, 0);
     const totalAmount = breakdown.reduce((sum: number, b: any) => sum + b.totalprice, 0);
     const totalPaid = breakdown.reduce((sum: number, b: any) => sum + b.paidAmount, 0);
 
     return {
       success: true,
-      data: { breakdown, totalAmount, totalPaid, totalRemaining },
+      data: {
+        breakdown,
+        totalAmount,
+        totalPaid,
+        totalRemaining: orderRemaining + roundRecordsRemaining,
+        orderRemaining,
+        roundRecordsRemaining,
+      },
     };
   } catch (error: any) {
     return { success: false, error: error.message };

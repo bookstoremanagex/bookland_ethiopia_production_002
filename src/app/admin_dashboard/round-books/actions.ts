@@ -69,6 +69,22 @@ export async function getAdminRoundDetail(id: number) {
             book_image_url: true,
           },
         },
+        editions: {
+          select: {
+            id: true,
+            edition_name: true,
+            selling_price: true,
+            count_remening_for_transfer: true,
+            bookeditionstores: {
+              where: { is_deleted: false, quantity: { gt: 0 } },
+              include: { stores: { select: { id: true, name: true } } },
+            },
+            bookeditionprinters: {
+              where: { is_deleted: false, quantity: { gt: 0 } },
+              include: { printer: { select: { id: true, name: true } } },
+            },
+          },
+        },
         round_records: {
           where: { is_deleted: false },
           include: {
@@ -96,6 +112,9 @@ export async function getAdminRoundDetail(id: number) {
       bookAuthor: rb.book?.author || "",
       bookSku: rb.book?.book_sku || "",
       bookImage: rb.book?.book_image_url || "",
+      bookId: rb.book?.id || 0,
+      editionId: rb.editions?.id || null,
+      editionName: rb.editions?.edition_name || null,
       startingAmount: rb.starting_amount ?? 0,
       returnedAmount: rb.returned_amount ?? 0,
       totalSold: rb.round_records.reduce((sum: number, rr: any) => sum + (rr.totalprice ?? 0), 0),
@@ -123,6 +142,54 @@ export async function getAdminRoundDetail(id: number) {
       })),
     };
     return { success: true, data };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+}
+
+export async function allocateRoundBook(
+  roundId: number,
+  allocations: { editionId: number; storeId: number; storeStockId: number; quantity: number; type: "store" | "printer" }[]
+) {
+  try {
+    const rb = await (prisma as any).roundbooks.findFirst({
+      where: { id: roundId, is_deleted: false },
+    });
+    if (!rb) return { success: false, error: "Round not found" };
+    if (rb.status) return { success: false, error: "Cannot allocate while round is active" };
+    if (rb.allocated) return { success: false, error: "Already allocated" };
+
+    const quantityToAllocate = (rb.starting_amount ?? 0) - (rb.returned_amount ?? 0);
+    if (quantityToAllocate <= 0) return { success: false, error: "No books to allocate" };
+
+    // Deduct from selected stores/printers
+    await (prisma as any).$transaction(async (tx: any) => {
+      for (const alloc of allocations) {
+        if (alloc.quantity <= 0) continue;
+
+        if (alloc.type === "printer") {
+          const result = await tx.bookeditionprinters.updateMany({
+            where: { id: alloc.storeStockId, quantity: { gte: alloc.quantity } },
+            data: { quantity: { decrement: alloc.quantity }, updatedAt: new Date() },
+          });
+          if (result.count === 0) throw new Error(`Insufficient stock at printer for edition ${alloc.editionId}`);
+        } else {
+          const result = await tx.bookeditionstores.updateMany({
+            where: { id: alloc.storeStockId, quantity: { gte: alloc.quantity } },
+            data: { quantity: { decrement: alloc.quantity }, updatedAt: new Date() },
+          });
+          if (result.count === 0) throw new Error(`Insufficient stock at store for edition ${alloc.editionId}`);
+        }
+      }
+
+      // Mark as allocated
+      await tx.roundbooks.update({
+        where: { id: roundId },
+        data: { allocated: true, updatedAt: new Date() },
+      });
+    }, { timeout: 30000 });
+
+    return { success: true };
   } catch (error: any) {
     return { success: false, error: error.message };
   }

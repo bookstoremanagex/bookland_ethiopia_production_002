@@ -73,6 +73,7 @@ model bookedition {
   order_items                 order_items[]
   retail_purchase_items       retail_purchase_items[]
   printorder_items            printorder_items[]
+  round_books                 roundbooks[] 
 
   @@index([bookId], map: "BookEdition_bookId_fkey")
 }
@@ -558,6 +559,8 @@ model roundbooks {
   id              Int            @id @default(autoincrement())
   status          Boolean        @default(true)
   bookId          Int
+  editionId       Int?
+  editions        bookedition?    @relation(fields: [editionId], references: [id])
   book            books          @relation(fields: [bookId], references: [id])
   round_records   roundrecords[]
   starting_amount Int?

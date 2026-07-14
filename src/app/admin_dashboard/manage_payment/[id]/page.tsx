@@ -34,6 +34,51 @@ export default async function ManagePaymentDetailPage({ params }: { params: Prom
 
     if (!shop) notFound();
 
+    // Fetch round records for this shop
+    const roundRecords = await (prisma as any).roundrecords.findMany({
+        where: { bookshop_id: shopId, is_deleted: false },
+        include: {
+            RoundBooks: {
+                include: {
+                    book: {
+                        select: { id: true, title: true, author: true },
+                    },
+                },
+            },
+            round_payments: {
+                where: { is_deleted: false },
+                include: {
+                    check: {
+                        select: { id: true, bankname: true, username: true, amount: true, status: true },
+                    },
+                },
+            },
+        },
+        orderBy: { createdAt: "desc" },
+    });
+
+    // Fetch all round payments for this shop
+    const allRoundPayments = await (prisma as any).round_payments.findMany({
+        where: { shopId: shopId, is_deleted: false },
+        include: {
+            check: {
+                select: { id: true, bankname: true, username: true, amount: true, status: true },
+            },
+            roundrecord: {
+                include: {
+                    RoundBooks: {
+                        include: {
+                            book: {
+                                select: { id: true, title: true },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        orderBy: { createdAt: "desc" },
+    });
+
     const previousDebt = shop.previousDebt || 0;
     const orderDebt = shop.orders.reduce((sum: number, o: any) => sum + (o.total_amount || 0), 0);
     const totalPaid = shop.payments
@@ -128,6 +173,47 @@ export default async function ManagePaymentDetailPage({ params }: { params: Prom
                         } : { title: "", book_image_url: null },
                     } : { edition_name: "", bookId: 0, book_image_url: null, books: { title: "", book_image_url: null } },
                 })) || [],
+            }))}
+            roundRecords={roundRecords.map((r: any) => ({
+                id: r.id,
+                totalprice: r.totalprice ?? 0,
+                status: r.status,
+                createdAt: r.createdAt,
+                bookTitle: r.RoundBooks?.book?.title || "Unknown",
+                bookAuthor: r.RoundBooks?.book?.author || "",
+                startingAmount: r.RoundBooks?.starting_amount ?? 0,
+                returnedAmount: r.RoundBooks?.returned_amount ?? 0,
+                shopName: shop.name,
+                shopLocation: shop.location,
+                payments: (r.round_payments || []).map((p: any) => ({
+                    id: p.id,
+                    amount: p.amount,
+                    payment_type: p.payment_type,
+                    status: p.status,
+                    createdAt: p.createdAt,
+                    check: p.check ? {
+                        bankname: p.check.bankname,
+                        username: p.check.username,
+                        amount: p.check.amount,
+                        status: p.check.status,
+                    } : null,
+                })),
+            }))}
+            roundPayments={allRoundPayments.map((p: any) => ({
+                id: p.id,
+                amount: p.amount,
+                payment_type: p.payment_type,
+                status: p.status,
+                createdAt: p.createdAt,
+                memo: p.memo || null,
+                check: p.check ? {
+                    id: p.check.id,
+                    bankname: p.check.bankname,
+                    username: p.check.username,
+                    amount: p.check.amount,
+                    status: p.check.status,
+                } : null,
+                bookTitle: p.roundrecord?.RoundBooks?.book?.title || "Unknown",
             }))}
             totals={{ totalDebt, totalPaid, totalRemaining }}
             previousDebt={previousDebt}

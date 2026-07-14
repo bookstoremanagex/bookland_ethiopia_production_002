@@ -51,6 +51,7 @@ type RoundBookData = {
   };
   starting_amount: number;
   returned_amount: number;
+  unitPrice: number;
   storeCount: number;
   stores: { id: number; shopId: number | null; storeName: string; location: string; branch: string; totalprice: number }[];
   createdAt: string;
@@ -59,12 +60,10 @@ type RoundBookData = {
 export default function RoundBookDetail({ roundBook }: { roundBook: RoundBookData }) {
   const router = useRouter();
   const [startingAmount, setStartingAmount] = useState(String(roundBook.starting_amount));
-  const [returnedAmount, setReturnedAmount] = useState(String(roundBook.returned_amount));
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [showSettingsDropdown, setShowSettingsDropdown] = useState(false);
   const [showEndConfirm, setShowEndConfirm] = useState(false);
-  const [endReturnedAmount, setEndReturnedAmount] = useState(String(roundBook.returned_amount));
   const [showReverseConfirm, setShowReverseConfirm] = useState(false);
   const [isEnding, setIsEnding] = useState(false);
   const [isReversing, setIsReversing] = useState(false);
@@ -75,9 +74,11 @@ export default function RoundBookDetail({ roundBook }: { roundBook: RoundBookDat
   const [detailRecordId, setDetailRecordId] = useState<number | null>(null);
   const { formatShort } = useCalendar();
 
+  const totalSoldMoney = roundBook.stores.reduce((sum, store) => sum + (store.totalprice || 0), 0);
+  const booksSold = roundBook.unitPrice > 0 ? Math.round(totalSoldMoney / roundBook.unitPrice) : 0;
+
   const handleCancelEdit = () => {
     setStartingAmount(String(roundBook.starting_amount));
-    setReturnedAmount(String(roundBook.returned_amount));
     setIsEditing(false);
   };
 
@@ -88,7 +89,6 @@ export default function RoundBookDetail({ roundBook }: { roundBook: RoundBookDat
     try {
       const res = await updateRoundBook(roundBook.id, {
         starting_amount: parseInt(startingAmount, 10) || 0,
-        returned_amount: parseInt(returnedAmount, 10) || 0,
       });
       if (res.success) {
         toast.success("Changes saved");
@@ -106,9 +106,10 @@ export default function RoundBookDetail({ roundBook }: { roundBook: RoundBookDat
   const handleEndRoute = async () => {
     setIsEnding(true);
     try {
+      const returnedAmount = roundBook.starting_amount - booksSold;
       const res = await updateRoundBook(roundBook.id, {
         status: false,
-        returned_amount: parseInt(endReturnedAmount, 10) || 0,
+        returned_amount: returnedAmount,
       });
       if (res.success) {
         toast.success("Round ended");
@@ -240,106 +241,19 @@ export default function RoundBookDetail({ roundBook }: { roundBook: RoundBookDat
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        {/* Editable amounts */}
+        {/* Shops section */}
         <div className="lg:col-span-2 space-y-5">
-          <div className="bg-white rounded-3xl border-2 border-primarycolor/5 shadow-xl p-5 sm:p-7 space-y-5">
-            <div className="flex items-center justify-between">
-              <h2 className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.2em]">
-                Amounts
-              </h2>
-              {!isEditing && (
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className="h-9 px-4 rounded-xl bg-primarycolor/5 hover:bg-primarycolor/10 text-primarycolor font-black text-[8px] uppercase tracking-widest flex items-center gap-1.5 transition-all active:scale-[0.97]"
-                >
-                  <Edit3 className="size-3.5" />
-                  Edit
-                </button>
-              )}
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {isEditing ? (
-                <>
-                  <div className="space-y-2">
-                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">
-                      Starting Amount
-                    </p>
-                    <Input
-                      type="number"
-                      value={startingAmount}
-                      onChange={(e) => setStartingAmount(e.target.value)}
-                      min={0}
-                      className="h-12 px-4 rounded-2xl border-2 border-primarycolor/5 bg-white font-bold text-base focus:border-primarycolor [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">
-                      Returned Amount
-                    </p>
-                    <Input
-                      type="number"
-                      value={returnedAmount}
-                      onChange={(e) => setReturnedAmount(e.target.value)}
-                      min={0}
-                      className="h-12 px-4 rounded-2xl border-2 border-primarycolor/5 bg-white font-bold text-base focus:border-primarycolor [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                    />
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="bg-primarycolor/[0.02] rounded-2xl border-2 border-primarycolor/5 p-4">
-                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">
-                      Starting Amount
-                    </p>
-                    <p className="text-2xl font-black text-slate-800 mt-1">{roundBook.starting_amount}</p>
-                  </div>
-                  <div className="bg-primarycolor/[0.02] rounded-2xl border-2 border-primarycolor/5 p-4">
-                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">
-                      Returned Amount
-                    </p>
-                    <p className="text-2xl font-black text-slate-800 mt-1">{roundBook.returned_amount}</p>
-                  </div>
-                </>
-              )}
-            </div>
-
-            {isEditing && (
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={handleSave}
-                  disabled={isSaving}
-                  className="flex-1 h-14 rounded-2xl bg-primarycolor hover:bg-secondarycolor text-white font-black text-sm shadow-lg shadow-primarycolor/20 flex items-center justify-center gap-2 active:scale-[0.98] transition-all disabled:opacity-50"
-                >
-                  {isSaving ? (
-                    <Loader2 className="size-5 animate-spin" />
-                  ) : (
-                    <Save className="size-5" />
-                  )}
-                  {isSaving ? "Saving..." : "Save Changes"}
-                </button>
-                <button
-                  onClick={handleCancelEdit}
-                  disabled={isSaving}
-                  className="flex-1 h-14 rounded-2xl border-2 border-slate-200 font-black text-sm text-slate-600 hover:bg-slate-50 active:scale-[0.98] transition-all"
-                >
-                  Cancel
-                </button>
-              </div>
-            )}
-          </div>
-
-          {/* Stores */}
           <div className="bg-white rounded-3xl border-2 border-primarycolor/5 shadow-xl overflow-hidden">
             <div className="p-5 sm:p-7 border-b border-primarycolor/5 flex items-center justify-between">
               <h2 className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.2em]">
-                Stores in Round
+                Shops in Round
               </h2>
               <button
                 onClick={() => setShowSelectStore(true)}
-                className="h-9 px-4 rounded-xl bg-primarycolor/5 hover:bg-primarycolor/10 text-primarycolor font-black text-[8px] uppercase tracking-widest transition-all active:scale-[0.97]"
+                className="h-12 px-6 rounded-xl bg-primarycolor hover:bg-secondarycolor text-white font-black text-[10px] uppercase tracking-widest flex items-center gap-2 shadow-lg shadow-primarycolor/20 transition-all active:scale-[0.97]"
               >
-                + Select A Shop
+                <Store className="size-4" />
+                Select a Shop
               </button>
             </div>
             {roundBook.stores.length > 0 ? (
@@ -371,7 +285,70 @@ export default function RoundBookDetail({ roundBook }: { roundBook: RoundBookDat
             ) : (
               <div className="px-5 sm:px-7 py-8 text-center">
                 <Store className="size-8 mx-auto text-muted-foreground/20 mb-2" />
-                <p className="text-[10px] font-bold text-muted-foreground">No stores assigned yet</p>
+                <p className="text-[10px] font-bold text-muted-foreground">No shops assigned yet</p>
+              </div>
+            )}
+          </div>
+
+          {/* Amounts */}
+          <div className="bg-white rounded-3xl border-2 border-primarycolor/5 shadow-xl p-5 sm:p-7 space-y-5">
+            <div className="flex items-center justify-between">
+              <h2 className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.2em]">
+                Amounts
+              </h2>
+              {!isEditing && (
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="h-9 px-4 rounded-xl bg-primarycolor/5 hover:bg-primarycolor/10 text-primarycolor font-black text-[8px] uppercase tracking-widest flex items-center gap-1.5 transition-all active:scale-[0.97]"
+                >
+                  <Edit3 className="size-3.5" />
+                  Edit
+                </button>
+              )}
+            </div>
+
+            {isEditing ? (
+              <div className="space-y-3">
+                <div className="space-y-2">
+                  <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">
+                    Starting Amount
+                  </p>
+                  <Input
+                    type="number"
+                    value={startingAmount}
+                    onChange={(e) => setStartingAmount(e.target.value)}
+                    min={0}
+                    className="h-12 px-4 rounded-2xl border-2 border-primarycolor/5 bg-white font-bold text-base focus:border-primarycolor [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  />
+                </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleSave}
+                    disabled={isSaving}
+                    className="flex-1 h-14 rounded-2xl bg-primarycolor hover:bg-secondarycolor text-white font-black text-sm shadow-lg shadow-primarycolor/20 flex items-center justify-center gap-2 active:scale-[0.98] transition-all disabled:opacity-50"
+                  >
+                    {isSaving ? (
+                      <Loader2 className="size-5 animate-spin" />
+                    ) : (
+                      <Save className="size-5" />
+                    )}
+                    {isSaving ? "Saving..." : "Save Changes"}
+                  </button>
+                  <button
+                    onClick={handleCancelEdit}
+                    disabled={isSaving}
+                    className="flex-1 h-14 rounded-2xl border-2 border-slate-200 font-black text-sm text-slate-600 hover:bg-slate-50 active:scale-[0.98] transition-all"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="bg-primarycolor/[0.02] rounded-2xl border-2 border-primarycolor/5 p-4">
+                <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">
+                  Starting Amount
+                </p>
+                <p className="text-2xl font-black text-slate-800 mt-1">{roundBook.starting_amount}</p>
               </div>
             )}
           </div>
@@ -407,25 +384,28 @@ export default function RoundBookDetail({ roundBook }: { roundBook: RoundBookDat
               End Route
             </AlertDialogTitle>
             <AlertDialogDescription className="text-[10px] font-bold text-muted-foreground">
-              Record returned books for{" "}
-              <span className="text-primarycolor">{roundBook.book.title}</span>{" "}
-              before ending the round.
+              End the route for{" "}
+              <span className="text-primarycolor">{roundBook.book.title}</span>?
             </AlertDialogDescription>
-            <div className="space-y-2 pt-3">
-              <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">
-                Returned Amount
-              </p>
-              <Input
-                type="number"
-                value={endReturnedAmount}
-                onChange={(e) => setEndReturnedAmount(e.target.value)}
-                min={0}
-                max={roundBook.starting_amount}
-                placeholder="0"
-                className="h-12 px-4 rounded-2xl border-2 border-primarycolor/5 bg-white font-bold text-base focus:border-primarycolor [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-              />
-              <p className="text-[9px] font-bold text-muted-foreground">
-                Started with {roundBook.starting_amount} books
+            <div className="space-y-3 pt-3">
+              <div className="bg-primarycolor/[0.02] rounded-2xl border-2 border-primarycolor/5 p-4 space-y-2">
+                <div className="flex items-center justify-between text-[9px]">
+                  <span className="font-bold text-muted-foreground">Starting Amount</span>
+                  <span className="font-black text-slate-800">{roundBook.starting_amount} books</span>
+                </div>
+                <div className="flex items-center justify-between text-[9px]">
+                  <span className="font-bold text-muted-foreground">Total Sold</span>
+                  <span className="font-black text-primarycolor">{booksSold} books</span>
+                </div>
+                <div className="border-t border-primarycolor/5 pt-2">
+                  <div className="flex items-center justify-between text-[9px]">
+                    <span className="font-bold text-muted-foreground">Returned</span>
+                    <span className="font-black text-emerald-600">{roundBook.starting_amount - booksSold} books</span>
+                  </div>
+                </div>
+              </div>
+              <p className="text-[8px] font-bold text-muted-foreground text-center">
+                Sold across {roundBook.stores.length} shop{roundBook.stores.length !== 1 ? "s" : ""}
               </p>
             </div>
           </AlertDialogHeader>

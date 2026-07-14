@@ -13,7 +13,6 @@ import {
   Loader2,
   Calendar,
   ChevronsUpDown,
-  Pencil,
   Eye,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -84,9 +83,6 @@ export default function SelectStoreDialog({
   const [paymentType, setPaymentType] = useState("none");
   const [payAmount, setPayAmount] = useState("");
 
-  const [unitPriceEditing, setUnitPriceEditing] = useState(false);
-  const [draftUnitPrice, setDraftUnitPrice] = useState(unitPrice);
-
   const [checkBankName, setCheckBankName] = useState("");
   const [checkHolder, setCheckHolder] = useState("");
   const [checkAmount, setCheckAmount] = useState("");
@@ -124,17 +120,12 @@ export default function SelectStoreDialog({
   }, [paymentType, payAmount]);
 
   useEffect(() => {
-    setDraftUnitPrice(unitPrice);
-  }, [unitPrice]);
-
-  useEffect(() => {
     if (open) {
       setStep(0);
       setSelectedShop(null);
       setQuantity("1");
       setPaymentType("none");
       setPayAmount("");
-      setUnitPriceEditing(false);
       setCheckBankName("");
       setCheckHolder("");
       setCheckAmount("");
@@ -399,42 +390,9 @@ export default function SelectStoreDialog({
                   <div className="bg-primarycolor/[0.02] rounded-2xl border-2 border-primarycolor/5 p-4">
                     <div className="flex items-center justify-between">
                       <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Unit Price</p>
-                      {!unitPriceEditing ? (
-                        <button
-                          onClick={() => { setDraftUnitPrice(unitPrice); setUnitPriceEditing(true); }}
-                          className="size-7 rounded-lg bg-primarycolor/5 hover:bg-primarycolor/10 flex items-center justify-center text-primarycolor transition-all"
-                        >
-                          <Pencil className="size-3.5" />
-                        </button>
-                      ) : (
-                        <div className="flex items-center gap-1">
-                          <button
-                            onClick={() => { setUnitPrice(draftUnitPrice); setUnitPriceEditing(false); }}
-                            className="size-7 rounded-lg bg-emerald-100 hover:bg-emerald-200 flex items-center justify-center text-emerald-700 transition-all"
-                          >
-                            <Check className="size-3.5" />
-                          </button>
-                          <button
-                            onClick={() => setUnitPriceEditing(false)}
-                            className="size-7 rounded-lg bg-red-50 hover:bg-red-100 flex items-center justify-center text-red-500 transition-all"
-                          >
-                            <X className="size-3.5" />
-                          </button>
-                        </div>
-                      )}
                     </div>
                     <div className="mt-2">
-                      {unitPriceEditing ? (
-                        <Input
-                          type="number"
-                          value={draftUnitPrice}
-                          onChange={(e) => setDraftUnitPrice(parseFloat(e.target.value) || 0)}
-                          min={0}
-                          className="h-11 px-4 rounded-2xl border-2 border-primarycolor/5 bg-white font-bold text-sm focus:border-primarycolor [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                        />
-                      ) : (
-                        <p className="font-bold text-lg text-slate-800">{unitPrice} ETB</p>
-                      )}
+                      <p className="font-bold text-lg text-slate-800">{unitPrice} ETB</p>
                     </div>
                     <div className="flex items-center justify-between mt-3 pt-3 border-t border-primarycolor/5">
                       <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Total</p>

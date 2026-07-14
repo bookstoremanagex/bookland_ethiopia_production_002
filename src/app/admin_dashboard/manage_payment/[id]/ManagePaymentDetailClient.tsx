@@ -39,6 +39,9 @@ import {
     ListOrdered,
     ShoppingBag,
     Search,
+    BookOpen,
+    Repeat,
+    Landmark,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -58,9 +61,11 @@ import { useCalendar } from "@/lib/calendar-context";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { approvePayment, checkIsAdminUser, rejectPayment, deletePayment, setPaymentPending, updatePaymentMemo } from "@/app/actions/payment-actions";
+import { approveRoundPayment as approveRoundPaymentAction, deleteRoundPayment, createRoundPayment, createRoundCheck } from "@/app/delivery_dashboard_full/round-books/actions";
 import { setOrderHideRemaining } from "@/app/actions/order-actions";
 import { updateCheckStatus, updateCheckDetails } from "@/app/actions/check-actions";
 import { updateShopPreviousDebt } from "@/app/actions/book-shop-actions";
+import { DateInput } from "@/components/ui/date-input";
 import {
     AlertDialog,
     AlertDialogContent,
@@ -156,10 +161,55 @@ interface RoundBooksTotals {
     remaining: number;
 }
 
+interface RoundRecord {
+    id: number;
+    totalprice: number;
+    status: string;
+    createdAt: string;
+    bookTitle: string;
+    bookAuthor: string;
+    startingAmount: number;
+    returnedAmount: number;
+    shopName: string;
+    shopLocation: string;
+    payments: {
+        id: number;
+        amount: number;
+        payment_type: string;
+        status: string;
+        createdAt: string;
+        check: {
+            bankname: string | null;
+            username: string | null;
+            amount: string | null;
+            status: string;
+        } | null;
+    }[];
+}
+
+interface RoundPayment {
+    id: number;
+    amount: number;
+    payment_type: string;
+    status: string;
+    createdAt: string;
+    memo: string | null;
+    check: {
+        id: number;
+        bankname: string | null;
+        username: string | null;
+        amount: string | null;
+        status: string;
+    } | null;
+    bookTitle: string;
+}
+
 interface Props {
     shop: ShopInfo;
     payments: Payment[];
     orders: AdminOrder[];
+    roundRecords: RoundRecord[];
+    roundPayments: RoundPayment[];
     totals: Totals;
     previousDebt: number;
     roundBooksTotals: RoundBooksTotals;
@@ -184,7 +234,7 @@ function timeAgo(date: string | Date): string {
     return "just now";
 }
 
-export default function ManagePaymentDetailClient({ shop, payments, orders, totals, previousDebt, roundBooksTotals }: Props) {
+export default function ManagePaymentDetailClient({ shop, payments, orders, roundRecords, roundPayments, totals, previousDebt, roundBooksTotals }: Props) {
     const { formatDate } = useCalendar();
     const router = useRouter();
     const [isAdmin, setIsAdmin] = useState(false);
@@ -217,6 +267,45 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, tota
     const [hideRemToggleOrder, setHideRemToggleOrder] = useState<AdminOrder | null>(null);
     const [hideRemDialogValue, setHideRemDialogValue] = useState(false);
     const [togglingHideRem, setTogglingHideRem] = useState(false);
+    const [selectedRoundRecord, setSelectedRoundRecord] = useState<RoundRecord | null>(null);
+    const [showRoundPayDialog, setShowRoundPayDialog] = useState(false);
+    const [approvingRoundPaymentId, setApprovingRoundPaymentId] = useState<number | null>(null);
+
+    // Combined payments (order payments + round payments) sorted by date
+    const allPayments = useMemo(() => {
+        const orderPayments = payments.map((p) => ({
+            ...p,
+            source: "order" as const,
+            bookTitle: null,
+        }));
+        const rpPayments = (roundPayments || []).map((p) => ({
+            id: p.id,
+            amount: p.amount,
+            payment_type: p.payment_type,
+            status: p.status,
+            checkId: null,
+            check: p.check ? {
+                id: p.check.id,
+                bankname: p.check.bankname,
+                username: p.check.username,
+                status: p.check.status,
+                type: null,
+                amount: p.check.amount,
+                recordeddate: null,
+                memo: null,
+                imageUrl: null,
+            } : null,
+            image: null,
+            createdAt: p.createdAt,
+            orderid: null,
+            memo: p.memo,
+            source: "round" as const,
+            bookTitle: p.bookTitle,
+        }));
+        return [...orderPayments, ...rpPayments].sort(
+            (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+    }, [payments, roundPayments]);
 
     useEffect(() => {
         if (hideRemToggleOrder) {
@@ -239,6 +328,23 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, tota
         setSelectedOrder(null);
         setIsOrderModalOpen(false);
         router.refresh();
+    };
+
+    const handleApproveRoundPayment = async (paymentId: number) => {
+        setApprovingRoundPaymentId(paymentId);
+        try {
+            const res = await approveRoundPaymentAction(paymentId);
+            if (res.success) {
+                toast.success("Payment approved");
+                router.refresh();
+            } else {
+                toast.error(res.error || "Failed to approve");
+            }
+        } catch {
+            toast.error("Failed to approve payment");
+        } finally {
+            setApprovingRoundPaymentId(null);
+        }
     };
 
     const handleDeliverCheck = async (checkId: number) => {
@@ -613,9 +719,9 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, tota
                         >
                             <Banknote className="size-3.5 mr-2" />
                             Payment History
-                            {payments.length > 0 && (
+                            {allPayments.length > 0 && (
                                 <span className="ml-2 text-[8px] px-1.5 py-0.5 rounded-full bg-primarycolor/10 text-primarycolor font-black">
-                                    {payments.length}
+                                    {allPayments.length}
                                 </span>
                             )}
                         </TabsTrigger>
@@ -628,6 +734,18 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, tota
                             {orders.length > 0 && (
                                 <span className="ml-2 text-[8px] px-1.5 py-0.5 rounded-full bg-primarycolor/10 text-primarycolor font-black">
                                     {orders.length}
+                                </span>
+                            )}
+                        </TabsTrigger>
+                        <TabsTrigger
+                            value="rounds"
+                            className="pb-3 px-1 mr-6 rounded-none bg-transparent data-[state=active]:bg-transparent data-[state=active]:text-primarycolor font-black uppercase tracking-widest text-[10px] text-muted-foreground after:opacity-0 data-[state=active]:after:opacity-100 after:bg-primarycolor after:h-0.5 after:absolute after:inset-x-0 after:bottom-0"
+                        >
+                            <Repeat className="size-3.5 mr-2" />
+                            Rounds
+                            {roundRecords.length > 0 && (
+                                <span className="ml-2 text-[8px] px-1.5 py-0.5 rounded-full bg-primarycolor/10 text-primarycolor font-black">
+                                    {roundRecords.length}
                                 </span>
                             )}
                         </TabsTrigger>
@@ -649,9 +767,9 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, tota
                             </Button>
                         </div>
 
-                        {payments.length > 0 ? (
+                        {allPayments.length > 0 ? (
                             <div className="space-y-3">
-                                {payments
+                                {allPayments
                                     .slice((paymentPage - 1) * perPage, paymentPage * perPage)
                                     .map((payment) => (
                                 <div
@@ -672,6 +790,19 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, tota
                                                 <span className="font-black text-primarycolor">
                                                     {payment.amount.toLocaleString()} ETB
                                                 </span>
+                                                <span className={cn(
+                                                    "px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest",
+                                                    payment.source === "order"
+                                                        ? "bg-indigo-100 text-indigo-600"
+                                                        : "bg-purple-100 text-purple-600"
+                                                )}>
+                                                    {payment.source === "order" ? "Order" : "Round"}
+                                                </span>
+                                                {payment.source === "round" && payment.bookTitle && (
+                                                    <span className="text-[8px] font-bold text-muted-foreground truncate max-w-[120px]">
+                                                        {payment.bookTitle}
+                                                    </span>
+                                                )}
                                                 <span className={cn(
                                                     "px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest",
                                                     payment.payment_type === "DIRECT"
@@ -856,10 +987,10 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, tota
                                     </div>
                                 </div>
                             ))}
-                            {payments.length > perPage && (
+                            {allPayments.length > perPage && (
                                 <div className="flex items-center justify-between pt-4">
                                     <span className="text-[10px] font-black text-muted-foreground/50 uppercase tracking-widest">
-                                        {payments.length} total
+                                        {allPayments.length} total
                                     </span>
                                     <div className="flex items-center gap-2">
                                         <Button
@@ -872,13 +1003,13 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, tota
                                             <ChevronLeft className="size-3 mr-1" /> Prev
                                         </Button>
                                         <span className="text-[10px] font-black text-muted-foreground/50 px-2">
-                                            {paymentPage} / {Math.ceil(payments.length / perPage)}
+                                            {paymentPage} / {Math.ceil(allPayments.length / perPage)}
                                         </span>
                                         <Button
                                             variant="outline"
                                             size="sm"
-                                            onClick={() => setPaymentPage(p => Math.min(Math.ceil(payments.length / perPage), p + 1))}
-                                            disabled={paymentPage >= Math.ceil(payments.length / perPage)}
+                                            onClick={() => setPaymentPage(p => Math.min(Math.ceil(allPayments.length / perPage), p + 1))}
+                                            disabled={paymentPage >= Math.ceil(allPayments.length / perPage)}
                                             className="h-8 px-3 rounded-lg border-2 border-slate-100 font-black text-[9px] uppercase tracking-widest"
                                         >
                                             Next <ChevronRight className="size-3 ml-1" />
@@ -1280,6 +1411,171 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, tota
                             <div className="py-16 text-center border-2 border-dashed border-slate-100 rounded-[2rem] bg-slate-50/50">
                                 <ListOrdered className="size-10 mx-auto text-slate-200 mb-3" />
                                 <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">No orders found for this shop</p>
+                            </div>
+                        )}
+                    </TabsContent>
+
+                    <TabsContent value="rounds" className="mt-6 space-y-6">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                            <div className="flex items-center gap-3 text-primarycolor">
+                                <Repeat className="size-5 md:size-6" />
+                                <h2 className="text-lg md:text-xl font-black uppercase tracking-tight italic">
+                                    Round <span className="text-secondarycolor not-italic">Books</span>
+                                </h2>
+                            </div>
+                        </div>
+
+                        {roundRecords.length > 0 ? (
+                            <div className="space-y-6">
+                                {/* Group by book */}
+                                {(() => {
+                                    const bookGroups = new Map<string, RoundRecord[]>();
+                                    for (const record of roundRecords) {
+                                        const key = record.bookTitle;
+                                        if (!bookGroups.has(key)) {
+                                            bookGroups.set(key, []);
+                                        }
+                                        bookGroups.get(key)!.push(record);
+                                    }
+
+                                    return Array.from(bookGroups.entries()).map(([bookTitle, records]) => {
+                                        const firstRecord = records[0];
+                                        const totalForBook = records.reduce((sum, r) => sum + r.totalprice, 0);
+                                        const paidForBook = records.reduce((sum, r) =>
+                                            sum + r.payments.filter(p => p.status === "APPROVED").reduce((s, p) => s + (p.amount || 0), 0), 0
+                                        );
+                                        const remainingForBook = totalForBook - paidForBook;
+
+                                        return (
+                                            <div key={bookTitle} className="bg-white rounded-2xl border-2 border-primarycolor/5 overflow-hidden">
+                                                {/* Book Header */}
+                                                <div className="p-5 border-b border-primarycolor/5 bg-primarycolor/[0.02]">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="size-10 rounded-xl bg-primarycolor/10 flex items-center justify-center text-primarycolor shrink-0">
+                                                            <BookOpen className="size-5" />
+                                                        </div>
+                                                        <div className="min-w-0 flex-1">
+                                                            <p className="font-bold text-sm text-slate-800 truncate">{bookTitle}</p>
+                                                            {firstRecord.bookAuthor && (
+                                                                <p className="text-[9px] font-bold text-muted-foreground truncate">{firstRecord.bookAuthor}</p>
+                                                            )}
+                                                        </div>
+                                                        <div className="text-right shrink-0">
+                                                            <p className="font-black text-base text-primarycolor">{totalForBook.toLocaleString()} ETB</p>
+                                                            {remainingForBook > 0 ? (
+                                                                <p className="text-[8px] font-bold text-rose-500">{remainingForBook.toLocaleString()} ETB remaining</p>
+                                                            ) : (
+                                                                <p className="text-[8px] font-bold text-emerald-500">Fully Paid</p>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {/* Shops under this book */}
+                                                <div className="divide-y divide-primarycolor/5">
+                                                    {records.map((record) => {
+                                                        const totalPaid = record.payments
+                                                            .filter((p) => p.status === "APPROVED")
+                                                            .reduce((sum, p) => sum + (p.amount || 0), 0);
+                                                        const remaining = record.totalprice - totalPaid;
+                                                        const booksTaken = record.startingAmount - record.returnedAmount;
+
+                                                        return (
+                                                            <div key={record.id} className="p-5 space-y-3">
+                                                                {/* Shop header */}
+                                                                <div className="flex items-center gap-3">
+                                                                    <div className="size-9 rounded-xl bg-secondarycolor/10 flex items-center justify-center text-secondarycolor shrink-0">
+                                                                        <Store className="size-4" />
+                                                                    </div>
+                                                                    <div className="min-w-0 flex-1">
+                                                                        <p className="font-bold text-sm text-slate-700 truncate">{record.shopName}</p>
+                                                                        {record.shopLocation && (
+                                                                            <p className="text-[8px] font-bold text-muted-foreground truncate">{record.shopLocation}</p>
+                                                                        )}
+                                                                    </div>
+                                                                    <div className="text-right shrink-0">
+                                                                        <p className="font-black text-sm text-primarycolor">{record.totalprice.toLocaleString()} ETB</p>
+                                                                        <p className="text-[8px] font-bold text-muted-foreground">{booksTaken} books</p>
+                                                                    </div>
+                                                                </div>
+
+                                                                {/* Payment summary */}
+                                                                <div className="flex items-center gap-4 text-[9px]">
+                                                                    <span className="font-bold text-emerald-600">Paid: {totalPaid.toLocaleString()} ETB</span>
+                                                                    {remaining > 0 && (
+                                                                        <span className="font-bold text-rose-500">Remaining: {remaining.toLocaleString()} ETB</span>
+                                                                    )}
+                                                                    {remaining <= 0 && totalPaid > 0 && (
+                                                                        <span className="font-bold text-emerald-500">Fully Paid</span>
+                                                                    )}
+                                                                </div>
+
+                                                                {/* Payments list */}
+                                                                {record.payments.length > 0 && (
+                                                                    <div className="space-y-1.5">
+                                                                        {record.payments.map((p) => (
+                                                                            <div key={p.id} className="flex items-center justify-between p-3 rounded-xl bg-primarycolor/[0.02] border border-primarycolor/5">
+                                                                                <div className="flex items-center gap-2">
+                                                                                    <div className={cn(
+                                                                                        "size-7 rounded-lg flex items-center justify-center",
+                                                                                        p.payment_type === "CHECK" ? "bg-amber-50 text-amber-600" : "bg-emerald-50 text-emerald-600",
+                                                                                    )}>
+                                                                                        {p.payment_type === "CHECK" ? <Landmark className="size-3" /> : <Banknote className="size-3" />}
+                                                                                    </div>
+                                                                                    <div>
+                                                                                        <span className="font-bold text-xs text-slate-600">
+                                                                                            {p.payment_type === "CHECK" ? "Check" : "Direct"}
+                                                                                        </span>
+                                                                                        {p.check && (
+                                                                                            <span className="text-[8px] text-muted-foreground font-medium ml-2">
+                                                                                                {p.check.bankname} · {p.check.username}
+                                                                                            </span>
+                                                                                        )}
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div className="flex items-center gap-2">
+                                                                                    <span className="font-black text-sm text-slate-700">{p.amount.toLocaleString()} ETB</span>
+                                                                                    <span className={cn(
+                                                                                        "px-2 py-0.5 rounded text-[7px] font-black uppercase tracking-widest",
+                                                                                        p.status === "APPROVED"
+                                                                                            ? "bg-emerald-100 text-emerald-600"
+                                                                                            : "bg-amber-100 text-amber-600",
+                                                                                    )}>
+                                                                                        {p.status === "APPROVED" ? (
+                                                                                            <span className="flex items-center gap-1"><CheckCircle2 className="size-2.5" /> Approved</span>
+                                                                                        ) : (
+                                                                                            <span className="flex items-center gap-1"><Clock className="size-2.5" /> Pending</span>
+                                                                                        )}
+                                                                                    </span>
+                                                                                </div>
+                                                                            </div>
+                                                                        ))}
+                                                                    </div>
+                                                                )}
+
+                                                                {/* Record Payment Button */}
+                                                                {remaining > 0 && (
+                                                                    <button
+                                                                        onClick={() => { setSelectedRoundRecord(record); setShowRoundPayDialog(true); }}
+                                                                        className="h-10 px-4 rounded-xl bg-primarycolor/10 hover:bg-primarycolor/20 text-primarycolor font-black text-[9px] uppercase tracking-widest flex items-center gap-2 transition-all active:scale-[0.97]"
+                                                                    >
+                                                                        <Banknote className="size-3.5" />
+                                                                        Record Payment
+                                                                    </button>
+                                                                )}
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </div>
+                                            </div>
+                                        );
+                                    });
+                                })()}
+                            </div>
+                        ) : (
+                            <div className="py-16 text-center border-2 border-dashed border-slate-100 rounded-[2rem] bg-slate-50/50">
+                                <Repeat className="size-10 mx-auto text-slate-200 mb-3" />
+                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">No round records found for this shop</p>
                             </div>
                         )}
                     </TabsContent>
@@ -1841,6 +2137,199 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, tota
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
+
+            {/* Round Record Payment Dialog */}
+            <Dialog open={showRoundPayDialog} onOpenChange={(o) => { if (!o) { setShowRoundPayDialog(false); setSelectedRoundRecord(null); } }}>
+                <DialogContent className="sm:max-w-lg w-[95vw] rounded-[2.5rem] border-4 border-primarycolor/5 bg-white p-0 overflow-hidden shadow-2xl max-h-[90vh] flex flex-col">
+                    <DialogHeader className="p-5 pb-3 border-b border-slate-100 shrink-0">
+                        <div className="flex items-center gap-3">
+                            <div className="size-11 rounded-2xl bg-primarycolor/10 flex items-center justify-center text-primarycolor shrink-0">
+                                <Banknote className="size-5" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <DialogTitle className="text-base font-black uppercase italic text-left leading-tight text-primarycolor">
+                                    Record Round Payment
+                                </DialogTitle>
+                                <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">
+                                    {selectedRoundRecord?.bookTitle} — {selectedRoundRecord?.shopName}
+                                </p>
+                            </div>
+                        </div>
+                    </DialogHeader>
+                    <RoundPaymentForm
+                        roundRecord={selectedRoundRecord}
+                        onSuccess={() => { setShowRoundPayDialog(false); setSelectedRoundRecord(null); router.refresh(); }}
+                        onCancel={() => { setShowRoundPayDialog(false); setSelectedRoundRecord(null); }}
+                    />
+                </DialogContent>
+            </Dialog>
+        </div>
+    );
+}
+
+function RoundPaymentForm({ roundRecord, onSuccess, onCancel }: {
+    roundRecord: RoundRecord | null;
+    onSuccess: () => void;
+    onCancel: () => void;
+}) {
+    const router = useRouter();
+    const [paymentType, setPaymentType] = useState("DIRECT");
+    const [amount, setAmount] = useState("");
+    const [memo, setMemo] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [checkBankName, setCheckBankName] = useState("");
+    const [checkHolder, setCheckHolder] = useState("");
+    const [checkAmount, setCheckAmount] = useState("");
+    const [checkDate, setCheckDate] = useState("");
+    const [checkMemo, setCheckMemo] = useState("");
+
+    const remaining = roundRecord
+        ? roundRecord.totalprice - roundRecord.payments.filter(p => p.status === "APPROVED").reduce((s, p) => s + (p.amount || 0), 0)
+        : 0;
+
+    const handleSubmit = async () => {
+        if (!roundRecord) return;
+        const parsedAmount = parseFloat(amount);
+        if (!parsedAmount || parsedAmount <= 0) {
+            toast.error("Enter a valid amount");
+            return;
+        }
+
+        setIsSubmitting(true);
+        try {
+            let checkId: number | null = null;
+
+            if (paymentType === "CHECK") {
+                if (!checkBankName.trim() || !checkHolder.trim()) {
+                    toast.error("Bank name and holder name are required");
+                    setIsSubmitting(false);
+                    return;
+                }
+                const checkRes = await createRoundCheck({
+                    username: checkHolder.trim(),
+                    bankname: checkBankName.trim(),
+                    amount: checkAmount || String(parsedAmount),
+                    recordeddate: checkDate || new Date().toISOString().split("T")[0],
+                    memo: checkMemo.trim(),
+                });
+                if (!checkRes.success) {
+                    toast.error(checkRes.error || "Failed to create check");
+                    setIsSubmitting(false);
+                    return;
+                }
+                checkId = checkRes.data.id;
+            }
+
+            const res = await createRoundPayment({
+                roundRecordId: roundRecord.id,
+                shopId: 0, // Will be set by the action based on roundRecord
+                amount: parsedAmount,
+                paymentType: paymentType as "DIRECT" | "CHECK",
+                checkId,
+                memo: memo || null,
+            });
+
+            if (res.success) {
+                toast.success("Payment recorded successfully");
+                onSuccess();
+            } else {
+                toast.error(res.error || "Failed to record payment");
+            }
+        } catch {
+            toast.error("Something went wrong");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    return (
+        <div className="flex-1 overflow-y-auto p-5 space-y-5">
+            {remaining > 0 && (
+                <div className="bg-primarycolor/[0.02] rounded-2xl border-2 border-primarycolor/5 p-4">
+                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Remaining</p>
+                    <p className="font-black text-xl text-primarycolor mt-1">{remaining.toLocaleString()} ETB</p>
+                </div>
+            )}
+
+            <div className="space-y-2">
+                <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Payment Type</p>
+                <Select value={paymentType} onValueChange={setPaymentType}>
+                    <SelectTrigger className="h-12 rounded-2xl border-2 border-primarycolor/5 bg-white font-bold text-sm">
+                        <SelectValue placeholder="Select type" />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-2xl border-2 border-primarycolor/10">
+                        <SelectItem value="DIRECT" className="font-bold">Direct Payment</SelectItem>
+                        <SelectItem value="CHECK" className="font-bold">Check</SelectItem>
+                    </SelectContent>
+                </Select>
+            </div>
+
+            <div className="space-y-2">
+                <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Amount (ETB)</p>
+                <Input
+                    type="number"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    placeholder="0"
+                    min={0}
+                    className="h-12 px-4 rounded-2xl border-2 border-primarycolor/5 bg-white font-bold text-base focus:border-primarycolor [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                />
+            </div>
+
+            <div className="space-y-2">
+                <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Memo (optional)</p>
+                <Input
+                    value={memo}
+                    onChange={(e) => setMemo(e.target.value)}
+                    placeholder="Add a note..."
+                    className="h-12 px-4 rounded-2xl border-2 border-primarycolor/5 bg-white font-bold text-sm focus:border-primarycolor"
+                />
+            </div>
+
+            {paymentType === "CHECK" && (
+                <div className="space-y-3 p-4 rounded-2xl bg-purple-50/50 border-2 border-purple-100">
+                    <p className="text-[8px] font-black text-purple-700 uppercase tracking-widest">Check Details</p>
+                    <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-2 col-span-2 sm:col-span-1">
+                            <p className="text-[7px] font-black text-muted-foreground uppercase tracking-widest">Bank Name</p>
+                            <Input value={checkBankName} onChange={(e) => setCheckBankName(e.target.value)} placeholder="e.g. Dashen Bank" className="h-11 px-4 rounded-2xl border-2 border-purple-200 bg-white font-bold text-sm" />
+                        </div>
+                        <div className="space-y-2 col-span-2 sm:col-span-1">
+                            <p className="text-[7px] font-black text-muted-foreground uppercase tracking-widest">Holder Name</p>
+                            <Input value={checkHolder} onChange={(e) => setCheckHolder(e.target.value)} placeholder="e.g. John Doe" className="h-11 px-4 rounded-2xl border-2 border-purple-200 bg-white font-bold text-sm" />
+                        </div>
+                        <div className="space-y-2 col-span-2 sm:col-span-1">
+                            <p className="text-[7px] font-black text-muted-foreground uppercase tracking-widest">Amount</p>
+                            <Input type="number" value={checkAmount} onChange={(e) => setCheckAmount(e.target.value)} placeholder="0" min={0} className="h-11 px-4 rounded-2xl border-2 border-purple-200 bg-white font-bold text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                        </div>
+                        <div className="space-y-2 col-span-2 sm:col-span-1">
+                            <p className="text-[7px] font-black text-muted-foreground uppercase tracking-widest">Date</p>
+                            <DateInput value={checkDate} onChange={(e) => setCheckDate(e.target.value)} className="h-11 px-4 rounded-2xl border-2 border-purple-200 bg-white font-bold text-sm" showECLabel={false} />
+                        </div>
+                    </div>
+                    <div className="space-y-2">
+                        <p className="text-[7px] font-black text-muted-foreground uppercase tracking-widest">Memo (optional)</p>
+                        <Input value={checkMemo} onChange={(e) => setCheckMemo(e.target.value)} placeholder="Check memo..." className="h-11 px-4 rounded-2xl border-2 border-purple-200 bg-white font-bold text-sm" />
+                    </div>
+                </div>
+            )}
+
+            <div className="flex items-center gap-3 pt-2">
+                <button
+                    onClick={handleSubmit}
+                    disabled={isSubmitting || !amount || parseFloat(amount) <= 0}
+                    className="flex-1 h-14 rounded-2xl bg-primarycolor hover:bg-secondarycolor text-white font-black text-sm shadow-lg shadow-primarycolor/20 flex items-center justify-center gap-2 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    {isSubmitting ? <Loader2 className="size-5 animate-spin" /> : <Banknote className="size-5" />}
+                    {isSubmitting ? "Recording..." : "Record Payment"}
+                </button>
+                <button
+                    onClick={onCancel}
+                    className="flex-1 h-14 rounded-2xl border-2 border-slate-200 font-black text-sm text-slate-600 hover:bg-slate-50 active:scale-[0.98] transition-all"
+                >
+                    Cancel
+                </button>
+            </div>
         </div>
     );
 }

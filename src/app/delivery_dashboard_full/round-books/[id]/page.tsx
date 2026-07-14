@@ -23,6 +23,13 @@ export default async function RoundBookDetailPage({
           book_sku: true,
         },
       },
+      editions: {
+        select: {
+          id: true,
+          edition_name: true,
+          selling_price: true,
+        },
+      },
       round_records: {
         where: { is_deleted: false },
         include: {
@@ -36,12 +43,15 @@ export default async function RoundBookDetailPage({
 
   if (!roundbook) notFound();
 
+  const unitPrice = roundbook.editions?.selling_price || 0;
+
   const data = {
     id: roundbook.id,
     status: roundbook.status,
     book: roundbook.book,
     starting_amount: roundbook.starting_amount ?? 0,
     returned_amount: roundbook.returned_amount ?? 0,
+    unitPrice,
     storeCount: roundbook.round_records.length,
     stores: roundbook.round_records.map((rr: any) => ({
       id: rr.id,

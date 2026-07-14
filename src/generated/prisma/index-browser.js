@@ -537,6 +537,7 @@ exports.Prisma.RoundbooksScalarFieldEnum = {
   id: 'id',
   status: 'status',
   bookId: 'bookId',
+  editionId: 'editionId',
   starting_amount: 'starting_amount',
   returned_amount: 'returned_amount',
   allocated: 'allocated',
