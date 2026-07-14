@@ -67,6 +67,13 @@ import { updateCheckStatus, updateCheckDetails } from "@/app/actions/check-actio
 import { updateShopPreviousDebt } from "@/app/actions/book-shop-actions";
 import { DateInput } from "@/components/ui/date-input";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
     AlertDialog,
     AlertDialogContent,
     AlertDialogHeader,
