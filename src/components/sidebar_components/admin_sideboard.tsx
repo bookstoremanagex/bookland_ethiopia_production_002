@@ -35,6 +35,7 @@ import {
   Receipt,
   FileCheck,
   Banknote,
+  CalendarDays,
 } from "lucide-react";
 
 import {
@@ -1659,6 +1660,38 @@ export function AdminAppSidebar({ accountId }: { accountId?: number }) {
                                 )}
                               />
                               <span>Round Info</span>
+                            </Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                        <SidebarMenuSubItem>
+                          <SidebarMenuSubButton
+                            asChild
+                            isActive={
+                              isMounted &&
+                              (activePath ===
+                                "/admin_dashboard/finance/daily-report" ||
+                                activePath.startsWith(
+                                  "/admin_dashboard/finance/daily-report/",
+                                ))
+                            }
+                            className={cn(
+                              "transition-all duration-300 rounded-lg h-9 px-4",
+                              "data-[active=true]:bg-primarycolor data-[active=true]:text-white data-[active=true]:font-black data-[active=true]:shadow-md data-[active=true]:shadow-primarycolor/20",
+                              "hover:bg-primarycolor/10 hover:text-primarycolor",
+                            )}
+                          >
+                            <Link href="/admin_dashboard/finance/daily-report">
+                              <CalendarDays
+                                className={cn(
+                                  "w-4 h-4",
+                                  isMounted &&
+                                    activePath ===
+                                      "/admin_dashboard/finance/daily-report"
+                                    ? "text-white"
+                                    : "text-primarycolor/70",
+                                )}
+                              />
+                              <span>Daily Report</span>
                             </Link>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
