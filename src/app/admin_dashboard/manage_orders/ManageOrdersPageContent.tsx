@@ -174,15 +174,20 @@ export default function ManageOrdersPageContent({
       accessorKey: "order_type",
       header: "Type",
       cell: ({ row }) => (
-        <div
-          className={cn(
-            "px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest w-fit",
-            row.original.order_type === "requested"
-              ? "bg-blue-100 text-blue-700"
-              : "bg-purple-100 text-purple-700",
-          )}
-        >
-          {row.original.order_type}
+        <div className="flex flex-col items-start gap-0.5">
+          <div
+            className={cn(
+              "px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest w-fit",
+              row.original.order_type === "requested"
+                ? "bg-blue-100 text-blue-700"
+                : "bg-purple-100 text-purple-700",
+            )}
+          >
+            {row.original.order_type}
+          </div>
+          <span className="text-[8px] text-muted-foreground font-semibold tracking-wider whitespace-nowrap">
+            {formatDate(new Date(row.original.createdAt))}
+          </span>
         </div>
       ),
     },
