@@ -43,6 +43,9 @@ export default function PrintContentDialog({ open, onOpenChange }: PrintContentD
     const [selectedStoreIds, setSelectedStoreIds] = useState<number[]>([]);
     const [fontSize, setFontSize] = useState<FontSize>("medium");
     const [editionLimit, setEditionLimit] = useState(false);
+    const [formalTable, setFormalTable] = useState(false);
+    const [showBoth, setShowBoth] = useState(true);
+    const [showExclusive, setShowExclusive] = useState(true);
     const [generating, setGenerating] = useState(false);
 
     useEffect(() => {
@@ -50,6 +53,9 @@ export default function PrintContentDialog({ open, onOpenChange }: PrintContentD
             setSelectedStoreIds([]);
             setFontSize("medium");
             setEditionLimit(false);
+            setFormalTable(false);
+            setShowBoth(true);
+            setShowExclusive(true);
             setStoreLoading(true);
             getStores().then(res => {
                 if (res.success) setStores(res.data as any[]);
@@ -57,6 +63,13 @@ export default function PrintContentDialog({ open, onOpenChange }: PrintContentD
             });
         }
     }, [open]);
+
+    useEffect(() => {
+        if (selectedStoreIds.length === 2) {
+            setShowBoth(true);
+            setShowExclusive(true);
+        }
+    }, [selectedStoreIds.length]);
 
     const toggleStore = (id: number) => {
         setSelectedStoreIds(prev => {
@@ -88,14 +101,26 @@ export default function PrintContentDialog({ open, onOpenChange }: PrintContentD
         const titleSizePx = fontSize === "extrasmall" ? "11" : fontSize === "small" ? "13" : fontSize === "medium" ? "15" : "18";
         const storeNameSizePx = fontSize === "extrasmall" ? "13" : fontSize === "small" ? "15" : fontSize === "medium" ? "18" : "22";
 
-        const storeColumns = inventories.map(inv => {
+        const now = new Date();
+        const gcDateStr = now.toLocaleDateString("en-US", {
+            weekday: "long", year: "numeric", month: "long", day: "numeric",
+        });
+
+        const eth = convertToEthiopian(now);
+        const ethWeekday = ETHIOPIAN_WEEKDAYS[now.getDay()];
+        const ethMonth = ETHIOPIAN_MONTHS[eth.month - 1] || "ጳጉሜ";
+        const ethDateStr = `${ethWeekday}, ${ethMonth} ${eth.day}, ${eth.year}`;
+
+        let bodyHtml = "";
+
+        if (inventories.length === 1) {
+            const inv = inventories[0];
             const groups: Record<string, any[]> = {};
             for (const item of inv.items) {
                 const key = item.bookedition?.books?.title || "Unknown Book";
                 if (!groups[key]) groups[key] = [];
                 groups[key].push(item);
             }
-
             const bookEntries = Object.entries(groups)
                 .map(([bookTitle, items]) => ({
                     bookTitle,
@@ -106,46 +131,226 @@ export default function PrintContentDialog({ open, onOpenChange }: PrintContentD
                 .sort((a, b) => a.bookTitle.localeCompare(b.bookTitle));
 
             if (bookEntries.length === 0) {
-                return `<div class="store-col">
-                    <div class="store-header">${escapeHtml(inv.storeName)}</div>
-                    <div class="empty-msg">No inventory to display</div>
-                </div>`;
+                bodyHtml = `<div style="color:#94a3b8;font-style:italic;padding:20px 0;text-align:center;">No inventory to display</div>`;
+            } else {
+                bodyHtml = `<div class="store-header">${escapeHtml(inv.storeName)}</div>
+                    ${bookEntries.map(entry => {
+                        if (editionLimit && entry.editions.length === 1) {
+                            const ed = entry.editions[0];
+                            const totalQty = ed.quantity ?? 0;
+                            return `<div class="book-group">
+                                <div class="book-title book-title-inline">${escapeHtml(entry.bookTitle)}${entry.author ? ` <span class="author">by ${escapeHtml(entry.author)}</span>` : ""} <span class="edition-tag">[${escapeHtml(ed.bookedition?.edition_name || "N/A")}]</span> <span class="edition-qty-inline">${totalQty}</span></div>
+                            </div>`;
+                        }
+                        return `<div class="book-group">
+                            <div class="book-title">${escapeHtml(entry.bookTitle)}${entry.author ? ` <span class="author">by ${escapeHtml(entry.author)}</span>` : ""}</div>
+                            ${entry.editions.map((ed: any) => `
+                                <div class="edition-row">
+                                    <span class="edition-name">${escapeHtml(ed.bookedition?.edition_name || "N/A")}</span>
+                                    <span class="edition-qty">${ed.quantity ?? 0}</span>
+                                </div>
+                            `).join("")}
+                        </div>`;
+                    }).join("")}`;
+            }
+        } else if (inventories.length === 2) {
+            const [storeA, storeB] = inventories;
+
+            const bookMapA: Record<string, { author: string; editions: any[] }> = {};
+            const bookMapB: Record<string, { author: string; editions: any[] }> = {};
+
+            for (const item of storeA.items) {
+                if ((item.quantity ?? 0) <= 0) continue;
+                const title = item.bookedition?.books?.title || "Unknown Book";
+                if (!bookMapA[title]) bookMapA[title] = { author: item.bookedition?.books?.author || "", editions: [] };
+                bookMapA[title].editions.push(item);
+            }
+            for (const item of storeB.items) {
+                if ((item.quantity ?? 0) <= 0) continue;
+                const title = item.bookedition?.books?.title || "Unknown Book";
+                if (!bookMapB[title]) bookMapB[title] = { author: item.bookedition?.books?.author || "", editions: [] };
+                bookMapB[title].editions.push(item);
             }
 
-            return `<div class="store-col">
-                <div class="store-header">${escapeHtml(inv.storeName)}</div>
-                ${bookEntries.map(entry => {
-                    if (editionLimit && entry.editions.length === 1) {
-                        const ed = entry.editions[0];
-                        const totalQty = ed.quantity ?? 0;
-                        return `<div class="book-group">
-                            <div class="book-title book-title-inline">${escapeHtml(entry.bookTitle)}${entry.author ? ` <span class="author">by ${escapeHtml(entry.author)}</span>` : ""} <span class="edition-tag">[${escapeHtml(ed.bookedition?.edition_name || "N/A")}]</span> <span class="edition-qty-inline">${totalQty}</span></div>
-                        </div>`;
+            const allTitles = [...new Set([...Object.keys(bookMapA), ...Object.keys(bookMapB)])].sort();
+            const commonTitles = allTitles.filter(t => bookMapA[t] && bookMapB[t]);
+            const exclusiveTitlesA = allTitles.filter(t => bookMapA[t] && !bookMapB[t]).sort();
+            const exclusiveTitlesB = allTitles.filter(t => !bookMapA[t] && bookMapB[t]).sort();
+            const exclusiveTitles = [...exclusiveTitlesA, ...exclusiveTitlesB];
+
+            if (formalTable) {
+                const fSize = Math.max(8, parseInt(fontSizePx) - 2);
+
+                const formatEditionsCell = (editions: any[]) => {
+                    const filtered = editions.filter((e: any) => (e.quantity ?? 0) > 0);
+                    if (filtered.length === 0) return `<span style="color:#cbd5e1;">—</span>`;
+                    return filtered.map((e: any) =>
+                        `<div style="font-size:${fSize}px;color:#334155;padding:1px 0;border-bottom:1px dotted #e2e8f0;line-height:1.5;">
+                            <span style="font-weight:600;">${escapeHtml(e.bookedition?.edition_name || "N/A")}</span>:
+                            <span style="font-weight:700;color:#6366f1;">${e.quantity ?? 0}</span>
+                        </div>`
+                    ).join("");
+                };
+
+                if (showBoth) {
+                    if (commonTitles.length > 0) {
+                        bodyHtml += `<div style="font-size:${storeNameSizePx}px;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;color:#6366f1;margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid #6366f1;">Books in Both Stores</div>
+                        <table style="width:100%;border-collapse:collapse;margin-bottom:24px;">
+                            <thead>
+                                <tr style="border-bottom:2px solid #cbd5e1;">
+                                    <th style="text-align:left;padding:4px 6px;font-size:${fSize - 2}px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;">#</th>
+                                    <th style="text-align:left;padding:4px 6px;font-size:${fSize - 2}px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;">Book</th>
+                                    <th style="text-align:left;padding:4px 6px;font-size:${fSize - 2}px;font-weight:700;color:#6366f1;text-transform:uppercase;letter-spacing:0.05em;">${escapeHtml(storeA.storeName)}</th>
+                                    <th style="text-align:left;padding:4px 6px;font-size:${fSize - 2}px;font-weight:700;color:#6366f1;text-transform:uppercase;letter-spacing:0.05em;">${escapeHtml(storeB.storeName)}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${commonTitles.map((title, idx) => {
+                                    const a = bookMapA[title];
+                                    const b = bookMapB[title];
+                                    const edA = a.editions.filter((e: any) => (e.quantity ?? 0) > 0);
+                                    const edB = b.editions.filter((e: any) => (e.quantity ?? 0) > 0);
+                                    return `<tr style="border-bottom:1px solid #f1f5f9;page-break-inside:avoid;">
+                                        <td style="padding:4px 6px;color:#94a3b8;font-weight:600;vertical-align:top;white-space:nowrap;font-size:${fSize}px;">${idx + 1}</td>
+                                        <td style="padding:4px 6px;vertical-align:top;">
+                                            <div style="font-weight:700;color:#0f172a;font-size:${fSize}px;">${escapeHtml(title)}</div>
+                                        </td>
+                                        <td style="padding:4px 6px;vertical-align:top;width:28%;">${formatEditionsCell(edA)}</td>
+                                        <td style="padding:4px 6px;vertical-align:top;width:28%;">${formatEditionsCell(edB)}</td>
+                                    </tr>`;
+                                }).join("")}
+                            </tbody>
+                        </table>`;
+                    } else {
+                        bodyHtml += `<div style="color:#94a3b8;font-style:italic;padding:12px 0;text-align:center;font-size:${fSize}px;margin-bottom:16px;">No books found in both stores</div>`;
                     }
-                    return `<div class="book-group">
-                        <div class="book-title">${escapeHtml(entry.bookTitle)}${entry.author ? ` <span class="author">by ${escapeHtml(entry.author)}</span>` : ""}</div>
-                        ${entry.editions.map((ed: any) => `
-                            <div class="edition-row">
-                                <span class="edition-name">${escapeHtml(ed.bookedition?.edition_name || "N/A")}</span>
-                                <span class="edition-qty">${ed.quantity ?? 0}</span>
-                            </div>
-                        `).join("")}
-                    </div>`;
-                }).join("")}
-            </div>`;
-        }).join("");
+                }
 
-        const colWidth = inventories.length === 1 ? "100%" : "50%";
+                if (showExclusive) {
+                    if (exclusiveTitles.length > 0) {
+                        bodyHtml += `<div style="font-size:${storeNameSizePx}px;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;color:#f59e0b;margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid #f59e0b;">Books in Only One Store</div>
+                        <table style="width:100%;border-collapse:collapse;">
+                            <thead>
+                                <tr style="border-bottom:2px solid #cbd5e1;">
+                                    <th style="text-align:left;padding:4px 6px;font-size:${fSize - 2}px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;">#</th>
+                                    <th style="text-align:left;padding:4px 6px;font-size:${fSize - 2}px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;">Book</th>
+                                    <th style="text-align:left;padding:4px 6px;font-size:${fSize - 2}px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;">Store</th>
+                                    <th style="text-align:left;padding:4px 6px;font-size:${fSize - 2}px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;">Edition</th>
+                                    <th style="text-align:left;padding:4px 6px;font-size:${fSize - 2}px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;">Count</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${exclusiveTitles.flatMap((title, idx) => {
+                                    const inA = !!bookMapA[title];
+                                    const book = inA ? bookMapA[title] : bookMapB[title];
+                                    const storeName = inA ? storeA.storeName : storeB.storeName;
+                                    const editions = book.editions.filter((e: any) => (e.quantity ?? 0) > 0);
+                                    return editions.map((ed: any) =>
+                                        `<tr style="border-bottom:1px solid #f1f5f9;page-break-inside:avoid;">
+                                            <td style="padding:4px 6px;color:#94a3b8;font-weight:600;vertical-align:middle;white-space:nowrap;font-size:${fSize}px;">${idx + 1}</td>
+                                            <td style="padding:4px 6px;vertical-align:middle;">
+                                                <div style="font-weight:700;color:#0f172a;font-size:${fSize}px;">${escapeHtml(title)}</div>
+                                            </td>
+                                            <td style="padding:4px 6px;vertical-align:middle;font-size:${fSize}px;color:#6366f1;font-weight:700;">${escapeHtml(storeName)}</td>
+                                            <td style="padding:4px 6px;vertical-align:middle;font-size:${fSize}px;color:#475569;">${escapeHtml(ed.bookedition?.edition_name || "N/A")}</td>
+                                            <td style="padding:4px 6px;vertical-align:middle;font-size:${fSize}px;font-weight:700;color:#6366f1;">${ed.quantity ?? 0}</td>
+                                        </tr>`
+                                    );
+                                }).join("")}
+                            </tbody>
+                        </table>`;
+                    }
+                }
+            } else {
+                const renderEditionsCell = (editions: any[]) => {
+                    if (editionLimit && editions.length === 1) {
+                        const ed = editions[0];
+                        return `<span style="font-weight:600;color:#475569;">${escapeHtml(ed.bookedition?.edition_name || "N/A")}</span> <span style="font-weight:700;color:#6366f1;background:#eef2ff;padding:0 8px;border-radius:999px;font-size:${fontSizePx}px;line-height:1.8;display:inline-block;">${ed.quantity ?? 0}</span>`;
+                    }
+                    return editions.map((ed: any) =>
+                        `<div style="display:flex;justify-content:space-between;align-items:center;padding:2px 0 2px 8px;border-bottom:1px solid #f1f5f9;">
+                            <span style="color:#475569;">${escapeHtml(ed.bookedition?.edition_name || "N/A")}</span>
+                            <span style="font-weight:700;color:#6366f1;background:#eef2ff;padding:0 8px;border-radius:999px;font-size:${fontSizePx}px;line-height:1.8;">${ed.quantity ?? 0}</span>
+                        </div>`
+                    ).join("");
+                };
 
-        const now = new Date();
-        const gcDateStr = now.toLocaleDateString("en-US", {
-            weekday: "long", year: "numeric", month: "long", day: "numeric",
-        });
+                if (showBoth) {
+                    if (commonTitles.length > 0) {
+                        bodyHtml += `<div style="font-size:${storeNameSizePx}px;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;color:#6366f1;margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid #6366f1;">Books in Both Stores</div>
+                        <table style="width:100%;border-collapse:collapse;margin-bottom:32px;">
+                            <thead>
+                                <tr style="border-bottom:2px solid #e2e8f0;">
+                                    <th style="text-align:left;padding:6px 10px;font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.03em;">#</th>
+                                    <th style="text-align:left;padding:6px 10px;font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.03em;">Book</th>
+                                    <th style="text-align:left;padding:6px 10px;font-size:9px;font-weight:700;color:#6366f1;text-transform:uppercase;letter-spacing:0.03em;">${escapeHtml(storeA.storeName)}</th>
+                                    <th style="text-align:left;padding:6px 10px;font-size:9px;font-weight:700;color:#6366f1;text-transform:uppercase;letter-spacing:0.03em;">${escapeHtml(storeB.storeName)}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${commonTitles.map((title, idx) => {
+                                    const a = bookMapA[title];
+                                    const b = bookMapB[title];
+                                    const author = a.author || b.author;
+                                    const allEdNames = [...new Set([
+                                        ...a.editions.map((e: any) => e.bookedition?.edition_name || "N/A"),
+                                        ...b.editions.map((e: any) => e.bookedition?.edition_name || "N/A"),
+                                    ])].sort();
+                                    const edA = a.editions.filter((e: any) => (e.quantity ?? 0) > 0);
+                                    const edB = b.editions.filter((e: any) => (e.quantity ?? 0) > 0);
+                                    return `<tr style="border-bottom:1px solid #f1f5f9;page-break-inside:avoid;">
+                                        <td style="padding:8px 10px;color:#94a3b8;font-weight:600;vertical-align:top;white-space:nowrap;">${idx + 1}</td>
+                                        <td style="padding:8px 10px;vertical-align:top;">
+                                            <div style="font-weight:700;color:#0f172a;font-size:${titleSizePx}px;">${escapeHtml(title)}</div>
+                                            ${author ? `<div style="font-weight:400;font-size:${fontSizePx}px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.03em;">${escapeHtml(author)}</div>` : ""}
+                                        </td>
+                                        <td style="padding:8px 10px;vertical-align:top;width:30%;">${renderEditionsCell(edA)}</td>
+                                        <td style="padding:8px 10px;vertical-align:top;width:30%;">${renderEditionsCell(edB)}</td>
+                                    </tr>`;
+                                }).join("")}
+                            </tbody>
+                        </table>`;
+                    } else {
+                        bodyHtml += `<div style="color:#94a3b8;font-style:italic;padding:20px 0;text-align:center;margin-bottom:24px;">No books found in both stores</div>`;
+                    }
+                }
 
-        const eth = convertToEthiopian(now);
-        const ethWeekday = ETHIOPIAN_WEEKDAYS[now.getDay()];
-        const ethMonth = ETHIOPIAN_MONTHS[eth.month - 1] || "ጳጉሜ";
-        const ethDateStr = `${ethWeekday}, ${ethMonth} ${eth.day}, ${eth.year}`;
+                if (showExclusive) {
+                    if (exclusiveTitles.length > 0) {
+                        bodyHtml += `<div style="font-size:${storeNameSizePx}px;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;color:#f59e0b;margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid #f59e0b;">Books in Only One Store</div>
+                        <table style="width:100%;border-collapse:collapse;">
+                            <thead>
+                                <tr style="border-bottom:2px solid #e2e8f0;">
+                                    <th style="text-align:left;padding:6px 10px;font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.03em;">#</th>
+                                    <th style="text-align:left;padding:6px 10px;font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.03em;">Book</th>
+                                    <th style="text-align:left;padding:6px 10px;font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.03em;">Store</th>
+                                    <th style="text-align:left;padding:6px 10px;font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.03em;">Editions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${exclusiveTitles.map((title, idx) => {
+                                    const inA = !!bookMapA[title];
+                                    const book = inA ? bookMapA[title] : bookMapB[title];
+                                    const storeName = inA ? storeA.storeName : storeB.storeName;
+                                    const editions = book.editions.filter((e: any) => (e.quantity ?? 0) > 0);
+                                    return `<tr style="border-bottom:1px solid #f1f5f9;page-break-inside:avoid;">
+                                        <td style="padding:8px 10px;color:#94a3b8;font-weight:600;vertical-align:top;white-space:nowrap;">${idx + 1}</td>
+                                        <td style="padding:8px 10px;vertical-align:top;">
+                                            <div style="font-weight:700;color:#0f172a;font-size:${titleSizePx}px;">${escapeHtml(title)}</div>
+                                            ${book.author ? `<div style="font-weight:400;font-size:${fontSizePx}px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.03em;">${escapeHtml(book.author)}</div>` : ""}
+                                        </td>
+                                        <td style="padding:8px 10px;vertical-align:top;">
+                                            <span style="font-weight:700;color:#6366f1;font-size:${fontSizePx}px;">${escapeHtml(storeName)}</span>
+                                        </td>
+                                        <td style="padding:8px 10px;vertical-align:top;">${renderEditionsCell(editions)}</td>
+                                    </tr>`;
+                                }).join("")}
+                            </tbody>
+                        </table>`;
+                    }
+                }
+            }
+        }
 
         const html = `<!DOCTYPE html>
 <html>
@@ -204,13 +409,6 @@ export default function PrintContentDialog({ open, onOpenChange }: PrintContentD
         }
         .page-header .date-badge .amharic {
             font-family: 'Noto Sans Ethiopic', system-ui, sans-serif;
-        }
-        .store-grid {
-            display: flex;
-            gap: 24px;
-        }
-        .store-col {
-            width: ${colWidth};
         }
         .store-header {
             font-size: ${storeNameSizePx}px;
@@ -280,12 +478,6 @@ export default function PrintContentDialog({ open, onOpenChange }: PrintContentD
             vertical-align: middle;
             margin-left: 4px;
         }
-        .empty-msg {
-            color: #94a3b8;
-            font-style: italic;
-            padding: 20px 0;
-            text-align: center;
-        }
         @media print {
             @page { margin: 12mm; size: A4; }
             body { padding: 0; }
@@ -300,9 +492,7 @@ export default function PrintContentDialog({ open, onOpenChange }: PrintContentD
             <span class="date-badge"><span class="label">ወ/ር</span> <span class="amharic">${escapeHtml(ethDateStr)}</span></span>
         </div>
     </div>
-    <div class="store-grid">
-        ${storeColumns}
-    </div>
+    ${bodyHtml}
     <script>
         window.onload = function() { setTimeout(function() { window.print(); }, 500); };
     <\/script>
@@ -335,17 +525,17 @@ export default function PrintContentDialog({ open, onOpenChange }: PrintContentD
                     </div>
                 </DialogHeader>
 
-                <div className="space-y-6 py-2">
+                <div className="space-y-3 py-1">
                     <div>
-                        <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1 block mb-3">
+                        <label className="text-[9px] font-black text-muted-foreground uppercase tracking-widest ml-1 block mb-1.5">
                             Stores (max 2)
                         </label>
                         {storeLoading ? (
-                            <div className="flex items-center justify-center py-6">
-                                <Loader2 className="size-5 animate-spin text-primarycolor/30" />
+                            <div className="flex items-center justify-center py-3">
+                                <Loader2 className="size-4 animate-spin text-primarycolor/30" />
                             </div>
                         ) : (
-                            <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+                            <div className="space-y-1 max-h-36 overflow-y-auto pr-1">
                                 {stores.map(store => {
                                     const selected = selectedStoreIds.includes(store.id);
                                     const disabled = !selected && selectedStoreIds.length >= 2;
@@ -353,7 +543,7 @@ export default function PrintContentDialog({ open, onOpenChange }: PrintContentD
                                         <label
                                             key={store.id}
                                             className={cn(
-                                                "flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all",
+                                                "flex items-center gap-2 p-2 rounded-lg border cursor-pointer transition-all",
                                                 selected
                                                     ? "border-primarycolor bg-primarycolor/5"
                                                     : disabled
@@ -366,10 +556,10 @@ export default function PrintContentDialog({ open, onOpenChange }: PrintContentD
                                                 checked={selected}
                                                 disabled={disabled}
                                                 onChange={() => toggleStore(store.id)}
-                                                className="size-4 accent-primarycolor"
+                                                className="size-3.5 accent-primarycolor"
                                             />
-                                            <Store className={cn("size-4 shrink-0", selected ? "text-primarycolor" : "text-slate-300")} />
-                                            <span className={cn("font-bold text-sm", selected ? "text-primarycolor" : "text-foreground")}>
+                                            <Store className={cn("size-3.5 shrink-0", selected ? "text-primarycolor" : "text-slate-300")} />
+                                            <span className={cn("font-bold text-xs", selected ? "text-primarycolor" : "text-foreground")}>
                                                 {store.name}
                                             </span>
                                         </label>
@@ -380,20 +570,20 @@ export default function PrintContentDialog({ open, onOpenChange }: PrintContentD
                     </div>
 
                     <div>
-                        <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1 block mb-3">
+                        <label className="text-[9px] font-black text-muted-foreground uppercase tracking-widest ml-1 block mb-1.5">
                             Font Size
                         </label>
-                        <div className="grid grid-cols-4 gap-2">
+                        <div className="grid grid-cols-4 gap-1.5">
                             {FONT_SIZE_OPTIONS.map(({ key, label }) => (
                                 <Button
                                     key={key}
                                     variant={fontSize === key ? "default" : "outline"}
                                     onClick={() => setFontSize(key)}
                                     className={cn(
-                                        "h-10 text-[10px] font-black uppercase tracking-widest rounded-xl",
+                                        "h-7 text-[9px] font-black uppercase tracking-widest rounded-lg",
                                         fontSize === key
-                                            ? "bg-primarycolor text-white shadow-lg shadow-primarycolor/20"
-                                            : "border-2 border-slate-100 text-muted-foreground hover:border-primarycolor/30"
+                                            ? "bg-primarycolor text-white"
+                                            : "border border-slate-100 text-muted-foreground hover:border-primarycolor/30"
                                     )}
                                 >
                                     {label}
@@ -402,13 +592,13 @@ export default function PrintContentDialog({ open, onOpenChange }: PrintContentD
                         </div>
                     </div>
 
-                    <label className="flex items-center justify-between p-4 rounded-xl border-2 border-slate-100 cursor-pointer hover:border-primarycolor/30 transition-colors">
+                    <label className="flex items-center justify-between p-2 rounded-lg border border-slate-100 cursor-pointer hover:border-primarycolor/30 transition-colors">
                         <div>
-                            <span className="font-black text-xs text-foreground">Edition Limit</span>
-                            <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mt-0.5">Single edition shown inline</p>
+                            <span className="font-black text-[10px] text-foreground">Edition Limit</span>
+                            <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest mt-0.5">Single edition shown inline</p>
                         </div>
                         <div className={cn(
-                            "relative w-11 h-6 rounded-full transition-colors",
+                            "relative w-9 h-5 rounded-full transition-colors",
                             editionLimit ? "bg-primarycolor" : "bg-slate-200"
                         )}>
                             <input
@@ -418,21 +608,68 @@ export default function PrintContentDialog({ open, onOpenChange }: PrintContentD
                                 className="sr-only"
                             />
                             <div className={cn(
-                                "absolute top-0.5 left-0.5 size-5 rounded-full bg-white shadow-md transition-transform",
-                                editionLimit && "translate-x-5"
+                                "absolute top-0.5 left-0.5 size-4 rounded-full bg-white shadow transition-transform",
+                                editionLimit && "translate-x-4"
                             )} />
                         </div>
                     </label>
 
+                    {selectedStoreIds.length === 2 && (
+                        <>
+                            <div className="space-y-1">
+                                <label className="flex items-center gap-2 p-2 rounded-lg border border-slate-100 cursor-pointer hover:border-primarycolor/30 transition-colors">
+                                    <input
+                                        type="checkbox"
+                                        checked={showBoth}
+                                        onChange={(e) => setShowBoth(e.target.checked)}
+                                        className="size-3.5 accent-primarycolor"
+                                    />
+                                    <span className="font-black text-[10px] text-foreground">Books in Both Stores</span>
+                                </label>
+                                <label className="flex items-center gap-2 p-2 rounded-lg border border-slate-100 cursor-pointer hover:border-primarycolor/30 transition-colors">
+                                    <input
+                                        type="checkbox"
+                                        checked={showExclusive}
+                                        onChange={(e) => setShowExclusive(e.target.checked)}
+                                        className="size-3.5 accent-primarycolor"
+                                    />
+                                    <span className="font-black text-[10px] text-foreground">Books in Only One Store</span>
+                                </label>
+                            </div>
+
+                            <label className="flex items-center justify-between p-2 rounded-lg border border-slate-100 cursor-pointer hover:border-primarycolor/30 transition-colors">
+                                <div>
+                                    <span className="font-black text-[10px] text-foreground">Formal Table</span>
+                                    <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest mt-0.5">Excel-style layout with smaller fonts</p>
+                                </div>
+                                <div className={cn(
+                                    "relative w-9 h-5 rounded-full transition-colors",
+                                    formalTable ? "bg-primarycolor" : "bg-slate-200"
+                                )}>
+                                    <input
+                                        type="checkbox"
+                                        checked={formalTable}
+                                        onChange={(e) => setFormalTable(e.target.checked)}
+                                        className="sr-only"
+                                    />
+                                    <div className={cn(
+                                        "absolute top-0.5 left-0.5 size-4 rounded-full bg-white shadow transition-transform",
+                                        formalTable && "translate-x-4"
+                                    )} />
+                                </div>
+                            </label>
+                        </>
+                    )}
+
                     <Button
                         onClick={handleGeneratePrint}
-                        disabled={selectedStoreIds.length === 0 || generating}
-                        className="w-full h-12 font-black text-xs uppercase tracking-widest bg-primarycolor shadow-lg shadow-primarycolor/20 rounded-xl gap-2"
+                        disabled={selectedStoreIds.length === 0 || generating || (selectedStoreIds.length === 2 && !showBoth && !showExclusive)}
+                        className="w-full h-10 font-black text-[10px] uppercase tracking-widest bg-primarycolor shadow shadow-primarycolor/20 rounded-lg gap-1.5"
                     >
                         {generating ? (
-                            <Loader2 className="size-4 animate-spin" />
+                            <Loader2 className="size-3.5 animate-spin" />
                         ) : (
-                            <Printer className="size-4" />
+                            <Printer className="size-3.5" />
                         )}
                         {generating ? "Preparing..." : "Generate & Print"}
                     </Button>

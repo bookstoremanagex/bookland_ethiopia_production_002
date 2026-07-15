@@ -5,7 +5,6 @@ import {
   BarChart,
   CartesianGrid,
   XAxis,
-  ResponsiveContainer,
 } from "recharts";
 import {
   Card,
@@ -48,25 +47,23 @@ export function FinancialChart({ data }: FinancialChartProps) {
       </CardHeader>
       <CardContent className="px-4 pb-6 pt-4 sm:px-8 sm:pb-8">
         <ChartContainer config={chartConfig} className="min-h-[280px] w-full sm:min-h-[300px]">
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-              <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-slate-200" />
-              <XAxis
-                dataKey="name"
-                tickLine={false}
-                tickMargin={10}
-                axisLine={false}
-                tick={{ fill: "#64748b", fontSize: 12 }}
-              />
-              <ChartTooltip cursor={{ fill: "rgba(64, 138, 113, 0.06)" }} content={<ChartTooltipContent indicator="dashed" />} />
-              <Bar
-                dataKey="orders"
-                fill="#408A71"
-                radius={[6, 6, 0, 0]}
-                name="Orders"
-              />
-            </BarChart>
-          </ResponsiveContainer>
+          <BarChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+            <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-slate-200" />
+            <XAxis
+              dataKey="name"
+              tickLine={false}
+              tickMargin={10}
+              axisLine={false}
+              tick={{ fill: "#64748b", fontSize: 12 }}
+            />
+            <ChartTooltip cursor={{ fill: "rgba(64, 138, 113, 0.06)" }} content={<ChartTooltipContent indicator="dashed" />} />
+            <Bar
+              dataKey="orders"
+              fill="#408A71"
+              radius={[6, 6, 0, 0]}
+              name="Orders"
+            />
+          </BarChart>
         </ChartContainer>
         <div className="mt-4 flex flex-wrap gap-4 border-t border-slate-100 pt-4 text-xs text-slate-600">
           <span className="inline-flex items-center gap-2">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { StatsOverview } from "./StatsOverview";
 import { FinancialChart } from "./FinancialChart";
 import { RecentActivity } from "./RecentActivity";
@@ -47,8 +47,7 @@ interface DashboardContainerProps {
   data: DashboardData;
 }
 
-function timeAgo(dateStr: string): string {
-  const now = Date.now();
+function timeAgo(dateStr: string, now: number): string {
   const then = new Date(dateStr).getTime();
   const diffMs = now - then;
   const mins = Math.floor(diffMs / 60000);
@@ -83,6 +82,8 @@ export default function DashboardContainer({ data }: DashboardContainerProps) {
   const { formatDate, formatShort, formatLong, formatDateTime } = useCalendar();
   const today = formatLong(new Date());
   const [selectedNotification, setSelectedNotification] = useState<NotificationItem | null>(null);
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => { setNow(Date.now()); }, []);
 
   return (
     <div className="space-y-8 lg:space-y-10">
@@ -164,7 +165,7 @@ export default function DashboardContainer({ data }: DashboardContainerProps) {
                   <div className="min-w-0 flex-1">
                     <div className="flex items-start justify-between gap-2">
                       <p className="text-sm font-semibold text-slate-900 leading-snug truncate">{n.title}</p>
-                      <span className="text-[9px] font-bold text-muted-foreground whitespace-nowrap shrink-0 mt-0.5">{timeAgo(n.createdAt)}</span>
+                      <span className="text-[9px] font-bold text-muted-foreground whitespace-nowrap shrink-0 mt-0.5">{timeAgo(n.createdAt, now)}</span>
                     </div>
                     <p className="text-xs text-slate-500 mt-0.5 line-clamp-1">{n.message}</p>
                   </div>
