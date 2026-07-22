@@ -166,7 +166,8 @@ export const ALL_DASHBOARD_MENUS: MenuItem[] = [
             { title: "Edition Table", icon: BookCopy, path: "finance/edition_table", menuName: "Finance - Edition Table" },
             { title: "Costs", icon: FileText, path: "finance/costs", menuName: "Finance - Costs" },
             { title: "Printing", icon: Printer, path: "finance/printing", menuName: "Finance - Printing" },
-            { title: "Round Info", icon: Repeat, path: "finance/round-info", menuName: "Finance - Round Info" }
+            { title: "Round Info", icon: Repeat, path: "finance/round-info", menuName: "Finance - Round Info" },
+            { title: "Payments Due", icon: BadgeDollarSign, path: "finance/payments-due", menuName: "Finance - Payments Due" }
         ]
     },
     { 
