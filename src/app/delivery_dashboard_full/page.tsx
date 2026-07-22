@@ -1,4 +1,4 @@
-import { ShoppingCart, CreditCard, UserRound, PackageOpen, Bell, Clock, ArrowRight } from "lucide-react";
+import { ShoppingCart, CreditCard, UserRound, PackageOpen, BadgeDollarSign, Bell, Clock, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { getUnreadCount, getNotifications } from "../actions/notification-actions";
 import { useCalendar } from "@/lib/calendar-context";
@@ -66,13 +66,13 @@ export default async function DeliveryDashboardHomePage() {
           ))}
 
           <Link
-            href="/delivery_dashboard_full/notifications"
+            href="/delivery_dashboard_full/payments-due"
             className="flex items-center justify-between w-full h-20 px-6 rounded-2xl bg-primarycolor shadow-md hover:shadow-lg active:scale-[0.98] transition-all"
           >
             <span className="font-black text-base uppercase tracking-widest text-white">
-              Notifications{unreadCount > 0 && <span className="text-amber-300 ml-1.5">({unreadCount})</span>}
+              Payments Due
             </span>
-            <Bell className="size-7 text-white/40" />
+            <BadgeDollarSign className="size-7 text-white/40" />
           </Link>
         </div>
 

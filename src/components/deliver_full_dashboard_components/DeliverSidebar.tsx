@@ -6,6 +6,7 @@ import {
   ShoppingBag,
   ClipboardList,
   BadgeDollarSign,
+  Bell,
   FileCheck,
   User,
   FileText,
@@ -54,7 +55,7 @@ import Link from "next/link";
 
 const menuItemsBefore = [
   { title: "Home", icon: Home, url: "/delivery_dashboard_full" },
-  { title: "Payments Due", icon: BadgeDollarSign, url: "/delivery_dashboard_full/payments-due" },
+  { title: "Notifications", icon: Bell, url: "/delivery_dashboard_full/notifications" },
   { title: "Payments", icon: Banknote, url: "/delivery_dashboard_full/payments" },
 ];
 
