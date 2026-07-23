@@ -48,7 +48,8 @@ export interface PaymentsDueData {
     totalDebt: number
 }
 
-export const columns: ColumnDef<PaymentsDueData>[] = [
+function buildColumns(managePaymentBasePath: string, shopBasePath: string): ColumnDef<PaymentsDueData>[] {
+  return [
   {
     accessorKey: "name",
     header: ({ column }) => {
@@ -183,19 +184,16 @@ export const columns: ColumnDef<PaymentsDueData>[] = [
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ row, table }) => {
+    cell: ({ row }) => {
       const shop = row.original
-      const basePath = (table.options.meta as any)?.managePaymentBasePath || managePaymentBasePath;
-      const shopPath = (table.options.meta as any)?.shopBasePath || shopBasePath;
-
       return (
         <div className="flex items-center gap-1">
-            <Link href={`${basePath}/${shop.id}/debts-payments`}>
+            <Link href={`${managePaymentBasePath}/${shop.id}/debts-payments`}>
                 <Button variant="ghost" size="icon" className="rounded-full hover:bg-emerald-500 hover:text-white transition-all" title="Payment Detail">
                     <FileText className="size-4" />
                 </Button>
             </Link>
-            <Link href={`${shopPath}/${shop.id}`}>
+            <Link href={`${shopBasePath}/${shop.id}`}>
                 <Button variant="ghost" size="icon" className="rounded-full hover:bg-primarycolor hover:text-white transition-all" title="Shop Profile">
                     <ExternalLink className="size-4" />
                 </Button>
@@ -204,7 +202,7 @@ export const columns: ColumnDef<PaymentsDueData>[] = [
       )
     },
   },
-]
+]}
 
 export default function PaymentsDueTable({ data, managePaymentBasePath = "/admin_dashboard/manage_payment", shopBasePath = "/admin_dashboard/book_shops" }: { data: PaymentsDueData[]; managePaymentBasePath?: string; shopBasePath?: string }) {
   const [sorting, setSorting] = React.useState<SortingState>([{ id: "totalDebt", desc: true }])
@@ -299,6 +297,11 @@ export default function PaymentsDueTable({ data, managePaymentBasePath = "/admin
     }
   }
 
+  const columns = React.useMemo(
+    () => buildColumns(managePaymentBasePath, shopBasePath),
+    [managePaymentBasePath, shopBasePath]
+  );
+
   const table = useReactTable({
     data,
     columns,
@@ -314,10 +317,6 @@ export default function PaymentsDueTable({ data, managePaymentBasePath = "/admin
       columnFilters,
       columnVisibility,
       rowSelection,
-    },
-    meta: {
-      managePaymentBasePath,
-      shopBasePath,
     },
   })
 
