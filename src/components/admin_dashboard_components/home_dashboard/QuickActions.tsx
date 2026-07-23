@@ -6,6 +6,7 @@ import {
   Printer,
   Repeat,
   ShoppingBag,
+  Banknote,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -28,6 +29,13 @@ const actions = [
     icon: BadgeDollarSign,
     color: "bg-secondarycolor/10 text-secondarycolor",
     badge: (props: QuickActionsProps) => props.pendingPayments,
+  },
+  {
+    label: "Payments Due",
+    href: "/admin_dashboard/finance/payments-due",
+    icon: Banknote,
+    color: "bg-orange-50 text-orange-700",
+    badge: () => null,
   },
   {
     label: "Check Dates",
