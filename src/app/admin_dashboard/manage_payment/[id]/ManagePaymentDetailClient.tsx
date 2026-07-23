@@ -1131,7 +1131,7 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
                                                 <span className="text-xs text-muted-foreground/70 font-bold italic">
                                                     {timeAgo(payment.createdAt)}
                                                 </span>
-                                                {payment.is_for_previous_debts ? (
+                                                {(payment as any).is_for_previous_debts ? (
                                                     <span className="flex items-center gap-1.5 text-amber-600 font-black">
                                                         <Clock className="size-3" />
                                                         For Previous
