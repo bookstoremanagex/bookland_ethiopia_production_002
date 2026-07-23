@@ -82,16 +82,28 @@ export default async function ManagePaymentDetailPage({ params }: { params: Prom
     });
 
     const previousDebt = shop.previousDebt || 0;
-    const orderDebt = shop.orders.reduce((sum: number, o: any) => sum + (o.total_amount || 0), 0);
-    const totalPaid = shop.payments
-        .filter((p: any) => p.status === "APPROVED")
-        .reduce((sum: number, p: any) => sum + (p.amount || 0), 0);
+    const orderDebt = shop.orders
+        .filter((o: any) => o.is_approved && o.order_type === "requested")
+        .reduce((sum: number, o: any) => sum + (o.total_amount || 0), 0);
+    const totalPaid = shop.orders
+        .filter((o: any) => o.is_approved && o.order_type === "requested")
+        .reduce((sum: number, o: any) => sum + (o.amount_paid || 0), 0);
     const totalDebt = orderDebt + previousDebt;
     const totalRemaining = totalDebt - totalPaid;
 
     const roundOrders = shop.orders.filter((o: any) => o.order_type === "on round");
-    const roundTotalAmount = roundOrders.reduce((sum: number, o: any) => sum + (o.total_amount || 0), 0);
-    const roundTotalPaid = roundOrders.reduce((sum: number, o: any) => sum + (o.amount_paid || 0), 0);
+    const roundOrderTotalAmount = roundOrders.reduce((sum: number, o: any) => sum + (o.total_amount || 0), 0);
+    const roundOrderTotalPaid = roundOrders.reduce((sum: number, o: any) => sum + (o.amount_paid || 0), 0);
+
+    const roundRecordTotalAmount = roundRecords.reduce((sum: number, r: any) => sum + (r.totalprice || 0), 0);
+    const roundRecordTotalPaid = roundRecords.reduce((sum: number, r: any) => {
+        const approvedPayments = (r.round_payments || []).filter((p: any) => p.status === "APPROVED");
+        return sum + approvedPayments.reduce((s: number, p: any) => s + (p.amount || 0), 0);
+    }, 0);
+
+    const combinedCount = roundOrders.length + roundRecords.length;
+    const combinedAmount = roundOrderTotalAmount + roundRecordTotalAmount;
+    const combinedPaid = roundOrderTotalPaid + roundRecordTotalPaid;
 
     return (
         <ManagePaymentDetailClient
@@ -111,6 +123,7 @@ export default async function ManagePaymentDetailPage({ params }: { params: Prom
                 payment_type: p.payment_type,
                 status: p.status,
                 checkId: p.checkId,
+                is_for_previous_debts: p.is_for_previous_debts ?? false,
                 check: p.check ? {
                     id: p.check.id,
                     bankname: p.check.bankname,
@@ -222,10 +235,10 @@ export default async function ManagePaymentDetailPage({ params }: { params: Prom
             totals={{ totalDebt, totalPaid, totalRemaining }}
             previousDebt={previousDebt}
             roundBooksTotals={{
-                orderCount: roundOrders.length,
-                totalAmount: roundTotalAmount,
-                totalPaid: roundTotalPaid,
-                remaining: roundTotalAmount - roundTotalPaid,
+                orderCount: combinedCount,
+                totalAmount: combinedAmount,
+                totalPaid: combinedPaid,
+                remaining: combinedAmount - combinedPaid,
             }}
         />
     );

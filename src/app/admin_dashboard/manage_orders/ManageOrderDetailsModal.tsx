@@ -133,7 +133,7 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
     const [editedEditionQtys, setEditedEditionQtys] = useState<Record<number, Record<number, number>>>({});
     const [advancedBookId, setAdvancedBookId] = useState<number | null>(null);
     const [removeConfirmOpen, setRemoveConfirmOpen] = useState(false);
-    const [shopDebt, setShopDebt] = useState<{ requestedDebt: number; roundDebt: number; totalDebt: number; totalPaid: number } | null>(null);
+    const [shopDebt, setShopDebt] = useState<{ orderDebt: number; roundDebt: number; previousDebt: number; lastOrderDebt: number; totalDebt: number } | null>(null);
 
     // Group order_items by bookId → collect unique books
     const uniqueBooks = React.useMemo(() => {
@@ -274,7 +274,7 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
             // Fetch shop total debt (orders + rounds)
             getShopTotalDebt(order.bookshopes?.id).then((res) => {
                 if (res.success) {
-                    setShopDebt({ requestedDebt: res.requestedDebt ?? 0, roundDebt: res.roundDebt ?? 0, totalDebt: res.totalDebt ?? 0, totalPaid: res.totalPaid ?? 0 });
+                    setShopDebt({ orderDebt: res.orderDebt ?? 0, roundDebt: res.roundDebt ?? 0, previousDebt: res.previousDebt ?? 0, lastOrderDebt: res.lastOrderDebt ?? 0, totalDebt: res.totalDebt ?? 0 });
                 }
             });
         }
@@ -760,11 +760,11 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                             </div>
                         </div>
                         {shopDebt && shopDebt.totalDebt > 0 && (
-                            <div className="mt-2 sm:mt-3 pt-2 sm:pt-3 border-t border-slate-100 flex items-center gap-2">
-                                <span className="text-[7px] sm:text-[8px] font-black text-muted-foreground uppercase tracking-widest">Total Remaining</span>
-                                <span className="font-black text-rose-600 text-[10px] sm:text-sm">{(shopDebt.totalDebt - shopDebt.totalPaid).toLocaleString()} ETB</span>
+                            <div className="mt-2 sm:mt-3 pt-2 sm:pt-3 border-t border-slate-100 flex flex-wrap items-center gap-x-3 gap-y-1">
+                                <span className="text-[7px] sm:text-[8px] font-black text-muted-foreground uppercase tracking-widest">Total Debt</span>
+                                <span className="font-black text-rose-600 text-[10px] sm:text-sm">{shopDebt.totalDebt.toLocaleString()} ETB</span>
                                 <span className="text-[8px] sm:text-[9px] font-bold text-muted-foreground">
-                                    (Requested: {shopDebt.requestedDebt.toLocaleString()} | On Round: {shopDebt.roundDebt.toLocaleString()})
+                                    Order: {shopDebt.orderDebt.toLocaleString()} | Last: {shopDebt.lastOrderDebt.toLocaleString()} | Round: {shopDebt.roundDebt.toLocaleString()} | Prev: {shopDebt.previousDebt.toLocaleString()}
                                 </span>
                             </div>
                         )}

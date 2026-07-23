@@ -711,21 +711,22 @@ model checks {
 }
 
 model payments {
-  id           Int        @id @default(autoincrement())
-  shopId       Int
-  amount       Float
-  payment_type String // "DIRECT" | "CHECK"
-  checkId      Int?
-  image        String?
-  status       String     @default("PENDING") // "PENDING" | "APPROVED"
-  is_deleted   Boolean    @default(false)
-  updatedAt    DateTime   @default(now())
-  createdAt    DateTime   @default(now())
-  deletedAt    DateTime   @default(now())
-  orderid      String?
-  memo         String?    @db.Text
-  shop         bookshopes @relation(fields: [shopId], references: [id])
-  check        checks?    @relation(fields: [checkId], references: [id])
+  id                    Int        @id @default(autoincrement())
+  shopId                Int
+  amount                Float
+  payment_type          String // "DIRECT" | "CHECK"
+  checkId               Int?
+  image                 String?
+  status                String     @default("PENDING") // "PENDING" | "APPROVED"
+  is_deleted            Boolean    @default(false)
+  updatedAt             DateTime   @default(now())
+  createdAt             DateTime   @default(now())
+  deletedAt             DateTime   @default(now())
+  orderid               String?
+  is_for_previous_debts Boolean?   @default(false)
+  memo                  String?    @db.Text
+  shop                  bookshopes @relation(fields: [shopId], references: [id])
+  check                 checks?    @relation(fields: [checkId], references: [id])
 }
 
 enum retail_purchase_status {

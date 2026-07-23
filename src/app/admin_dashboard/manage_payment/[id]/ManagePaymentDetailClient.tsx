@@ -42,6 +42,7 @@ import {
     BookOpen,
     Repeat,
     Landmark,
+    BarChart3,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -141,6 +142,7 @@ interface Payment {
     orderid: string | null;
     memo: string | null;
     image?: string | null;
+    is_for_previous_debts?: boolean | null;
 }
 
 interface ShopInfo {
@@ -702,6 +704,51 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
                     })()}
                 </div>
 
+                {/* Total Info Card — hidden on mobile */}
+                <div className="hidden sm:block bg-white rounded-[2rem] border-2 border-primarycolor/5 p-6 shadow-xl space-y-4">
+                    <div className="flex items-center gap-2 text-slate-700 mb-1">
+                        <FileText className="size-4" />
+                        <h3 className="text-[10px] font-black uppercase tracking-widest">Total Info</h3>
+                    </div>
+                    {(() => {
+                        const unpaidOrderDebt = orders
+                            .filter((o) => o.order_type === "requested" && o.is_approved)
+                            .reduce((sum, o) => sum + ((o.total_amount || 0) - (o.amount_paid || 0)), 0);
+                        const roundOrderUnpaid = orders
+                            .filter((o) => o.order_type === "on round")
+                            .reduce((sum, o) => sum + ((o.total_amount || 0) - (o.amount_paid || 0)), 0);
+                        const roundRecordUnpaid = roundRecords.reduce((sum, r) => {
+                            const approvedPaid = (r.payments || [])
+                                .filter((p) => p.status === "APPROVED")
+                                .reduce((s, p) => s + (p.amount || 0), 0);
+                            return sum + ((r.totalprice || 0) - approvedPaid);
+                        }, 0);
+                        const unpaidRoundDebt = roundOrderUnpaid + roundRecordUnpaid;
+                        return (
+                            <div className="space-y-3">
+                                <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-slate-100 border border-slate-200">
+                                    <span className="text-[10px] font-bold text-slate-600">Previous Debt</span>
+                                    <span className="text-sm font-black text-slate-800">{previousDebt.toLocaleString()} ETB</span>
+                                </div>
+                                <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-amber-50 border border-amber-100">
+                                    <span className="text-[10px] font-bold text-amber-600">Unpaid Order Debt</span>
+                                    <span className="text-sm font-black text-amber-700">{unpaidOrderDebt.toLocaleString()} ETB</span>
+                                </div>
+                                <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-rose-50 border border-rose-100">
+                                    <span className="text-[10px] font-bold text-rose-600">Unpaid Round Debt</span>
+                                    <span className="text-sm font-black text-rose-700">{unpaidRoundDebt.toLocaleString()} ETB</span>
+                                </div>
+                                <div className="pt-2 border-t border-slate-100">
+                                    <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-primarycolor/5">
+                                        <span className="text-[10px] font-bold text-primarycolor">Total Unpaid</span>
+                                        <span className="text-sm font-black text-primarycolor">{(previousDebt + unpaidOrderDebt + unpaidRoundDebt).toLocaleString()} ETB</span>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    })()}
+                </div>
+
                 {/* Round Books Summary Card — Accordion on mobile, regular card on desktop */}
                 <div className="bg-white rounded-[2rem] border-2 border-primarycolor/5 p-0 sm:p-6 shadow-xl">
                     {/* Desktop: regular card */}
@@ -763,6 +810,214 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
                         </Accordion>
                     </div>
                 </div>
+
+                {/* Payment Info Card */}
+                <div className="lg:col-span-3 bg-white rounded-[2rem] border-2 border-primarycolor/5 p-0 sm:p-6 shadow-xl">
+                    <div className="hidden sm:block space-y-4">
+                        <div className="flex items-center gap-2 text-emerald-700 mb-1">
+                            <DollarSign className="size-4" />
+                            <h3 className="text-[10px] font-black uppercase tracking-widest">Payment Info</h3>
+                        </div>
+                        {(() => {
+                            const isPaymentApproved = (p: typeof payments[0]) => {
+                                if (p.status !== "APPROVED") return false;
+                                if (p.payment_type === "CHECK" && p.check?.status !== "CLEARED") return false;
+                                return true;
+                            };
+                            const requestedOrderIds = new Set(
+                                orders.filter((o) => o.order_type === "requested").map((o) => String(o.id))
+                            );
+                            const roundOrderIds = new Set(
+                                orders.filter((o) => o.order_type === "on round").map((o) => String(o.id))
+                            );
+                            const orderPaymentsRequested = payments.filter((p) => {
+                                if (!isPaymentApproved(p)) return false;
+                                const rawId = p.orderid ? p.orderid.replace(/^ORD-/i, "") : null;
+                                return rawId ? requestedOrderIds.has(rawId) : false;
+                            });
+                            const orderPaymentsRound = payments.filter((p) => {
+                                if (!isPaymentApproved(p)) return false;
+                                const rawId = p.orderid ? p.orderid.replace(/^ORD-/i, "") : null;
+                                return rawId ? roundOrderIds.has(rawId) : false;
+                            });
+                            const roundPaymentsApproved = roundPayments.filter((p) => {
+                                if (p.status !== "APPROVED") return false;
+                                if (p.payment_type === "CHECK" && p.check?.status !== "CLEARED") return false;
+                                return true;
+                            });
+                            const payReqCount = orderPaymentsRequested.length;
+                            const payReqAmount = orderPaymentsRequested.reduce((s, p) => s + (p.amount || 0), 0);
+                            const payRoundCount = orderPaymentsRound.length + roundPaymentsApproved.length;
+                            const payRoundAmount = orderPaymentsRound.reduce((s, p) => s + (p.amount || 0), 0) +
+                                roundPaymentsApproved.reduce((s, p) => s + (p.amount || 0), 0);
+                            return (
+                                <div className="space-y-3">
+                                    <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-emerald-50 border border-emerald-100">
+                                        <span className="text-[10px] font-bold text-emerald-600">Orders (Requested)</span>
+                                        <div className="text-right">
+                                            <span className="text-sm font-black text-emerald-700">{payReqCount} payments</span>
+                                            <span className="text-[9px] font-bold text-emerald-500 ml-2">{payReqAmount.toLocaleString()} ETB</span>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-indigo-50 border border-indigo-100">
+                                        <span className="text-[10px] font-bold text-indigo-600">Rounds</span>
+                                        <div className="text-right">
+                                            <span className="text-sm font-black text-indigo-700">{payRoundCount} payments</span>
+                                            <span className="text-[9px] font-bold text-indigo-500 ml-2">{payRoundAmount.toLocaleString()} ETB</span>
+                                        </div>
+                                    </div>
+                                    <div className="pt-2 border-t border-slate-100">
+                                        <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-primarycolor/5">
+                                            <span className="text-[10px] font-bold text-primarycolor">Total Approved</span>
+                                            <span className="text-sm font-black text-primarycolor">{(payReqAmount + payRoundAmount).toLocaleString()} ETB</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            )
+                        })()}
+                    </div>
+                    <div className="sm:hidden">
+                        <Accordion type="single" collapsible>
+                            <AccordionItem value="payment-info" className="border-0">
+                                <AccordionTrigger className="px-5 py-4 hover:no-underline [&>svg]:text-emerald-600">
+                                    <div className="flex items-center gap-2 text-emerald-700">
+                                        <DollarSign className="size-4" />
+                                        <span className="text-[10px] font-black uppercase tracking-widest">Payment Info</span>
+                                    </div>
+                                </AccordionTrigger>
+                                <AccordionContent className="px-5 pb-5">
+                                    {(() => {
+                                        const isPaymentApproved = (p: typeof payments[0]) => {
+                                            if (p.status !== "APPROVED") return false;
+                                            if (p.payment_type === "CHECK" && p.check?.status !== "CLEARED") return false;
+                                            return true;
+                                        };
+                                        const requestedOrderIds = new Set(
+                                            orders.filter((o) => o.order_type === "requested").map((o) => String(o.id))
+                                        );
+                                        const roundOrderIds = new Set(
+                                            orders.filter((o) => o.order_type === "on round").map((o) => String(o.id))
+                                        );
+                                        const orderPaymentsRequested = payments.filter((p) => {
+                                            if (!isPaymentApproved(p)) return false;
+                                            const rawId = p.orderid ? p.orderid.replace(/^ORD-/i, "") : null;
+                                            return rawId ? requestedOrderIds.has(rawId) : false;
+                                        });
+                                        const orderPaymentsRound = payments.filter((p) => {
+                                            if (!isPaymentApproved(p)) return false;
+                                            const rawId = p.orderid ? p.orderid.replace(/^ORD-/i, "") : null;
+                                            return rawId ? roundOrderIds.has(rawId) : false;
+                                        });
+                                        const roundPaymentsApproved = roundPayments.filter((p) => {
+                                            if (p.status !== "APPROVED") return false;
+                                            if (p.payment_type === "CHECK" && p.check?.status !== "CLEARED") return false;
+                                            return true;
+                                        });
+                                        const payReqCount = orderPaymentsRequested.length;
+                                        const payReqAmount = orderPaymentsRequested.reduce((s, p) => s + (p.amount || 0), 0);
+                                        const payRoundCount = orderPaymentsRound.length + roundPaymentsApproved.length;
+                                        const payRoundAmount = orderPaymentsRound.reduce((s, p) => s + (p.amount || 0), 0) +
+                                            roundPaymentsApproved.reduce((s, p) => s + (p.amount || 0), 0);
+                                        return (
+                                            <div className="space-y-2.5">
+                                                <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-emerald-50 border border-emerald-100">
+                                                    <span className="text-[10px] font-bold text-emerald-600">Orders (Requested)</span>
+                                                    <div className="text-right">
+                                                        <span className="text-sm font-black text-emerald-700">{payReqCount} payments</span>
+                                                        <span className="text-[9px] font-bold text-emerald-500 ml-2">{payReqAmount.toLocaleString()} ETB</span>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-indigo-50 border border-indigo-100">
+                                                    <span className="text-[10px] font-bold text-indigo-600">Rounds</span>
+                                                    <div className="text-right">
+                                                        <span className="text-sm font-black text-indigo-700">{payRoundCount} payments</span>
+                                                        <span className="text-[9px] font-bold text-indigo-500 ml-2">{payRoundAmount.toLocaleString()} ETB</span>
+                                                    </div>
+                                                </div>
+                                                <div className="pt-2 border-t border-slate-100">
+                                                    <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-primarycolor/5">
+                                                        <span className="text-[10px] font-bold text-primarycolor">Total Approved</span>
+                                                        <span className="text-sm font-black text-primarycolor">{(payReqAmount + payRoundAmount).toLocaleString()} ETB</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )
+                                    })()}
+                                </AccordionContent>
+                            </AccordionItem>
+                        </Accordion>
+                    </div>
+                </div>
+
+                {/* Total Info Card — Mobile accordion */}
+                <div className="sm:hidden bg-white rounded-[2rem] border-2 border-primarycolor/5 shadow-xl">
+                    <Accordion type="single" collapsible>
+                        <AccordionItem value="total-info" className="border-0">
+                            <AccordionTrigger className="px-5 py-4 hover:no-underline [&>svg]:text-slate-600">
+                                <div className="flex items-center gap-2 text-slate-700">
+                                    <FileText className="size-4" />
+                                    <span className="text-[10px] font-black uppercase tracking-widest">Total Info</span>
+                                </div>
+                            </AccordionTrigger>
+                            <AccordionContent className="px-5 pb-5">
+                                {(() => {
+                                    const unpaidOrderDebt = orders
+                                        .filter((o) => o.order_type === "requested" && o.is_approved)
+                                        .reduce((sum, o) => sum + ((o.total_amount || 0) - (o.amount_paid || 0)), 0);
+                                    const roundOrderUnpaid = orders
+                                        .filter((o) => o.order_type === "on round")
+                                        .reduce((sum, o) => sum + ((o.total_amount || 0) - (o.amount_paid || 0)), 0);
+                                    const roundRecordUnpaid = roundRecords.reduce((sum, r) => {
+                                        const approvedPaid = (r.payments || [])
+                                            .filter((p) => p.status === "APPROVED")
+                                            .reduce((s, p) => s + (p.amount || 0), 0);
+                                        return sum + ((r.totalprice || 0) - approvedPaid);
+                                    }, 0);
+                                    const unpaidRoundDebt = roundOrderUnpaid + roundRecordUnpaid;
+                                    return (
+                                        <div className="space-y-2.5">
+                                            <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-slate-100 border border-slate-200">
+                                                <span className="text-[10px] font-bold text-slate-600">Previous Debt</span>
+                                                <span className="text-sm font-black text-slate-800">{previousDebt.toLocaleString()} ETB</span>
+                                            </div>
+                                            <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-amber-50 border border-amber-100">
+                                                <span className="text-[10px] font-bold text-amber-600">Unpaid Order Debt</span>
+                                                <span className="text-sm font-black text-amber-700">{unpaidOrderDebt.toLocaleString()} ETB</span>
+                                            </div>
+                                            <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-rose-50 border border-rose-100">
+                                                <span className="text-[10px] font-bold text-rose-600">Unpaid Round Debt</span>
+                                                <span className="text-sm font-black text-rose-700">{unpaidRoundDebt.toLocaleString()} ETB</span>
+                                            </div>
+                                            <div className="pt-2 border-t border-slate-100">
+                                                <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-primarycolor/5">
+                                                    <span className="text-[10px] font-bold text-primarycolor">Total Unpaid</span>
+                                                    <span className="text-sm font-black text-primarycolor">{(previousDebt + unpaidOrderDebt + unpaidRoundDebt).toLocaleString()} ETB</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )
+                                })()}
+                            </AccordionContent>
+                        </AccordionItem>
+                    </Accordion>
+                </div>
+            </div>
+
+            {/* Debts & Payments Detail Button */}
+            <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-2 text-slate-700">
+                    <BarChart3 className="size-5" />
+                    <h2 className="text-lg md:text-xl font-black uppercase tracking-tight italic">
+                        Debts &amp; Payments <span className="text-secondarycolor not-italic">Detail</span>
+                    </h2>
+                </div>
+                <Link
+                    href={`/admin_dashboard/manage_payment/${shop.id}/debts-payments`}
+                    className="inline-flex items-center gap-2 h-12 px-6 rounded-2xl bg-primarycolor hover:bg-secondarycolor text-white font-black text-[10px] uppercase tracking-widest shadow-lg shadow-primarycolor/20 transition-all active:scale-[0.97]"
+                >
+                    <FileText className="size-4" />
+                    View Full Breakdown
+                </Link>
             </div>
 
             {/* Tabs: Payment History / Orders */}
@@ -876,7 +1131,12 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
                                                 <span className="text-xs text-muted-foreground/70 font-bold italic">
                                                     {timeAgo(payment.createdAt)}
                                                 </span>
-                                                {payment.orderid ? (() => {
+                                                {payment.is_for_previous_debts ? (
+                                                    <span className="flex items-center gap-1.5 text-amber-600 font-black">
+                                                        <Clock className="size-3" />
+                                                        For Previous
+                                                    </span>
+                                                ) : payment.orderid ? (() => {
                                                     const rawId = payment.orderid.replace(/^ORD-/i, "");
                                                     const matchedOrder = orders.find((o) => String(o.id) === rawId || String(o.id) === payment.orderid);
                                                     return matchedOrder ? (

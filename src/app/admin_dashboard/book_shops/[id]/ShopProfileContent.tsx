@@ -48,11 +48,13 @@ import RecordPaymentModal from "./RecordPaymentModal";
 interface ShopProfileContentProps {
   shop: any;
   userRole: string | null;
+  totalDebt?: number;
 }
 
 export default function ShopProfileContent({
   shop: initialShop,
   userRole,
+  totalDebt = 0,
 }: ShopProfileContentProps) {
   const { formatDate, formatShort, formatLong, formatDateTime } = useCalendar();
   const [shop, setShop] = useState(initialShop);
@@ -239,18 +241,10 @@ export default function ShopProfileContent({
             </div>
             <div className="min-w-0">
               <p className="text-[8px] md:text-[10px] font-black uppercase tracking-widest text-muted-foreground leading-none">
-                Unpaid Amount
+                Total Debt
               </p>
               <p className="text-lg md:text-2xl font-black mt-1 text-rose-600 tabular-nums">
-                {(shop.orders || [])
-                  .reduce(
-                    (acc: any, order: any) =>
-                      acc +
-                      ((order.total_amount || 0) -
-                        (order.amount_paid || 0)),
-                    0,
-                  )
-                  .toLocaleString()}{" "}
+                {totalDebt.toLocaleString()}{" "}
                 <span className="text-[9px] md:text-[10px] font-bold text-muted-foreground">ETB</span>
               </p>
             </div>

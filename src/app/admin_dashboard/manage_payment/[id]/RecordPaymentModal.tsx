@@ -69,6 +69,7 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName, 
     const [amount, setAmount] = useState<string>("");
     const [memo, setMemo] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isForPreviousDebts, setIsForPreviousDebts] = useState(false);
 
     const [checks, setChecks] = useState<any[]>([]);
     const [openCheckSearch, setOpenCheckSearch] = useState(false);
@@ -195,6 +196,7 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName, 
                 checkId: paymentType === "CHECK" ? selectedCheck?.id || null : null,
                 orderid: orderId ? String(orderId) : null,
                 memo: memo || null,
+                is_for_previous_debts: isForPreviousDebts || null,
             });
 
             if (res.success) {
@@ -205,6 +207,7 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName, 
                 setSelectedCheck(null);
                 setPaymentType("DIRECT");
                 setShowNewCheck(false);
+                setIsForPreviousDebts(false);
                 router.refresh();
             } else {
                 toast.error(res.error);
@@ -253,14 +256,47 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName, 
                             Payment Type
                         </label>
                         <Select value={paymentType} onValueChange={setPaymentType}>
-                            <SelectTrigger className="h-12 md:h-14 rounded-xl md:rounded-2xl border-2 border-slate-100 font-bold text-sm md:text-base">
-                                <SelectValue placeholder="Select type" />
+                            <SelectTrigger className="h-14 md:h-16 rounded-2xl border-2 border-slate-200 bg-white font-bold text-sm md:text-base shadow-sm hover:border-slate-300 data-[state=open]:border-primarycolor data-[state=open]:ring-2 data-[state=open]:ring-primarycolor/10 transition-all px-5">
+                                <SelectValue placeholder="Select payment type" />
                             </SelectTrigger>
-                            <SelectContent className="rounded-2xl border-2 border-primarycolor/10">
-                                <SelectItem value="DIRECT" className="font-bold">Direct Payment</SelectItem>
-                                <SelectItem value="CHECK" className="font-bold">Check</SelectItem>
+                            <SelectContent className="rounded-2xl border-2 border-slate-200 shadow-2xl bg-white p-1.5">
+                                <SelectItem value="DIRECT" className="rounded-xl h-12 font-bold text-sm data-[state=checked]:bg-emerald-50 data-[state=checked]:text-emerald-700 data-[highlighted]:bg-slate-50 px-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="size-7 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
+                                            <Banknote className="size-3.5" />
+                                        </div>
+                                        <span>Direct Payment</span>
+                                    </div>
+                                </SelectItem>
+                                <SelectItem value="CHECK" className="rounded-xl h-12 font-bold text-sm data-[state=checked]:bg-purple-50 data-[state=checked]:text-purple-700 data-[highlighted]:bg-slate-50 px-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="size-7 rounded-lg bg-purple-100 flex items-center justify-center text-purple-600 shrink-0">
+                                            <Landmark className="size-3.5" />
+                                        </div>
+                                        <span>Check</span>
+                                    </div>
+                                </SelectItem>
                             </SelectContent>
                         </Select>
+                    </div>
+
+                    <div className="flex items-center gap-3 p-4 rounded-2xl bg-amber-50 border-2 border-amber-200">
+                        <div
+                            onClick={() => setIsForPreviousDebts(!isForPreviousDebts)}
+                            className={cn(
+                                "relative w-11 h-6 rounded-full transition-colors cursor-pointer shrink-0",
+                                isForPreviousDebts ? "bg-amber-500" : "bg-slate-300"
+                            )}
+                        >
+                            <div className={cn(
+                                "absolute top-0.5 left-0.5 size-5 rounded-full bg-white shadow-sm transition-transform",
+                                isForPreviousDebts && "translate-x-5"
+                            )} />
+                        </div>
+                        <div className="min-w-0">
+                            <p className="text-[10px] font-black uppercase tracking-widest text-amber-800">For Previous Debt</p>
+                            <p className="text-[8px] font-bold text-amber-600/70">Mark this payment as settling previous debt</p>
+                        </div>
                     </div>
 
                     <div className="space-y-2">

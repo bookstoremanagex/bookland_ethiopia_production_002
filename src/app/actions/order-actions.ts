@@ -36,41 +36,64 @@ export async function getShopTotalDebt(shopId: number) {
             where: { id: shopId },
             select: { previousDebt: true },
         });
-        const previousDebt = shop?.previousDebt || 0;
+        const previousDebtAmount = shop?.previousDebt || 0;
 
         const orders = await (prisma as any).orders.findMany({
             where: { bookShopId: shopId, is_deleted: false },
-            select: { total_amount: true, order_type: true },
+            select: { id: true, total_amount: true, amount_paid: true, order_type: true, is_approved: true, createdAt: true },
         });
 
-        // Total paid = sum of all approved payments (same as manage payment page)
-        const approvedPayments = await (prisma as any).payments.findMany({
-            where: { shopId, is_deleted: false, status: "APPROVED" },
+        const roundRecords = await (prisma as any).roundrecords.findMany({
+            where: { bookshop_id: shopId, is_deleted: false },
+            include: {
+                round_payments: {
+                    where: { is_deleted: false, status: "APPROVED" },
+                    select: { amount: true },
+                },
+            },
+        });
+
+        const approvedPrevPayments = await (prisma as any).payments.findMany({
+            where: { shopId, is_deleted: false, is_for_previous_debts: true, status: "APPROVED" },
             select: { amount: true },
         });
-        const totalPaid = approvedPayments.reduce((sum: number, p: any) => sum + (p.amount || 0), 0);
 
-        // Total debt = sum of all order totals + previous debt
-        const orderTotal = orders.reduce((sum: number, o: any) => sum + (o.total_amount || 0), 0);
-        const totalDebt = orderTotal + previousDebt;
-        const totalRemaining = totalDebt - totalPaid;
+        let orderDebtTotal = 0;
+        let roundDebt = 0;
 
-        // Breakdown by order type
-        let requestedTotal = 0;
-        let roundTotal = 0;
-        for (const o of orders) {
-            if (o.order_type === "on round") {
-                roundTotal += (o.total_amount || 0);
-            } else {
-                requestedTotal += (o.total_amount || 0);
+        const requestedOrders = orders.filter((o: any) => o.order_type === "requested");
+        const lastRequestedOrder = [...requestedOrders].sort(
+            (a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        )[0];
+
+        for (const order of orders) {
+            const unpaid = (order.total_amount || 0) - (order.amount_paid || 0);
+            if (unpaid <= 0) continue;
+            if (order.order_type === "requested" && order.is_approved) {
+                orderDebtTotal += unpaid;
+            } else if (order.order_type === "on round") {
+                roundDebt += unpaid;
             }
         }
 
-        // Proportional paid per type (if totalOrderTotal > 0)
-        const requestedDebt = requestedTotal > 0 ? Math.max(0, requestedTotal - (totalPaid * (requestedTotal / orderTotal))) : 0;
-        const roundDebt = roundTotal > 0 ? Math.max(0, roundTotal - (totalPaid * (roundTotal / orderTotal))) : 0;
+        for (const record of roundRecords || []) {
+            const paid = (record.round_payments || []).reduce((s: number, p: any) => s + (p.amount || 0), 0);
+            const remaining = (record.totalprice || 0) - paid;
+            if (remaining > 0) roundDebt += remaining;
+        }
 
-        return { success: true, requestedDebt, roundDebt, totalDebt, totalPaid, previousDebt };
+        const lastOrderDebt = lastRequestedOrder
+            ? Math.max(0, (lastRequestedOrder.total_amount || 0) - (lastRequestedOrder.amount_paid || 0))
+            : 0;
+        const lastIncludedInOrderDebt = lastRequestedOrder?.is_approved && lastOrderDebt > 0;
+        const orderDebt = Math.max(0, orderDebtTotal - (lastIncludedInOrderDebt ? lastOrderDebt : 0));
+
+        const approvedPrevPaid = approvedPrevPayments.reduce((s: number, p: any) => s + (p.amount || 0), 0);
+        const previousDebtRemaining = Math.max(0, previousDebtAmount - approvedPrevPaid);
+
+        const totalDebt = Math.max(0, orderDebt + roundDebt + previousDebtRemaining + lastOrderDebt);
+
+        return { success: true, orderDebt, roundDebt, previousDebt: previousDebtRemaining, lastOrderDebt, totalDebt };
     } catch (error) {
         console.error("Error fetching shop total debt:", error);
         return { success: false, error: "Failed to fetch total debt" };

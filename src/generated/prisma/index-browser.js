@@ -689,6 +689,7 @@ exports.Prisma.PaymentsScalarFieldEnum = {
   createdAt: 'createdAt',
   deletedAt: 'deletedAt',
   orderid: 'orderid',
+  is_for_previous_debts: 'is_for_previous_debts',
   memo: 'memo'
 };
 

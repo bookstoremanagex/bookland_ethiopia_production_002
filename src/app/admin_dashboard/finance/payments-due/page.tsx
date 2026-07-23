@@ -7,7 +7,7 @@ export default async function PaymentsDuePage() {
         include: {
             orders: {
                 where: { is_deleted: false },
-                select: { total_amount: true, amount_paid: true, order_type: true },
+                select: { id: true, total_amount: true, amount_paid: true, order_type: true, is_approved: true, createdAt: true },
             },
             roundrecords: {
                 where: { is_deleted: false },
@@ -18,22 +18,40 @@ export default async function PaymentsDuePage() {
                     },
                 },
             },
+            payments: {
+                where: { is_deleted: false, is_for_previous_debts: true, status: "APPROVED" },
+                select: { amount: true },
+            },
         },
     });
 
     const data = (shops as any[]).map((shop) => {
-        let orderDebt = 0;
+        let orderDebtTotal = 0;
         let roundDebt = 0;
+
+        const requestedOrders = (shop.orders || []).filter(
+            (o: any) => o.order_type === "requested"
+        );
+        const lastRequestedOrder = requestedOrders.sort(
+            (a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        )[0];
 
         for (const order of shop.orders || []) {
             const unpaid = (order.total_amount || 0) - (order.amount_paid || 0);
             if (unpaid <= 0) continue;
-            if (order.order_type === "requested") {
-                orderDebt += unpaid;
+            if (order.order_type === "requested" && order.is_approved) {
+                orderDebtTotal += unpaid;
             } else if (order.order_type === "on round") {
                 roundDebt += unpaid;
             }
         }
+
+        const lastOrderDebt = lastRequestedOrder
+            ? Math.max(0, (lastRequestedOrder.total_amount || 0) - (lastRequestedOrder.amount_paid || 0))
+            : 0;
+
+        const lastIncludedInOrderDebt = lastRequestedOrder?.is_approved && lastOrderDebt > 0;
+        const orderDebt = Math.max(0, orderDebtTotal - (lastIncludedInOrderDebt ? lastOrderDebt : 0));
 
         for (const record of shop.roundrecords || []) {
             const totalPaid = (record.round_payments || []).reduce(
@@ -44,14 +62,22 @@ export default async function PaymentsDuePage() {
             if (remaining > 0) roundDebt += remaining;
         }
 
+        const previousDebtAmount = shop.previousDebt || 0;
+        const approvedPrevPaid = (shop.payments || []).reduce(
+            (sum: number, p: any) => sum + (p.amount || 0), 0
+        );
+        const previousDebtRemaining = Math.max(0, previousDebtAmount - approvedPrevPaid);
+
         return {
             id: shop.id,
             name: shop.name,
             branch: shop.branch || "Main",
             location: shop.location,
-            orderDebt: Math.max(0, orderDebt),
+            orderDebt,
             roundDebt: Math.max(0, roundDebt),
-            totalDebt: Math.max(0, orderDebt + roundDebt),
+            previousDebt: previousDebtRemaining,
+            lastOrderDebt,
+            totalDebt: Math.max(0, orderDebt + roundDebt + previousDebtRemaining + lastOrderDebt),
         };
     });
 
@@ -59,7 +85,8 @@ export default async function PaymentsDuePage() {
 
     const totalOrderDebt = data.reduce((sum, s) => sum + s.orderDebt, 0);
     const totalRoundDebt = data.reduce((sum, s) => sum + s.roundDebt, 0);
-    const totalDebt = totalOrderDebt + totalRoundDebt;
+    const totalPreviousDebt = data.reduce((sum, s) => sum + s.previousDebt, 0);
+    const totalDebt = totalOrderDebt + totalRoundDebt + totalPreviousDebt;
 
     return (
         <div className="p-4 md:p-10 space-y-8 bg-[#F8FAFC] min-h-screen">
@@ -81,6 +108,10 @@ export default async function PaymentsDuePage() {
                     <div>
                         <p className="text-[8px] font-black uppercase tracking-widest text-muted-foreground">Round Debt</p>
                         <p className="text-lg font-black text-rose-500">{totalRoundDebt.toLocaleString()} <span className="text-xs opacity-40">ETB</span></p>
+                    </div>
+                    <div>
+                        <p className="text-[8px] font-black uppercase tracking-widest text-muted-foreground">Prev. Debt</p>
+                        <p className="text-lg font-black text-purple-500">{totalPreviousDebt.toLocaleString()} <span className="text-xs opacity-40">ETB</span></p>
                     </div>
                     <div>
                         <p className="text-[8px] font-black uppercase tracking-widest text-muted-foreground">Total Debt</p>

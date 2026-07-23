@@ -45908,6 +45908,7 @@ export namespace Prisma {
     createdAt: Date | null
     deletedAt: Date | null
     orderid: string | null
+    is_for_previous_debts: boolean | null
     memo: string | null
   }
 
@@ -45924,6 +45925,7 @@ export namespace Prisma {
     createdAt: Date | null
     deletedAt: Date | null
     orderid: string | null
+    is_for_previous_debts: boolean | null
     memo: string | null
   }
 
@@ -45940,6 +45942,7 @@ export namespace Prisma {
     createdAt: number
     deletedAt: number
     orderid: number
+    is_for_previous_debts: number
     memo: number
     _all: number
   }
@@ -45972,6 +45975,7 @@ export namespace Prisma {
     createdAt?: true
     deletedAt?: true
     orderid?: true
+    is_for_previous_debts?: true
     memo?: true
   }
 
@@ -45988,6 +45992,7 @@ export namespace Prisma {
     createdAt?: true
     deletedAt?: true
     orderid?: true
+    is_for_previous_debts?: true
     memo?: true
   }
 
@@ -46004,6 +46009,7 @@ export namespace Prisma {
     createdAt?: true
     deletedAt?: true
     orderid?: true
+    is_for_previous_debts?: true
     memo?: true
     _all?: true
   }
@@ -46107,6 +46113,7 @@ export namespace Prisma {
     createdAt: Date
     deletedAt: Date
     orderid: string | null
+    is_for_previous_debts: boolean | null
     memo: string | null
     _count: PaymentsCountAggregateOutputType | null
     _avg: PaymentsAvgAggregateOutputType | null
@@ -46142,6 +46149,7 @@ export namespace Prisma {
     createdAt?: boolean
     deletedAt?: boolean
     orderid?: boolean
+    is_for_previous_debts?: boolean
     memo?: boolean
     shop?: boolean | bookshopesDefaultArgs<ExtArgs>
     check?: boolean | payments$checkArgs<ExtArgs>
@@ -46162,10 +46170,11 @@ export namespace Prisma {
     createdAt?: boolean
     deletedAt?: boolean
     orderid?: boolean
+    is_for_previous_debts?: boolean
     memo?: boolean
   }
 
-  export type paymentsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "shopId" | "amount" | "payment_type" | "checkId" | "image" | "status" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt" | "orderid" | "memo", ExtArgs["result"]["payments"]>
+  export type paymentsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "shopId" | "amount" | "payment_type" | "checkId" | "image" | "status" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt" | "orderid" | "is_for_previous_debts" | "memo", ExtArgs["result"]["payments"]>
   export type paymentsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     shop?: boolean | bookshopesDefaultArgs<ExtArgs>
     check?: boolean | payments$checkArgs<ExtArgs>
@@ -46190,6 +46199,7 @@ export namespace Prisma {
       createdAt: Date
       deletedAt: Date
       orderid: string | null
+      is_for_previous_debts: boolean | null
       memo: string | null
     }, ExtArgs["result"]["payments"]>
     composites: {}
@@ -46574,6 +46584,7 @@ export namespace Prisma {
     readonly createdAt: FieldRef<"payments", 'DateTime'>
     readonly deletedAt: FieldRef<"payments", 'DateTime'>
     readonly orderid: FieldRef<"payments", 'String'>
+    readonly is_for_previous_debts: FieldRef<"payments", 'Boolean'>
     readonly memo: FieldRef<"payments", 'String'>
   }
     
@@ -49723,6 +49734,7 @@ export namespace Prisma {
     createdAt: 'createdAt',
     deletedAt: 'deletedAt',
     orderid: 'orderid',
+    is_for_previous_debts: 'is_for_previous_debts',
     memo: 'memo'
   };
 
@@ -53803,6 +53815,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"payments"> | Date | string
     deletedAt?: DateTimeFilter<"payments"> | Date | string
     orderid?: StringNullableFilter<"payments"> | string | null
+    is_for_previous_debts?: BoolNullableFilter<"payments"> | boolean | null
     memo?: StringNullableFilter<"payments"> | string | null
     shop?: XOR<BookshopesScalarRelationFilter, bookshopesWhereInput>
     check?: XOR<ChecksNullableScalarRelationFilter, checksWhereInput> | null
@@ -53821,6 +53834,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     deletedAt?: SortOrder
     orderid?: SortOrderInput | SortOrder
+    is_for_previous_debts?: SortOrderInput | SortOrder
     memo?: SortOrderInput | SortOrder
     shop?: bookshopesOrderByWithRelationInput
     check?: checksOrderByWithRelationInput
@@ -53843,6 +53857,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"payments"> | Date | string
     deletedAt?: DateTimeFilter<"payments"> | Date | string
     orderid?: StringNullableFilter<"payments"> | string | null
+    is_for_previous_debts?: BoolNullableFilter<"payments"> | boolean | null
     memo?: StringNullableFilter<"payments"> | string | null
     shop?: XOR<BookshopesScalarRelationFilter, bookshopesWhereInput>
     check?: XOR<ChecksNullableScalarRelationFilter, checksWhereInput> | null
@@ -53861,6 +53876,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     deletedAt?: SortOrder
     orderid?: SortOrderInput | SortOrder
+    is_for_previous_debts?: SortOrderInput | SortOrder
     memo?: SortOrderInput | SortOrder
     _count?: paymentsCountOrderByAggregateInput
     _avg?: paymentsAvgOrderByAggregateInput
@@ -53885,6 +53901,7 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"payments"> | Date | string
     deletedAt?: DateTimeWithAggregatesFilter<"payments"> | Date | string
     orderid?: StringNullableWithAggregatesFilter<"payments"> | string | null
+    is_for_previous_debts?: BoolNullableWithAggregatesFilter<"payments"> | boolean | null
     memo?: StringNullableWithAggregatesFilter<"payments"> | string | null
   }
 
@@ -57950,6 +57967,7 @@ export namespace Prisma {
     createdAt?: Date | string
     deletedAt?: Date | string
     orderid?: string | null
+    is_for_previous_debts?: boolean | null
     memo?: string | null
     shop: bookshopesCreateNestedOneWithoutPaymentsInput
     check?: checksCreateNestedOneWithoutPaymentsInput
@@ -57968,6 +57986,7 @@ export namespace Prisma {
     createdAt?: Date | string
     deletedAt?: Date | string
     orderid?: string | null
+    is_for_previous_debts?: boolean | null
     memo?: string | null
   }
 
@@ -57981,6 +58000,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orderid?: NullableStringFieldUpdateOperationsInput | string | null
+    is_for_previous_debts?: NullableBoolFieldUpdateOperationsInput | boolean | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     shop?: bookshopesUpdateOneRequiredWithoutPaymentsNestedInput
     check?: checksUpdateOneWithoutPaymentsNestedInput
@@ -57999,6 +58019,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orderid?: NullableStringFieldUpdateOperationsInput | string | null
+    is_for_previous_debts?: NullableBoolFieldUpdateOperationsInput | boolean | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -58015,6 +58036,7 @@ export namespace Prisma {
     createdAt?: Date | string
     deletedAt?: Date | string
     orderid?: string | null
+    is_for_previous_debts?: boolean | null
     memo?: string | null
   }
 
@@ -58028,6 +58050,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orderid?: NullableStringFieldUpdateOperationsInput | string | null
+    is_for_previous_debts?: NullableBoolFieldUpdateOperationsInput | boolean | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -58044,6 +58067,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orderid?: NullableStringFieldUpdateOperationsInput | string | null
+    is_for_previous_debts?: NullableBoolFieldUpdateOperationsInput | boolean | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -61340,6 +61364,11 @@ export namespace Prisma {
     id?: SortOrder
   }
 
+  export type BoolNullableFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
+  }
+
   export type paymentsOrderByRelevanceInput = {
     fields: paymentsOrderByRelevanceFieldEnum | paymentsOrderByRelevanceFieldEnum[]
     sort: SortOrder
@@ -61359,6 +61388,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     deletedAt?: SortOrder
     orderid?: SortOrder
+    is_for_previous_debts?: SortOrder
     memo?: SortOrder
   }
 
@@ -61382,6 +61412,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     deletedAt?: SortOrder
     orderid?: SortOrder
+    is_for_previous_debts?: SortOrder
     memo?: SortOrder
   }
 
@@ -61398,6 +61429,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     deletedAt?: SortOrder
     orderid?: SortOrder
+    is_for_previous_debts?: SortOrder
     memo?: SortOrder
   }
 
@@ -61406,6 +61438,14 @@ export namespace Prisma {
     shopId?: SortOrder
     amount?: SortOrder
     checkId?: SortOrder
+  }
+
+  export type BoolNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedBoolNullableFilter<$PrismaModel>
+    _max?: NestedBoolNullableFilter<$PrismaModel>
   }
 
   export type Enumretail_purchase_statusFilter<$PrismaModel = never> = {
@@ -63860,6 +63900,10 @@ export namespace Prisma {
     connect?: checksWhereUniqueInput
   }
 
+  export type NullableBoolFieldUpdateOperationsInput = {
+    set?: boolean | null
+  }
+
   export type bookshopesUpdateOneRequiredWithoutPaymentsNestedInput = {
     create?: XOR<bookshopesCreateWithoutPaymentsInput, bookshopesUncheckedCreateWithoutPaymentsInput>
     connectOrCreate?: bookshopesCreateOrConnectWithoutPaymentsInput
@@ -64357,6 +64401,19 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumcheck_statusFilter<$PrismaModel>
     _max?: NestedEnumcheck_statusFilter<$PrismaModel>
+  }
+
+  export type NestedBoolNullableFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
+  }
+
+  export type NestedBoolNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedBoolNullableFilter<$PrismaModel>
+    _max?: NestedBoolNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumretail_purchase_statusFilter<$PrismaModel = never> = {
@@ -66842,6 +66899,7 @@ export namespace Prisma {
     createdAt?: Date | string
     deletedAt?: Date | string
     orderid?: string | null
+    is_for_previous_debts?: boolean | null
     memo?: string | null
     check?: checksCreateNestedOneWithoutPaymentsInput
   }
@@ -66858,6 +66916,7 @@ export namespace Prisma {
     createdAt?: Date | string
     deletedAt?: Date | string
     orderid?: string | null
+    is_for_previous_debts?: boolean | null
     memo?: string | null
   }
 
@@ -66989,6 +67048,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"payments"> | Date | string
     deletedAt?: DateTimeFilter<"payments"> | Date | string
     orderid?: StringNullableFilter<"payments"> | string | null
+    is_for_previous_debts?: BoolNullableFilter<"payments"> | boolean | null
     memo?: StringNullableFilter<"payments"> | string | null
   }
 
@@ -70852,6 +70912,7 @@ export namespace Prisma {
     createdAt?: Date | string
     deletedAt?: Date | string
     orderid?: string | null
+    is_for_previous_debts?: boolean | null
     memo?: string | null
     shop: bookshopesCreateNestedOneWithoutPaymentsInput
   }
@@ -70868,6 +70929,7 @@ export namespace Prisma {
     createdAt?: Date | string
     deletedAt?: Date | string
     orderid?: string | null
+    is_for_previous_debts?: boolean | null
     memo?: string | null
   }
 
@@ -72374,6 +72436,7 @@ export namespace Prisma {
     createdAt?: Date | string
     deletedAt?: Date | string
     orderid?: string | null
+    is_for_previous_debts?: boolean | null
     memo?: string | null
   }
 
@@ -72501,6 +72564,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orderid?: NullableStringFieldUpdateOperationsInput | string | null
+    is_for_previous_debts?: NullableBoolFieldUpdateOperationsInput | boolean | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     check?: checksUpdateOneWithoutPaymentsNestedInput
   }
@@ -72517,6 +72581,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orderid?: NullableStringFieldUpdateOperationsInput | string | null
+    is_for_previous_debts?: NullableBoolFieldUpdateOperationsInput | boolean | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -72532,6 +72597,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orderid?: NullableStringFieldUpdateOperationsInput | string | null
+    is_for_previous_debts?: NullableBoolFieldUpdateOperationsInput | boolean | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -73393,6 +73459,7 @@ export namespace Prisma {
     createdAt?: Date | string
     deletedAt?: Date | string
     orderid?: string | null
+    is_for_previous_debts?: boolean | null
     memo?: string | null
   }
 
@@ -73425,6 +73492,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orderid?: NullableStringFieldUpdateOperationsInput | string | null
+    is_for_previous_debts?: NullableBoolFieldUpdateOperationsInput | boolean | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     shop?: bookshopesUpdateOneRequiredWithoutPaymentsNestedInput
   }
@@ -73441,6 +73509,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orderid?: NullableStringFieldUpdateOperationsInput | string | null
+    is_for_previous_debts?: NullableBoolFieldUpdateOperationsInput | boolean | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -73456,6 +73525,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orderid?: NullableStringFieldUpdateOperationsInput | string | null
+    is_for_previous_debts?: NullableBoolFieldUpdateOperationsInput | boolean | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
   }
 

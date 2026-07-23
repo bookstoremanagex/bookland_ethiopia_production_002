@@ -16,33 +16,114 @@ export default async function FinanceBookShopPage() {
         where: { is_deleted: false },
         include: {
             orders: {
-                where: { is_deleted: false }
+                where: { is_deleted: false },
+                select: { id: true, total_amount: true, amount_paid: true, order_type: true, is_approved: true, createdAt: true },
             },
             payments: {
-                where: { is_deleted: false }
-            }
+                where: { is_deleted: false },
+                select: { amount: true, status: true, payment_type: true, is_for_previous_debts: true },
+            },
         }
     });
 
+    const roundRecordsAll = await (prisma as any).roundrecords.findMany({
+        where: { is_deleted: false },
+        include: {
+            round_payments: {
+                where: { is_deleted: false, status: "APPROVED" },
+                select: { amount: true },
+            },
+        },
+    });
+
     const shopsWithFinance = (shops as any[]).map(shop => {
-        const previousDebt = shop.previousDebt || 0;
-        const orderTotal = (shop.orders || []).reduce((acc: any, o: any) => acc + (o.total_amount || 0), 0);
-        const totalValue = orderTotal + previousDebt;
-        const totalPaid = (shop.payments || [])
-            .filter((p: any) => p.status === "APPROVED")
-            .reduce((acc: any, p: any) => acc + (p.amount || 0), 0);
-        const totalDebt = totalValue - totalPaid;
+        const shopRoundRecords = roundRecordsAll.filter((r: any) => r.bookshop_id === shop.id);
+
+        const requestedOrders = (shop.orders || []).filter((o: any) => o.order_type === "requested");
+        const lastRequestedOrder = [...requestedOrders].sort(
+            (a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        )[0];
+
+        // ── Debt components (matches payments-due table) ──
+        let orderDebtUnpaid = 0;
+        let roundDebt = 0;
+
+        for (const order of shop.orders || []) {
+            const unpaid = (order.total_amount || 0) - (order.amount_paid || 0);
+            if (unpaid <= 0) continue;
+            if (order.order_type === "requested" && order.is_approved) {
+                orderDebtUnpaid += unpaid;
+            } else if (order.order_type === "on round") {
+                roundDebt += unpaid;
+            }
+        }
+
+        for (const record of shopRoundRecords) {
+            const paid = (record.round_payments || []).reduce((s: number, p: any) => s + (p.amount || 0), 0);
+            const remaining = (record.totalprice || 0) - paid;
+            if (remaining > 0) roundDebt += remaining;
+        }
+
+        const lastOrderDebt = lastRequestedOrder
+            ? Math.max(0, (lastRequestedOrder.total_amount || 0) - (lastRequestedOrder.amount_paid || 0))
+            : 0;
+        const lastIncludedInOrderDebt = lastRequestedOrder?.is_approved && lastOrderDebt > 0;
+        const orderDebt = Math.max(0, orderDebtUnpaid - (lastIncludedInOrderDebt ? lastOrderDebt : 0));
+
+        const previousDebtAmount = shop.previousDebt || 0;
+        const approvedPrevPayments = (shop.payments || []).filter(
+            (p: any) => p.is_for_previous_debts && p.status === "APPROVED"
+        );
+        const approvedPrevPaid = approvedPrevPayments.reduce((s: number, p: any) => s + (p.amount || 0), 0);
+        const previousDebtRemaining = Math.max(0, previousDebtAmount - approvedPrevPaid);
+
+        const totalDebt = Math.max(0, orderDebt + roundDebt + previousDebtRemaining + lastOrderDebt);
+
+        // ── Distributed amounts (what was sent) ──
+        const approvedRequestedExclLast = (shop.orders || []).filter(
+            (o: any) => o.order_type === "requested" && o.is_approved &&
+            (!lastIncludedInOrderDebt || o.id !== lastRequestedOrder?.id)
+        );
+        const approvedRequestedDistributed = approvedRequestedExclLast.reduce(
+            (s: number, o: any) => s + (o.total_amount || 0), 0
+        );
+        const lastOrderDistributed = lastRequestedOrder ? (lastRequestedOrder.total_amount || 0) : 0;
+        const roundOrderDistributed = (shop.orders || [])
+            .filter((o: any) => o.order_type === "on round")
+            .reduce((s: number, o: any) => s + (o.total_amount || 0), 0);
+        const roundRecordDistributed = shopRoundRecords.reduce(
+            (s: number, r: any) => s + (r.totalprice || 0), 0
+        );
+        const totalDistributed = approvedRequestedDistributed + lastOrderDistributed + roundOrderDistributed + roundRecordDistributed + previousDebtAmount;
+
+        // ── Collected amounts (what was paid) ──
+        const approvedRequestedPaid = approvedRequestedExclLast.reduce(
+            (s: number, o: any) => s + (o.amount_paid || 0), 0
+        );
+        const lastOrderPaid = lastRequestedOrder ? (lastRequestedOrder.amount_paid || 0) : 0;
+        const roundOrderPaid = (shop.orders || [])
+            .filter((o: any) => o.order_type === "on round")
+            .reduce((s: number, o: any) => s + (o.amount_paid || 0), 0);
+        const roundRecordPaid = shopRoundRecords.reduce(
+            (s: number, r: any) => s + (r.round_payments || []).reduce((a: number, p: any) => a + (p.amount || 0), 0), 0
+        );
+        const totalCollected = approvedRequestedPaid + lastOrderPaid + roundOrderPaid + roundRecordPaid + approvedPrevPaid;
+
+        const collectionRate = totalDistributed > 0 ? (totalCollected / totalDistributed) * 100 : 0;
 
         return {
             ...shop,
-            totalValue,
-            totalPaid,
+            totalValue: totalDistributed,
+            totalPaid: totalCollected,
             totalDebt,
-            collectionRate: totalValue > 0 ? (totalPaid / totalValue) * 100 : 0
+            collectionRate,
+            orderDebt,
+            roundDebt,
+            previousDebt: previousDebtRemaining,
+            lastOrderDebt,
         };
     });
 
-    // Sort by debt descending
     shopsWithFinance.sort((a, b) => b.totalDebt - a.totalDebt);
 
     return (
@@ -88,16 +169,16 @@ export default async function FinanceBookShopPage() {
                             {/* Financial Stats */}
                             <div className="flex-grow grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
                                 <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100">
-                                    <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mb-1">Total Distributed</p>
-                                    <p className="text-lg font-black text-primarycolor">{shop.totalValue.toLocaleString()} ETB</p>
+                                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest mb-1">Total Distributed</p>
+                                    <p className="text-base font-black text-primarycolor">{shop.totalValue.toLocaleString()} ETB</p>
                                 </div>
                                 <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-100">
-                                    <p className="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-1">Total Collected</p>
-                                    <p className="text-lg font-black text-emerald-700">{shop.totalPaid.toLocaleString()} ETB</p>
+                                    <p className="text-[8px] font-black text-emerald-600 uppercase tracking-widest mb-1">Total Collected</p>
+                                    <p className="text-base font-black text-emerald-700">{shop.totalPaid.toLocaleString()} ETB</p>
                                 </div>
                                 <div className="p-4 rounded-2xl bg-rose-50 border border-rose-100">
-                                    <p className="text-[9px] font-black text-rose-600 uppercase tracking-widest mb-1">Current Debt</p>
-                                    <p className="text-lg font-black text-rose-700">{shop.totalDebt.toLocaleString()} ETB</p>
+                                    <p className="text-[8px] font-black text-rose-600 uppercase tracking-widest mb-1">Current Debt</p>
+                                    <p className="text-base font-black text-rose-700">{shop.totalDebt.toLocaleString()} ETB</p>
                                 </div>
                             </div>
 

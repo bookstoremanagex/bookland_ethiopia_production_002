@@ -47,6 +47,7 @@ export async function createPayment(data: {
     orderid?: string | null;
     memo?: string | null;
     image?: string | null;
+    is_for_previous_debts?: boolean | null;
 }) {
     try {
         const session = await getCurrentSession();
@@ -61,6 +62,7 @@ export async function createPayment(data: {
                 orderid: data.orderid || null,
                 memo: data.memo || null,
                 image: data.image || null,
+                is_for_previous_debts: data.is_for_previous_debts || null,
                 status: "PENDING",
             }
         });

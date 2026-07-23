@@ -19,6 +19,7 @@ import {
     Search,
     TrendingUp,
     Printer,
+    FileText,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -42,6 +43,8 @@ export interface PaymentsDueData {
     location: string
     orderDebt: number
     roundDebt: number
+    previousDebt: number
+    lastOrderDebt: number
     totalDebt: number
 }
 
@@ -115,6 +118,48 @@ export const columns: ColumnDef<PaymentsDueData>[] = [
     },
   },
   {
+    accessorKey: "previousDebt",
+    header: ({ column }) => (
+        <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="text-[10px] font-black uppercase tracking-widest hover:bg-transparent p-0"
+        >
+            Prev. Debt
+            <ArrowUpDown className="ml-2 h-3 w-3" />
+        </Button>
+    ),
+    cell: ({ row }) => {
+        const val = row.getValue<number>("previousDebt");
+        return (
+            <div className={`font-black ${val > 0 ? 'text-purple-600' : 'text-emerald-600'}`}>
+                {val.toLocaleString()} <span className="text-[8px] opacity-50">ETB</span>
+            </div>
+        );
+    },
+  },
+  {
+    accessorKey: "lastOrderDebt",
+    header: ({ column }) => (
+        <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="text-[10px] font-black uppercase tracking-widest hover:bg-transparent p-0"
+        >
+            Last Order
+            <ArrowUpDown className="ml-2 h-3 w-3" />
+        </Button>
+    ),
+    cell: ({ row }) => {
+        const val = row.getValue<number>("lastOrderDebt");
+        return (
+            <div className={`font-black ${val > 0 ? 'text-cyan-600' : 'text-emerald-600'}`}>
+                {val.toLocaleString()} <span className="text-[8px] opacity-50">ETB</span>
+            </div>
+        );
+    },
+  },
+  {
     accessorKey: "totalDebt",
     header: ({ column }) => (
         <Button
@@ -138,21 +183,30 @@ export const columns: ColumnDef<PaymentsDueData>[] = [
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ row }) => {
+    cell: ({ row, table }) => {
       const shop = row.original
+      const basePath = (table.options.meta as any)?.managePaymentBasePath || managePaymentBasePath;
+      const shopPath = (table.options.meta as any)?.shopBasePath || shopBasePath;
 
       return (
-        <Link href={`/admin_dashboard/book_shops/${shop.id}`}>
-            <Button variant="ghost" size="icon" className="rounded-full hover:bg-primarycolor hover:text-white transition-all">
-                <ExternalLink className="size-4" />
-            </Button>
-        </Link>
+        <div className="flex items-center gap-1">
+            <Link href={`${basePath}/${shop.id}/debts-payments`}>
+                <Button variant="ghost" size="icon" className="rounded-full hover:bg-emerald-500 hover:text-white transition-all" title="Payment Detail">
+                    <FileText className="size-4" />
+                </Button>
+            </Link>
+            <Link href={`${shopPath}/${shop.id}`}>
+                <Button variant="ghost" size="icon" className="rounded-full hover:bg-primarycolor hover:text-white transition-all" title="Shop Profile">
+                    <ExternalLink className="size-4" />
+                </Button>
+            </Link>
+        </div>
       )
     },
   },
 ]
 
-export default function PaymentsDueTable({ data }: { data: PaymentsDueData[] }) {
+export default function PaymentsDueTable({ data, managePaymentBasePath = "/admin_dashboard/manage_payment", shopBasePath = "/admin_dashboard/book_shops" }: { data: PaymentsDueData[]; managePaymentBasePath?: string; shopBasePath?: string }) {
   const [sorting, setSorting] = React.useState<SortingState>([{ id: "totalDebt", desc: true }])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
@@ -164,6 +218,8 @@ export default function PaymentsDueTable({ data }: { data: PaymentsDueData[] }) 
     const filtered = includeZeroDebt ? data : data.filter(d => d.totalDebt > 0);
     const totalOrderDebt = filtered.reduce((s, d) => s + d.orderDebt, 0);
     const totalRoundDebt = filtered.reduce((s, d) => s + d.roundDebt, 0);
+    const totalPreviousDebt = filtered.reduce((s, d) => s + d.previousDebt, 0);
+    const totalLastOrderDebt = filtered.reduce((s, d) => s + d.lastOrderDebt, 0);
     const totalDebt = filtered.reduce((s, d) => s + d.totalDebt, 0);
 
     const now = new Date();
@@ -177,6 +233,8 @@ export default function PaymentsDueTable({ data }: { data: PaymentsDueData[] }) 
         <td style="padding:6px 12px;border:1px solid #ccc;font-size:11px;color:#666">${d.branch}</td>
         <td style="padding:6px 12px;border:1px solid #ccc;font-size:11px;text-align:right;font-weight:600;color:#d97706">${d.orderDebt.toLocaleString()}</td>
         <td style="padding:6px 12px;border:1px solid #ccc;font-size:11px;text-align:right;font-weight:600;color:#e11d48">${d.roundDebt.toLocaleString()}</td>
+        <td style="padding:6px 12px;border:1px solid #ccc;font-size:11px;text-align:right;font-weight:600;color:#a855f7">${d.previousDebt.toLocaleString()}</td>
+        <td style="padding:6px 12px;border:1px solid #ccc;font-size:11px;text-align:right;font-weight:600;color:#06b6d4">${d.lastOrderDebt.toLocaleString()}</td>
         <td style="padding:6px 12px;border:1px solid #ccc;font-size:11px;text-align:right;font-weight:700;color:#1e293b">${d.totalDebt.toLocaleString()}</td>
       </tr>
     `).join('');
@@ -208,16 +266,20 @@ export default function PaymentsDueTable({ data }: { data: PaymentsDueData[] }) 
   <div class="summary">
     <div class="summary-item"><span style="color:#d97706">Order Debt</span><span style="color:#d97706">ETB ${totalOrderDebt.toLocaleString()}</span></div>
     <div class="summary-item"><span style="color:#e11d48">Round Debt</span><span style="color:#e11d48">ETB ${totalRoundDebt.toLocaleString()}</span></div>
+    <div class="summary-item"><span style="color:#a855f7">Prev. Debt</span><span style="color:#a855f7">ETB ${totalPreviousDebt.toLocaleString()}</span></div>
+    <div class="summary-item"><span style="color:#06b6d4">Last Order</span><span style="color:#06b6d4">ETB ${totalLastOrderDebt.toLocaleString()}</span></div>
     <div class="summary-item"><span style="color:#1e293b">Total Debt</span><span style="color:#1e293b">ETB ${totalDebt.toLocaleString()}</span></div>
   </div>
   <table>
-    <thead><tr><th>Shop Name</th><th>Branch</th><th class="right">Order Debt (ETB)</th><th class="right">Round Debt (ETB)</th><th class="right">Total Debt (ETB)</th></tr></thead>
+    <thead><tr><th>Shop Name</th><th>Branch</th><th class="right">Order Debt (ETB)</th><th class="right">Round Debt (ETB)</th><th class="right">Prev. Debt (ETB)</th><th class="right">Last Order (ETB)</th><th class="right">Total Debt (ETB)</th></tr></thead>
     <tbody>
       ${rows}
       <tr class="grand-row">
         <td colspan="2" style="padding:8px 12px;border:1px solid #ccc;font-size:11px;font-weight:700">Grand Total</td>
         <td style="padding:8px 12px;border:1px solid #ccc;text-align:right;font-size:11px;font-weight:700;color:#d97706">${totalOrderDebt.toLocaleString()}</td>
         <td style="padding:8px 12px;border:1px solid #ccc;text-align:right;font-size:11px;font-weight:700;color:#e11d48">${totalRoundDebt.toLocaleString()}</td>
+        <td style="padding:8px 12px;border:1px solid #ccc;text-align:right;font-size:11px;font-weight:700;color:#a855f7">${totalPreviousDebt.toLocaleString()}</td>
+        <td style="padding:8px 12px;border:1px solid #ccc;text-align:right;font-size:11px;font-weight:700;color:#06b6d4">${totalLastOrderDebt.toLocaleString()}</td>
         <td style="padding:8px 12px;border:1px solid #ccc;text-align:right;font-size:11px;font-weight:700;color:#1e293b">${totalDebt.toLocaleString()}</td>
       </tr>
     </tbody>
@@ -252,6 +314,10 @@ export default function PaymentsDueTable({ data }: { data: PaymentsDueData[] }) 
       columnFilters,
       columnVisibility,
       rowSelection,
+    },
+    meta: {
+      managePaymentBasePath,
+      shopBasePath,
     },
   })
 
@@ -300,7 +366,7 @@ export default function PaymentsDueTable({ data }: { data: PaymentsDueData[] }) 
               <TableRow key={headerGroup.id} className="hover:bg-transparent border-b-2 border-slate-100">
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id} className="h-16 px-6 text-[10px] font-black uppercase tracking-widest text-primarycolor/40">
+                    <TableHead key={header.id} className="h-14 px-3 text-[9px] font-black uppercase tracking-widest text-primarycolor/40">
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -322,7 +388,7 @@ export default function PaymentsDueTable({ data }: { data: PaymentsDueData[] }) 
                   className="h-20 border-b border-slate-50 hover:bg-slate-50/50 transition-colors px-6"
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="px-6">
+                    <TableCell key={cell.id} className="px-3">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -361,29 +427,48 @@ export default function PaymentsDueTable({ data }: { data: PaymentsDueData[] }) 
                       <div className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">{item.branch}</div>
                     </div>
                   </div>
-                  <Link href={`/admin_dashboard/book_shops/${item.id}`}>
-                    <Button variant="ghost" size="icon" className="rounded-full hover:bg-primarycolor hover:text-white transition-all shrink-0">
-                      <ExternalLink className="size-4" />
-                    </Button>
-                  </Link>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <Link href={`${managePaymentBasePath}/${item.id}/debts-payments`}>
+                      <Button variant="ghost" size="icon" className="rounded-full hover:bg-emerald-500 hover:text-white transition-all" title="Payment Detail">
+                        <FileText className="size-4" />
+                      </Button>
+                    </Link>
+                    <Link href={`${shopBasePath}/${item.id}`}>
+                      <Button variant="ghost" size="icon" className="rounded-full hover:bg-primarycolor hover:text-white transition-all" title="Shop Profile">
+                        <ExternalLink className="size-4" />
+                      </Button>
+                    </Link>
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-5 gap-2">
                   <div className="bg-amber-50 rounded-xl p-3 space-y-0.5">
-                    <p className="text-[8px] font-black uppercase tracking-widest text-amber-600/60">Order Debt</p>
-                    <p className={`font-black ${item.orderDebt > 0 ? 'text-amber-600' : 'text-emerald-600'}`}>
+                    <p className="text-[7px] font-black uppercase tracking-widest text-amber-600/60">Order</p>
+                    <p className={`font-black text-sm ${item.orderDebt > 0 ? 'text-amber-600' : 'text-emerald-600'}`}>
                         {item.orderDebt.toLocaleString()} <span className="text-[7px] opacity-50">ETB</span>
                     </p>
                   </div>
                   <div className="bg-rose-50 rounded-xl p-3 space-y-0.5">
-                    <p className="text-[8px] font-black uppercase tracking-widest text-rose-600/60">Round Debt</p>
-                    <p className={`font-black ${item.roundDebt > 0 ? 'text-rose-600' : 'text-emerald-600'}`}>
+                    <p className="text-[7px] font-black uppercase tracking-widest text-rose-600/60">Round</p>
+                    <p className={`font-black text-sm ${item.roundDebt > 0 ? 'text-rose-600' : 'text-emerald-600'}`}>
                         {item.roundDebt.toLocaleString()} <span className="text-[7px] opacity-50">ETB</span>
                     </p>
                   </div>
+                  <div className="bg-purple-50 rounded-xl p-3 space-y-0.5">
+                    <p className="text-[7px] font-black uppercase tracking-widest text-purple-600/60">Prev.</p>
+                    <p className={`font-black text-sm ${item.previousDebt > 0 ? 'text-purple-600' : 'text-emerald-600'}`}>
+                        {item.previousDebt.toLocaleString()} <span className="text-[7px] opacity-50">ETB</span>
+                    </p>
+                  </div>
+                  <div className="bg-cyan-50 rounded-xl p-3 space-y-0.5">
+                    <p className="text-[7px] font-black uppercase tracking-widest text-cyan-600/60">Last</p>
+                    <p className={`font-black text-sm ${item.lastOrderDebt > 0 ? 'text-cyan-600' : 'text-emerald-600'}`}>
+                        {item.lastOrderDebt.toLocaleString()} <span className="text-[7px] opacity-50">ETB</span>
+                    </p>
+                  </div>
                   <div className="bg-slate-50 rounded-xl p-3 space-y-0.5">
-                    <p className="text-[8px] font-black uppercase tracking-widest text-muted-foreground">Total Debt</p>
-                    <p className={`font-black ${item.totalDebt > 0 ? 'text-slate-900' : 'text-emerald-600'}`}>
+                    <p className="text-[7px] font-black uppercase tracking-widest text-muted-foreground">Total</p>
+                    <p className={`font-black text-sm ${item.totalDebt > 0 ? 'text-slate-900' : 'text-emerald-600'}`}>
                         {item.totalDebt.toLocaleString()} <span className="text-[7px] opacity-50">ETB</span>
                     </p>
                   </div>

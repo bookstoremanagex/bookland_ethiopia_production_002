@@ -725,6 +725,7 @@ model payments {
   createdAt    DateTime @default(now())
   deletedAt    DateTime @default(now())
   orderid      String?
+  is_for_previous_debts   Boolean? @default(false)
   memo  String?    @db.Text
   shop  bookshopes @relation(fields: [shopId], references: [id])
   check checks?    @relation(fields: [checkId], references: [id])
