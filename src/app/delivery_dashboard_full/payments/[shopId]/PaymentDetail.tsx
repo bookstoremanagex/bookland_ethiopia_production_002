@@ -464,6 +464,11 @@ export default function PaymentDetail({ shop }: { shop: ShopData }) {
                           )}>
                             {p.source === "order" ? "Order" : "Round"}
                           </span>
+                          {p.source === "order" && p.orderid ? (
+                            <span className="text-[8px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">
+                              #ORD-{p.orderid.replace(/^ORD-/i, "")}
+                            </span>
+                          ) : null}
                           {p.source === "round" && p.bookTitle && (
                             <span className="text-[8px] font-bold text-muted-foreground truncate max-w-[120px]">
                               {p.bookTitle}
@@ -502,7 +507,15 @@ export default function PaymentDetail({ shop }: { shop: ShopData }) {
                 {shop.orders.map((order) => {
                   const itemCount = order.order_items?.length || 0;
                   const totalBooks = order.order_items?.reduce((sum, item) => sum + (item.quantity || 0), 0) || 0;
-                  const remaining = (order.total_amount || 0) - (order.amount_paid || 0);
+                  const linkedPayments = shop.payments.filter((p) => {
+                    if (!p.orderid) return false;
+                    const rawId = p.orderid.replace(/^ORD-/i, "");
+                    return rawId === String(order.id);
+                  });
+                  const totalPaidForOrder = linkedPayments
+                    .filter((p) => p.status === "APPROVED")
+                    .reduce((sum, p) => sum + (p.amount || 0), 0);
+                  const remaining = order.hide_remaining ? 0 : (order.total_amount || 0) - totalPaidForOrder;
                   return (
                     <div
                       key={order.id}
@@ -546,9 +559,13 @@ export default function PaymentDetail({ shop }: { shop: ShopData }) {
                           <span className="font-black text-primarycolor text-sm">
                             {(order.total_amount || 0).toLocaleString()} ETB
                           </span>
-                          {remaining > 0 && (
+                          {remaining > 0 ? (
                             <span className="text-[9px] font-bold text-rose-500">
                               {remaining.toLocaleString()} ETB remaining
+                            </span>
+                          ) : (
+                            <span className="text-[9px] font-bold text-emerald-600">
+                              Fully Paid
                             </span>
                           )}
                         </div>

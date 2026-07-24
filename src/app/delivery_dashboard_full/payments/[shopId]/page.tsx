@@ -16,6 +16,7 @@ export default async function ShopPaymentDetailPage({
     include: {
       orders: {
         where: { is_deleted: false },
+        orderBy: { createdAt: "desc" },
         include: {
           bookshopes: true,
           order_items: {
@@ -108,6 +109,7 @@ export default async function ShopPaymentDetailPage({
         order_type: o.order_type,
         total_amount: o.total_amount,
         amount_paid: o.amount_paid,
+        hide_remaining: o.hide_remaining ?? false,
         payment_type: o.payment_type,
         check_id: o.check_id,
         status: o.status,
