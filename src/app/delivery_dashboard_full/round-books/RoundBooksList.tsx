@@ -543,6 +543,7 @@ export default function RoundBooksList({ initialData }: { initialData: RoundBook
                 <div className="max-h-36 overflow-y-auto space-y-1 rounded-2xl border-2 border-primarycolor/5 p-1.5">
                   {selectedBook.bookedition.map((edition: any) => {
                     const isSelected = selectedEdition?.id === edition.id;
+                    const totalStock = (edition.bookeditionstores || []).reduce((sum: number, s: any) => sum + (s.quantity || 0), 0);
                     return (
                       <button
                         key={edition.id}
@@ -567,11 +568,14 @@ export default function RoundBooksList({ initialData }: { initialData: RoundBook
                             isSelected ? "text-emerald-700" : "text-slate-700",
                           )}>{edition.edition_name}</span>
                         </div>
-                        {edition.selling_price != null && (
-                          <span className="text-[9px] font-bold text-muted-foreground">
-                            {edition.selling_price.toLocaleString()} ETB
-                          </span>
-                        )}
+                        <div className="flex items-center gap-3">
+                          <span className="text-[9px] font-bold text-primarycolor">{totalStock} in stock</span>
+                          {edition.selling_price != null && (
+                            <span className="text-[9px] font-bold text-muted-foreground">
+                              {edition.selling_price.toLocaleString()} ETB
+                            </span>
+                          )}
+                        </div>
                       </button>
                     );
                   })}

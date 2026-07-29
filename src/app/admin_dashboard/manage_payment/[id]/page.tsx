@@ -28,8 +28,31 @@ export default async function ManagePaymentDetailPage({ params }: { params: Prom
             },
             payments: {
                 where: { is_deleted: false },
-                include: { check: true },
-                orderBy: { createdAt: "desc" }
+                orderBy: { createdAt: "desc" },
+                select: {
+                    id: true,
+                    amount: true,
+                    payment_type: true,
+                    checkId: true,
+                    status: true,
+                    image: true,
+                    createdAt: true,
+                    orderid: true,
+                    memo: true,
+                    check: {
+                        select: {
+                            id: true,
+                            bankname: true,
+                            username: true,
+                            amount: true,
+                            status: true,
+                            type: true,
+                            recordeddate: true,
+                            memo: true,
+                            imageUrl: true,
+                        },
+                    },
+                },
             }
         }
     });
@@ -82,12 +105,9 @@ export default async function ManagePaymentDetailPage({ params }: { params: Prom
     });
 
     const previousDebt = shop.previousDebt || 0;
-    const orderDebt = shop.orders
-        .filter((o: any) => o.is_approved && o.order_type === "requested")
-        .reduce((sum: number, o: any) => sum + (o.total_amount || 0), 0);
-    const totalPaid = shop.orders
-        .filter((o: any) => o.is_approved && o.order_type === "requested")
-        .reduce((sum: number, o: any) => sum + (o.amount_paid || 0), 0);
+    const approvedRequestedOrders = shop.orders.filter((o: any) => o.is_approved && o.order_type === "requested");
+    const orderDebt = approvedRequestedOrders.reduce((sum: number, o: any) => sum + (o.total_amount || 0), 0);
+    const totalPaid = approvedRequestedOrders.reduce((sum: number, o: any) => sum + (o.amount_paid || 0), 0);
     const totalDebt = orderDebt + previousDebt;
     const totalRemaining = totalDebt - totalPaid;
 
@@ -104,6 +124,7 @@ export default async function ManagePaymentDetailPage({ params }: { params: Prom
     const combinedCount = roundOrders.length + roundRecords.length;
     const combinedAmount = roundOrderTotalAmount + roundRecordTotalAmount;
     const combinedPaid = roundOrderTotalPaid + roundRecordTotalPaid;
+    const unpaidRoundDebt = combinedAmount - combinedPaid;
 
     return (
         <ManagePaymentDetailClient
@@ -232,7 +253,7 @@ export default async function ManagePaymentDetailPage({ params }: { params: Prom
                 } : null,
                 bookTitle: p.roundrecord?.RoundBooks?.book?.title || "Unknown",
             }))}
-            totals={{ totalDebt, totalPaid, totalRemaining }}
+            totals={{ totalDebt, totalPaid, totalRemaining, unpaidRoundDebt }}
             previousDebt={previousDebt}
             roundBooksTotals={{
                 orderCount: combinedCount,

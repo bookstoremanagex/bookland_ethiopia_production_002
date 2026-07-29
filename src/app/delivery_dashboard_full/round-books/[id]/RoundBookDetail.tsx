@@ -14,6 +14,9 @@ import {
   AlertTriangle,
   Settings,
   Play,
+  CheckCircle2,
+  Clock,
+  Banknote,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -29,6 +32,7 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -52,8 +56,20 @@ type RoundBookData = {
   starting_amount: number;
   returned_amount: number;
   unitPrice: number;
+  booksSold: number;
   storeCount: number;
-  stores: { id: number; shopId: number | null; storeName: string; location: string; branch: string; totalprice: number }[];
+  stores: {
+    id: number;
+    shopId: number | null;
+    storeName: string;
+    location: string;
+    branch: string;
+    totalprice: number;
+    payments: { id: number; amount: number; type: string; status: string }[];
+    paid: number;
+    remaining: number;
+    qty: number;
+  }[];
   createdAt: string;
 };
 
@@ -64,6 +80,8 @@ export default function RoundBookDetail({ roundBook }: { roundBook: RoundBookDat
   const [isSaving, setIsSaving] = useState(false);
   const [showSettingsDropdown, setShowSettingsDropdown] = useState(false);
   const [showEndConfirm, setShowEndConfirm] = useState(false);
+  const [showEndSummary, setShowEndSummary] = useState(false);
+  const [endSummary, setEndSummary] = useState<{ taken: number; sold: number; returned: number; shops: number; totalPrice: number } | null>(null);
   const [showReverseConfirm, setShowReverseConfirm] = useState(false);
   const [isEnding, setIsEnding] = useState(false);
   const [isReversing, setIsReversing] = useState(false);
@@ -76,6 +94,7 @@ export default function RoundBookDetail({ roundBook }: { roundBook: RoundBookDat
 
   const totalSoldMoney = roundBook.stores.reduce((sum, store) => sum + (store.totalprice || 0), 0);
   const booksSold = roundBook.unitPrice > 0 ? Math.round(totalSoldMoney / roundBook.unitPrice) : 0;
+  const allPaymentsCleared = roundBook.stores.length > 0 && roundBook.stores.every((s) => s.paid >= s.totalprice);
 
   const handleCancelEdit = () => {
     setStartingAmount(String(roundBook.starting_amount));
@@ -112,9 +131,15 @@ export default function RoundBookDetail({ roundBook }: { roundBook: RoundBookDat
         returned_amount: returnedAmount,
       });
       if (res.success) {
-        toast.success("Round ended");
         setShowEndConfirm(false);
-        router.refresh();
+        setEndSummary({
+          taken: roundBook.starting_amount,
+          sold: booksSold,
+          returned: returnedAmount,
+          shops: roundBook.stores.length,
+          totalPrice: totalSoldMoney,
+        });
+        setShowEndSummary(true);
       } else {
         toast.error(res.error || "Failed to end round");
       }
@@ -171,6 +196,22 @@ export default function RoundBookDetail({ roundBook }: { roundBook: RoundBookDat
         <ArrowLeft className="size-4" />
         Back to Round Books
       </button>
+
+      {/* Payment cleared status */}
+      {roundBook.stores.length > 0 && (
+        <div className={cn(
+          "flex items-center gap-3 px-5 py-3 rounded-2xl border-2 font-black text-[9px] uppercase tracking-widest",
+          allPaymentsCleared
+            ? "bg-emerald-50 border-emerald-200/50 text-emerald-700"
+            : "bg-amber-50 border-amber-200/50 text-amber-700"
+        )}>
+          {allPaymentsCleared ? (
+            <><CheckCircle2 className="size-5 shrink-0" /> All Payments Cleared</>
+          ) : (
+            <><Clock className="size-5 shrink-0" /> Payments Pending — Some shops have outstanding balances</>
+          )}
+        </div>
+      )}
 
       {/* Header card */}
       <div className="bg-white rounded-3xl border-2 border-primarycolor/5 shadow-xl p-5 sm:p-7">
@@ -258,29 +299,54 @@ export default function RoundBookDetail({ roundBook }: { roundBook: RoundBookDat
             </div>
             {roundBook.stores.length > 0 ? (
               <div className="divide-y divide-primarycolor/5">
-                {roundBook.stores.map((store) => (
-                  <button
-                    key={store.id}
-                    onClick={() => setDetailRecordId(store.id)}
-                    className="w-full flex items-center gap-3 px-5 sm:px-7 py-4 hover:bg-primarycolor/[0.02] transition-all text-left active:scale-[0.99]"
-                  >
-                    <div className="size-9 rounded-xl bg-primarycolor/5 flex items-center justify-center text-primarycolor shrink-0">
-                      <Store className="size-4" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="font-bold text-sm text-slate-700 truncate">{store.storeName}</p>
-                      {store.location && (
-                        <p className="text-[9px] font-bold text-muted-foreground truncate">{store.location}</p>
-                      )}
-                    </div>
-                    <div className="text-right shrink-0">
-                      <p className="font-black text-sm text-primarycolor">
-                        {store.totalprice.toLocaleString()} ETB
-                      </p>
-                      <p className="text-[8px] font-bold text-muted-foreground">Sold</p>
-                    </div>
-                  </button>
-                ))}
+                {roundBook.stores.map((store) => {
+                  const isFullyPaid = store.paid >= store.totalprice;
+                  return (
+                    <button
+                      key={store.id}
+                      onClick={() => setDetailRecordId(store.id)}
+                      className="w-full flex items-center gap-3 px-5 sm:px-7 py-4 hover:bg-primarycolor/[0.02] transition-all text-left active:scale-[0.99]"
+                    >
+                      <div className="size-9 rounded-xl bg-primarycolor/5 flex items-center justify-center text-primarycolor shrink-0">
+                        <Store className="size-4" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="font-bold text-sm text-slate-700 truncate">{store.storeName}</p>
+                        {store.location && (
+                          <p className="text-[9px] font-bold text-muted-foreground truncate">{store.location}</p>
+                        )}
+                        <div className="flex items-center gap-2 mt-1">
+                          {isFullyPaid ? (
+                            <span className="inline-flex items-center gap-1 text-[8px] font-black text-emerald-600 uppercase tracking-widest">
+                              <CheckCircle2 className="size-3" /> Paid
+                            </span>
+                          ) : store.paid > 0 ? (
+                            <span className="inline-flex items-center gap-1 text-[8px] font-black text-amber-600 uppercase tracking-widest">
+                              <Clock className="size-3" /> {store.remaining.toLocaleString()} ETB Remaining
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 text-[8px] font-black text-rose-500 uppercase tracking-widest">
+                              <Clock className="size-3" /> Unpaid
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="text-right shrink-0 flex items-center gap-3">
+                        <div>
+                          <p className="font-black text-sm text-slate-800">{store.qty}</p>
+                          <p className="text-[8px] font-bold text-muted-foreground">Books</p>
+                        </div>
+                        <div className="w-px h-7 bg-slate-200" />
+                        <div>
+                          <p className="font-black text-sm text-primarycolor">
+                            {store.totalprice.toLocaleString()} ETB
+                          </p>
+                          <p className="text-[8px] font-bold text-muted-foreground">Sold</p>
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
             ) : (
               <div className="px-5 sm:px-7 py-8 text-center">
@@ -432,6 +498,61 @@ export default function RoundBookDetail({ roundBook }: { roundBook: RoundBookDat
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* End Summary Dialog */}
+      <Dialog open={showEndSummary} onOpenChange={(o) => { if (!o) { setShowEndSummary(false); router.refresh(); } }}>
+        <DialogContent className="sm:max-w-md w-[95vw] rounded-[2.5rem] border-4 border-primarycolor/5 bg-white p-0 overflow-hidden shadow-2xl">
+          <DialogHeader className="p-5 pb-3 border-b border-slate-100">
+            <div className="flex items-center gap-3">
+              <div className="size-12 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0">
+                <CheckCircle2 className="size-6" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <DialogTitle className="text-lg font-black uppercase italic text-left leading-tight text-primarycolor">
+                  Round Ended
+                </DialogTitle>
+                <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">
+                  {roundBook.book.title}
+                </p>
+              </div>
+            </div>
+          </DialogHeader>
+          <div className="p-5 space-y-4">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-primarycolor/[0.02] rounded-2xl border-2 border-primarycolor/5 p-4">
+                <p className="text-[7px] font-black text-muted-foreground uppercase tracking-widest mb-1">Books Taken</p>
+                <p className="font-black text-xl text-slate-800">{endSummary?.taken ?? 0}</p>
+              </div>
+              <div className="bg-primarycolor/[0.02] rounded-2xl border-2 border-primarycolor/5 p-4">
+                <p className="text-[7px] font-black text-muted-foreground uppercase tracking-widest mb-1">Books Sold</p>
+                <p className="font-black text-xl text-primarycolor">{endSummary?.sold ?? 0}</p>
+              </div>
+              <div className="bg-primarycolor/[0.02] rounded-2xl border-2 border-primarycolor/5 p-4">
+                <p className="text-[7px] font-black text-muted-foreground uppercase tracking-widest mb-1">Returned</p>
+                <p className="font-black text-xl text-amber-600">{endSummary?.returned ?? 0}</p>
+              </div>
+              <div className="bg-primarycolor/[0.02] rounded-2xl border-2 border-primarycolor/5 p-4">
+                <p className="text-[7px] font-black text-muted-foreground uppercase tracking-widest mb-1">Book Shops</p>
+                <p className="font-black text-xl text-secondarycolor">{endSummary?.shops ?? 0}</p>
+              </div>
+            </div>
+            <div className="bg-gradient-to-br from-primarycolor/5 to-transparent rounded-2xl border-2 border-primarycolor/10 p-4">
+              <div className="flex items-center justify-between">
+                <p className="text-[7px] font-black text-muted-foreground uppercase tracking-widest">Total Revenue</p>
+                <p className="font-black text-2xl text-primarycolor">
+                  {(endSummary?.totalPrice ?? 0).toLocaleString()} <span className="text-sm font-bold text-muted-foreground">ETB</span>
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => { setShowEndSummary(false); router.refresh(); }}
+              className="w-full h-14 rounded-2xl bg-primarycolor hover:bg-secondarycolor text-white font-black text-sm shadow-lg shadow-primarycolor/20 flex items-center justify-center gap-2 active:scale-[0.98] transition-all"
+            >
+              Done
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Reverse Confirmation */}
       <AlertDialog open={showReverseConfirm} onOpenChange={setShowReverseConfirm}>

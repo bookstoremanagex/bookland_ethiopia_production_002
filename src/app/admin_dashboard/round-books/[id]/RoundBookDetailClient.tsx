@@ -23,7 +23,8 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { allocateRoundBook } from "../actions";
+import { Checkbox } from "@/components/ui/checkbox";
+import { allocateRoundBook, payAndApproveAllShops, payFullShop } from "../actions";
 
 type Payment = {
   id: number;
@@ -73,6 +74,11 @@ export default function RoundBookDetailClient({ data }: { data: RoundData }) {
   const [selectedStoreType, setSelectedStoreType] = useState<"store" | "printer" | null>(null);
   const [selectedStockId, setSelectedStockId] = useState<number | null>(null);
   const [isAllocating, setIsAllocating] = useState(false);
+  const [showPayAllDialog, setShowPayAllDialog] = useState(false);
+  const [isPayingAll, setIsPayingAll] = useState(false);
+  const [selectedRecordIds, setSelectedRecordIds] = useState<Set<number>>(new Set());
+  const [payFullShopId, setPayFullShopId] = useState<number | null>(null);
+  const [isPayingFull, setIsPayingFull] = useState(false);
 
   const quantityToAllocate = data.startingAmount - data.returnedAmount;
 
@@ -83,6 +89,48 @@ export default function RoundBookDetailClient({ data }: { data: RoundData }) {
   });
 
   const booksSold = data.startingAmount - data.returnedAmount;
+
+  const allPaymentsCleared = data.stores.length > 0 && data.stores.every((s) => {
+    const approved = s.payments.filter(p => p.status === "APPROVED").reduce((a, p) => a + (p.amount || 0), 0);
+    return approved >= s.totalprice;
+  });
+
+  const handlePayFullShop = async () => {
+    if (!payFullShopId) return;
+    setIsPayingFull(true);
+    try {
+      const res = await payFullShop(payFullShopId);
+      if (res.success) {
+        toast.success(`Paid ${res.amount?.toLocaleString()} ETB successfully`);
+        setPayFullShopId(null);
+        router.refresh();
+      } else {
+        toast.error(res.error || "Failed to process payment");
+      }
+    } catch {
+      toast.error("Something went wrong");
+    } finally {
+      setIsPayingFull(false);
+    }
+  };
+
+  const handlePayAllShops = async () => {
+    setIsPayingAll(true);
+    try {
+      const res = await payAndApproveAllShops(data.id, Array.from(selectedRecordIds));
+      if (res.success) {
+        toast.success("All shops paid and approved successfully");
+        setShowPayAllDialog(false);
+        router.refresh();
+      } else {
+        toast.error(res.error || "Failed to process payments");
+      }
+    } catch {
+      toast.error("Something went wrong");
+    } finally {
+      setIsPayingAll(false);
+    }
+  };
 
   const handleOpenAllocate = () => {
     setSelectedStoreId(null);
@@ -121,14 +169,46 @@ export default function RoundBookDetailClient({ data }: { data: RoundData }) {
 
   return (
     <div className="space-y-6">
-      {/* Back button */}
-      <button
-        onClick={() => router.push("/admin_dashboard/round-books")}
-        className="inline-flex items-center gap-2 h-10 px-4 rounded-xl hover:bg-primarycolor/5 text-primarycolor font-black text-[10px] uppercase tracking-widest transition-all"
-      >
-        <ArrowLeft className="size-4" />
-        Back to Round Books
-      </button>
+      {/* Top bar */}
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <button
+          onClick={() => router.push("/admin_dashboard/round-books")}
+          className="inline-flex items-center gap-2 h-10 px-4 rounded-xl hover:bg-primarycolor/5 text-primarycolor font-black text-[10px] uppercase tracking-widest transition-all"
+        >
+          <ArrowLeft className="size-4" />
+          Back to Round Books
+        </button>
+        <button
+          onClick={() => {
+            const unpaidIds = new Set(data.stores.filter((s) => {
+              const approved = s.payments.filter(p => p.status === "APPROVED").reduce((a, p) => a + (p.amount || 0), 0);
+              return approved < s.totalprice;
+            }).map(s => s.id));
+            setSelectedRecordIds(unpaidIds);
+            setShowPayAllDialog(true);
+          }}
+          className="inline-flex items-center gap-2 h-10 px-5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-black text-[9px] uppercase tracking-widest border-2 border-emerald-200/50 transition-all active:scale-[0.97]"
+        >
+          <Banknote className="size-4" />
+          Record Full Payment for All Shops
+        </button>
+      </div>
+
+      {/* Payment cleared status */}
+      {data.stores.length > 0 && (
+        <div className={cn(
+          "flex items-center gap-3 px-5 py-3 rounded-2xl border-2 font-black text-[9px] uppercase tracking-widest",
+          allPaymentsCleared
+            ? "bg-emerald-50 border-emerald-200/50 text-emerald-700"
+            : "bg-amber-50 border-amber-200/50 text-amber-700"
+        )}>
+          {allPaymentsCleared ? (
+            <><CheckCircle2 className="size-5 shrink-0" /> All Payments Cleared</>
+          ) : (
+            <><Clock className="size-5 shrink-0" /> Payments Pending — Some shops have outstanding balances</>
+          )}
+        </div>
+      )}
 
       {/* Header card */}
       <div className="bg-white rounded-3xl border-2 border-primarycolor/5 shadow-xl p-5 sm:p-7">
@@ -234,6 +314,7 @@ export default function RoundBookDetailClient({ data }: { data: RoundData }) {
                 .filter((p) => p.status === "APPROVED")
                 .reduce((sum, p) => sum + (p.amount || 0), 0);
               const remaining = store.totalprice - totalPaid;
+              const estQty = data.totalSold > 0 ? Math.round((store.totalprice / data.totalSold) * booksSold) : 0;
 
               return (
                 <div key={store.id} className="p-5 sm:p-7 space-y-4">
@@ -248,9 +329,16 @@ export default function RoundBookDetailClient({ data }: { data: RoundData }) {
                         <p className="text-[8px] font-bold text-muted-foreground truncate">{store.location}</p>
                       )}
                     </div>
-                    <div className="text-right shrink-0">
-                      <p className="font-black text-base text-primarycolor">{store.totalprice.toLocaleString()} ETB</p>
-                      <p className="text-[8px] font-bold text-muted-foreground">Total</p>
+                    <div className="text-right shrink-0 flex items-center gap-4">
+                      <div>
+                        <p className="font-black text-base text-slate-800">{estQty}</p>
+                        <p className="text-[8px] font-bold text-muted-foreground">Books</p>
+                      </div>
+                      <div className="w-px h-8 bg-slate-200" />
+                      <div>
+                        <p className="font-black text-base text-primarycolor">{store.totalprice.toLocaleString()} ETB</p>
+                        <p className="text-[8px] font-bold text-muted-foreground">Total</p>
+                      </div>
                     </div>
                   </div>
 
@@ -260,8 +348,14 @@ export default function RoundBookDetailClient({ data }: { data: RoundData }) {
                       <span className="font-bold text-emerald-600">Paid: {totalPaid.toLocaleString()} ETB</span>
                     </div>
                     {remaining > 0 && (
-                      <div className="flex items-center gap-1.5">
+                      <div className="flex items-center gap-2">
                         <span className="font-bold text-rose-500">Remaining: {remaining.toLocaleString()} ETB</span>
+                        <button
+                          onClick={() => setPayFullShopId(store.id)}
+                          className="px-3 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[8px] uppercase tracking-widest transition-all active:scale-[0.97]"
+                        >
+                          Fully Paid
+                        </button>
                       </div>
                     )}
                     {remaining <= 0 && totalPaid > 0 && (
@@ -361,6 +455,190 @@ export default function RoundBookDetailClient({ data }: { data: RoundData }) {
           </Link>
         )}
       </div>
+
+      {/* Pay All Confirmation Dialog */}
+      <Dialog open={showPayAllDialog} onOpenChange={(o) => !o && setShowPayAllDialog(false)}>
+        <DialogContent className="sm:max-w-2xl w-[95vw] rounded-[2.5rem] border-4 border-primarycolor/5 bg-white p-0 overflow-hidden shadow-2xl max-h-[90vh] flex flex-col">
+          <DialogHeader className="p-5 pb-3 border-b border-slate-100 shrink-0">
+            <div className="flex items-center gap-3">
+              <div className="size-11 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0">
+                <Banknote className="size-5" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <DialogTitle className="text-base font-black uppercase italic text-left leading-tight text-primarycolor">
+                  Record Full Payment
+                </DialogTitle>
+                <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">
+                  {data.bookTitle} — {selectedRecordIds.size} of {data.stores.filter((s) => {
+                    const approved = s.payments.filter(p => p.status === "APPROVED").reduce((a, p) => a + (p.amount || 0), 0);
+                    return approved < s.totalprice;
+                  }).length} shop(s) selected
+                </p>
+              </div>
+            </div>
+          </DialogHeader>
+          <div className="flex-1 overflow-y-auto p-5 max-h-[340px]">
+            <div className="space-y-2">
+              {data.stores
+                .map((store) => {
+                  const approvedSum = store.payments
+                    .filter((p) => p.status === "APPROVED")
+                    .reduce((s, p) => s + (p.amount || 0), 0);
+                  const pendingSum = store.payments
+                    .filter((p) => p.status === "PENDING")
+                    .reduce((s, p) => s + (p.amount || 0), 0);
+                  const remaining = store.totalprice - approvedSum - pendingSum;
+                  return { ...store, approvedSum, pendingSum, remaining };
+                })
+                .sort((a, b) => a.remaining - b.remaining)
+                .map((store, idx) => {
+                  const isFullyPaid = store.approvedSum >= store.totalprice;
+                  const checked = selectedRecordIds.has(store.id);
+                  return (
+                    <div
+                      key={store.id}
+                      className={cn(
+                        "flex items-center gap-3 p-4 rounded-2xl border transition-all",
+                        isFullyPaid
+                          ? "border-emerald-100 bg-emerald-50/30 opacity-60"
+                          : checked
+                            ? "border-primarycolor bg-primarycolor/[0.03]"
+                            : "border-slate-100 bg-white hover:border-slate-200"
+                      )}
+                    >
+                      <span className="size-7 rounded-lg bg-primarycolor/10 text-primarycolor font-black text-xs flex items-center justify-center shrink-0">
+                        {idx + 1}
+                      </span>
+                      <Checkbox
+                        checked={checked}
+                        disabled={isFullyPaid}
+                        onCheckedChange={(val) => {
+                          if (isFullyPaid) return;
+                          setSelectedRecordIds((prev) => {
+                            const next = new Set(prev);
+                            if (val) next.add(store.id);
+                            else next.delete(store.id);
+                            return next;
+                          });
+                        }}
+                        className="shrink-0"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="font-bold text-sm text-slate-700 truncate">{store.shopName}</p>
+                        <p className="text-[8px] font-bold text-muted-foreground">
+                          Total: {store.totalprice.toLocaleString()} ETB
+                          {store.approvedSum > 0 && ` · Paid: ${store.approvedSum.toLocaleString()} ETB`}
+                          {store.pendingSum > 0 && ` · Pending: ${store.pendingSum.toLocaleString()} ETB`}
+                        </p>
+                      </div>
+                      <div className="text-right shrink-0">
+                        {isFullyPaid ? (
+                          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-emerald-50 text-emerald-700 font-black text-[9px] uppercase tracking-widest">
+                            <CheckCircle2 className="size-3" />
+                            Paid
+                          </span>
+                        ) : (
+                          <div>
+                            <p className="font-black text-base text-primarycolor">{store.remaining.toLocaleString()} ETB</p>
+                            <p className="text-[7px] font-black text-muted-foreground uppercase tracking-widest">To Record</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+            </div>
+          </div>
+          <div className="shrink-0 border-t border-slate-100 p-5 space-y-4">
+            <div className="flex items-center justify-between px-1">
+              <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Total to Record</p>
+              <p className="font-black text-xl text-primarycolor">
+                {data.stores
+                  .filter((s) => selectedRecordIds.has(s.id))
+                  .reduce((sum, s) => {
+                    const approved = s.payments.filter(p => p.status === "APPROVED").reduce((a, p) => a + (p.amount || 0), 0);
+                    const pending = s.payments.filter(p => p.status === "PENDING").reduce((a, p) => a + (p.amount || 0), 0);
+                    return sum + Math.max(0, s.totalprice - approved - pending);
+                  }, 0).toLocaleString()} ETB
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={handlePayAllShops}
+                disabled={isPayingAll || selectedRecordIds.size === 0}
+                className="flex-1 h-14 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-sm shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isPayingAll ? (
+                  <Loader2 className="size-5 animate-spin" />
+                ) : (
+                  <Banknote className="size-5" />
+                )}
+                {isPayingAll ? "Processing..." : "Proceed Payment"}
+              </button>
+              <button
+                onClick={() => setShowPayAllDialog(false)}
+                className="flex-1 h-14 rounded-2xl border-2 border-slate-200 font-black text-sm text-slate-600 hover:bg-slate-50 active:scale-[0.98] transition-all"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Fully Paid Shop Confirmation Dialog */}
+      <Dialog open={payFullShopId !== null} onOpenChange={(o) => !o && setPayFullShopId(null)}>
+        <DialogContent className="sm:max-w-md w-[90vw] rounded-[2rem] border-4 border-emerald-500/20 bg-white p-6 shadow-2xl">
+          <DialogHeader className="p-0">
+            <div className="flex items-center gap-3">
+              <div className="size-11 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0">
+                <Banknote className="size-5" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <DialogTitle className="text-base font-black uppercase italic leading-tight text-emerald-700">
+                  Confirm Full Payment
+                </DialogTitle>
+                <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">
+                  {
+                  payFullShopId
+                    ? (() => {
+                        const s = data.stores.find(st => st.id === payFullShopId);
+                        if (!s) return "";
+                        const paid = s.payments.filter(p => p.status === "APPROVED").reduce((a, p) => a + (p.amount || 0), 0);
+                        return `${s.shopName} — ${(s.totalprice - paid).toLocaleString()} ETB remaining`;
+                      })()
+                    : ""
+                  }
+                </p>
+              </div>
+            </div>
+          </DialogHeader>
+          <p className="text-sm text-slate-600 text-center py-4">
+            This will record and approve a payment for the full remaining amount.
+          </p>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handlePayFullShop}
+              disabled={isPayingFull}
+              className="flex-1 h-12 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-sm shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isPayingFull ? (
+                <Loader2 className="size-5 animate-spin" />
+              ) : (
+                <CheckCircle2 className="size-5" />
+              )}
+              {isPayingFull ? "Processing..." : "Confirm & Pay"}
+            </button>
+            <button
+              onClick={() => setPayFullShopId(null)}
+              disabled={isPayingFull}
+              className="flex-1 h-12 rounded-2xl border-2 border-slate-200 font-black text-sm text-slate-600 hover:bg-slate-50 active:scale-[0.98] transition-all disabled:opacity-50"
+            >
+              Cancel
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Allocate Dialog */}
       <Dialog open={showAllocateDialog} onOpenChange={(o) => !o && setShowAllocateDialog(false)}>

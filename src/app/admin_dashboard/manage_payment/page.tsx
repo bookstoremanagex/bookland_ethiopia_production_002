@@ -10,7 +10,16 @@ export default async function ManagePaymentPage() {
                 where: { is_deleted: false }
             },
             payments: {
-                where: { is_deleted: false }
+                where: { is_deleted: false },
+                select: {
+                    id: true,
+                    amount: true,
+                    payment_type: true,
+                    checkId: true,
+                    status: true,
+                    createdAt: true,
+                    orderid: true,
+                },
             }
         }
     });

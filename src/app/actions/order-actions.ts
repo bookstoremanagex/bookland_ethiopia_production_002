@@ -53,10 +53,7 @@ export async function getShopTotalDebt(shopId: number) {
             },
         });
 
-        const approvedPrevPayments = await (prisma as any).payments.findMany({
-            where: { shopId, is_deleted: false, is_for_previous_debts: true, status: "APPROVED" },
-            select: { amount: true },
-        });
+        const approvedPrevPayments: { amount: number }[] = [];
 
         let orderDebtTotal = 0;
         let roundDebt = 0;

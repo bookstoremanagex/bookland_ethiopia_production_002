@@ -442,3 +442,119 @@ export async function approveRoundPayment(paymentId: number) {
     return { success: false, error: error.message };
   }
 }
+
+export async function payFullShop(roundRecordId: number) {
+  try {
+    const rr = await (prisma as any).roundrecords.findFirst({
+      where: { id: roundRecordId, is_deleted: false },
+      include: {
+        round_payments: {
+          where: { is_deleted: false },
+        },
+      },
+    });
+    if (!rr) return { success: false, error: "Round record not found" };
+
+    const totalprice = rr.totalprice ?? 0;
+    if (totalprice <= 0) return { success: false, error: "No amount to pay" };
+
+    const approvedSum = (rr.round_payments || [])
+      .filter((p: any) => p.status === "APPROVED")
+      .reduce((s: number, p: any) => s + (p.amount || 0), 0);
+
+    const remaining = totalprice - approvedSum;
+    if (remaining <= 0) return { success: false, error: "Shop is already fully paid" };
+
+    await (prisma as any).round_payments.create({
+      data: {
+        roundrecordId: rr.id,
+        shopId: rr.bookshop_id,
+        amount: remaining,
+        payment_type: "DIRECT",
+        status: "APPROVED",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    });
+
+    return { success: true, amount: remaining };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+}
+
+export async function payAndApproveAllShops(roundId: number, recordIds?: number[]) {
+  try {
+    const rb = await (prisma as any).roundbooks.findFirst({
+      where: { id: roundId, is_deleted: false },
+      include: {
+        round_records: {
+          where: { is_deleted: false },
+          include: {
+            round_payments: {
+              where: { is_deleted: false },
+            },
+          },
+        },
+      },
+    });
+    if (!rb) return { success: false, error: "Round not found" };
+
+    await (prisma as any).$transaction(async (tx: any) => {
+      const recordsToProcess = recordIds
+        ? rb.round_records.filter((rr: any) => recordIds.includes(rr.id))
+        : rb.round_records;
+
+      for (const rr of recordsToProcess) {
+        const totalprice = rr.totalprice ?? 0;
+        if (totalprice <= 0) continue;
+
+        const existingPayments = rr.round_payments || [];
+        const pendingPayments = existingPayments.filter((p: any) => p.status === "PENDING");
+        const approvedPayments = existingPayments.filter((p: any) => p.status === "APPROVED");
+        const approvedSum = approvedPayments.reduce((s: number, p: any) => s + (p.amount || 0), 0);
+
+        if (approvedSum >= totalprice) continue;
+
+        if (pendingPayments.length > 0) {
+          for (const pp of pendingPayments) {
+            await tx.round_payments.update({
+              where: { id: pp.id },
+              data: { status: "APPROVED", updatedAt: new Date() },
+            });
+          }
+          const pendingSum = pendingPayments.reduce((s: number, p: any) => s + (p.amount || 0), 0);
+          if (pendingSum < totalprice) {
+            await tx.round_payments.create({
+              data: {
+                roundrecordId: rr.id,
+                shopId: rr.bookshop_id,
+                amount: totalprice - approvedSum - pendingSum,
+                payment_type: "DIRECT",
+                status: "APPROVED",
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+            });
+          }
+        } else {
+          await tx.round_payments.create({
+            data: {
+              roundrecordId: rr.id,
+              shopId: rr.bookshop_id,
+              amount: totalprice - approvedSum,
+              payment_type: "DIRECT",
+              status: "APPROVED",
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            },
+          });
+        }
+      }
+    }, { timeout: 30000 });
+
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+}

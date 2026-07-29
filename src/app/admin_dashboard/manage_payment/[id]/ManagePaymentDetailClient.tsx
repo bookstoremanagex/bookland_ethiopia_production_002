@@ -160,6 +160,7 @@ interface Totals {
     totalDebt: number;
     totalPaid: number;
     totalRemaining: number;
+    unpaidRoundDebt: number;
 }
 
 interface RoundBooksTotals {
@@ -594,14 +595,22 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
                                 <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Total Paid</p>
                                 <p className="text-xl font-bold text-emerald-200">{totals.totalPaid.toLocaleString()} ETB</p>
                             </div>
+                            <div className="flex items-center justify-between">
+                                <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Unpaid Round Debt</p>
+                                <p className="text-lg font-bold text-amber-200">{totals.unpaidRoundDebt.toLocaleString()} ETB</p>
+                            </div>
                             <div className="pt-3 border-t border-white/20">
                                 <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Remaining</p>
                                 <p className={cn(
                                     "text-3xl font-black mt-1",
-                                    totals.totalRemaining > 0 ? "text-rose-200" : "text-emerald-200"
+                                    totals.totalRemaining + totals.unpaidRoundDebt > 0 ? "text-rose-200" : "text-emerald-200"
                                 )}>
-                                    {totals.totalRemaining.toLocaleString()} ETB
+                                    {(totals.totalRemaining + totals.unpaidRoundDebt).toLocaleString()} ETB
                                 </p>
+                                <div className="flex items-center gap-4 mt-1 text-[8px] font-black uppercase tracking-widest opacity-40">
+                                    <span>Order: {totals.totalRemaining.toLocaleString()} ETB</span>
+                                    <span>Round: {totals.unpaidRoundDebt.toLocaleString()} ETB</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -654,6 +663,22 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
                                             <div className="flex items-center justify-between">
                                                 <p className="text-[8px] font-black uppercase tracking-widest opacity-60">Total Paid</p>
                                                 <p className="text-base font-bold text-emerald-200">{totals.totalPaid.toLocaleString()} ETB</p>
+                                            </div>
+                                            <div className="flex items-center justify-between">
+                                                <p className="text-[8px] font-black uppercase tracking-widest opacity-60">Unpaid Round Debt</p>
+                                                <p className="text-sm font-bold text-amber-200">{totals.unpaidRoundDebt.toLocaleString()} ETB</p>
+                                            </div>
+                                            <div className="pt-2 border-t border-white/20">
+                                                <div className="flex items-center justify-between">
+                                                    <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Remaining</p>
+                                                    <p className={cn("text-lg font-black", totals.totalRemaining + totals.unpaidRoundDebt > 0 ? "text-rose-200" : "text-emerald-200")}>
+                                                        {(totals.totalRemaining + totals.unpaidRoundDebt).toLocaleString()} ETB
+                                                    </p>
+                                                </div>
+                                                <div className="flex items-center gap-3 mt-0.5 text-[7px] font-black uppercase tracking-widest opacity-40">
+                                                    <span>Order: {totals.totalRemaining.toLocaleString()} ETB</span>
+                                                    <span>Round: {totals.unpaidRoundDebt.toLocaleString()} ETB</span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

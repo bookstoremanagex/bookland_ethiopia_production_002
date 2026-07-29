@@ -65,13 +65,30 @@ export async function getBooksForRound() {
         book_sku: true,
         bookedition: {
           where: { is_deleted: false },
-          select: { id: true, edition_name: true, selling_price: true },
+          select: {
+            id: true,
+            edition_name: true,
+            selling_price: true,
+            bookeditionstores: {
+              where: { is_deleted: false, quantity: { gt: 0 } },
+              select: { id: true, quantity: true },
+            },
+          },
           orderBy: { createdAt: "asc" as const },
         },
       },
       orderBy: { title: "asc" as const },
     });
-    return { success: true, data: books };
+
+    // Only keep editions that have stock in at least one store
+    const data = books.map((book: any) => ({
+      ...book,
+      bookedition: book.bookedition.filter(
+        (ed: any) => (ed.bookeditionstores?.length || 0) > 0
+      ),
+    })).filter((book: any) => book.bookedition.length > 0);
+
+    return { success: true, data };
   } catch (error: any) {
     return { success: false, error: error.message };
   }
