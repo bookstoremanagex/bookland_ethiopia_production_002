@@ -25,6 +25,7 @@ import {
   Building2,
   Eye,
   AlertTriangle,
+  Plus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -39,6 +40,8 @@ import {
 import { cn } from "@/lib/utils";
 import { useCalendar } from "@/lib/calendar-context";
 import ManageOrderDetailsModal from "./ManageOrderDetailsModal";
+import AddOrderModal from "./AddOrderModal";
+import type { ShopRow } from "@/components/deliver_full_dashboard_components/OrderModal";
 
 export type AdminOrder = {
   id: number;
@@ -90,11 +93,13 @@ export type AdminOrder = {
 interface ManageOrdersPageContentProps {
   orders: AdminOrder[];
   userRole?: string | null;
+  shops: ShopRow[];
 }
 
 export default function ManageOrdersPageContent({
   orders,
   userRole,
+  shops,
 }: ManageOrdersPageContentProps) {
   const { formatDate } = useCalendar();
   const searchParams = useSearchParams();
@@ -102,6 +107,7 @@ export default function ManageOrdersPageContent({
   const [globalFilter, setGlobalFilter] = useState("");
   const [selectedOrder, setSelectedOrder] = useState<AdminOrder | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAddOrderOpen, setIsAddOrderOpen] = useState(false);
   const [orderList, setOrderList] = useState<AdminOrder[]>(orders);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
 
@@ -297,19 +303,28 @@ export default function ManageOrdersPageContent({
             </div>
           </div>
         </div>
-        {pendingCount > 0 && (
-          <div className="flex items-center gap-3 bg-amber-50 border-2 border-amber-100 rounded-2xl px-5 py-3 animate-pulse">
-            <AlertTriangle className="size-5 text-amber-600 shrink-0" />
-            <div>
-              <p className="font-black text-amber-800 text-sm">
-                {pendingCount} Pending Approval
-              </p>
-              <p className="text-[9px] font-bold text-amber-600 uppercase tracking-widest">
-                Awaiting your review
-              </p>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          {pendingCount > 0 && (
+            <div className="flex items-center gap-3 bg-amber-50 border-2 border-amber-100 rounded-2xl px-5 py-3 animate-pulse">
+              <AlertTriangle className="size-5 text-amber-600 shrink-0" />
+              <div>
+                <p className="font-black text-amber-800 text-sm">
+                  {pendingCount} Pending Approval
+                </p>
+                <p className="text-[9px] font-bold text-amber-600 uppercase tracking-widest">
+                  Awaiting your review
+                </p>
+              </div>
             </div>
-          </div>
-        )}
+          )}
+
+          <Button
+            onClick={() => setIsAddOrderOpen(true)}
+            className="h-12 px-6 rounded-2xl bg-primarycolor hover:bg-secondarycolor text-white font-black uppercase tracking-widest text-[10px] shadow-lg shadow-primarycolor/30 gap-2"
+          >
+            <Plus className="size-4" /> Add a New Order
+          </Button>
+        </div>
       </div>
 
       {/* Stats Cards — admin only */}
@@ -563,6 +578,13 @@ export default function ManageOrdersPageContent({
           );
           setIsModalOpen(false);
         }}
+      />
+
+      {/* Add a New Order Modal */}
+      <AddOrderModal
+        shops={shops}
+        open={isAddOrderOpen}
+        onClose={() => setIsAddOrderOpen(false)}
       />
     </div>
   );
