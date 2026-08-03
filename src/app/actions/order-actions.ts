@@ -97,6 +97,103 @@ export async function getShopTotalDebt(shopId: number) {
     }
 }
 
+export type ShopDebtData = {
+    id: number;
+    name: string;
+    branch: string;
+    location: string;
+    orderDebt: number;
+    roundDebt: number;
+    previousDebt: number;
+    lastOrderDebt: number;
+    totalDebt: number;
+};
+
+export async function getAllShopsDebt(): Promise<{ success: boolean; data?: ShopDebtData[]; error?: string }> {
+    try {
+        const shops = await (prisma as any).bookshopes.findMany({
+            where: { is_deleted: false },
+            include: {
+                orders: {
+                    where: { is_deleted: false },
+                    select: { id: true, total_amount: true, amount_paid: true, order_type: true, is_approved: true, createdAt: true },
+                },
+                roundrecords: {
+                    where: { is_deleted: false },
+                    include: {
+                        round_payments: {
+                            where: { is_deleted: false, status: "APPROVED" },
+                            select: { amount: true },
+                        },
+                    },
+                },
+                payments: {
+                    where: { is_deleted: false, is_for_previous_debts: true, status: "APPROVED" },
+                    select: { amount: true },
+                },
+            },
+        });
+
+        const data = (shops as any[]).map((shop) => {
+            let orderDebtTotal = 0;
+            let roundDebt = 0;
+
+            const requestedOrders = (shop.orders || []).filter((o: any) => o.order_type === "requested");
+            const lastRequestedOrder = [...requestedOrders].sort(
+                (a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            )[0];
+
+            for (const order of shop.orders || []) {
+                const unpaid = (order.total_amount || 0) - (order.amount_paid || 0);
+                if (unpaid <= 0) continue;
+                if (order.order_type === "requested" && order.is_approved) {
+                    orderDebtTotal += unpaid;
+                } else if (order.order_type === "on round") {
+                    roundDebt += unpaid;
+                }
+            }
+
+            const lastOrderDebt = lastRequestedOrder
+                ? Math.max(0, (lastRequestedOrder.total_amount || 0) - (lastRequestedOrder.amount_paid || 0))
+                : 0;
+            const lastIncludedInOrderDebt = lastRequestedOrder?.is_approved && lastOrderDebt > 0;
+            const orderDebt = Math.max(0, orderDebtTotal - (lastIncludedInOrderDebt ? lastOrderDebt : 0));
+
+            for (const record of shop.roundrecords || []) {
+                const totalPaid = (record.round_payments || []).reduce(
+                    (sum: number, p: any) => sum + (p.amount || 0),
+                    0
+                );
+                const remaining = (record.totalprice || 0) - totalPaid;
+                if (remaining > 0) roundDebt += remaining;
+            }
+
+            const previousDebtAmount = shop.previousDebt || 0;
+            const approvedPrevPaid = (shop.payments || []).reduce(
+                (sum: number, p: any) => sum + (p.amount || 0), 0
+            );
+            const previousDebtRemaining = Math.max(0, previousDebtAmount - approvedPrevPaid);
+
+            return {
+                id: shop.id,
+                name: shop.name,
+                branch: shop.branch || "Main",
+                location: shop.location,
+                orderDebt,
+                roundDebt: Math.max(0, roundDebt),
+                previousDebt: previousDebtRemaining,
+                lastOrderDebt,
+                totalDebt: Math.max(0, orderDebt + roundDebt + previousDebtRemaining + lastOrderDebt),
+            };
+        });
+
+        return { success: true, data };
+    } catch (error) {
+        console.error("Error fetching shops debt:", error);
+        return { success: false, error: "Failed to fetch shop debts" };
+    }
+}
+
 export async function getOrdersByShopId(shopId: number) {
   try {
     const orders = await (prisma as any).orders.findMany({

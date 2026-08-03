@@ -46,7 +46,7 @@ export default function AddOrderModal({ shops, open, onClose }: AddOrderModalPro
   return (
     <>
       <Dialog open={open && !orderShop} onOpenChange={(o) => !o && handleDialogClose()}>
-        <DialogContent className="max-w-2xl w-full max-h-[85dvh] flex flex-col p-0 overflow-hidden bg-white rounded-3xl border-0">
+        <DialogContent className="w-full max-w-2xl md:max-w-7xl max-h-[85dvh] flex flex-col p-0 overflow-hidden bg-white rounded-3xl border-0">
           <DialogHeader className="shrink-0 px-5 pt-5 pb-0 border-b border-slate-100">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -114,14 +114,47 @@ export default function AddOrderModal({ shops, open, onClose }: AddOrderModalPro
                     <span
                       className={cn(
                         "inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-black text-[10px] border shrink-0",
-                        shop.remaining > 0
+                        (shop.totalDebt ?? shop.remaining) > 0
                           ? "bg-red-50 text-red-600 border-red-100"
                           : "bg-emerald-50 text-emerald-600 border-emerald-100"
                       )}
                     >
                       <BadgeDollarSign className="size-3" />
-                      {shop.remaining.toLocaleString()} ETB
+                      {(shop.totalDebt ?? shop.remaining).toLocaleString()} ETB
                     </span>
+                  </div>
+
+                  <div className="hidden md:grid grid-cols-5 gap-2">
+                    <div className="bg-amber-50 rounded-xl p-2.5 space-y-0.5">
+                      <p className="text-[7px] font-black uppercase tracking-widest text-amber-600/60">Order</p>
+                      <p className={`font-black text-xs ${(shop.orderDebt || 0) > 0 ? 'text-amber-600' : 'text-emerald-600'}`}>
+                        {(shop.orderDebt || 0).toLocaleString()}
+                      </p>
+                    </div>
+                    <div className="bg-rose-50 rounded-xl p-2.5 space-y-0.5">
+                      <p className="text-[7px] font-black uppercase tracking-widest text-rose-600/60">Round</p>
+                      <p className={`font-black text-xs ${(shop.roundDebt || 0) > 0 ? 'text-rose-600' : 'text-emerald-600'}`}>
+                        {(shop.roundDebt || 0).toLocaleString()}
+                      </p>
+                    </div>
+                    <div className="bg-purple-50 rounded-xl p-2.5 space-y-0.5">
+                      <p className="text-[7px] font-black uppercase tracking-widest text-purple-600/60">Prev.</p>
+                      <p className={`font-black text-xs ${(shop.previousDebt || 0) > 0 ? 'text-purple-600' : 'text-emerald-600'}`}>
+                        {(shop.previousDebt || 0).toLocaleString()}
+                      </p>
+                    </div>
+                    <div className="bg-cyan-50 rounded-xl p-2.5 space-y-0.5">
+                      <p className="text-[7px] font-black uppercase tracking-widest text-cyan-600/60">Last</p>
+                      <p className={`font-black text-xs ${(shop.lastOrderDebt || 0) > 0 ? 'text-cyan-600' : 'text-emerald-600'}`}>
+                        {(shop.lastOrderDebt || 0).toLocaleString()}
+                      </p>
+                    </div>
+                    <div className="bg-slate-50 rounded-xl p-2.5 space-y-0.5">
+                      <p className="text-[7px] font-black uppercase tracking-widest text-muted-foreground">Total</p>
+                      <p className={`font-black text-xs ${(shop.totalDebt || 0) > 0 ? 'text-slate-900' : 'text-emerald-600'}`}>
+                        {(shop.totalDebt || 0).toLocaleString()}
+                      </p>
+                    </div>
                   </div>
 
                   <Button

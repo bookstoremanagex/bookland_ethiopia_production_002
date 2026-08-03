@@ -42,6 +42,11 @@ export type ShopRow = {
   name: string;
   branch: string;
   remaining: number;
+  orderDebt?: number;
+  roundDebt?: number;
+  previousDebt?: number;
+  lastOrderDebt?: number;
+  totalDebt?: number;
 };
 
 type EditionInfo = {
