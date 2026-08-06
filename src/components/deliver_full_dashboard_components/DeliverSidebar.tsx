@@ -24,6 +24,7 @@ import {
   RefreshCw,
   Info,
   CalendarDays,
+  CalendarRange,
 } from "lucide-react";
 
 import {
@@ -307,6 +308,7 @@ export function DeliverSidebar() {
                   defaultOpen={
                     isMounted &&
                     (activePath?.includes("/delivery_dashboard_full/daily-report") ||
+                     activePath?.includes("/delivery_dashboard_full/period-report") ||
                      activePath?.includes("/delivery_dashboard_full/payments-due"))
                   }
                 >
@@ -319,6 +321,7 @@ export function DeliverSidebar() {
                           "hover:bg-primarycolor/10 hover:text-primarycolor",
                           isMounted &&
                             (activePath?.includes("/delivery_dashboard_full/daily-report") ||
+                             activePath?.includes("/delivery_dashboard_full/period-report") ||
                              activePath?.includes("/delivery_dashboard_full/payments-due"))
                             ? "bg-primarycolor/10 text-primarycolor font-black"
                             : "text-foreground",
@@ -327,8 +330,9 @@ export function DeliverSidebar() {
                         <Info
                           className={cn(
                             "w-5 h-5",
-                            isMounted &&
-                              activePath?.includes("/delivery_dashboard_full/daily-report") ||
+                            (isMounted &&
+                              activePath?.includes("/delivery_dashboard_full/daily-report")) ||
+                              activePath?.includes("/delivery_dashboard_full/period-report") ||
                               activePath?.includes("/delivery_dashboard_full/payments-due")
                               ? "text-primarycolor"
                               : "text-primarycolor/70",
@@ -374,6 +378,38 @@ export function DeliverSidebar() {
                                 )}
                               />
                               <span>Daily Report</span>
+                            </Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                        <SidebarMenuSubItem>
+                          <SidebarMenuSubButton
+                            asChild
+                            isActive={
+                              isMounted &&
+                              (activePath ===
+                                "/delivery_dashboard_full/period-report" ||
+                                activePath.startsWith(
+                                  "/delivery_dashboard_full/period-report/",
+                                ))
+                            }
+                            className={cn(
+                              "transition-all duration-300 rounded-lg h-9 px-4",
+                              "data-[active=true]:bg-primarycolor data-[active=true]:text-white data-[active=true]:font-black data-[active=true]:shadow-md data-[active=true]:shadow-primarycolor/20",
+                              "hover:bg-primarycolor/10 hover:text-primarycolor",
+                            )}
+                          >
+                            <Link href="/delivery_dashboard_full/period-report">
+                              <CalendarRange
+                                className={cn(
+                                  "w-4 h-4",
+                                  isMounted &&
+                                    activePath ===
+                                      "/delivery_dashboard_full/period-report"
+                                    ? "text-white"
+                                    : "text-primarycolor/70",
+                                )}
+                              />
+                              <span>Period Report</span>
                             </Link>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
