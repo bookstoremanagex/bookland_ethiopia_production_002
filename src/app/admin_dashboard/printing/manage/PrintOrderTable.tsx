@@ -173,7 +173,7 @@ function createColumns(formatDate: (date: Date, pattern?: string) => string): Co
     },
 ] }
 
-export default function PrintOrderTable({ data }: { data: any[] }) {
+export default function PrintOrderTable({ data, label = "Projects", searchPlaceholder = "Search projects..." }: { data: any[]; label?: string; searchPlaceholder?: string }) {
     const { formatDate, formatShort, formatLong, formatDateTime } = useCalendar();
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
@@ -205,7 +205,7 @@ export default function PrintOrderTable({ data }: { data: any[] }) {
                 <div className="flex items-center gap-4 flex-1">
                     <Search className="size-5 text-slate-400 shrink-0" />
                     <Input
-                        placeholder="Search projects..."
+                        placeholder={searchPlaceholder}
                         value={(table.getColumn("project_name")?.getFilterValue() as string) ?? ""}
                         onChange={(event) =>
                             table.getColumn("project_name")?.setFilterValue(event.target.value)
@@ -214,7 +214,7 @@ export default function PrintOrderTable({ data }: { data: any[] }) {
                     />
                 </div>
                 <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primarycolor/5 border border-primarycolor/10 text-[10px] font-black text-primarycolor uppercase tracking-widest shrink-0 justify-center">
-                    <Activity className="size-3" /> {data.length} Projects
+                    <Activity className="size-3" /> {data.length} {label}
                 </div>
             </div>
 
@@ -246,7 +246,7 @@ export default function PrintOrderTable({ data }: { data: any[] }) {
                         ) : (
                             <TableRow>
                                 <TableCell colSpan={columns.length} className="h-40 text-center text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-                                    No print projects found.
+                                    No {label.toLowerCase()} found.
                                 </TableCell>
                             </TableRow>
                         )}
@@ -344,14 +344,14 @@ export default function PrintOrderTable({ data }: { data: any[] }) {
                 ) : (
                     <div className="py-16 text-center space-y-4 opacity-30">
                         <Layers className="size-12 mx-auto" />
-                        <p className="text-sm font-black uppercase tracking-widest">No print projects found</p>
+                        <p className="text-sm font-black uppercase tracking-widest">No {label.toLowerCase()} found</p>
                     </div>
                 )}
             </div>
 
             <div className="flex items-center justify-between px-4">
                 <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
-                    Showing {table.getRowModel().rows.length} of {data.length} projects
+                    Showing {table.getRowModel().rows.length} of {data.length} {label.toLowerCase()}
                 </div>
                 <div className="flex items-center space-x-2">
                     <Button
