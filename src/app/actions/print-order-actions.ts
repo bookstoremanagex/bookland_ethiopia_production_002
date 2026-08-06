@@ -368,3 +368,142 @@ export async function changeEditionPrinter(data: {
         };
     }
 }
+
+export async function moveEditionToProject(data: {
+    orderItemId: number;
+    editionId: number;
+    sourceOrderId: number;
+    targetOrderId: number;
+}) {
+    const { orderItemId, editionId, sourceOrderId, targetOrderId } = data;
+    try {
+        if (sourceOrderId === targetOrderId) {
+            return { success: false, error: "Book is already in this project" };
+        }
+
+        await (prisma as any).$transaction(async (tx: any) => {
+            const targetOrder = await tx.printorder.findUnique({
+                where: { id: targetOrderId },
+                select: { printerId: true }
+            });
+            if (!targetOrder) throw new Error("Target project not found");
+            if (!targetOrder.printerId) throw new Error("Target project has no printer assigned");
+
+            const sourceItem = await tx.printorder_items.findUnique({
+                where: { id: orderItemId },
+                select: { quantity: true, total_price: true }
+            });
+            if (!sourceItem) throw new Error("Source order item not found");
+
+            // 1. Move the print order item to the target project
+            const targetPrinterId = targetOrder.printerId;
+
+            // Check if the edition already exists in the target project (merge case)
+            const existingInTarget = await tx.printorder_items.findFirst({
+                where: {
+                    printorder_id: targetOrderId,
+                    bookEditionId: editionId,
+                    is_deleted: false
+                }
+            });
+
+            if (existingInTarget) {
+                // Merge quantities into the existing target row, then soft-delete source
+                await tx.printorder_items.update({
+                    where: { id: existingInTarget.id },
+                    data: {
+                        quantity: { increment: sourceItem.quantity },
+                        total_price: { increment: sourceItem.total_price || 0 },
+                        updatedAt: new Date()
+                    }
+                });
+                await tx.printorder_items.update({
+                    where: { id: orderItemId },
+                    data: { is_deleted: true, updatedAt: new Date() }
+                });
+            } else {
+                // Re-point the source item to the target project
+                await tx.printorder_items.update({
+                    where: { id: orderItemId },
+                    data: { printorder_id: targetOrderId, updatedAt: new Date() }
+                });
+            }
+
+            // 2. Recompute target order count
+            const targetItems = await tx.printorder_items.findMany({
+                where: { printorder_id: targetOrderId, is_deleted: false }
+            });
+            await tx.printorder.update({
+                where: { id: targetOrderId },
+                data: {
+                    count: targetItems.reduce((s: number, i: any) => s + (i.quantity || 0), 0),
+                    updatedAt: new Date()
+                }
+            });
+
+            // 3. Move ALL physical stock for this edition to the target project's printer
+            const printerStocks = await tx.bookeditionprinters.findMany({
+                where: { editionId, is_deleted: false }
+            });
+
+            if (printerStocks.length > 0) {
+                const totalQuantity = printerStocks.reduce(
+                    (sum: number, s: any) => sum + (s.quantity || 0),
+                    0
+                );
+
+                await tx.bookeditionprinters.updateMany({
+                    where: { editionId, is_deleted: false },
+                    data: { is_deleted: true, updatedAt: new Date() }
+                });
+
+                const existing = await tx.bookeditionprinters.findFirst({
+                    where: { editionId, printerId: targetPrinterId, is_deleted: false }
+                });
+
+                if (existing) {
+                    await tx.bookeditionprinters.update({
+                        where: { id: existing.id },
+                        data: {
+                            quantity: { increment: totalQuantity },
+                            is_deleted: false,
+                            updatedAt: new Date()
+                        }
+                    });
+                } else {
+                    await tx.bookeditionprinters.create({
+                        data: {
+                            editionId,
+                            printerId: targetPrinterId,
+                            quantity: totalQuantity,
+                            updatedAt: new Date()
+                        }
+                    });
+                }
+            }
+
+            // 4. Recompute source order count (and clear printer assignment on source if empty)
+            const sourceItems = await tx.printorder_items.findMany({
+                where: { printorder_id: sourceOrderId, is_deleted: false }
+            });
+            await tx.printorder.update({
+                where: { id: sourceOrderId },
+                data: {
+                    count: sourceItems.reduce((s: number, i: any) => s + (i.quantity || 0), 0),
+                    updatedAt: new Date()
+                }
+            });
+        }, { timeout: 15000 });
+
+        revalidatePath("/admin_dashboard/printing/list");
+        revalidatePath(`/admin_dashboard/printing/manage/${sourceOrderId}`);
+        revalidatePath(`/admin_dashboard/printing/manage/${targetOrderId}`);
+        return { success: true };
+    } catch (error: any) {
+        console.error("Move Edition To Project Error:", error);
+        return {
+            success: false,
+            error: error.message || "Failed to move book to project"
+        };
+    }
+}

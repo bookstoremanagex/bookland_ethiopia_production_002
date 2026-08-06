@@ -209,6 +209,15 @@ export default async function PrintingBooksListPage() {
 
     const allItems = [...deduped, ...notInProject, ...notAssignedBooks];
 
+    // Available target projects = all non-deleted, non-auto-delivery print orders
+    const availableProjects = orders
+        .filter((o: any) => !isAutoDeliveryOrder(o) && o.is_deleted === false)
+        .map((o: any) => ({
+            id: o.id,
+            projectName: o.project_name || `Project #${o.id}`,
+            printerName: o.printer?.name || "",
+        }));
+
     return (
         <div className="p-4 md:p-10 space-y-10 bg-[#F8FAFC] min-h-screen">
             <div className="space-y-2">
@@ -222,7 +231,7 @@ export default async function PrintingBooksListPage() {
                     All books across every print project
                 </p>
             </div>
-            <PrintingBooksListTable items={allItems} printers={printers} />
+            <PrintingBooksListTable items={allItems} printers={printers} projects={availableProjects} />
         </div>
     );
 }

@@ -56,7 +56,7 @@ import Link from "next/link"
 import { useCalendar } from "@/lib/calendar-context"
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
-import { changeEditionPrinter } from "@/app/actions/print-order-actions"
+import { changeEditionPrinter, moveEditionToProject } from "@/app/actions/print-order-actions"
 
 const statusStyles: Record<string, string> = {
     NOT_STARTED: "bg-slate-100 text-slate-600 border-slate-200",
@@ -94,6 +94,12 @@ interface PrinterOption {
     id: number;
     name: string;
     location: string;
+}
+
+interface ProjectOption {
+    id: number;
+    projectName: string;
+    printerName: string;
 }
 
 function createColumns(
@@ -235,7 +241,7 @@ function createColumns(
     ];
 }
 
-export default function PrintingBooksListTable({ items, printers }: { items: ListItem[]; printers: PrinterOption[] }) {
+export default function PrintingBooksListTable({ items, printers, projects }: { items: ListItem[]; printers: PrinterOption[]; projects: ProjectOption[] }) {
     const { formatDate } = useCalendar();
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
@@ -244,8 +250,13 @@ export default function PrintingBooksListTable({ items, printers }: { items: Lis
     const [saving, setSaving] = React.useState(false)
     const [printerSearch, setPrinterSearch] = React.useState("")
     const [printerOpen, setPrinterOpen] = React.useState(false)
+    const [selectedProject, setSelectedProject] = React.useState<string>("")
+    const [projectSearch, setProjectSearch] = React.useState("")
+    const [projectOpen, setProjectOpen] = React.useState(false)
+    const [moving, setMoving] = React.useState(false)
 
     const selectedPrinterOption = printers.find((p) => String(p.id) === selectedPrinter)
+    const selectedProjectOption = projects.find((p) => String(p.id) === selectedProject)
 
     const filteredPrinters = printers.filter((p) => {
         const q = printerSearch.trim().toLowerCase();
@@ -256,10 +267,21 @@ export default function PrintingBooksListTable({ items, printers }: { items: Lis
         );
     });
 
+    const filteredProjects = projects.filter((p) => {
+        const q = projectSearch.trim().toLowerCase();
+        if (!q) return true;
+        return (
+            p.projectName.toLowerCase().includes(q) ||
+            (p.printerName || "").toLowerCase().includes(q)
+        );
+    });
+
     const columns = React.useMemo(
         () => createColumns(formatDate, (item) => {
             setSelectedPrinter(item.printerName ? String(findPrinterId(item.printerName) ?? "") : "")
             setPrinterSearch("")
+            setSelectedProject("")
+            setProjectSearch("")
             setEditItem(item)
         }),
         [formatDate]
@@ -293,6 +315,33 @@ export default function PrintingBooksListTable({ items, printers }: { items: Lis
             window.location.reload();
         } else {
             toast.error(res.error || "Failed to change printer");
+        }
+    }
+
+    const handleMoveToProject = async () => {
+        if (!editItem) return;
+        const targetId = parseInt(selectedProject);
+        if (!targetId) return;
+        if (targetId === editItem.orderId) {
+            toast.info("Book already in this project");
+            return;
+        }
+
+        setMoving(true);
+        const res = await moveEditionToProject({
+            orderItemId: editItem.id,
+            editionId: editItem.editionId,
+            sourceOrderId: editItem.orderId,
+            targetOrderId: targetId,
+        });
+        setMoving(false);
+
+        if (res.success) {
+            toast.success("Book moved to project successfully");
+            setEditItem(null);
+            window.location.reload();
+        } else {
+            toast.error(res.error || "Failed to move book to project");
         }
     }
     const table = useReactTable({
@@ -479,10 +528,10 @@ export default function PrintingBooksListTable({ items, printers }: { items: Lis
         </div>
 
         <Dialog open={!!editItem} onOpenChange={(open) => !open && setEditItem(null)}>
-            <DialogContent className="sm:max-w-md rounded-2xl">
+            <DialogContent className="sm:max-w-md rounded-2xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle className="text-xl font-black text-primarycolor uppercase italic flex items-center gap-2">
-                        <Pencil className="size-5" /> Change Printer
+                        <Pencil className="size-5" /> Edit Book Assignment
                     </DialogTitle>
                     <DialogDescription className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                         {editItem ? `${editItem.bookTitle} — ${editItem.editionName}` : ""}
@@ -509,6 +558,103 @@ export default function PrintingBooksListTable({ items, printers }: { items: Lis
                             </div>
                         </div>
                     </div>
+
+                    {/* Current project */}
+                    <div>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1.5 block">
+                            Current Project
+                        </label>
+                        <div className="rounded-xl border-2 border-slate-100 bg-slate-50 px-3 py-2.5 flex items-center gap-2">
+                            <Layers className="size-4 text-primarycolor/40 shrink-0" />
+                            <div className="min-w-0">
+                                <div className="text-sm font-bold text-slate-700 truncate">
+                                    {editItem?.projectName || "—"}
+                                </div>
+                                {editItem?.printerName && (
+                                    <div className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest truncate">
+                                        {editItem.printerName}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Move to another project */}
+                    {editItem?.orderId ? (
+                        <div>
+                            <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1.5 block">
+                                Move to Another Project
+                            </label>
+                            <Popover open={projectOpen} onOpenChange={setProjectOpen}>
+                                <PopoverTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        role="combobox"
+                                        aria-expanded={projectOpen}
+                                        className="w-full h-10 rounded-xl border-2 border-primarycolor/20 font-bold justify-between text-sm"
+                                    >
+                                        {selectedProjectOption ? (
+                                            <span className="flex items-center gap-2 truncate">
+                                                <Layers className="size-4 text-primarycolor/50 shrink-0" />
+                                                {selectedProjectOption.projectName}
+                                                <span className="text-muted-foreground font-medium text-[9px] uppercase tracking-widest">
+                                                    ({selectedProjectOption.printerName || "no printer"})
+                                                </span>
+                                            </span>
+                                        ) : (
+                                            <span className="text-muted-foreground">Select a project...</span>
+                                        )}
+                                        <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent align="start" className="w-full p-0">
+                                    <div className="flex items-center border-b px-3">
+                                        <Search className="size-4 text-muted-foreground mr-2 shrink-0" />
+                                        <Input
+                                            autoFocus
+                                            placeholder="Search projects..."
+                                            value={projectSearch}
+                                            onChange={(e) => setProjectSearch(e.target.value)}
+                                            className="h-10 border-none focus-visible:ring-0 bg-transparent font-bold text-sm px-0"
+                                        />
+                                    </div>
+                                    <div className="max-h-60 overflow-y-auto p-1">
+                                        {filteredProjects.length > 0 ? (
+                                            filteredProjects.map((p) => (
+                                                <button
+                                                    key={p.id}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        setSelectedProject(String(p.id))
+                                                        setProjectOpen(false)
+                                                        setProjectSearch("")
+                                                    }}
+                                                    className="w-full flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-bold text-left hover:bg-primarycolor/10 transition-colors"
+                                                >
+                                                    <Layers className="size-4 text-primarycolor/50 shrink-0" />
+                                                    <span className="truncate">
+                                                        {p.projectName}
+                                                        <span className="text-muted-foreground font-medium"> ({p.printerName || "no printer"})</span>
+                                                    </span>
+                                                    {String(p.id) === selectedProject && (
+                                                        <Check className="ml-auto size-4 shrink-0 text-primarycolor" />
+                                                    )}
+                                                </button>
+                                            ))
+                                        ) : (
+                                            <p className="px-3 py-6 text-center text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                                                No projects found
+                                            </p>
+                                        )}
+                                    </div>
+                                </PopoverContent>
+                            </Popover>
+                        </div>
+                    ) : (
+                        <div className="rounded-xl border-2 border-dashed border-slate-200 bg-slate-50/50 px-3 py-2.5 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                            This book is not in any print project yet
+                        </div>
+                    )}
 
                     {/* Edition stats */}
                     <div className="grid grid-cols-3 gap-2">
@@ -602,7 +748,17 @@ export default function PrintingBooksListTable({ items, printers }: { items: Lis
                     </div>
                 </div>
 
-                <DialogFooter className="gap-2">
+                <DialogFooter className="gap-2 flex-wrap">
+                    {editItem?.orderId ? (
+                        <Button
+                            onClick={handleMoveToProject}
+                            disabled={!selectedProject || moving || saving}
+                            className="rounded-xl h-10 font-black uppercase tracking-widest text-[10px] bg-secondarycolor hover:bg-primarycolor"
+                        >
+                            {moving ? <Loader2 className="size-4 animate-spin mr-2" /> : <Layers className="size-4 mr-2" />}
+                            Move to Project
+                        </Button>
+                    ) : null}
                     <Button
                         variant="outline"
                         onClick={() => setEditItem(null)}
@@ -612,7 +768,7 @@ export default function PrintingBooksListTable({ items, printers }: { items: Lis
                     </Button>
                     <Button
                         onClick={handleChangePrinter}
-                        disabled={!selectedPrinter || saving}
+                        disabled={!selectedPrinter || saving || moving}
                         className="rounded-xl h-10 font-black uppercase tracking-widest text-[10px] bg-primarycolor hover:bg-secondarycolor"
                     >
                         {saving ? <Loader2 className="size-4 animate-spin mr-2" /> : <RefreshCw className="size-4 mr-2" />}
