@@ -11,6 +11,7 @@ import {
   BookOpen,
   Calendar,
   Clock,
+  Pencil,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -20,6 +21,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { markOrderDelivered } from "@/app/actions/order-actions";
+import { OrderModal } from "@/components/deliver_full_dashboard_components/OrderModal";
 import { useCalendar } from "@/lib/calendar-context"
 
 type OrderRow = {
@@ -45,8 +47,17 @@ type OrderRow = {
     price_at_order: number;
     bookedition?: {
       edition_name: string;
+      bookId: number;
       books: { title: string } | null;
     };
+  }[];
+  locked_editions?: {
+    id: number;
+    editionId: number;
+    amount_locked: number;
+    order_id: number;
+    status: string;
+    is_deleted: boolean;
   }[];
 };
 
@@ -108,6 +119,7 @@ export default function OrdersList({ orders, payments: allPayments }: { orders: 
   const [page, setPage] = useState(0);
   const [selectedOrder, setSelectedOrder] = useState<OrderRow | null>(null);
   const [delivering, setDelivering] = useState(false);
+  const [editOrder, setEditOrder] = useState<OrderRow | null>(null);
   const { formatShort, formatDateTime } = useCalendar();
   const pageSize = 15;
 
@@ -336,7 +348,15 @@ export default function OrdersList({ orders, payments: allPayments }: { orders: 
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3">
+                  <div className="flex flex-col sm:flex-row items-stretch gap-3">
+                    {!o.is_approved && (
+                      <button
+                        onClick={() => setEditOrder(o)}
+                        className="w-full sm:flex-1 h-14 rounded-2xl border-2 border-primarycolor/30 text-primarycolor hover:bg-primarycolor/5 font-black text-sm flex items-center justify-center gap-2 active:scale-[0.98] transition-all"
+                      >
+                        <Pencil className="size-4" /> Edit Order
+                      </button>
+                    )}
                     {!o.delivery && (
                       <button
                         onClick={async () => {
@@ -357,14 +377,14 @@ export default function OrdersList({ orders, payments: allPayments }: { orders: 
                           }
                         }}
                         disabled={delivering}
-                        className="flex-1 h-14 rounded-2xl bg-primarycolor hover:bg-secondarycolor text-white font-black text-sm shadow-lg shadow-primarycolor/20 flex items-center justify-center gap-2 active:scale-[0.98] transition-all disabled:opacity-50"
+                        className="w-full sm:flex-1 h-14 rounded-2xl bg-primarycolor hover:bg-secondarycolor text-white font-black text-sm shadow-lg shadow-primarycolor/20 flex items-center justify-center gap-2 active:scale-[0.98] transition-all disabled:opacity-50"
                       >
                         {delivering ? "..." : "Mark Delivered"}
                       </button>
                     )}
                     <button
                       onClick={() => setSelectedOrder(null)}
-                      className="flex-1 h-14 rounded-2xl border-2 border-slate-200 font-black text-sm text-slate-600 hover:bg-slate-50 active:scale-[0.98] transition-all"
+                      className="w-full sm:flex-1 h-14 rounded-2xl border-2 border-slate-200 font-black text-sm text-slate-600 hover:bg-slate-50 active:scale-[0.98] transition-all"
                     >
                       Cancel
                     </button>
@@ -375,6 +395,35 @@ export default function OrdersList({ orders, payments: allPayments }: { orders: 
           })()}
         </DialogContent>
       </Dialog>
+
+      {editOrder && (
+        <OrderModal
+          shop={{
+            id: editOrder.bookshopes?.id || 0,
+            name: editOrder.bookshopes?.name || "Unknown",
+            branch: editOrder.bookshopes?.branch || "",
+            remaining: 0,
+          }}
+          open={!!editOrder}
+          onClose={() => setEditOrder(null)}
+          editMode
+          orderId={editOrder.id}
+          initialItems={(editOrder.order_items || []).map((item) => ({
+            bookId: item.bookedition?.bookId ?? 0,
+            title: item.bookedition?.books?.title || `Book #${item.bookEditionId}`,
+            author: "",
+            quantity: item.quantity,
+          }))}
+          initialOrderType={editOrder.order_type}
+          initialAmountPaid={editOrder.amount_paid}
+          initialLockBooks={(editOrder.locked_editions?.length ?? 0) > 0}
+          onUpdated={() => {
+            setEditOrder(null);
+            setSelectedOrder(null);
+            router.refresh();
+          }}
+        />
+      )}
 
       {pageCount > 1 && (
         <div className="sticky bottom-0 z-20 -mx-4 px-4 pb-4 pt-2 bg-gradient-to-t from-slate-50 via-slate-50 to-transparent">

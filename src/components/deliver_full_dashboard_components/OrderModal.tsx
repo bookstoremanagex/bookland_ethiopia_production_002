@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { searchBooks } from "@/app/actions/transfer-actions";
-import { createOrder } from "@/app/actions/order-actions";
+import { createOrder, updateOrder, getBookStockData } from "@/app/actions/order-actions";
 import {
   Dialog,
   DialogContent,
@@ -100,11 +100,25 @@ export function OrderModal({
   open,
   onClose,
   sample,
+  editMode = false,
+  orderId,
+  initialItems,
+  initialOrderType,
+  initialAmountPaid,
+  initialLockBooks,
+  onUpdated,
 }: {
   shop: ShopRow;
   open: boolean;
   onClose: () => void;
   sample?: boolean;
+  editMode?: boolean;
+  orderId?: number;
+  initialItems?: { bookId: number; title: string; author: string; quantity: number }[];
+  initialOrderType?: string;
+  initialAmountPaid?: number;
+  initialLockBooks?: boolean;
+  onUpdated?: (order: any) => void;
 }) {
   const router = useRouter();
   const searchRef = useRef<HTMLInputElement>(null);
@@ -128,10 +142,54 @@ export function OrderModal({
   useEffect(() => {
     if (open) {
       setInitialLoading(true);
-      searchBooks("", 0, 200).then((res) => {
+      if (initialOrderType) setOrderType(initialOrderType);
+      if (initialAmountPaid !== undefined) setAmountPaid(String(initialAmountPaid));
+      if (initialLockBooks !== undefined) setLockBooks(initialLockBooks);
+      searchBooks("", 0, 200, editMode ? orderId : undefined).then((res) => {
         if (res.success) setBooks(res.data || []);
         setInitialLoading(false);
         setTimeout(() => searchRef.current?.focus(), 350);
+        if (editMode && initialItems) {
+          const sel: Record<number, SelectedBookInfo> = {};
+          const stock: Record<number, StockInfo> = {};
+          const missing: number[] = [];
+          for (const item of initialItems) {
+            sel[item.bookId] = {
+              title: item.title,
+              author: item.author || "",
+              quantity: Math.max(1, item.quantity),
+            };
+            const book = (res.success ? res.data || [] : []).find((b: any) => b.id === item.bookId);
+            if (book?.editionStock?.length) {
+              const editions: EditionInfo[] = book.editionStock;
+              stock[item.bookId] = {
+                editions,
+                maxStock: editions.reduce((a: number, e: any) => a + e.stock, 0),
+              };
+            } else {
+              missing.push(item.bookId);
+            }
+          }
+          setSelectedBooks(sel);
+          setStockMap(stock);
+          if (missing.length > 0) {
+            (async () => {
+              for (const bid of missing) {
+                const res2 = await getBookStockData(bid, orderId);
+                if (res2.success && res2.data && res2.data.length > 0) {
+                  const editions: EditionInfo[] = res2.data;
+                  setStockMap(prev => ({
+                    ...prev,
+                    [bid]: {
+                      editions,
+                      maxStock: editions.reduce((a, e) => a + e.stock, 0),
+                    },
+                  }));
+                }
+              }
+            })();
+          }
+        }
       });
     }
   }, [open]);
@@ -142,7 +200,7 @@ export function OrderModal({
     debounceRef.current = setTimeout(async () => {
       const query = q;
       setSearching(true);
-      const res = await searchBooks(query, 0, 200);
+      const res = await searchBooks(query, 0, 200, editMode ? orderId : undefined);
       if (res.success) setBooks(res.data || []);
       setSearching(false);
     }, 300);
@@ -228,20 +286,38 @@ export function OrderModal({
     if (items.length === 0) { toast.error("Add at least one book"); return; }
     setIsSubmitting(true);
     try {
-      const res = await createOrder({
-        bookShopId: shop.id,
-        order_type: orderType,
-        amount_paid: parseFloat(amountPaid) || 0,
-        total_amount: totalMode === "manual" ? manualTotal : null,
-        lock_books: lockBooks,
-        items,
-      });
-      if (res.success) {
-        toast.success(`Order created for ${shop.name}`);
-        onClose();
-        router.refresh();
+      if (editMode && orderId) {
+        const res = await updateOrder(orderId, {
+          order_type: orderType,
+          amount_paid: parseFloat(amountPaid) || 0,
+          total_amount: totalMode === "manual" ? manualTotal : null,
+          lock_books: lockBooks,
+          items,
+        });
+        if (res.success) {
+          toast.success(`Order ORD-${orderId} updated`);
+          onUpdated?.(res.data);
+          onClose();
+          router.refresh();
+        } else {
+          toast.error(res.error || "Failed to update order");
+        }
       } else {
-        toast.error(res.error || "Failed to create order");
+        const res = await createOrder({
+          bookShopId: shop.id,
+          order_type: orderType,
+          amount_paid: parseFloat(amountPaid) || 0,
+          total_amount: totalMode === "manual" ? manualTotal : null,
+          lock_books: lockBooks,
+          items,
+        });
+        if (res.success) {
+          toast.success(`Order created for ${shop.name}`);
+          onClose();
+          router.refresh();
+        } else {
+          toast.error(res.error || "Failed to create order");
+        }
       }
     } catch {
       toast.error("Something went wrong");
@@ -282,7 +358,7 @@ export function OrderModal({
               </div>
               <div>
                 <DialogTitle className="text-base font-black text-primarycolor uppercase italic text-left leading-tight">
-                  {sample ? "Sample Order" : "New Order"}
+                  {sample ? "Sample Order" : editMode ? "Edit Order" : "New Order"}
                 </DialogTitle>
                 <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">{shop.name}</p>
               </div>
@@ -762,7 +838,7 @@ export function OrderModal({
                       ) : (
                         <Check className="size-5" />
                       )}
-                      {isSubmitting ? "Creating Order..." : `Create Order — ${grandTotal.toLocaleString()} ETB`}
+                      {isSubmitting ? "Saving..." : editMode ? `Save Changes — ${grandTotal.toLocaleString()} ETB` : `Create Order — ${grandTotal.toLocaleString()} ETB`}
                     </Button>
                   )}
                 </div>

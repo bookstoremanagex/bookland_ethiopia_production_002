@@ -45,11 +45,14 @@ import {
     BookOpen,
     Settings2,
     CalendarDays,
+    Trash2,
+    Pencil,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCalendar } from "@/lib/calendar-context";
 import { toast } from "sonner";
-import { getBookStockBreakdown, approveOrder, markOrderDelivered, removeBookFromOrder, getShopTotalDebt } from "@/app/actions/order-actions";
+import { getBookStockBreakdown, approveOrder, markOrderDelivered, removeBookFromOrder, getShopTotalDebt, deleteOrder } from "@/app/actions/order-actions";
+import { OrderModal } from "@/components/deliver_full_dashboard_components/OrderModal";
 import type { AdminOrder } from "./ManageOrdersPageContent";
 
 interface StoreOption {
@@ -96,6 +99,8 @@ interface Props {
     onClose: () => void;
     order: AdminOrder | null;
     onApproved: (order: AdminOrder) => void;
+    onDeleted?: (orderId: number) => void;
+    onUpdated?: (order: AdminOrder) => void;
     payments?: Array<{
         id: number;
         amount: number;
@@ -107,7 +112,7 @@ interface Props {
     }>;
 }
 
-export default function ManageOrderDetailsModal({ isOpen, onClose, order, onApproved, payments }: Props) {
+export default function ManageOrderDetailsModal({ isOpen, onClose, order, onApproved, onDeleted, onUpdated, payments }: Props) {
     const { formatDate, formatDateTime } = useCalendar();
     const [bookBreakdowns, setBookBreakdowns] = useState<BookBreakdown[]>([]);
     const [isLoadingStock, setIsLoadingStock] = useState(false);
@@ -133,6 +138,9 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
     const [editedEditionQtys, setEditedEditionQtys] = useState<Record<number, Record<number, number>>>({});
     const [advancedBookId, setAdvancedBookId] = useState<number | null>(null);
     const [removeConfirmOpen, setRemoveConfirmOpen] = useState(false);
+    const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [editOrderOpen, setEditOrderOpen] = useState(false);
     const [shopDebt, setShopDebt] = useState<{ orderDebt: number; roundDebt: number; previousDebt: number; lastOrderDebt: number; totalDebt: number } | null>(null);
 
     // Group order_items by bookId → collect unique books
@@ -647,6 +655,28 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
     };
 
 
+
+    const handleDeleteOrder = async () => {
+        if (!order) return;
+        setIsDeleting(true);
+        try {
+            const res = await deleteOrder(order.id);
+            if (res.success) {
+                toast.success(`Order ORD-${order.id} deleted`);
+                setDeleteConfirmOpen(false);
+                onDeleted?.(order.id);
+                onClose();
+            } else {
+                toast.error(res.error || "Failed to delete order");
+                setDeleteConfirmOpen(false);
+            }
+        } catch {
+            toast.error("Something went wrong");
+            setDeleteConfirmOpen(false);
+        } finally {
+            setIsDeleting(false);
+        }
+    };
 
     const handleApprove = async () => {
         if (!canApprove) return;
@@ -1308,6 +1338,24 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                         >
                             <Settings2 className="size-3.5 sm:size-4" /> Options
                         </Button>
+                        {!order.is_approved && (
+                            <Button
+                                variant="outline"
+                                onClick={() => setDeleteConfirmOpen(true)}
+                                className="rounded-xl sm:rounded-2xl h-10 sm:h-12 px-3 sm:px-5 font-black uppercase tracking-widest text-[8px] sm:text-[10px] border-2 border-rose-200 text-rose-600 hover:bg-rose-50 hover:border-rose-300 gap-1.5 sm:gap-2 shrink-0"
+                            >
+                                <Trash2 className="size-3.5 sm:size-4" /> Delete Order
+                            </Button>
+                        )}
+                        {!order.is_approved && (
+                            <Button
+                                variant="outline"
+                                onClick={() => setEditOrderOpen(true)}
+                                className="rounded-xl sm:rounded-2xl h-10 sm:h-12 px-3 sm:px-5 font-black uppercase tracking-widest text-[8px] sm:text-[10px] border-2 border-primarycolor/30 text-primarycolor hover:bg-primarycolor/5 gap-1.5 sm:gap-2 shrink-0"
+                            >
+                                <Pencil className="size-3.5 sm:size-4" /> Edit Order
+                            </Button>
+                        )}
                     </div>
                     {!order.is_approved && (
                         <Button
@@ -1330,6 +1378,104 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                 </DialogFooter>
             </DialogContent>
         </Dialog>
+
+        {/* Delete Order Confirmation */}
+        <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+            <AlertDialogContent className="sm:max-w-md w-full rounded-[2rem] border-0 sm:border-4 border-rose-100 bg-white p-0 overflow-hidden shadow-2xl">
+                <AlertDialogHeader className="p-6 pb-4 border-b border-slate-100">
+                    <div className="flex items-center gap-3">
+                        <div className="size-10 rounded-2xl bg-rose-100 flex items-center justify-center text-rose-600 shrink-0">
+                            <Trash2 className="size-5" />
+                        </div>
+                        <div>
+                            <AlertDialogTitle className="text-base font-black uppercase italic text-rose-700">
+                                Delete this order?
+                            </AlertDialogTitle>
+                            <AlertDialogDescription className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground">
+                                {order ? `Order ORD-${order.id} · ${order.bookshopes?.name || ""}` : ""}
+                            </AlertDialogDescription>
+                        </div>
+                    </div>
+                </AlertDialogHeader>
+                <div className="p-6 space-y-3">
+                    <div className="flex items-start gap-3 bg-rose-50 border-2 border-rose-200 rounded-2xl p-4">
+                        <AlertTriangle className="size-6 sm:size-7 text-rose-500 shrink-0 mt-0.5" />
+                        <div>
+                            <p className="font-black text-rose-800 text-sm uppercase tracking-widest">Warning</p>
+                            <p className="text-[10px] sm:text-[11px] font-bold text-rose-700 mt-1 leading-relaxed">
+                                This will permanently delete this order and revert everything exactly as if it was never placed:
+                            </p>
+                            <ul className="mt-2 space-y-1 text-[10px] font-bold text-rose-700">
+                                <li>• Locked book stock will be released</li>
+                                <li>• Associated payment will be removed</li>
+                                <li>• All quantities and amounts will be undone</li>
+                            </ul>
+                            <p className="mt-2 text-[10px] font-black text-rose-600 uppercase tracking-widest">This cannot be undone.</p>
+                        </div>
+                    </div>
+                </div>
+                <AlertDialogFooter className="p-5 pt-0 border-t border-slate-100">
+                    <div className="flex gap-3 w-full">
+                        <AlertDialogCancel asChild>
+                            <Button
+                                variant="outline"
+                                disabled={isDeleting}
+                                onClick={() => setDeleteConfirmOpen(false)}
+                                className="flex-1 rounded-2xl h-12 font-black uppercase tracking-widest text-[9px] border-2"
+                            >
+                                Cancel
+                            </Button>
+                        </AlertDialogCancel>
+                        <AlertDialogAction asChild>
+                            <Button
+                                onClick={e => {
+                                    e.preventDefault();
+                                    if (!isDeleting) handleDeleteOrder();
+                                }}
+                                disabled={isDeleting}
+                                className="flex-1 rounded-2xl h-12 font-black uppercase tracking-widest text-[9px] bg-rose-600 hover:bg-rose-700 text-white shadow-lg gap-1.5"
+                            >
+                                {isDeleting ? (
+                                    <><Loader2 className="size-4 animate-spin" /> Deleting...</>
+                                ) : (
+                                    <><Trash2 className="size-4" /> Yes, Delete</>
+                                )}
+                            </Button>
+                        </AlertDialogAction>
+                    </div>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
+
+        {/* Edit Order Modal */}
+        {order && (
+            <OrderModal
+                shop={{
+                    id: order.bookShopId,
+                    name: order.bookshopes?.name || "",
+                    branch: order.bookshopes?.branch || "",
+                    remaining: 0,
+                }}
+                open={editOrderOpen}
+                onClose={() => setEditOrderOpen(false)}
+                editMode
+                orderId={order.id}
+                initialItems={order.order_items.map((item) => ({
+                    bookId: item.bookedition?.bookId,
+                    title: item.bookedition?.books?.title || "Unknown",
+                    author: "",
+                    quantity: item.quantity,
+                }))}
+                initialOrderType={order.order_type}
+                initialAmountPaid={order.amount_paid}
+                initialLockBooks={(order.locked_editions?.length ?? 0) > 0}
+                onUpdated={(updated) => {
+                    setEditOrderOpen(false);
+                    if (onUpdated) onUpdated(updated as AdminOrder);
+                    else onClose();
+                }}
+            />
+        )}
 
         {/* Print Options Dialog */}
         <Dialog open={printOptionsOpen} onOpenChange={setPrintOptionsOpen}>

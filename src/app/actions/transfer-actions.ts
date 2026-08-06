@@ -3,7 +3,7 @@
 import prisma from "../../lib/prisma";
 import { revalidatePath } from "next/cache";
 
-export async function searchBooks(query: string, page: number = 0, pageSize: number = 7) {
+export async function searchBooks(query: string, page: number = 0, pageSize: number = 7, excludeOrderId?: number) {
     try {
         let books;
 
@@ -99,12 +99,16 @@ export async function searchBooks(query: string, page: number = 0, pageSize: num
         );
         const lockedMap: Record<number, number> = {};
         if (allEditionIds.length > 0) {
+            const lockWhere: any = {
+                editionId: { in: allEditionIds },
+                status: "locked",
+                is_deleted: false,
+            };
+            if (excludeOrderId !== undefined) {
+                lockWhere.order_id = { not: excludeOrderId };
+            }
             const lockedRecords = await (prisma as any).locked_editions.findMany({
-                where: {
-                    editionId: { in: allEditionIds },
-                    status: "locked",
-                    is_deleted: false,
-                },
+                where: lockWhere,
             });
             for (const lr of lockedRecords) {
                 lockedMap[lr.editionId] = (lockedMap[lr.editionId] || 0) + lr.amount_locked;

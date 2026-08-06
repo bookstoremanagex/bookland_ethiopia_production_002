@@ -222,7 +222,7 @@ export async function getOrdersByShopId(shopId: number) {
   }
 }
 
-export async function getBookStockData(bookId: number) {
+export async function getBookStockData(bookId: number, excludeOrderId?: number) {
   try {
     const id = Number(bookId);
     // Find all editions for this book with their store stock
@@ -243,12 +243,16 @@ export async function getBookStockData(bookId: number) {
     const editionIds = editions.map((ed: any) => ed.id);
     const lockedMap: Record<number, number> = {};
     if (editionIds.length > 0) {
+      const lockWhere: any = {
+        editionId: { in: editionIds },
+        status: "locked",
+        is_deleted: false,
+      };
+      if (excludeOrderId !== undefined) {
+        lockWhere.order_id = { not: excludeOrderId };
+      }
       const lockedRecords = await (prisma as any).locked_editions.findMany({
-        where: {
-          editionId: { in: editionIds },
-          status: "locked",
-          is_deleted: false,
-        },
+        where: lockWhere,
       });
       for (const lr of lockedRecords) {
         lockedMap[lr.editionId] = (lockedMap[lr.editionId] || 0) + lr.amount_locked;
@@ -437,6 +441,197 @@ export async function createOrder(data: {
   }
 }
 
+/**
+ * Edit a pending (unapproved) order in place, re-running the same FIFO
+ * allocation used by createOrder but excluding this order's own locks so the
+ * existing quantities remain valid. Replaces order items, recomputes the total
+ * (or applies a manual override), syncs locked_editions, and updates the
+ * amount paid / order type / lock flag.
+ */
+export async function updateOrder(
+  orderId: number,
+  data: {
+    order_type: string;
+    memo?: string;
+    amount_paid: number;
+    total_amount?: number | null;
+    lock_books?: boolean;
+    items: { bookId: number; quantity: number }[];
+  },
+) {
+  try {
+    const session = await getCurrentSession();
+    if (!session?.id) {
+      return { success: false, error: "Not authenticated" };
+    }
+
+    const id = Number(orderId);
+    const existing = await (prisma as any).orders.findUnique({
+      where: { id },
+      include: { bookshopes: true },
+    });
+    if (!existing) return { success: false, error: "Order not found" };
+    if (existing.is_approved) {
+      return { success: false, error: "Approved orders cannot be edited" };
+    }
+
+    // 1. Calculate total amount and prepare items using FIFO,
+    //    excluding this order's own locks from available stock
+    let totalAmount = 0;
+    const finalOrderItems: any[] = [];
+
+    for (const item of data.items) {
+      const stockRes = await getBookStockData(item.bookId, id);
+      if (!stockRes.success || !stockRes.data) {
+        throw new Error(`Failed to get stock for book ${item.bookId}`);
+      }
+
+      let remainingToFill = item.quantity;
+      const editions = stockRes.data;
+      const totalSystemStock = editions.reduce(
+        (acc: number, e: any) => acc + e.stock,
+        0,
+      );
+
+      if (remainingToFill > totalSystemStock) {
+        throw new Error(
+          `Insufficient aggregate stock for book ID ${item.bookId}. Requested ${remainingToFill}, Available ${totalSystemStock}`,
+        );
+      }
+
+      for (const edition of editions) {
+        if (remainingToFill <= 0) break;
+        if (edition.stock <= 0) continue;
+
+        const take = Math.min(remainingToFill, edition.stock);
+        finalOrderItems.push({
+          bookEditionId: edition.id,
+          quantity: take,
+          price_at_order: edition.price,
+        });
+        totalAmount += take * edition.price;
+        remainingToFill -= take;
+      }
+
+      if (remainingToFill > 0) {
+        throw new Error(
+          `Internal error: Could not fill order for book ${item.bookId} despite available stock check.`,
+        );
+      }
+    }
+
+    if (data.total_amount != null) {
+      totalAmount = data.total_amount;
+    }
+
+    // 2. Replace items, sync locks/payment, and update the order in a transaction
+    await (prisma as any).$transaction(
+      async (tx: any) => {
+        // Replace order items
+        await tx.order_items.deleteMany({ where: { orderId: id } });
+        for (const fi of finalOrderItems) {
+          await tx.order_items.create({
+            data: {
+              orderId: id,
+              bookEditionId: fi.bookEditionId,
+              quantity: fi.quantity,
+              price_at_order: fi.price_at_order,
+            },
+          });
+        }
+
+        // Sync locked_editions (release old, re-lock new if lock_books enabled)
+        await tx.locked_editions.deleteMany({ where: { order_id: id } });
+        if (data.lock_books) {
+          await tx.locked_editions.createMany({
+            data: finalOrderItems.map((fi: any) => ({
+              editionId: fi.bookEditionId,
+              amount_locked: fi.quantity,
+              order_id: id,
+              status: "locked",
+              updatedAt: new Date(),
+            })),
+          });
+        }
+
+        // Keep the auto-created CHECK payment in sync with the new paid amount
+        if (existing.check_id) {
+          await tx.payments.updateMany({
+            where: {
+              checkId: existing.check_id,
+              payment_type: "CHECK",
+              status: "PENDING",
+              is_deleted: false,
+            },
+            data: { amount: data.amount_paid, updatedAt: new Date() },
+          });
+        }
+
+        // Update the order
+        await tx.orders.update({
+          where: { id },
+          data: {
+            order_type: data.order_type,
+            memo: data.memo ?? existing.memo,
+            amount_paid: data.amount_paid,
+            total_amount: totalAmount,
+            status: "Pending",
+            updatedAt: new Date(),
+          },
+        });
+      },
+      { timeout: 30000 },
+    );
+
+    const updated = await (prisma as any).orders.findUnique({
+      where: { id },
+      include: {
+        bookshopes: true,
+        checks: true,
+        order_items: {
+          include: {
+            bookedition: { include: { books: true } },
+          },
+        },
+      },
+    });
+
+    // Record activity log
+    try {
+      if (session?.id) {
+        const shopName = existing.bookshopes?.name || `Shop #${existing.bookShopId}`;
+        await (prisma as any).activityLogs.create({
+          data: {
+            accountId: session.id,
+            action: `Edited pending order ORD-${id} for ${shopName}`,
+            details: JSON.stringify({
+              orderId: id,
+              shopId: existing.bookShopId,
+              shopName,
+              totalAmount,
+              amountPaid: data.amount_paid,
+              items: data.items,
+            }),
+            updatedAt: new Date(),
+          },
+        });
+      }
+    } catch (logError) {
+      console.error("Failed to record activity log for order edit:", logError);
+    }
+
+    revalidatePath("/admin_dashboard/manage_orders");
+    revalidatePath(`/admin_dashboard/book_shops/${existing.bookShopId}`);
+    return { success: true, data: updated };
+  } catch (error: any) {
+    console.error("Update order error:", error);
+    return {
+      success: false,
+      error: error?.meta?.cause || error?.message || "Failed to update order",
+    };
+  }
+}
+
 export async function updateOrderStatus(
   orderId: number,
   status: string,
@@ -478,6 +673,9 @@ export async function getAllOrders() {
       include: {
         bookshopes: true,
         checks: true,
+        locked_editions: {
+          where: { is_deleted: false },
+        },
         order_items: {
           include: {
             bookedition: {
@@ -1021,6 +1219,100 @@ export async function removeBookFromOrder(orderId: number, bookId: number) {
   } catch (error: any) {
     console.error("Remove book from order error:", error);
     return { success: false, error: error?.message || "Failed to remove book from order" };
+  }
+}
+
+/**
+ * Permanently delete a pending (unapproved) order and revert every change it
+ * made, restoring the system exactly to its pre-order state:
+ * - Releases locked edition stock (locked_editions) so the quantities are
+ *   available again exactly as before the order
+ * - Removes any payment records created for this order (money)
+ * - Deletes order items and the order itself
+ * Only pending orders can be deleted; approved orders are locked.
+ */
+export async function deleteOrder(orderId: number) {
+  try {
+    const session = await getCurrentSession();
+    if (!session || session.role !== "ADMIN") {
+      return { success: false, error: "Only administrators can delete orders" };
+    }
+
+    const id = Number(orderId);
+    const order = await (prisma as any).orders.findUnique({
+      where: { id },
+      include: { bookshopes: true },
+    });
+    if (!order) return { success: false, error: "Order not found" };
+    if (order.is_approved) {
+      return { success: false, error: "Approved orders cannot be deleted" };
+    }
+
+    await (prisma as any).$transaction(
+      async (tx: any) => {
+        // 1. Release locked stock so it becomes available again
+        await tx.locked_editions.deleteMany({ where: { order_id: id } });
+
+        // 2. Remove payment records created for this order
+        await tx.payments.deleteMany({
+          where: {
+            OR: [{ orderid: String(id) }, { orderid: `ORD-${id}` }],
+          },
+        });
+
+        // 2b. Remove the auto-created CHECK payment (createOrder records it without orderid)
+        if (order.check_id) {
+          await tx.payments.deleteMany({
+            where: {
+              checkId: order.check_id,
+              payment_type: "CHECK",
+              status: "PENDING",
+              is_deleted: false,
+            },
+          });
+        }
+
+        // 3. Delete order items
+        await tx.order_items.deleteMany({ where: { orderId: id } });
+
+        // 4. Delete the order (cascades any remaining locked_editions / order_items)
+        await tx.orders.delete({ where: { id } });
+      },
+      { timeout: 30000 },
+    );
+
+    // Record activity log
+    try {
+      if (session?.id) {
+        const shopName = order.bookshopes?.name || `Shop #${order.bookShopId}`;
+        await (prisma as any).activityLogs.create({
+          data: {
+            accountId: session.id,
+            action: `Deleted pending order ORD-${order.id} for ${shopName}`,
+            details: JSON.stringify({
+              orderId: order.id,
+              shopId: order.bookShopId,
+              shopName,
+              totalAmount: order.total_amount,
+              amountPaid: order.amount_paid,
+            }),
+            updatedAt: new Date(),
+          },
+        });
+      }
+    } catch (logError) {
+      console.error("Failed to record activity log for order deletion:", logError);
+    }
+
+    revalidatePath("/admin_dashboard/manage_orders");
+    revalidatePath(`/admin_dashboard/book_shops/${order.bookShopId}`);
+    return { success: true, data: { deletedId: order.id } };
+  } catch (error: any) {
+    console.error("Delete order error:", error);
+    return {
+      success: false,
+      error: error?.meta?.cause || error?.message || "Failed to delete order",
+    };
   }
 }
 

@@ -88,6 +88,14 @@ export type AdminOrder = {
       books: { title: string; book_image_url: string | null };
     };
   }[];
+  locked_editions?: {
+    id: number;
+    editionId: number;
+    amount_locked: number;
+    order_id: number;
+    status: string;
+    is_deleted: boolean;
+  }[];
 };
 
 interface ManageOrdersPageContentProps {
@@ -577,6 +585,18 @@ export default function ManageOrdersPageContent({
             ),
           );
           setIsModalOpen(false);
+        }}
+        onDeleted={(deletedOrderId) => {
+          localStorage.setItem("mo_page", String(table.getState().pagination.pageIndex));
+          setOrderList((prev) => prev.filter((o) => o.id !== deletedOrderId));
+          setSelectedOrder(null);
+          setIsModalOpen(false);
+        }}
+        onUpdated={(updatedOrder) => {
+          setOrderList((prev) =>
+            prev.map((o) => (o.id === updatedOrder.id ? updatedOrder : o)),
+          );
+          setSelectedOrder(updatedOrder);
         }}
       />
 
