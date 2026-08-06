@@ -292,3 +292,79 @@ export async function deletePrintOrderPayment(paymentId: number, orderId: number
         return { success: false, error: "Failed to delete payment" }
     }
 }
+
+export async function changeEditionPrinter(data: {
+    orderId: number;
+    editionId: number;
+    newPrinterId: number;
+}) {
+    const { orderId, editionId, newPrinterId } = data;
+    try {
+        await (prisma as any).$transaction(async (tx: any) => {
+            const edition = await tx.bookedition.findUnique({
+                where: { id: editionId },
+                select: { count_remening_for_transfer: true }
+            });
+            if (!edition) throw new Error("Edition not found");
+
+            // 1. Re-point the print order to the new printer
+            await tx.printorder.update({
+                where: { id: orderId },
+                data: { printerId: newPrinterId, updatedAt: new Date() }
+            });
+
+            // 2. Move ALL physical stock for this edition to the new printer
+            const printerStocks = await tx.bookeditionprinters.findMany({
+                where: { editionId, is_deleted: false }
+            });
+
+            if (printerStocks.length > 0) {
+                const totalQuantity = printerStocks.reduce(
+                    (sum: number, s: any) => sum + (s.quantity || 0),
+                    0
+                );
+
+                // Soft-delete all current printer links for this edition
+                await tx.bookeditionprinters.updateMany({
+                    where: { editionId, is_deleted: false },
+                    data: { is_deleted: true, updatedAt: new Date() }
+                });
+
+                // Merge into the new printer if stock already exists there, else create
+                const existing = await tx.bookeditionprinters.findFirst({
+                    where: { editionId, printerId: newPrinterId, is_deleted: false }
+                });
+
+                if (existing) {
+                    await tx.bookeditionprinters.update({
+                        where: { id: existing.id },
+                        data: {
+                            quantity: { increment: totalQuantity },
+                            is_deleted: false,
+                            updatedAt: new Date()
+                        }
+                    });
+                } else {
+                    await tx.bookeditionprinters.create({
+                        data: {
+                            editionId,
+                            printerId: newPrinterId,
+                            quantity: totalQuantity,
+                            updatedAt: new Date()
+                        }
+                    });
+                }
+            }
+        }, { timeout: 15000 });
+
+        revalidatePath("/admin_dashboard/printing/list");
+        revalidatePath(`/admin_dashboard/printing/printers/${newPrinterId}`);
+        return { success: true };
+    } catch (error: any) {
+        console.error("Change Edition Printer Error:", error);
+        return {
+            success: false,
+            error: error.message || "Failed to change printer"
+        };
+    }
+}

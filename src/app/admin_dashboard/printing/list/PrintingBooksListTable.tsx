@@ -20,13 +20,30 @@ import {
     Printer,
     Hash,
     BookOpen,
-    DollarSign,
     Layers,
     Activity,
+    Pencil,
+    Loader2,
+    RefreshCw,
+    ChevronsUpDown,
+    Check,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+    DialogFooter,
+} from "@/components/ui/dialog"
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
 import {
     Table,
     TableBody,
@@ -38,6 +55,8 @@ import {
 import Link from "next/link"
 import { useCalendar } from "@/lib/calendar-context"
 import { cn } from "@/lib/utils"
+import { toast } from "sonner"
+import { changeEditionPrinter } from "@/app/actions/print-order-actions"
 
 const statusStyles: Record<string, string> = {
     NOT_STARTED: "bg-slate-100 text-slate-600 border-slate-200",
@@ -45,7 +64,8 @@ const statusStyles: Record<string, string> = {
     ONPROGRESS: "bg-amber-50 text-amber-600 border-amber-100 animate-pulse",
     FAILED: "bg-rose-50 text-rose-600 border-rose-100",
     COMPLETED: "bg-emerald-50 text-emerald-600 border-emerald-100",
-    REPRINT: "bg-purple-50 text-purple-600 border-purple-100"
+    REPRINT: "bg-purple-50 text-purple-600 border-purple-100",
+    NOT_IN_PROJECT: "bg-slate-100 text-slate-400 border-slate-200"
 };
 
 interface ListItem {
@@ -54,6 +74,7 @@ interface ListItem {
     orderId: number;
     projectName: string;
     printerName: string;
+    printerLocation: string;
     bookTitle: string;
     editionName: string;
     quantity: number;
@@ -63,13 +84,35 @@ interface ListItem {
     remaining: number | null;
     createdAt: string;
     paidAmount: number;
+    totalPrinterStock: number;
+    totalPrintCount: number;
+    inStore: number;
+    printerStocks: any[];
 }
 
-function createColumns(formatDate: (date: Date, pattern?: string) => string): ColumnDef<ListItem>[] {
+interface PrinterOption {
+    id: number;
+    name: string;
+    location: string;
+}
+
+function createColumns(
+    formatDate: (date: Date, pattern?: string) => string,
+    onEditPrinter: (item: ListItem) => void
+): ColumnDef<ListItem>[] {
     return [
         {
             id: "book",
             header: "Book & Edition",
+            filterFn: (row, columnId, filterValue) => {
+                const item = row.original;
+                const q = String(filterValue || "").toLowerCase();
+                if (!q) return true;
+                return (
+                    item.bookTitle.toLowerCase().includes(q) ||
+                    item.editionName.toLowerCase().includes(q)
+                );
+            },
             cell: ({ row }) => {
                 const item = row.original;
                 return (
@@ -99,7 +142,7 @@ function createColumns(formatDate: (date: Date, pattern?: string) => string): Co
                         <Layers className="size-3.5 text-primarycolor/40 shrink-0" />
                         <div className="min-w-0">
                             <div className="font-bold text-xs text-primarycolor truncate max-w-[160px]">
-                                {item.projectName}
+                                {item.status === "NOT_IN_PROJECT" ? "Not in a project" : item.projectName}
                             </div>
                             {item.printerName && (
                                 <div className="flex items-center gap-1">
@@ -110,6 +153,17 @@ function createColumns(formatDate: (date: Date, pattern?: string) => string): Co
                                 </div>
                             )}
                         </div>
+                        {item.status !== "NOT_IN_PROJECT" && (
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="rounded-full hover:bg-amber-500 hover:text-white transition-all shadow-sm group shrink-0"
+                                title={`Change Printer (${item.printerName || "—"})`}
+                                onClick={() => onEditPrinter(item)}
+                            >
+                                <Pencil className="size-3.5 group-hover:scale-110 transition-transform" />
+                            </Button>
+                        )}
                     </div>
                 );
             },
@@ -125,46 +179,6 @@ function createColumns(formatDate: (date: Date, pattern?: string) => string): Co
                     </span>
                 </div>
             ),
-        },
-        {
-            accessorKey: "totalPrice",
-            header: "Total Price",
-            cell: ({ row }) => (
-                <div className="flex items-center gap-1.5">
-                    <DollarSign className="size-3.5 text-emerald-500" />
-                    <span className="font-black text-emerald-600 text-sm">
-                        {row.original.totalPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                    </span>
-                </div>
-            ),
-        },
-        {
-            id: "paid",
-            header: "Paid",
-            cell: ({ row }) => {
-                const paid = row.original.paidAmount;
-                const total = row.original.totalPrice;
-                const pct = total > 0 ? (paid / total) * 100 : 0;
-                return paid > 0 ? (
-                    <div className="flex flex-col items-end gap-0.5">
-                        <span className="font-bold text-slate-800 text-sm">
-                            {paid.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                        </span>
-                        <span className={cn(
-                            "text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md",
-                            pct >= 100
-                                ? "bg-emerald-50 text-emerald-600"
-                                : pct > 50
-                                    ? "bg-amber-50 text-amber-600"
-                                    : "bg-rose-50 text-rose-600",
-                        )}>
-                            {pct.toFixed(0)}%
-                        </span>
-                    </div>
-                ) : (
-                    <span className="font-bold text-slate-300">—</span>
-                );
-            },
         },
         {
             id: "remaining",
@@ -202,23 +216,85 @@ function createColumns(formatDate: (date: Date, pattern?: string) => string): Co
         },
         {
             id: "actions",
-            cell: ({ row }) => (
-                <Link href={`/admin_dashboard/printing/manage/${row.original.orderId}`}>
-                    <Button variant="ghost" size="icon" className="rounded-full hover:bg-primarycolor hover:text-white transition-all shadow-sm group">
-                        <ExternalLink className="size-4 group-hover:scale-110 transition-transform" />
-                    </Button>
-                </Link>
-            ),
+            header: "View",
+            cell: ({ row }) => {
+                const item = row.original;
+                return (
+                    <div className="flex items-center justify-end">
+                        {item.status !== "NOT_IN_PROJECT" && (
+                            <Link href={`/admin_dashboard/printing/manage/${item.orderId}`}>
+                                <Button variant="ghost" size="icon" className="rounded-full hover:bg-primarycolor hover:text-white transition-all shadow-sm group" title="View Project">
+                                    <ExternalLink className="size-4 group-hover:scale-110 transition-transform" />
+                                </Button>
+                            </Link>
+                        )}
+                    </div>
+                );
+            },
         },
     ];
 }
 
-export default function PrintingBooksListTable({ items }: { items: ListItem[] }) {
+export default function PrintingBooksListTable({ items, printers }: { items: ListItem[]; printers: PrinterOption[] }) {
     const { formatDate } = useCalendar();
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
+    const [editItem, setEditItem] = React.useState<ListItem | null>(null)
+    const [selectedPrinter, setSelectedPrinter] = React.useState<string>("")
+    const [saving, setSaving] = React.useState(false)
+    const [printerSearch, setPrinterSearch] = React.useState("")
+    const [printerOpen, setPrinterOpen] = React.useState(false)
 
-    const columns = React.useMemo(() => createColumns(formatDate), [formatDate])
+    const selectedPrinterOption = printers.find((p) => String(p.id) === selectedPrinter)
+
+    const filteredPrinters = printers.filter((p) => {
+        const q = printerSearch.trim().toLowerCase();
+        if (!q) return true;
+        return (
+            p.name.toLowerCase().includes(q) ||
+            (p.location || "").toLowerCase().includes(q)
+        );
+    });
+
+    const columns = React.useMemo(
+        () => createColumns(formatDate, (item) => {
+            setSelectedPrinter(item.printerName ? String(findPrinterId(item.printerName) ?? "") : "")
+            setPrinterSearch("")
+            setEditItem(item)
+        }),
+        [formatDate]
+    )
+
+    const findPrinterId = (name: string): number | undefined =>
+        printers.find((p) => p.name === name)?.id
+
+    const handleChangePrinter = async () => {
+        if (!editItem) return;
+        const newId = parseInt(selectedPrinter);
+        if (!newId) return;
+
+        const oldId = findPrinterId(editItem.printerName);
+        if (oldId === newId) {
+            toast.info("Book already assigned to this printer");
+            return;
+        }
+
+        setSaving(true);
+        const res = await changeEditionPrinter({
+            orderId: editItem.orderId,
+            editionId: editItem.editionId,
+            newPrinterId: newId,
+        });
+        setSaving(false);
+
+        if (res.success) {
+            toast.success("Printer changed successfully");
+            setEditItem(null);
+            window.location.reload();
+        } else {
+            toast.error(res.error || "Failed to change printer");
+        }
+    }
     const table = useReactTable({
         data: items,
         columns,
@@ -233,6 +309,7 @@ export default function PrintingBooksListTable({ items }: { items: ListItem[] })
     })
 
     return (
+        <>
         <div className="w-full space-y-6">
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 px-6 h-auto sm:h-20 bg-white rounded-[2rem] border-2 border-primarycolor/5 shadow-xl">
                 <div className="flex items-center gap-4 flex-1">
@@ -290,9 +367,6 @@ export default function PrintingBooksListTable({ items }: { items: ListItem[] })
                 {table.getRowModel().rows?.length ? (
                     table.getRowModel().rows.map((row) => {
                         const item = row.original;
-                        const paid = item.paidAmount;
-                        const total = item.totalPrice;
-                        const pct = total > 0 ? (paid / total) * 100 : 0;
                         return (
                             <div key={item.id} className="bg-white rounded-2xl border-2 border-primarycolor/5 p-5 space-y-4 hover:shadow-md transition-all">
                                 <div className="flex items-start gap-3">
@@ -320,16 +394,10 @@ export default function PrintingBooksListTable({ items }: { items: ListItem[] })
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-3 gap-3 text-center">
+                                <div className="grid grid-cols-2 gap-3 text-center">
                                     <div>
                                         <div className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Copies</div>
                                         <div className="font-bold text-primarycolor text-sm">{item.quantity.toLocaleString()}</div>
-                                    </div>
-                                    <div>
-                                        <div className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Price</div>
-                                        <div className="font-bold text-emerald-600 text-sm">
-                                            {total.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                                        </div>
                                     </div>
                                     <div>
                                         <div className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Remaining</div>
@@ -339,28 +407,36 @@ export default function PrintingBooksListTable({ items }: { items: ListItem[] })
                                     </div>
                                 </div>
 
-                                {paid > 0 && (
-                                    <div className="flex items-center justify-between">
-                                        <span className="font-bold text-slate-800 text-sm">
-                                            Paid: {paid.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                <div className="flex items-center gap-2">
+                                    {item.status !== "NOT_IN_PROJECT" ? (
+                                        <>
+                                            <Link href={`/admin_dashboard/printing/manage/${item.orderId}`} className="flex-1">
+                                                <Button
+                                                    variant="outline"
+                                                    className="w-full h-10 rounded-xl border-primarycolor/20 font-black uppercase tracking-widest text-[10px]"
+                                                >
+                                                    View Project <ExternalLink className="size-3 ml-1" />
+                                                </Button>
+                                            </Link>
+                                            <Button
+                                                variant="outline"
+                                                size="icon"
+                                                onClick={() => {
+                                                    setSelectedPrinter(item.printerName ? String(findPrinterId(item.printerName) ?? "") : "")
+                                                    setEditItem(item)
+                                                }}
+                                                className="h-10 w-10 rounded-xl border-amber-500/40 bg-amber-50 hover:bg-amber-100 text-amber-700 shrink-0"
+                                                title="Change Printer"
+                                            >
+                                                <Pencil className="size-4" />
+                                            </Button>
+                                        </>
+                                    ) : (
+                                        <span className="w-full h-10 flex items-center justify-center rounded-xl border border-slate-100 bg-slate-50 text-[9px] font-black uppercase tracking-widest text-slate-400">
+                                            Not in a project
                                         </span>
-                                        <span className={cn(
-                                            "text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md",
-                                            pct >= 100 ? "bg-emerald-50 text-emerald-600" : pct > 50 ? "bg-amber-50 text-amber-600" : "bg-rose-50 text-rose-600",
-                                        )}>
-                                            {pct.toFixed(0)}%
-                                        </span>
-                                    </div>
-                                )}
-
-                                <Link href={`/admin_dashboard/printing/manage/${item.orderId}`}>
-                                    <Button
-                                        variant="outline"
-                                        className="w-full h-10 rounded-xl border-primarycolor/20 font-black uppercase tracking-widest text-[10px]"
-                                    >
-                                        View Project <ExternalLink className="size-3 ml-1" />
-                                    </Button>
-                                </Link>
+                                    )}
+                                </div>
                             </div>
                         );
                     })
@@ -401,5 +477,150 @@ export default function PrintingBooksListTable({ items }: { items: ListItem[] })
                 </div>
             </div>
         </div>
+
+        <Dialog open={!!editItem} onOpenChange={(open) => !open && setEditItem(null)}>
+            <DialogContent className="sm:max-w-md rounded-2xl">
+                <DialogHeader>
+                    <DialogTitle className="text-xl font-black text-primarycolor uppercase italic flex items-center gap-2">
+                        <Pencil className="size-5" /> Change Printer
+                    </DialogTitle>
+                    <DialogDescription className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                        {editItem ? `${editItem.bookTitle} — ${editItem.editionName}` : ""}
+                    </DialogDescription>
+                </DialogHeader>
+
+                <div className="space-y-4 py-2">
+                    {/* Current printer + location */}
+                    <div>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1.5 block">
+                            Current Printer
+                        </label>
+                        <div className="rounded-xl border-2 border-slate-100 bg-slate-50 px-3 py-2.5 flex items-center gap-2">
+                            <Printer className="size-4 text-primarycolor/40 shrink-0" />
+                            <div className="min-w-0">
+                                <div className="text-sm font-bold text-slate-700 truncate">
+                                    {editItem?.printerName || "—"}
+                                </div>
+                                {editItem?.printerLocation && (
+                                    <div className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest truncate">
+                                        {editItem.printerLocation}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Edition stats */}
+                    <div className="grid grid-cols-3 gap-2">
+                        <div className="rounded-xl border border-slate-100 bg-blue-50/50 p-3 text-center">
+                            <div className="text-[8px] font-black uppercase tracking-widest text-blue-500 mb-1">Total Print</div>
+                            <div className="text-base font-black text-blue-700">
+                                {editItem ? editItem.totalPrintCount.toLocaleString() : "—"}
+                            </div>
+                        </div>
+                        <div className="rounded-xl border border-slate-100 bg-emerald-50/50 p-3 text-center">
+                            <div className="text-[8px] font-black uppercase tracking-widest text-emerald-500 mb-1">In Store</div>
+                            <div className="text-base font-black text-emerald-700">
+                                {editItem ? editItem.inStore.toLocaleString() : "—"}
+                            </div>
+                        </div>
+                        <div className="rounded-xl border border-slate-100 bg-amber-50/50 p-3 text-center">
+                            <div className="text-[8px] font-black uppercase tracking-widest text-amber-500 mb-1">Remaining at Printer</div>
+                            <div className="text-base font-black text-amber-700">
+                                {editItem ? editItem.totalPrinterStock.toLocaleString() : "—"}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* New printer */}
+                    <div>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1.5 block">
+                            New Printer
+                        </label>
+                        <Popover open={printerOpen} onOpenChange={setPrinterOpen}>
+                            <PopoverTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    role="combobox"
+                                    aria-expanded={printerOpen}
+                                    className="w-full h-10 rounded-xl border-2 border-primarycolor/20 font-bold justify-between text-sm"
+                                >
+                                    {selectedPrinterOption ? (
+                                        <span className="flex items-center gap-2 truncate">
+                                            <Printer className="size-4 text-primarycolor/50 shrink-0" />
+                                            {selectedPrinterOption.name}
+                                            {selectedPrinterOption.location ? ` — ${selectedPrinterOption.location}` : ""}
+                                        </span>
+                                    ) : (
+                                        <span className="text-muted-foreground">Select a printer...</span>
+                                    )}
+                                    <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent align="start" className="w-full p-0">
+                                <div className="flex items-center border-b px-3">
+                                    <Search className="size-4 text-muted-foreground mr-2 shrink-0" />
+                                    <Input
+                                        autoFocus
+                                        placeholder="Search printers..."
+                                        value={printerSearch}
+                                        onChange={(e) => setPrinterSearch(e.target.value)}
+                                        className="h-10 border-none focus-visible:ring-0 bg-transparent font-bold text-sm px-0"
+                                    />
+                                </div>
+                                <div className="max-h-60 overflow-y-auto p-1">
+                                    {filteredPrinters.length > 0 ? (
+                                        filteredPrinters.map((p) => (
+                                            <button
+                                                key={p.id}
+                                                type="button"
+                                                onClick={() => {
+                                                    setSelectedPrinter(String(p.id))
+                                                    setPrinterOpen(false)
+                                                    setPrinterSearch("")
+                                                }}
+                                                className="w-full flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-bold text-left hover:bg-primarycolor/10 transition-colors"
+                                            >
+                                                <Printer className="size-4 text-primarycolor/50 shrink-0" />
+                                                <span className="truncate">
+                                                    {p.name}
+                                                    {p.location ? <span className="text-muted-foreground font-medium"> — {p.location}</span> : ""}
+                                                </span>
+                                                {String(p.id) === selectedPrinter && (
+                                                    <Check className="ml-auto size-4 shrink-0 text-primarycolor" />
+                                                )}
+                                            </button>
+                                        ))
+                                    ) : (
+                                        <p className="px-3 py-6 text-center text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                                            No printers found
+                                        </p>
+                                    )}
+                                </div>
+                            </PopoverContent>
+                        </Popover>
+                    </div>
+                </div>
+
+                <DialogFooter className="gap-2">
+                    <Button
+                        variant="outline"
+                        onClick={() => setEditItem(null)}
+                        className="rounded-xl h-10 font-black uppercase tracking-widest text-[10px]"
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick={handleChangePrinter}
+                        disabled={!selectedPrinter || saving}
+                        className="rounded-xl h-10 font-black uppercase tracking-widest text-[10px] bg-primarycolor hover:bg-secondarycolor"
+                    >
+                        {saving ? <Loader2 className="size-4 animate-spin mr-2" /> : <RefreshCw className="size-4 mr-2" />}
+                        Save Changes
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+        </>
     );
 }
