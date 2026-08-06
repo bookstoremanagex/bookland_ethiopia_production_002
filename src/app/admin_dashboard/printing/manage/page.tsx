@@ -37,7 +37,6 @@ export default async function ManagePrintingPage() {
     };
 
     const printOrders = orders.filter((o: any) => !isAutoDeliveryOrder(o));
-    const deliveryOrders = orders.filter(isAutoDeliveryOrder);
 
     return (
         <div className="p-4 md:p-10 space-y-10 bg-[#F8FAFC] min-h-screen">
@@ -53,29 +52,7 @@ export default async function ManagePrintingPage() {
                 <CreatePrintOrderButton printers={printers} editions={editions} books={books} />
             </div>
 
-            <div className="space-y-2">
-                <h2 className="text-xl font-semibold tracking-tight text-slate-900">
-                    Print <span className="text-secondarycolor not-italic">Projects</span>
-                </h2>
-                <p className="text-muted-foreground font-bold uppercase tracking-widest text-[10px]">
-                    Manually created printing batches
-                </p>
-            </div>
-            <PrintOrderTable data={printOrders} label="Projects" searchPlaceholder="Search projects..." />
-
-            {deliveryOrders.length > 0 && (
-                <div className="space-y-6">
-                    <div className="space-y-2">
-                        <h2 className="text-xl font-semibold tracking-tight text-slate-900">
-                            Auto <span className="text-secondarycolor not-italic">Delivery</span>
-                        </h2>
-                        <p className="text-muted-foreground font-bold uppercase tracking-widest text-[10px]">
-                            Auto-generated records created when editions are assigned to stores
-                        </p>
-                    </div>
-                    <PrintOrderTable data={deliveryOrders} label="Auto Deliveries" searchPlaceholder="Search auto deliveries..." />
-                </div>
-            )}
+            <PrintOrderTable data={printOrders} />
         </div>
     );
 }

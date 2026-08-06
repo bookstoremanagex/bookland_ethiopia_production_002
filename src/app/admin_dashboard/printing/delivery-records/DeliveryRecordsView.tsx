@@ -241,54 +241,106 @@ export default function DeliveryRecordsView({
                         </p>
                     </div>
                 ) : (
-                    <Table>
-                        <TableHeader>
-                            <TableRow className="border-b-2 border-slate-200 bg-slate-50">
-                                <TableHead className="font-black text-[10px] uppercase tracking-widest text-slate-500 h-10">
-                                    Printer
-                                </TableHead>
-                                <TableHead className="font-black text-[10px] uppercase tracking-widest text-slate-500 h-10">
-                                    Store
-                                </TableHead>
-                                <TableHead className="font-black text-[10px] uppercase tracking-widest text-slate-500 h-10 text-right">
-                                    Qty
-                                </TableHead>
-                                <TableHead className="font-black text-[10px] uppercase tracking-widest text-slate-500 h-10">
-                                    Status
-                                </TableHead>
-                                <TableHead className="font-black text-[10px] uppercase tracking-widest text-slate-500 h-10">
-                                    Created
-                                </TableHead>
-                                <TableHead className="font-black text-[10px] uppercase tracking-widest text-slate-500 h-10">
-                                    Approved At
-                                </TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
+                    <>
+                        {/* Desktop Table */}
+                        <div className="hidden md:block overflow-x-auto">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow className="border-b-2 border-slate-200 bg-slate-50">
+                                        <TableHead className="font-black text-[10px] uppercase tracking-widest text-slate-500 h-10">
+                                            Printer
+                                        </TableHead>
+                                        <TableHead className="font-black text-[10px] uppercase tracking-widest text-slate-500 h-10">
+                                            Store
+                                        </TableHead>
+                                        <TableHead className="font-black text-[10px] uppercase tracking-widest text-slate-500 h-10 text-right">
+                                            Qty
+                                        </TableHead>
+                                        <TableHead className="font-black text-[10px] uppercase tracking-widest text-slate-500 h-10">
+                                            Status
+                                        </TableHead>
+                                        <TableHead className="font-black text-[10px] uppercase tracking-widest text-slate-500 h-10">
+                                            Created
+                                        </TableHead>
+                                        <TableHead className="font-black text-[10px] uppercase tracking-widest text-slate-500 h-10">
+                                            Approved At
+                                        </TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {records.map((rec) => (
+                                        <TableRow
+                                            key={rec.id}
+                                            className="border-b border-slate-100 hover:bg-slate-50 transition-colors"
+                                        >
+                                            <TableCell className="font-semibold text-sm text-slate-800">
+                                                {rec.printerName}
+                                            </TableCell>
+                                            <TableCell className="text-sm text-slate-600">
+                                                {rec.storeName || (
+                                                    <span className="text-slate-300 italic">
+                                                        —
+                                                    </span>
+                                                )}
+                                            </TableCell>
+                                            <TableCell className="text-right font-bold text-sm text-slate-800">
+                                                {rec.quantity_deliverd ?? (
+                                                    <span className="text-slate-300">—</span>
+                                                )}
+                                            </TableCell>
+                                            <TableCell>
+                                                <span
+                                                    className={cn(
+                                                        "inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest border",
+                                                        rec.approvedByPrinter
+                                                            ? "bg-emerald-50 text-emerald-600 border-emerald-200"
+                                                            : "bg-amber-50 text-amber-600 border-amber-200"
+                                                    )}
+                                                >
+                                                    {rec.approvedByPrinter
+                                                        ? "Approved"
+                                                        : "Pending"}
+                                                </span>
+                                            </TableCell>
+                                            <TableCell className="text-sm text-slate-600">
+                                                {formatDateTime(new Date(rec.createdAt))}
+                                            </TableCell>
+                                            <TableCell className="text-sm text-slate-600">
+                                                {rec.approvedByPrinterAt ? (
+                                                    formatDateTime(
+                                                        new Date(rec.approvedByPrinterAt)
+                                                    )
+                                                ) : (
+                                                    <span className="text-slate-300 italic">
+                                                        —
+                                                    </span>
+                                                )}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </div>
+
+                        {/* Mobile Cards */}
+                        <div className="grid grid-cols-1 gap-4 p-4 md:hidden">
                             {records.map((rec) => (
-                                <TableRow
+                                <div
                                     key={rec.id}
-                                    className="border-b border-slate-100 hover:bg-slate-50 transition-colors"
+                                    className="rounded-2xl border-2 border-slate-100 p-4 space-y-3 bg-white"
                                 >
-                                    <TableCell className="font-semibold text-sm text-slate-800">
-                                        {rec.printerName}
-                                    </TableCell>
-                                    <TableCell className="text-sm text-slate-600">
-                                        {rec.storeName || (
-                                            <span className="text-slate-300 italic">
-                                                —
-                                            </span>
-                                        )}
-                                    </TableCell>
-                                    <TableCell className="text-right font-bold text-sm text-slate-800">
-                                        {rec.quantity_deliverd ?? (
-                                            <span className="text-slate-300">—</span>
-                                        )}
-                                    </TableCell>
-                                    <TableCell>
+                                    <div className="flex items-center justify-between gap-3">
+                                        <div className="min-w-0">
+                                            <p className="font-black text-primarycolor text-sm truncate">
+                                                {rec.printerName}
+                                            </p>
+                                            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest truncate">
+                                                Printer
+                                            </p>
+                                        </div>
                                         <span
                                             className={cn(
-                                                "inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest border",
+                                                "inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest border shrink-0",
                                                 rec.approvedByPrinter
                                                     ? "bg-emerald-50 text-emerald-600 border-emerald-200"
                                                     : "bg-amber-50 text-amber-600 border-amber-200"
@@ -298,25 +350,47 @@ export default function DeliveryRecordsView({
                                                 ? "Approved"
                                                 : "Pending"}
                                         </span>
-                                    </TableCell>
-                                    <TableCell className="text-sm text-slate-600">
-                                        {formatDateTime(new Date(rec.createdAt))}
-                                    </TableCell>
-                                    <TableCell className="text-sm text-slate-600">
-                                        {rec.approvedByPrinterAt ? (
-                                            formatDateTime(
-                                                new Date(rec.approvedByPrinterAt)
-                                            )
-                                        ) : (
-                                            <span className="text-slate-300 italic">
-                                                —
-                                            </span>
-                                        )}
-                                    </TableCell>
-                                </TableRow>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-3 text-sm">
+                                        <div>
+                                            <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">
+                                                Store
+                                            </p>
+                                            <p className="font-bold text-slate-700 truncate">
+                                                {rec.storeName || "—"}
+                                            </p>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">
+                                                Qty
+                                            </p>
+                                            <p className="font-bold text-slate-800">
+                                                {rec.quantity_deliverd ?? "—"}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">
+                                                Created
+                                            </p>
+                                            <p className="font-bold text-slate-700 text-xs leading-relaxed">
+                                                {formatDateTime(new Date(rec.createdAt))}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">
+                                                Approved At
+                                            </p>
+                                            <p className="font-bold text-slate-700 text-xs leading-relaxed">
+                                                {rec.approvedByPrinterAt
+                                                    ? formatDateTime(new Date(rec.approvedByPrinterAt))
+                                                    : "—"}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
                             ))}
-                        </TableBody>
-                    </Table>
+                        </div>
+                    </>
                 )}
             </div>
         </div>

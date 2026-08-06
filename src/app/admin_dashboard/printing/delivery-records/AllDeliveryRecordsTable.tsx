@@ -172,48 +172,131 @@ export default function AllDeliveryRecordsTable({
 
     return (
         <div>
-            <Table>
-                <TableHeader>
-                    {table.getHeaderGroups().map((hg) => (
-                        <TableRow
-                            key={hg.id}
-                            className="border-b-2 border-slate-200 bg-slate-50"
+            {/* Desktop Table */}
+            <div className="hidden md:block overflow-x-auto">
+                <Table>
+                    <TableHeader>
+                        {table.getHeaderGroups().map((hg) => (
+                            <TableRow
+                                key={hg.id}
+                                className="border-b-2 border-slate-200 bg-slate-50"
+                            >
+                                {hg.headers.map((header) => (
+                                    <TableHead
+                                        key={header.id}
+                                        className={cn(
+                                            "font-black text-[10px] uppercase tracking-widest text-slate-500 h-10",
+                                            header.id === "qty" && "text-right"
+                                        )}
+                                    >
+                                        {flexRender(
+                                            header.column.columnDef.header,
+                                            header.getContext()
+                                        )}
+                                    </TableHead>
+                                ))}
+                            </TableRow>
+                        ))}
+                    </TableHeader>
+                    <TableBody>
+                        {table.getRowModel().rows.map((row) => (
+                            <TableRow
+                                key={row.id}
+                                className="border-b border-slate-100 hover:bg-slate-50 transition-colors"
+                            >
+                                {row.getVisibleCells().map((cell) => (
+                                    <TableCell key={cell.id}>
+                                        {flexRender(
+                                            cell.column.columnDef.cell,
+                                            cell.getContext()
+                                        )}
+                                    </TableCell>
+                                ))}
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </div>
+
+            {/* Mobile Cards */}
+            <div className="grid grid-cols-1 gap-4 p-4 md:hidden">
+                {table.getRowModel().rows.map((row) => {
+                    const item = row.original
+                    return (
+                        <div
+                            key={item.id}
+                            className="rounded-2xl border-2 border-slate-100 p-4 space-y-3 bg-white"
                         >
-                            {hg.headers.map((header) => (
-                                <TableHead
-                                    key={header.id}
+                            <div className="flex items-start justify-between gap-3">
+                                <div className="min-w-0">
+                                    <p className="font-black text-primarycolor text-sm leading-tight truncate">
+                                        {item.bookTitle}
+                                    </p>
+                                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest truncate mt-0.5">
+                                        {item.editionName}
+                                    </p>
+                                </div>
+                                <span
                                     className={cn(
-                                        "font-black text-[10px] uppercase tracking-widest text-slate-500 h-10",
-                                        header.id === "qty" && "text-right"
+                                        "inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest border shrink-0",
+                                        item.approvedByPrinter
+                                            ? "bg-emerald-50 text-emerald-600 border-emerald-200"
+                                            : "bg-amber-50 text-amber-600 border-amber-200"
                                     )}
                                 >
-                                    {flexRender(
-                                        header.column.columnDef.header,
-                                        header.getContext()
-                                    )}
-                                </TableHead>
-                            ))}
-                        </TableRow>
-                    ))}
-                </TableHeader>
-                <TableBody>
-                    {table.getRowModel().rows.map((row) => (
-                        <TableRow
-                            key={row.id}
-                            className="border-b border-slate-100 hover:bg-slate-50 transition-colors"
-                        >
-                            {row.getVisibleCells().map((cell) => (
-                                <TableCell key={cell.id}>
-                                    {flexRender(
-                                        cell.column.columnDef.cell,
-                                        cell.getContext()
-                                    )}
-                                </TableCell>
-                            ))}
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
+                                    {item.approvedByPrinter
+                                        ? "Approved"
+                                        : "Pending"}
+                                </span>
+                            </div>
+                            <div className="grid grid-cols-2 gap-3">
+                                <div>
+                                    <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">
+                                        Qty
+                                    </p>
+                                    <p className="font-bold text-slate-800">
+                                        {item.quantity ?? "—"}
+                                    </p>
+                                </div>
+                                <div className="text-right">
+                                    <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">
+                                        Store
+                                    </p>
+                                    <p className="font-bold text-slate-700 truncate">
+                                        {item.storeName || "—"}
+                                    </p>
+                                </div>
+                                <div>
+                                    <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">
+                                        Printer
+                                    </p>
+                                    <p className="font-bold text-slate-700 text-xs truncate">
+                                        {item.printerName}
+                                    </p>
+                                </div>
+                                <div className="text-right">
+                                    <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">
+                                        Created
+                                    </p>
+                                    <p className="font-bold text-slate-700 text-xs leading-relaxed">
+                                        {formatDateTime(new Date(item.createdAt))}
+                                    </p>
+                                </div>
+                                <div className="col-span-2">
+                                    <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">
+                                        Approved At
+                                    </p>
+                                    <p className="font-bold text-slate-700 text-xs leading-relaxed">
+                                        {item.approvedByPrinterAt
+                                            ? formatDateTime(new Date(item.approvedByPrinterAt))
+                                            : "—"}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    )
+                })}
+            </div>
 
             {/* Pagination */}
             <div className="flex items-center justify-between px-4 py-3 border-t border-slate-200">

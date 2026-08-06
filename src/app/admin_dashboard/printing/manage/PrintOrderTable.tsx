@@ -23,8 +23,7 @@ import {
     Layers,
     Calendar,
     Activity,
-    BookOpen,
-    DollarSign
+    BookOpen
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -141,7 +140,7 @@ function createColumns(formatDate: (date: Date, pattern?: string) => string): Co
             const price = row.getValue<number>("total_price") || 0;
             return (
                 <div className="flex items-center gap-1.5">
-                    <DollarSign className="size-3.5 text-emerald-500" />
+                    <span className="font-black text-[10px] text-emerald-500 uppercase tracking-widest">ETB</span>
                     <span className="font-black text-emerald-600 text-sm">
                         {price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </span>
@@ -173,7 +172,7 @@ function createColumns(formatDate: (date: Date, pattern?: string) => string): Co
     },
 ] }
 
-export default function PrintOrderTable({ data, label = "Projects", searchPlaceholder = "Search projects..." }: { data: any[]; label?: string; searchPlaceholder?: string }) {
+export default function PrintOrderTable({ data }: { data: any[] }) {
     const { formatDate, formatShort, formatLong, formatDateTime } = useCalendar();
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
@@ -205,7 +204,7 @@ export default function PrintOrderTable({ data, label = "Projects", searchPlaceh
                 <div className="flex items-center gap-4 flex-1">
                     <Search className="size-5 text-slate-400 shrink-0" />
                     <Input
-                        placeholder={searchPlaceholder}
+                        placeholder="Search projects..."
                         value={(table.getColumn("project_name")?.getFilterValue() as string) ?? ""}
                         onChange={(event) =>
                             table.getColumn("project_name")?.setFilterValue(event.target.value)
@@ -214,7 +213,7 @@ export default function PrintOrderTable({ data, label = "Projects", searchPlaceh
                     />
                 </div>
                 <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primarycolor/5 border border-primarycolor/10 text-[10px] font-black text-primarycolor uppercase tracking-widest shrink-0 justify-center">
-                    <Activity className="size-3" /> {data.length} {label}
+                    <Activity className="size-3" /> {data.length} Projects
                 </div>
             </div>
 
@@ -246,7 +245,7 @@ export default function PrintOrderTable({ data, label = "Projects", searchPlaceh
                         ) : (
                             <TableRow>
                                 <TableCell colSpan={columns.length} className="h-40 text-center text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-                                    No {label.toLowerCase()} found.
+                                    No print projects found.
                                 </TableCell>
                             </TableRow>
                         )}
@@ -323,7 +322,7 @@ export default function PrintOrderTable({ data, label = "Projects", searchPlaceh
                                             <span className="font-black text-primarycolor text-xs">{totalUnits.toLocaleString()} units</span>
                                         </div>
                                         <div className="flex items-center gap-1.5">
-                                            <DollarSign className="size-3 text-emerald-500" />
+                                            <span className="font-black text-[9px] text-emerald-500 uppercase tracking-widest">ETB</span>
                                             <span className="font-black text-emerald-600 text-xs">
                                                 {price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                             </span>
@@ -344,14 +343,14 @@ export default function PrintOrderTable({ data, label = "Projects", searchPlaceh
                 ) : (
                     <div className="py-16 text-center space-y-4 opacity-30">
                         <Layers className="size-12 mx-auto" />
-                        <p className="text-sm font-black uppercase tracking-widest">No {label.toLowerCase()} found</p>
+                        <p className="text-sm font-black uppercase tracking-widest">No print projects found</p>
                     </div>
                 )}
             </div>
 
             <div className="flex items-center justify-between px-4">
                 <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
-                    Showing {table.getRowModel().rows.length} of {data.length} {label.toLowerCase()}
+                    Showing {table.getRowModel().rows.length} of {data.length} projects
                 </div>
                 <div className="flex items-center space-x-2">
                     <Button
