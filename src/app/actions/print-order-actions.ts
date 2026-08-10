@@ -105,29 +105,74 @@ export async function updatePrintOrder(id: number, formData: any) {
       },
     });
 
-    // Only update items if they are provided in the payload
+    // Reconcile items by ID instead of delete-all + re-create, so existing rows
+    // keep their IDs and are only touched when their values actually change.
+    // Only rows the user removed from the list are deleted.
     if (formData.items) {
-      await (prisma as any).printorder_items.deleteMany({
+      const currentItems = await (prisma as any).printorder_items.findMany({
         where: { printorder_id: id },
+        select: { id: true },
       });
-      if (formData.items.length > 0) {
+      const currentIds = currentItems.map((i: any) => i.id);
+
+      const keptIds = new Set<number>();
+      const itemsToCreate: any[] = [];
+      const itemsToUpdate: any[] = [];
+
+      for (const item of formData.items) {
+        const bookEditionId = parseInt(item.bookEditionId);
+        const quantity = parseInt(item.quantity) || 0;
+        // Never send NaN to Prisma — coerce any non-finite price to 0
+        const pricePerBook = parseFloat(item.price_per_book);
+        const safePricePerBook = Number.isFinite(pricePerBook) && pricePerBook >= 0 ? pricePerBook : 0;
+        const statedTotal = parseFloat(item.total_price);
+        const totalPrice =
+          item.total_price && Number.isFinite(statedTotal)
+            ? statedTotal
+            : quantity * safePricePerBook;
+
+        const payload = {
+          bookEditionId,
+          quantity,
+          price_per_book: safePricePerBook,
+          total_price: totalPrice,
+          content: item.content || null,
+          status: item.status || "NOT_STARTED",
+        };
+
+        const rawId = Number(item.id);
+        if (Number.isInteger(rawId) && currentIds.includes(rawId)) {
+          keptIds.add(rawId);
+          itemsToUpdate.push({ id: rawId, data: payload });
+        } else {
+          itemsToCreate.push({ printorder_id: id, ...payload });
+        }
+      }
+
+      // Delete only the rows the user removed from the project
+      const removed = currentItems.filter((i: any) => !keptIds.has(i.id));
+      if (removed.length > 0) {
+        await (prisma as any).printorder_items.deleteMany({
+          where: { id: { in: removed.map((i: any) => i.id) } },
+        });
+      }
+
+      for (const u of itemsToUpdate) {
+        await (prisma as any).printorder_items.update({
+          where: { id: u.id },
+          data: u.data,
+        });
+      }
+
+      if (itemsToCreate.length > 0) {
         await (prisma as any).printorder_items.createMany({
-          data: formData.items.map((item: any) => ({
-            printorder_id: id,
-            bookEditionId: parseInt(item.bookEditionId),
-            quantity: parseInt(item.quantity),
-            price_per_book: parseFloat(item.price_per_book),
-            total_price: item.total_price
-              ? parseFloat(item.total_price)
-              : (parseInt(item.quantity) * (parseFloat(item.price_per_book) || 0)),
-            content: item.content || null,
-            status: item.status || "NOT_STARTED",
-          })),
+          data: itemsToCreate,
         });
       }
     }
 
     revalidatePath("/admin_dashboard/printing/manage");
+    revalidatePath(`/admin_dashboard/printing/manage/${id}`);
     return { success: true, data: updatedOrder };
   } catch (error: any) {
     console.error("Update Print Order Error:", error);

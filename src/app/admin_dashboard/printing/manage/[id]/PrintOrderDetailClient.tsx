@@ -117,7 +117,7 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
         bookEditionId: item.bookEditionId,
         quantity: item.quantity.toString(),
         total_price: item.total_price?.toString() || "",
-        price_per_book: item.price_per_book.toString(),
+        price_per_book: (item.price_per_book ?? "").toString(),
         content: item.content || "",
         status: item.status
     }));
@@ -170,7 +170,11 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
             bookEditionId: selectedEditionId,
             quantity: "",
             total_price: "",
-            price_per_book: "",
+            price_per_book: (() => {
+                const ed = editions.find(e => e.id === selectedEditionId);
+                const price = ed?.selling_price ?? ed?.production_price;
+                return price != null && price > 0 ? price.toString() : "";
+            })(),
             content: "",
             status: "NOT_STARTED"
         }
