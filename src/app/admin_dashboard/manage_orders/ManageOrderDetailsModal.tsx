@@ -53,6 +53,7 @@ import { useCalendar } from "@/lib/calendar-context";
 import { toast } from "sonner";
 import { getBookStockBreakdown, approveOrder, markOrderDelivered, removeBookFromOrder, getShopTotalDebt, deleteOrder } from "@/app/actions/order-actions";
 import { OrderModal } from "@/components/deliver_full_dashboard_components/OrderModal";
+import RecordPaymentModal from "@/app/admin_dashboard/manage_payment/[id]/RecordPaymentModal";
 import type { AdminOrder } from "./ManageOrdersPageContent";
 
 interface StoreOption {
@@ -141,6 +142,7 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
     const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [editOrderOpen, setEditOrderOpen] = useState(false);
+    const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
     const [shopDebt, setShopDebt] = useState<{ orderDebt: number; roundDebt: number; previousDebt: number; lastOrderDebt: number; totalDebt: number } | null>(null);
 
     // Group order_items by bookId → collect unique books
@@ -290,6 +292,7 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
             setBookBreakdowns([]);
             setBookAllocations([]);
             setShopDebt(null);
+            setIsPaymentModalOpen(false);
         }
     }, [isOpen, order]);
 
@@ -1315,45 +1318,52 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                 </div>
 
                 {/* Footer */}
-                <DialogFooter className="bg-white p-3 sm:p-6 border-t border-slate-100 shrink-0 flex flex-col sm:flex-row items-center sm:items-center justify-center sm:justify-between gap-2 sm:gap-4">
-                    <div className="flex items-center justify-center gap-1.5 sm:gap-2">
+                <DialogFooter className="bg-white px-5 py-3 sm:p-6 border-t border-slate-100 shrink-0 flex flex-col sm:flex-row items-center sm:items-center justify-center sm:justify-between gap-2 sm:gap-4">
+                    <div className="grid grid-cols-2 gap-2 w-full sm:w-auto sm:flex sm:items-center sm:justify-center sm:gap-2">
                         <Button
                             variant="outline"
                             onClick={onClose}
-                            className="rounded-xl sm:rounded-2xl h-10 sm:h-12 px-4 sm:px-8 font-black uppercase tracking-widest text-[8px] sm:text-[10px] border-2 shrink-0"
+                            className="rounded-xl sm:rounded-2xl h-10 sm:h-12 px-4 sm:px-8 font-black uppercase tracking-widest text-[8px] sm:text-[10px] border-2 shrink-0 w-full sm:w-auto"
                         >
                             {order.is_approved ? "Close" : "Cancel"}
                         </Button>
                         <Button
                             variant="outline"
                             onClick={handlePrint}
-                            className="rounded-xl sm:rounded-2xl h-10 sm:h-12 px-3 sm:px-5 font-black uppercase tracking-widest text-[8px] sm:text-[10px] border-2 gap-1.5 sm:gap-2 shrink-0"
+                            className="rounded-xl sm:rounded-2xl h-10 sm:h-12 px-3 sm:px-5 font-black uppercase tracking-widest text-[8px] sm:text-[10px] border-2 gap-1.5 sm:gap-2 shrink-0 w-full sm:w-auto"
                         >
                             <Printer className="size-3.5 sm:size-4" /> Print
                         </Button>
                         <Button
                             variant="outline"
                             onClick={() => setPrintOptionsOpen(true)}
-                            className="rounded-xl sm:rounded-2xl h-10 sm:h-12 px-3 sm:px-5 font-black uppercase tracking-widest text-[8px] sm:text-[10px] border-2 gap-1.5 sm:gap-2 shrink-0"
+                            className="rounded-xl sm:rounded-2xl h-10 sm:h-12 px-3 sm:px-5 font-black uppercase tracking-widest text-[8px] sm:text-[10px] border-2 gap-1.5 sm:gap-2 shrink-0 w-full sm:w-auto"
                         >
                             <Settings2 className="size-3.5 sm:size-4" /> Options
+                        </Button>
+                        <Button
+                            variant="outline"
+                            onClick={() => setIsPaymentModalOpen(true)}
+                            className="rounded-xl sm:rounded-2xl h-10 sm:h-12 px-3 sm:px-5 font-black uppercase tracking-widest text-[8px] sm:text-[10px] border-2 border-primarycolor/30 text-primarycolor hover:bg-primarycolor/5 gap-1.5 sm:gap-2 shrink-0 w-full sm:w-auto"
+                        >
+                            <Banknote className="size-3.5 sm:size-4" /> Payment
                         </Button>
                         {!order.is_approved && (
                             <Button
                                 variant="outline"
-                                onClick={() => setDeleteConfirmOpen(true)}
-                                className="rounded-xl sm:rounded-2xl h-10 sm:h-12 px-3 sm:px-5 font-black uppercase tracking-widest text-[8px] sm:text-[10px] border-2 border-rose-200 text-rose-600 hover:bg-rose-50 hover:border-rose-300 gap-1.5 sm:gap-2 shrink-0"
+                                onClick={() => setEditOrderOpen(true)}
+                                className="rounded-xl sm:rounded-2xl h-10 sm:h-12 px-3 sm:px-5 font-black uppercase tracking-widest text-[8px] sm:text-[10px] border-2 border-primarycolor/30 text-primarycolor hover:bg-primarycolor/5 gap-1.5 sm:gap-2 shrink-0 w-full sm:w-auto"
                             >
-                                <Trash2 className="size-3.5 sm:size-4" /> Delete Order
+                                <Pencil className="size-3.5 sm:size-4" /> Edit Order
                             </Button>
                         )}
                         {!order.is_approved && (
                             <Button
                                 variant="outline"
-                                onClick={() => setEditOrderOpen(true)}
-                                className="rounded-xl sm:rounded-2xl h-10 sm:h-12 px-3 sm:px-5 font-black uppercase tracking-widest text-[8px] sm:text-[10px] border-2 border-primarycolor/30 text-primarycolor hover:bg-primarycolor/5 gap-1.5 sm:gap-2 shrink-0"
+                                onClick={() => setDeleteConfirmOpen(true)}
+                                className="rounded-xl sm:rounded-2xl h-10 sm:h-12 px-3 sm:px-5 font-black uppercase tracking-widest text-[8px] sm:text-[10px] border-2 border-rose-200 text-rose-600 hover:bg-rose-50 hover:border-rose-300 gap-1.5 sm:gap-2 shrink-0 w-full sm:w-auto"
                             >
-                                <Pencil className="size-3.5 sm:size-4" /> Edit Order
+                                <Trash2 className="size-3.5 sm:size-4" /> Delete Order
                             </Button>
                         )}
                     </div>
@@ -1378,6 +1388,14 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                 </DialogFooter>
             </DialogContent>
         </Dialog>
+
+        <RecordPaymentModal
+            isOpen={isPaymentModalOpen}
+            onClose={() => setIsPaymentModalOpen(false)}
+            shopId={order?.bookshopes?.id ?? 0}
+            shopName={order?.bookshopes?.name || ""}
+            orderId={order?.id ?? null}
+        />
 
         {/* Delete Order Confirmation */}
         <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>

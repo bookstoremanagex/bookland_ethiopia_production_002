@@ -64,3 +64,31 @@ Made the Cost Breakdown and Additional Production Costs sections on the edition 
 
 ## Blockers
 - None.
+
+---
+
+# 2026-08-13 — Order Details: Add Payment Button
+
+## Summary
+Added an "Add Payment" button to the order details dialog footer (admin dashboard → manage orders). It opens the same RecordPaymentModal used in manage_payment, pre-linked to the current order (`orderId`). Footer button order is now Cancel, Print, Options, Payment, Edit Order, Delete (for pending orders); approved orders keep Cancel, Print, Options, Payment.
+
+## Decisions
+- Footer button order follows user instruction: `Cancel, Print, Options, Payment, Edit Order, Delete`. Payment placed after Options, before Edit Order. For approved orders (no edit/delete), order still holds.
+- Reused existing `RecordPaymentModal` (imported from `manage_payment/[id]/RecordPaymentModal`. Props: `isOpen, onClose, shopId, shopName, orderId`).
+- `shopId`/`shopName` derived from the order's customer: `order.bookshopes.id` / `order.bookshopes.name`.
+- `orderId` passed as `order.id`; RecordPaymentModal stores `orderid` as `String(orderId)`, which matches the payment/order matching logic used in manage_payment (`p.orderid === String(o.id)`).
+
+## Files Changed
+- `src/app/admin_dashboard/manage_orders/ManageOrderDetailsModal.tsx`
+  - Imported `RecordPaymentModal`.
+  - Added state `isPaymentModalOpen` (reset when dialog closes).
+  - Added "Payment" button in the `DialogFooter` (between Options and Edit Order), with `Banknote` icon.
+  - Reordered footer: Edit Order now before Delete Order (previously reversed).
+  - Rendered `<RecordPaymentModal>` after the main `<Dialog>`, passing `shopId`, `shopName`, `orderId`.
+
+## Verification
+- `npx tsc --noEmit` — no errors.
+- `npx eslint` on changed file — only pre-existing warnings (unused imports `AlertDialogTrigger`, `Package`, etc.; `markOrderDelivered` unused; `no-non-null-asserted-optional-chain` at line 381 pre-existing). No new issues.
+
+## Blockers
+- None.
