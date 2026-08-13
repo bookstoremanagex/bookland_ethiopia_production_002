@@ -221,3 +221,33 @@ Added an "Approve" checkbox to the admin payment recording forms. It only appear
 
 ## Blockers
 - None.
+
+---
+
+# 2026-08-13 — Admin Low Stock: Per-Book Aggregation + Production Page
+
+## Summary
+Changed the admin dashboard Low Stock Alert to aggregate stock **per book** (total copies across all editions in all stores), instead of listing individual edition records. Added a new "Low Stock" page under the Production menu with a shadcn table of low-stock books, and a "Show More" button on the home page alert.
+
+## Decisions
+- Low stock threshold stays 50, but now applies to the **book-level total** (sum of all `bookeditionstores.quantity` for every edition of a book).
+- Home query now fetches all `bookeditionstores` with `bookedition -> books` and aggregates in JS via a `Map` keyed by book id; takes top 5 lowest.
+- `DashboardData.lowStockItems` shape changed: `{ id, bookTitle, author, bookImage, totalQuantity, editionCount, uniqueCode }`.
+- New route `/admin_dashboard/production/low-stock` (server page) with `LowStockTable.tsx` (shadcn table: image, title, author, editions, total copies, view link; desktop table + mobile cards + pagination + search).
+- Home alert header text/units updated; button now "Show More" -> production/low-stock (was "View stores" -> /stores).
+- Sidebar Production group gained a "Low Stock" submenu item (AlertTriangle icon); `AdminMenuSearch` gained the entry too.
+
+## Files Changed
+- `src/app/admin_dashboard/page.tsx` — per-book aggregation.
+- `src/components/admin_dashboard_components/home_dashboard/LowStockAlerts.tsx` — new item shape + Show More.
+- `src/app/admin_dashboard/production/low-stock/page.tsx` (new).
+- `src/components/admin_dashboard_components/LowStockTable.tsx` (new).
+- `src/components/sidebar_components/admin_sideboard.tsx` — submenu item.
+- `src/components/admin_dashboard_components/AdminMenuSearch.tsx` — search entry.
+
+## Verification
+- `npx tsc --noEmit` — no errors.
+- `npx eslint` — only warnings matching existing patterns (`<img>`, pre-existing unused `SidebarProvider`).
+
+## Blockers
+- None.

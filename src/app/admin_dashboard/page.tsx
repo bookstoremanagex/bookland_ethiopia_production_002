@@ -42,8 +42,11 @@ export interface DashboardData {
   lowStockItems: {
     id: number;
     bookTitle: string;
-    editionName: string;
-    quantity: number;
+    author: string;
+    bookImage: string | null;
+    totalQuantity: number;
+    editionCount: number;
+    uniqueCode: string;
   }[];
 }
 
@@ -81,9 +84,7 @@ export default async function AdminHomePage() {
       include: { bookshopes: true, order_items: true },
     }),
     (prisma as any).bookeditionstores.findMany({
-      where: { is_deleted: false, quantity: { lt: LOW_STOCK_THRESHOLD } },
-      take: 5,
-      orderBy: { quantity: 'asc' },
+      where: { is_deleted: false },
       include: {
         bookedition: { include: { books: true } },
       },
@@ -129,7 +130,35 @@ export default async function AdminHomePage() {
   const pendingPaymentsCount = rawPendingPayments || 0;
 
   const lowStockList = (rawLowStock as any[]) || [];
-  const lowStockCount = lowStockList.length;
+
+  // Aggregate all edition/store inventory per book, then keep books whose total is below the threshold
+  const bookStockMap = new Map<number, { book: any; total: number; editionCount: number }>();
+  for (const entry of lowStockList) {
+    const book = entry.bookedition?.books;
+    const bookId = book?.id;
+    if (!bookId) continue;
+    const existing = bookStockMap.get(bookId);
+    if (existing) {
+      existing.total += entry.quantity || 0;
+      existing.editionCount += 1;
+    } else {
+      bookStockMap.set(bookId, { book, total: entry.quantity || 0, editionCount: 1 });
+    }
+  }
+  const lowStockBooks = Array.from(bookStockMap.values()).filter(
+    (bs) => bs.total >= 1 && bs.total < LOW_STOCK_THRESHOLD
+  );
+  lowStockBooks.sort((a, b) => a.total - b.total);
+  const lowStockCount = lowStockBooks.length;
+  const lowStockItems = lowStockBooks.slice(0, 5).map((bs) => ({
+    id: bs.book.id,
+    bookTitle: bs.book.title || "Unknown",
+    author: bs.book.author || "",
+    bookImage: bs.book.book_image_url || null,
+    totalQuantity: bs.total,
+    editionCount: bs.editionCount,
+    uniqueCode: bs.book.unique_identification_code || "",
+  }));
 
   const prevRevenue = prevAssignments.reduce((acc: any, a: any) => acc + (a.total_price || 0), 0);
   const revenueGrowth = prevRevenue > 0 ? Math.round(((totalRevenue - prevRevenue) / prevRevenue) * 100) : 0;
@@ -188,15 +217,6 @@ export default async function AdminHomePage() {
     date: formatDate(new Date(o.createdAt), calendarPref, "MMM dd"),
   }));
 
-  // Low stock items
-  const lowStockItems = lowStockList.map((s: any) => ({
-    id: s.id,
-    bookTitle: s.bookedition?.books?.title || "Unknown",
-    editionName: s.bookedition?.edition_name || "Unknown",
-    quantity: s.quantity || 0,
-  }));
-
-  // Activity logs
   const recentActivities = (rawLogs as any[]).map((log: any) => ({
     id: log.id,
     action: log.action || "",

@@ -65,7 +65,7 @@ export function OrderSummary({ orders }: OrderSummaryProps) {
               </div>
               <div className="flex items-center gap-3 shrink-0">
                 <span className="text-sm font-semibold tabular-nums text-slate-800">
-                  ${order.totalAmount.toLocaleString()}
+                  {order.totalAmount.toLocaleString()} ETB
                 </span>
                 <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${statusColor(order.status)}`}>
                   {order.status}
