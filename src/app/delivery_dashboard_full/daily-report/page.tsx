@@ -161,8 +161,6 @@ export default function DailyReportPage() {
         <tbody>
             <tr><td class="label">Orders Made</td><td class="value">${data.ordersCount}</td></tr>
             <tr><td class="label">Books Ordered</td><td class="value">${data.totalBooksOrdered.toLocaleString()}</td></tr>
-            <tr><td class="label">Total Sold</td><td class="value">${formatBirr(data.totalSoldAmount)}</td></tr>
-            <tr><td class="label">Total Paid</td><td class="value positive">${formatBirr(data.totalPaidAmount)}</td></tr>
             <tr><td class="label">${totalRemaining >= 0 ? "Remaining" : "Overpaid"}</td><td class="value ${totalRemaining > 0 ? "negative" : totalRemaining < 0 ? "negative" : "positive"}">${formatBirr(Math.abs(totalRemaining))}</td></tr>
             <tr><td class="label">Shops Involved</td><td class="value">${data.shopsInOrders}</td></tr>
         </tbody>
@@ -172,7 +170,6 @@ export default function DailyReportPage() {
         <thead><tr><th>Metric</th><th style="text-align:right;">Value</th></tr></thead>
         <tbody>
             <tr><td class="label">Rounds Made (Books)</td><td class="value">${data.totalBooksInRounds.toLocaleString()}</td></tr>
-            <tr><td class="label">Round Revenue</td><td class="value positive">${formatBirr(data.totalRoundRevenue)}</td></tr>
             <tr><td class="label">Unpaid (Round)</td><td class="value ${data.totalRoundRemaining > 0 ? "negative" : "positive"}">${formatBirr(data.totalRoundRemaining)}</td></tr>
             <tr><td class="label">Shops in Round</td><td class="value">${data.shopsInRounds}</td></tr>
         </tbody>
@@ -312,8 +309,6 @@ export default function DailyReportPage() {
                                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
                                     <StatCard icon={<ShoppingCart className="size-5" />} label="Orders Made" value={data.ordersCount.toString()} color="blue" />
                                     <StatCard icon={<BookOpen className="size-5" />} label="Books Ordered" value={data.totalBooksOrdered.toLocaleString()} color="blue" />
-                                    <StatCard icon={<Wallet className="size-5" />} label="Total Sold" value={formatBirr(data.totalSoldAmount)} color="indigo" />
-                                    <StatCard icon={<CheckCircle className="size-5" />} label="Total Paid" value={formatBirr(data.totalPaidAmount)} color="emerald" />
                                     <StatCard icon={<ArrowUpRight className="size-5" />} label={data.totalSoldAmount - data.totalPaidAmount >= 0 ? "Remaining" : "Overpaid"} value={formatBirr(Math.abs(data.totalSoldAmount - data.totalPaidAmount))} color={(data.totalSoldAmount - data.totalPaidAmount) > 0 ? "rose" : "emerald"} />
                                     <StatCard icon={<Store className="size-5" />} label="Shops Involved" value={data.shopsInOrders.toString()} color="blue" />
                                 </div>
@@ -324,7 +319,6 @@ export default function DailyReportPage() {
                                 </h2>
                                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
                                     <StatCard icon={<Repeat className="size-5" />} label="Rounds Made (Books)" value={data.totalBooksInRounds.toLocaleString()} color="purple" />
-                                    <StatCard icon={<Wallet className="size-5" />} label="Round Revenue" value={formatBirr(data.totalRoundRevenue)} color="purple" />
                                     <StatCard icon={<ArrowUpRight className="size-5" />} label="Unpaid (Round)" value={formatBirr(data.totalRoundRemaining)} color={data.totalRoundRemaining > 0 ? "rose" : "emerald"} />
                                     <StatCard icon={<Store className="size-5" />} label="Shops in Round" value={data.shopsInRounds.toString()} color="purple" />
                                 </div>
@@ -362,14 +356,11 @@ export default function DailyReportPage() {
                                         <TableSection category="Orders" color="indigo" rows={[
                                             { label: "Orders Made", value: data.ordersCount.toString() },
                                             { label: "Books Ordered", value: data.totalBooksOrdered.toLocaleString() },
-                                            { label: "Total Sold", value: formatBirr(data.totalSoldAmount) },
-                                            { label: "Total Paid", value: formatBirr(data.totalPaidAmount), positive: true },
                                             { label: data.totalSoldAmount - data.totalPaidAmount >= 0 ? "Remaining" : "Overpaid", value: formatBirr(Math.abs(data.totalSoldAmount - data.totalPaidAmount)), negative: (data.totalSoldAmount - data.totalPaidAmount) > 0 },
                                             { label: "Shops Involved", value: data.shopsInOrders.toString() },
                                         ]} />
                                         <TableSection category="Rounds" color="purple" rows={[
                                             { label: "Rounds Made (Books)", value: data.totalBooksInRounds.toLocaleString() },
-                                            { label: "Round Revenue", value: formatBirr(data.totalRoundRevenue), positive: true },
                                             { label: "Unpaid (Round)", value: formatBirr(data.totalRoundRemaining), negative: data.totalRoundRemaining > 0 },
                                             { label: "Shops in Round", value: data.shopsInRounds.toString() },
                                         ]} />

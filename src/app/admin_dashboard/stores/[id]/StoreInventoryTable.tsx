@@ -23,6 +23,14 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -148,6 +156,78 @@ export function StoreInventoryTable({ data }: { data: InventoryItem[] }) {
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = React.useState("");
+  const [viewMode, setViewMode] = React.useState<"edition" | "book">(
+    "edition",
+  );
+  const [showZeroUnits, setShowZeroUnits] = React.useState(false);
+  const [stockFilter, setStockFilter] = React.useState("all");
+
+  const processedData = React.useMemo(() => {
+    let rows: InventoryItem[];
+
+    if (viewMode === "book") {
+      const bookMap = new Map<
+        string,
+        { quantity: number; items: InventoryItem[] }
+      >();
+      for (const item of data) {
+        const title = item.bookedition.books.title;
+        const existing = bookMap.get(title);
+        if (existing) {
+          existing.quantity += item.quantity;
+          existing.items.push(item);
+        } else {
+          bookMap.set(title, { quantity: item.quantity, items: [item] });
+        }
+      }
+      rows = Array.from(bookMap.entries()).map(([title, group]) => ({
+        id: group.items[0].id,
+        quantity: group.quantity,
+        editionId: group.items[0].editionId,
+        bookedition: {
+          id: group.items[0].bookedition.id,
+          edition_name:
+            group.items.length > 1
+              ? `${group.items.length} editions combined`
+              : group.items[0].bookedition.edition_name,
+          count_remening_for_transfer: group.items.reduce(
+            (sum, item) =>
+              sum + item.bookedition.count_remening_for_transfer,
+            0,
+          ),
+          books: { title },
+        },
+      }));
+    } else {
+      rows = [...data];
+    }
+
+    rows = rows.filter((row) => {
+      const qty = row.quantity;
+      const isZero = qty === 0;
+
+      if (stockFilter === "zero") return isZero;
+      if (!showZeroUnits && isZero) return false;
+
+      switch (stockFilter) {
+        case "low":
+          return qty < 15;
+        case "lt50":
+          return qty < 50;
+        case "lt100":
+          return qty < 100;
+        case "lt200":
+          return qty < 200;
+        case "above200":
+          return qty >= 200;
+        case "all":
+        default:
+          return true;
+      }
+    });
+
+    return rows;
+  }, [data, viewMode, showZeroUnits, stockFilter]);
 
   const columns: ColumnDef<InventoryItem>[] = [
     {
@@ -202,34 +282,38 @@ export function StoreInventoryTable({ data }: { data: InventoryItem[] }) {
         );
       },
     },
-    {
-      id: "actions",
-      header: "Actions",
-      cell: ({ row }) => (
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => handleEditClick(row.original)}
-            className="h-8 w-8 p-0 text-primarycolor hover:bg-primarycolor/10 rounded-lg"
-          >
-            <Edit2 className="size-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => handleDeleteClick(row.original)}
-            className="h-8 w-8 p-0 text-rose-500 hover:bg-rose-50 rounded-lg"
-          >
-            <Trash2 className="size-4" />
-          </Button>
-        </div>
-      ),
-    },
+    ...(viewMode === "edition"
+      ? [
+          {
+            id: "actions" as const,
+            header: "Actions",
+            cell: ({ row }: { row: { original: InventoryItem } }) => (
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleEditClick(row.original)}
+                  className="h-8 w-8 p-0 text-primarycolor hover:bg-primarycolor/10 rounded-lg"
+                >
+                  <Edit2 className="size-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleDeleteClick(row.original)}
+                  className="h-8 w-8 p-0 text-rose-500 hover:bg-rose-50 rounded-lg"
+                >
+                  <Trash2 className="size-4" />
+                </Button>
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
 
   const table = useReactTable({
-    data,
+    data: processedData,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -244,6 +328,65 @@ export function StoreInventoryTable({ data }: { data: InventoryItem[] }) {
 
   return (
     <div className="space-y-6">
+      {/* Filter Controls */}
+      <div className="flex flex-wrap items-center gap-4">
+        {/* View mode toggle */}
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+            View:
+          </span>
+          <label className="flex items-center gap-1.5 cursor-pointer">
+            <input
+              type="radio"
+              name="viewMode"
+              checked={viewMode === "edition"}
+              onChange={() => setViewMode("edition")}
+              className="size-3.5 accent-primarycolor"
+            />
+            <span className="text-xs font-bold text-slate-700">
+              Edition Based
+            </span>
+          </label>
+          <label className="flex items-center gap-1.5 cursor-pointer">
+            <input
+              type="radio"
+              name="viewMode"
+              checked={viewMode === "book"}
+              onChange={() => setViewMode("book")}
+              className="size-3.5 accent-primarycolor"
+            />
+            <span className="text-xs font-bold text-slate-700">Book Based</span>
+          </label>
+        </div>
+
+        {/* Zero-units checkbox */}
+        <label className="flex items-center gap-2 cursor-pointer">
+          <Checkbox
+            checked={showZeroUnits}
+            onCheckedChange={(checked) => setShowZeroUnits(checked === true)}
+          />
+          <span className="text-xs font-bold text-slate-500">
+            Show {viewMode === "book" ? "books" : "editions"} with 0 units
+          </span>
+        </label>
+
+        {/* Quantity filter */}
+        <Select value={stockFilter} onValueChange={setStockFilter}>
+          <SelectTrigger className="w-[220px] h-10 rounded-xl border-2 border-slate-100 font-bold text-xs">
+            <SelectValue placeholder="Filter stock..." />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All</SelectItem>
+            <SelectItem value="low">Low stock (less than 15 units)</SelectItem>
+            <SelectItem value="lt50">Less than 50 units</SelectItem>
+            <SelectItem value="lt100">Less than 100 units</SelectItem>
+            <SelectItem value="lt200">Less than 200 units</SelectItem>
+            <SelectItem value="above200">Above 200 units</SelectItem>
+            <SelectItem value="zero">0 units</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
       {/* Search Bar */}
       <div className="relative group max-w-md">
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-slate-400 group-focus-within:text-primarycolor transition-colors" />
