@@ -119,17 +119,21 @@ export default function ManageOrdersPageContent({
   const [orderList, setOrderList] = useState<AdminOrder[]>(orders);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
 
-  // Restore page after revalidatePath re-renders with fresh server data
+  // Restore page after revalidatePath re-renders with fresh server data (must run before the sync effect below)
   useEffect(() => {
     const saved = localStorage.getItem("mo_page");
     if (saved) {
-      localStorage.removeItem("mo_page");
       const savedIndex = parseInt(saved);
-      if (!isNaN(savedIndex) && savedIndex >= 0) {
+      if (!isNaN(savedIndex) && savedIndex >= 0 && savedIndex !== pagination.pageIndex) {
         setPagination((prev) => ({ ...prev, pageIndex: savedIndex }));
       }
     }
   }, [orders]);
+
+  // Keep the current page synced so server refreshes (revalidatePath) never lose your place
+  useEffect(() => {
+    localStorage.setItem("mo_page", String(pagination.pageIndex));
+  }, [pagination.pageIndex]);
 
   // Save page index before modal opens
   const openOrderModal = (order: AdminOrder) => {

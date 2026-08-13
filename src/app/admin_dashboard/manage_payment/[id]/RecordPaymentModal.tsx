@@ -309,6 +309,7 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName, 
                                 type="number"
                                 value={amount}
                                 onChange={(e) => setAmount(e.target.value)}
+                                onWheel={(e) => e.currentTarget.blur()}
                                 className="h-12 md:h-14 pl-14 md:pl-16 rounded-xl md:rounded-2xl border-2 border-slate-100 font-bold text-base md:text-lg focus:border-primarycolor"
                                 placeholder="0.00"
                             />

@@ -245,6 +245,12 @@ function timeAgo(date: string | Date): string {
     return "just now";
 }
 
+// Show two decimal places only when the amount has a fractional part (e.g. 1000.7 -> 1,000.70, 1000.55 -> 1,000.55, 1000 -> 1,000)
+const formatAmount = (n: number) =>
+    Number.isInteger(n)
+        ? n.toLocaleString()
+        : n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
 export default function ManagePaymentDetailClient({ shop, payments, orders, roundRecords, roundPayments, totals, previousDebt, roundBooksTotals }: Props) {
     const { formatDate } = useCalendar();
     const router = useRouter();
@@ -1124,7 +1130,7 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
                                         <div>
                                             <div className="flex items-center gap-2">
                                                 <span className="font-black text-primarycolor">
-                                                    {payment.amount.toLocaleString()} ETB
+                                                    {formatAmount(payment.amount)} ETB
                                                 </span>
                                                 <span className={cn(
                                                     "px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest",
@@ -1879,7 +1885,7 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
                                                                                     </div>
                                                                                 </div>
                                                                                 <div className="flex items-center gap-2">
-                                                                                    <span className="font-black text-sm text-slate-700">{p.amount.toLocaleString()} ETB</span>
+                                                                                    <span className="font-black text-sm text-slate-700">{formatAmount(p.amount)} ETB</span>
                                                                                     <span className={cn(
                                                                                         "px-2 py-0.5 rounded text-[7px] font-black uppercase tracking-widest",
                                                                                         p.status === "APPROVED"
