@@ -10,10 +10,21 @@ import {
   MapPin,
   Phone,
   Mail,
-  Map
+  Map,
+  Printer,
+  Settings2
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { cn } from '@/lib/utils';
 import { createBookShop, updateBookShop, deleteBookShop, checkCurrentUserRole } from '../../actions/book-shop-actions';
 import { toast } from 'sonner';
 import { BookShopsTable } from '@/components/admin_dashboard_components/BookShopsTable';
@@ -21,6 +32,9 @@ import { BookShopsTable } from '@/components/admin_dashboard_components/BookShop
 interface BookShopManagementProps {
   initialShops: any[];
 }
+
+const fontMap = { "big": "18px", "medium": "14px", "small": "12px", "extra-small": "10px" } as const;
+type PrintFont = keyof typeof fontMap;
 
 export default function BookShopManagement({ initialShops }: BookShopManagementProps) {
   const [shops, setShops] = useState(initialShops);
@@ -30,6 +44,8 @@ export default function BookShopManagement({ initialShops }: BookShopManagementP
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [shopToDelete, setShopToDelete] = useState<any>(null);
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [isPrintOpen, setIsPrintOpen] = useState(false);
+  const [printFontSize, setPrintFontSize] = useState<PrintFont>("small");
 
   const [formData, setFormData] = useState({
     name: "",
@@ -110,6 +126,63 @@ export default function BookShopManagement({ initialShops }: BookShopManagementP
     setIsAdding(true);
   };
 
+  const handlePrintList = () => {
+    const fontSize = fontMap[printFontSize];
+    const rows = shops.map((s, i) => `
+      <tr>
+        <td style="padding:6px 10px;border:1px solid #999;text-align:center;">${i + 1}</td>
+        <td style="padding:6px 10px;border:1px solid #999;">${s.name}</td>
+        <td style="padding:6px 10px;border:1px solid #999;">${s.branch || "-"}</td>
+        <td style="padding:6px 10px;border:1px solid #999;">${s.location}</td>
+        <td style="padding:6px 10px;border:1px solid #999;">${s.phone || "-"}</td>
+        <td style="padding:6px 10px;border:1px solid #999;">${s.email || "-"}</td>
+      </tr>
+    `).join('');
+
+    const printContent = `
+<!DOCTYPE html>
+<html>
+<head>
+<title>Book Shops List</title>
+<style>
+  @page { size: A4 landscape; margin: 10mm; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Arial, Helvetica, sans-serif; font-size: ${fontSize}; color: #000; padding: 16px 24px; }
+  h1 { font-size: ${parseInt(fontSize) + 6}px; margin-bottom: 4px; }
+  .sub { color: #555; font-size: ${parseInt(fontSize) - 2}px; margin-bottom: 12px; }
+  table { width: 100%; border-collapse: collapse; }
+  th { background: #e8e8e8; font-weight: 700; padding: 6px 10px; border: 1px solid #999; text-align: left; }
+  td { padding: 6px 10px; border: 1px solid #999; }
+</style>
+</head>
+<body>
+  <h1>BOOK SHOPS LIST</h1>
+  <div class="sub">List of shops with their location and contact information — ${shops.length} partner${shops.length === 1 ? "" : "s"}</div>
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Shop Name</th>
+        <th>Branch</th>
+        <th>Location</th>
+        <th>Phone</th>
+        <th>Email</th>
+      </tr>
+    </thead>
+    <tbody>${rows}</tbody>
+  </table>
+</body>
+</html>`;
+
+    const printWin = window.open('', '_blank', 'width=800,height=600');
+    if (!printWin) return;
+    printWin.document.write(printContent);
+    printWin.document.close();
+    printWin.focus();
+    printWin.print();
+    setIsPrintOpen(false);
+  };
+
   return (
     <div className="space-y-8">
       <BookShopsTable 
@@ -120,6 +193,7 @@ export default function BookShopManagement({ initialShops }: BookShopManagementP
             setShowDeleteConfirm(true);
         }}
         onAdd={handleAddClick}
+        onPrint={() => setIsPrintOpen(true)}
       />
 
       {/* Add/Edit Modal Overlay */}
@@ -222,6 +296,77 @@ export default function BookShopManagement({ initialShops }: BookShopManagementP
           </div>
         </div>
       )}
+
+      {/* Print List Options Dialog */}
+      <Dialog open={isPrintOpen} onOpenChange={setIsPrintOpen}>
+        <DialogContent className="sm:max-w-md w-full my-auto rounded-[1.8rem] md:rounded-[2.5rem] border-2 border-primarycolor/5 p-0 overflow-hidden shadow-2xl">
+          <DialogHeader className="bg-white p-5 sm:p-6 pb-0 border-b border-slate-100 shrink-0">
+            <div className="flex items-start gap-3">
+              <div className="size-11 rounded-xl bg-primarycolor/10 flex items-center justify-center text-primarycolor shrink-0">
+                <Printer className="size-5" />
+              </div>
+              <div className="min-w-0">
+                <DialogTitle className="text-base md:text-lg font-black text-primarycolor uppercase italic">
+                  Print <span className="text-secondarycolor not-italic">List</span>
+                </DialogTitle>
+                <DialogDescription className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground mt-0.5">
+                  This print lists all book shops with their location and contact information
+                </DialogDescription>
+              </div>
+            </div>
+          </DialogHeader>
+
+          <div className="p-5 sm:p-6 space-y-4">
+            <div className="bg-white rounded-2xl p-3 sm:p-4 border-2 border-primarycolor/5">
+              <p className="text-[9px] font-black text-primarycolor uppercase tracking-widest italic mb-2 flex items-center gap-1.5">
+                <Settings2 className="size-3.5" /> Font Size
+              </p>
+              <div className="grid grid-cols-2 gap-2">
+                {(["big", "medium", "small", "extra-small"] as const).map(size => (
+                  <label
+                    key={size}
+                    className={cn(
+                      "flex items-center gap-2 p-2.5 rounded-xl border-2 cursor-pointer transition-colors",
+                      printFontSize === size
+                        ? "border-primarycolor bg-primarycolor/5"
+                        : "border-slate-100 bg-white hover:border-slate-200"
+                    )}
+                  >
+                    <input
+                      type="radio"
+                      name="print-font-size"
+                      checked={printFontSize === size}
+                      onChange={() => setPrintFontSize(size)}
+                      className="size-3.5 accent-primarycolor shrink-0"
+                    />
+                    <span className="font-bold text-slate-700 text-[10px] uppercase tracking-widest">
+                      {size === "big" ? "Big" : size === "medium" ? "Medium" : size === "small" ? "Small" : "Extra Small"}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter className="bg-white p-4 sm:p-5 border-t border-slate-100 shrink-0">
+            <div className="flex gap-3 w-full">
+              <Button
+                variant="outline"
+                onClick={() => setIsPrintOpen(false)}
+                className="flex-1 h-11 rounded-xl md:rounded-2xl font-black uppercase tracking-widest text-[9px] md:text-[10px] border-2"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handlePrintList}
+                className="flex-1 h-11 rounded-xl md:rounded-2xl font-black uppercase tracking-widest text-[9px] md:text-[10px] bg-primarycolor hover:bg-secondarycolor text-white shadow-lg gap-1.5"
+              >
+                <Printer className="size-3.5" /> Print
+              </Button>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Delete Confirmation Overlay */}
       {showDeleteConfirm && (

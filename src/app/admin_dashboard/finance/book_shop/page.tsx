@@ -202,7 +202,7 @@ export default async function FinanceBookShopPage() {
                                         {Math.round(shop.collectionRate)}%
                                     </div>
                                 </div>
-                                <Link href={`/admin_dashboard/book_shops`}>
+                                <Link href={`/admin_dashboard/book_shops/${shop.id}`}>
                                     <Button variant="ghost" size="icon" className="rounded-full hover:bg-primarycolor hover:text-white transition-all">
                                         <ArrowRight className="size-5" />
                                     </Button>

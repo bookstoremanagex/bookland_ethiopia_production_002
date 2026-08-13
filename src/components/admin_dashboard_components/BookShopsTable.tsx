@@ -15,6 +15,7 @@ import {
 } from "@tanstack/react-table";
 import { 
   Plus,
+  Printer,
   Search, 
   ChevronLeft, 
   ChevronRight, 
@@ -57,9 +58,10 @@ interface BookShopsTableProps {
   onEdit: (shop: BookShop) => void;
   onDelete: (shop: BookShop) => void;
   onAdd: () => void;
+  onPrint: () => void;
 }
 
-export function BookShopsTable({ data, onEdit, onDelete, onAdd }: BookShopsTableProps) {
+export function BookShopsTable({ data, onEdit, onDelete, onAdd, onPrint }: BookShopsTableProps) {
   const pathname = usePathname();
   const dashboardRoot = pathname.split('/').slice(0, 2).join('/');
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -190,12 +192,21 @@ export function BookShopsTable({ data, onEdit, onDelete, onAdd }: BookShopsTable
             className="pl-10 md:pl-12 h-12 md:h-14 bg-background/50 border-primarycolor/10 focus:border-primarycolor focus:ring-primarycolor/5 rounded-xl md:rounded-2xl transition-all duration-300 focus:shadow-inner font-bold text-sm"
           />
         </div>
-        <Button 
-            onClick={onAdd}
-            className="h-12 md:h-14 px-6 md:px-10 bg-primarycolor hover:bg-secondarycolor text-white font-black rounded-xl md:rounded-2xl shadow-lg shadow-primarycolor/20 transition-all active:scale-95 flex items-center justify-center gap-2 md:gap-3 group uppercase tracking-widest text-[10px] md:text-xs"
-        >
-          <Plus className="size-4 md:size-5 transition-transform group-hover:rotate-90" /> Add Shop
-        </Button>
+        <div className="flex items-center gap-2 md:gap-3">
+          <Button 
+              variant="outline"
+              onClick={onPrint}
+              className="h-12 md:h-14 px-4 md:px-6 text-primarycolor hover:bg-primarycolor/5 border-2 border-primarycolor/20 font-black rounded-xl md:rounded-2xl transition-all active:scale-95 flex items-center justify-center gap-2 md:gap-3 group uppercase tracking-widest text-[10px] md:text-xs"
+          >
+            <Printer className="size-4 md:size-5" /> Print
+          </Button>
+          <Button 
+              onClick={onAdd}
+              className="h-12 md:h-14 px-6 md:px-10 bg-primarycolor hover:bg-secondarycolor text-white font-black rounded-xl md:rounded-2xl shadow-lg shadow-primarycolor/20 transition-all active:scale-95 flex items-center justify-center gap-2 md:gap-3 group uppercase tracking-widest text-[10px] md:text-xs"
+          >
+            <Plus className="size-4 md:size-5 transition-transform group-hover:rotate-90" /> Add Shop
+          </Button>
+        </div>
       </div>
 
       {/* Desktop Table View */}

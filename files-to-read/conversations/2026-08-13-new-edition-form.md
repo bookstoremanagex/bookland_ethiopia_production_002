@@ -121,6 +121,35 @@ Added an "Add Payment" button to the order details dialog footer (admin dashboar
 
 ---
 
+# 2026-08-13 — Book Shops: Print List of Shops
+
+## Summary
+Added a "Print" button to the admin dashboard → book_shops page. It opens a print-options dialog (font size: Big / Medium / Small / Extra Small) and prints an Excel-style table listing all shops with name, branch, location, phone, and email.
+
+## Decisions
+- Print button placed in the table's action bar next to "Add Shop" (top of the page), outlined variant.
+- Options dialog shows a description: "This print lists all book shops with their location and contact information".
+- Font size radio options: Big (18px), Medium (14px, default Small 12px), Small, Extra Small.
+- Page output is A4 landscape; table has bordered cells (th background `#e8e8e8`), a `#` index column, Shop Name, Branch, Location, Phone, Email; missing fields render as `-`.
+
+## Files Changed
+- `src/components/admin_dashboard_components/BookShopsTable.tsx`
+  - Added `Printer` import, `onPrint` prop, and a "Print" outline button beside "Add Shop".
+- `src/app/admin_dashboard/book_shops/BookShopManagement.tsx`
+  - Imported `Printer`, `Settings2`, `Dialog` components, `cn`.
+  - Added `fontMap`, `PrintFont` type, `isPrintOpen`/`printFontSize` state.
+  - `handlePrintList()` builds the print HTML and opens it via `window.open`.
+  - Wired `onPrint` to `BookShopsTable`; added the print-options `Dialog` (placed before the delete confirmation overlay).
+
+## Verification
+- `npx tsc --noEmit` — no errors.
+- `npx eslint` — only pre-existing warnings (unused `err`, `VisibilityState`, `Eye`, `cn`). No new issues.
+
+## Blockers
+- None.
+
+---
+
 # 2026-08-13 — Manage Orders: Keep Pagination Page After Operations
 
 ## Summary
@@ -137,6 +166,32 @@ The old code saved the current page to `localStorage` **only inside** the `onApp
 ## Verification
 - `npx tsc --noEmit` — no errors.
 - `npx eslint` — only pre-existing warning (`Eye` unused; missing dep `pagination.pageIndex` in restore effect — intentional, effect should only react to `orders`).
+
+## Blockers
+- None.
+
+---
+
+# 2026-08-13 — Admin Navbar: Menu Search
+
+## Summary
+Added a menu search field to the admin dashboard top navbar (left of the calendar/language toggle). It lets the admin search across all sidebar menus, with a group (category) filter dropdown and a scrollable results list. Desktop-only.
+
+## Decisions
+- New component `AdminMenuSearch.tsx` with a curated `menuEntries` list mirroring the admin sidebar (all flat items + all collapsible sub-items, each tagged with a `group`).
+- Search matches title, group, and URL (case-insensitive).
+- Group filter dropdown (scrollable `max-h-48`) plus results list (`max-h-72 overflow-y-auto`).
+- Keyboard nav: ArrowUp/Down to move highlight, Enter to open the highlighted menu, Esc to close; click-outside closes.
+- Only rendered on `md+` (`hidden md:block`) per requirement — not on mobile.
+- Wired into `admin_dashboard/layout.tsx` inside the right-side controls group, directly to the left of `CalendarToggleButton` (the GC/EC calendar toggle).
+
+## Files Changed
+- `src/components/admin_dashboard_components/AdminMenuSearch.tsx` (new).
+- `src/app/admin_dashboard/layout.tsx` — imported and rendered `AdminMenuSearch` between the sidebar trigger group and the calendar/user controls.
+
+## Verification
+- `npx tsc --noEmit` — no errors.
+- `npx eslint` — clean.
 
 ## Blockers
 - None.
