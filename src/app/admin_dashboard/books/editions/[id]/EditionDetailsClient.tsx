@@ -10,6 +10,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { toast } from 'sonner';
 import {
     ChevronLeft,
+    ChevronDown,
     Layers,
     DollarSign,
     FileText,
@@ -40,6 +41,11 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "../../../../../components/ui/popover";
+import {
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
+} from "../../../../../components/ui/collapsible";
 import StoreInventoryTable from './StoreInventoryTable';
 
 interface EditionDetailsClientProps {
@@ -109,6 +115,8 @@ export default function EditionDetailsClient({ initialEdition, stores }: Edition
     const [isUpdating, setIsUpdating] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [costBreakdownOpen, setCostBreakdownOpen] = useState(false);
+    const [additionalCostsOpen, setAdditionalCostsOpen] = useState(false);
     const [deleteConfirmText, setDeleteConfirmText] = useState("");
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -484,61 +492,82 @@ export default function EditionDetailsClient({ initialEdition, stores }: Edition
 
                         {/* Expanded Cost Ecosystem Section */}
                         <div className="bg-slate-50/50 rounded-[2rem] md:rounded-[3rem] p-6 md:p-10 border-2 border-primarycolor/5 space-y-6 md:space-y-8">
-                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                                <div className="flex items-center gap-3 md:gap-4 text-primarycolor">
-                                    <TrendingUp className="size-5 md:size-7" />
-                                    <h3 className="text-xl md:text-2xl font-black uppercase tracking-tight italic">Cost <span className="text-secondarycolor not-italic">Breakdown</span></h3>
-                                </div>
-                                <div className="px-4 md:px-6 py-2 rounded-full bg-white border border-primarycolor/10 shadow-sm text-[8px] md:text-[10px] font-black text-primarycolor uppercase tracking-widest">
-                                    Total: {Number(
-                                        (parseFloat(formData.printing_cost) || 0) +
-                                        (parseFloat(formData.binding_cost) || 0) +
-                                        (parseFloat(formData.design_cost) || 0) +
-                                        (parseFloat(formData.editing_cost) || 0) +
-                                        (parseFloat(formData.transportation_cost) || 0) +
-                                        (parseFloat(formData.translation_cost) || 0) +
-                                        (parseFloat(formData.other_expenses) || 0) +
-                                        (parseFloat(formData.translator_cost) || 0) +
-                                        (parseFloat(formData.cover_design_cost) || 0) +
-                                        (parseFloat(formData.text_design_cost) || 0) +
-                                        (parseFloat(formData.editor_cost) || 0) +
-                                        (parseFloat(formData.typewriting_cost) || 0) +
-                                        (parseFloat(formData.store_cost) || 0) +
-                                        (parseFloat(formData.distribution_cost) || 0) +
-                                        (parseFloat(formData.advertisement_cost) || 0) +
-                                        (parseFloat(formData.purchasing_right_cost) || 0)
-                                    ).toLocaleString()} ETB
-                                </div>
-                            </div>
+                            <Collapsible open={costBreakdownOpen} onOpenChange={setCostBreakdownOpen}>
+                                <CollapsibleTrigger className="w-full">
+                                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 cursor-pointer group">
+                                        <div className="flex items-center gap-3 md:gap-4 text-primarycolor">
+                                            <TrendingUp className="size-5 md:size-7" />
+                                            <h3 className="text-xl md:text-2xl font-black uppercase tracking-tight italic">Cost <span className="text-secondarycolor not-italic">Breakdown</span></h3>
+                                        </div>
+                                        <div className="flex items-center gap-3">
+                                            <div className="px-4 md:px-6 py-2 rounded-full bg-white border border-primarycolor/10 shadow-sm text-[8px] md:text-[10px] font-black text-primarycolor uppercase tracking-widest">
+                                                Total: {Number(
+                                                    (parseFloat(formData.printing_cost) || 0) +
+                                                    (parseFloat(formData.binding_cost) || 0) +
+                                                    (parseFloat(formData.design_cost) || 0) +
+                                                    (parseFloat(formData.editing_cost) || 0) +
+                                                    (parseFloat(formData.transportation_cost) || 0) +
+                                                    (parseFloat(formData.translation_cost) || 0) +
+                                                    (parseFloat(formData.other_expenses) || 0) +
+                                                    (parseFloat(formData.translator_cost) || 0) +
+                                                    (parseFloat(formData.cover_design_cost) || 0) +
+                                                    (parseFloat(formData.text_design_cost) || 0) +
+                                                    (parseFloat(formData.editor_cost) || 0) +
+                                                    (parseFloat(formData.typewriting_cost) || 0) +
+                                                    (parseFloat(formData.store_cost) || 0) +
+                                                    (parseFloat(formData.distribution_cost) || 0) +
+                                                    (parseFloat(formData.advertisement_cost) || 0) +
+                                                    (parseFloat(formData.purchasing_right_cost) || 0)
+                                                ).toLocaleString()} ETB
+                                            </div>
+                                            <div className="size-8 rounded-lg bg-white border border-primarycolor/10 flex items-center justify-center text-primarycolor transition-transform group-data-[state=open]:rotate-180">
+                                                <ChevronDown className="size-4" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </CollapsibleTrigger>
 
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                <CostCard label="Printing" field="printing_cost" value={edition.printing_cost} icon={Printer} />
-                                <CostCard label="Binding" field="binding_cost" value={edition.binding_cost} icon={Scissors} />
-                                <CostCard label="Design" field="design_cost" value={edition.design_cost} icon={Palette} />
-                                <CostCard label="Editing" field="editing_cost" value={edition.editing_cost} icon={PenTool} />
-                                <CostCard label="Transport" field="transportation_cost" value={edition.transportation_cost} icon={Truck} />
-                                <CostCard label="Translation" field="translation_cost" value={edition.translation_cost} icon={Languages} />
-                                <CostCard label="Other" field="other_expenses" value={edition.other_expenses} icon={PlusCircle} />
-                            </div>
+                                <CollapsibleContent className="pt-6 md:pt-8">
+                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                        <CostCard label="Printing" field="printing_cost" value={edition.printing_cost} icon={Printer} />
+                                        <CostCard label="Binding" field="binding_cost" value={edition.binding_cost} icon={Scissors} />
+                                        <CostCard label="Design" field="design_cost" value={edition.design_cost} icon={Palette} />
+                                        <CostCard label="Editing" field="editing_cost" value={edition.editing_cost} icon={PenTool} />
+                                        <CostCard label="Transport" field="transportation_cost" value={edition.transportation_cost} icon={Truck} />
+                                        <CostCard label="Translation" field="translation_cost" value={edition.translation_cost} icon={Languages} />
+                                        <CostCard label="Other" field="other_expenses" value={edition.other_expenses} icon={PlusCircle} />
+                                    </div>
+                                </CollapsibleContent>
+                            </Collapsible>
 
                             {/* Additional Costs Section */}
-                            <div className="pt-4 border-t-2 border-primarycolor/5">
-                                <div className="flex items-center gap-2 mb-6">
-                                    <div className="size-2 rounded-full bg-emerald-500" />
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-emerald-600">Additional Production Costs</p>
-                                </div>
-                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                    <CostCard label="Translator" field="translator_cost" value={edition.translator_cost} icon={Languages} />
-                                    <CostCard label="Cover Design" field="cover_design_cost" value={edition.cover_design_cost} icon={Palette} />
-                                    <CostCard label="Text Design" field="text_design_cost" value={edition.text_design_cost} icon={PenTool} />
-                                    <CostCard label="Editor" field="editor_cost" value={edition.editor_cost} icon={Edit2} />
-                                    <CostCard label="Typewriting" field="typewriting_cost" value={edition.typewriting_cost} icon={FileText} />
-                                    <CostCard label="Store Cost" field="store_cost" value={edition.store_cost} icon={Store} />
-                                    <CostCard label="Distribution" field="distribution_cost" value={edition.distribution_cost} icon={Truck} />
-                                    <CostCard label="Advertisement" field="advertisement_cost" value={edition.advertisement_cost} icon={TrendingUp} />
-                                    <CostCard label="Purchasing Right" field="purchasing_right_cost" value={edition.purchasing_right_cost} icon={ShieldAlert} />
-                                </div>
-                            </div>
+                            <Collapsible open={additionalCostsOpen} onOpenChange={setAdditionalCostsOpen}>
+                                <CollapsibleTrigger className="w-full pt-4 border-t-2 border-primarycolor/5">
+                                    <div className="flex items-center justify-between gap-2 cursor-pointer group">
+                                        <div className="flex items-center gap-2">
+                                            <div className="size-2 rounded-full bg-emerald-500" />
+                                            <p className="text-[10px] font-black uppercase tracking-widest text-emerald-600">Additional Production Costs</p>
+                                        </div>
+                                        <div className="size-8 rounded-lg bg-white border border-primarycolor/10 flex items-center justify-center text-emerald-600 transition-transform group-data-[state=open]:rotate-180">
+                                            <ChevronDown className="size-4" />
+                                        </div>
+                                    </div>
+                                </CollapsibleTrigger>
+
+                                <CollapsibleContent className="pt-6">
+                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                        <CostCard label="Translator" field="translator_cost" value={edition.translator_cost} icon={Languages} />
+                                        <CostCard label="Cover Design" field="cover_design_cost" value={edition.cover_design_cost} icon={Palette} />
+                                        <CostCard label="Text Design" field="text_design_cost" value={edition.text_design_cost} icon={PenTool} />
+                                        <CostCard label="Editor" field="editor_cost" value={edition.editor_cost} icon={Edit2} />
+                                        <CostCard label="Typewriting" field="typewriting_cost" value={edition.typewriting_cost} icon={FileText} />
+                                        <CostCard label="Store Cost" field="store_cost" value={edition.store_cost} icon={Store} />
+                                        <CostCard label="Distribution" field="distribution_cost" value={edition.distribution_cost} icon={Truck} />
+                                        <CostCard label="Advertisement" field="advertisement_cost" value={edition.advertisement_cost} icon={TrendingUp} />
+                                        <CostCard label="Purchasing Right" field="purchasing_right_cost" value={edition.purchasing_right_cost} icon={ShieldAlert} />
+                                    </div>
+                                </CollapsibleContent>
+                            </Collapsible>
                         </div>
 
                         <StoreInventoryTable

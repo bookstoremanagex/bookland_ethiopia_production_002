@@ -14,13 +14,16 @@ import {
   Hash,
   Activity,
   ChevronRight,
+  ChevronDown,
   ExternalLink,
   Edit3,
   Store,
   Printer,
+  Info,
 } from "lucide-react";
 import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
+import { Toggle } from "../../ui/toggle";
 import { cn } from "../../../lib/utils";
 import {
   Sheet,
@@ -60,13 +63,14 @@ export default function EditionsInfo({ book }: EditionsInfoProps) {
 
   const [isAdding, setIsAdding] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showMoreForm, setShowMoreForm] = useState(false);
   const [sheetEdition, setSheetEdition] = useState<any | null>(null);
   const [sheetStep, setSheetStep] = useState(1);
   const [allStores, setAllStores] = useState<any[]>([]);
   const [selectedStoreIds, setSelectedStoreIds] = useState<number[]>([]);
   const [storeQuantities, setStoreQuantities] = useState<Record<number, string>>({});
   const [isSheetLoading, setIsSheetLoading] = useState(false);
-  const [formData, setFormData] = useState({
+  const emptyFormData = {
     edition_name: "",
     selling_price: "",
     production_price: "",
@@ -90,7 +94,35 @@ export default function EditionsInfo({ book }: EditionsInfoProps) {
     book_image_url: "",
     total_print_count: "",
     number_of_pages: "",
+  };
+
+  const getPrefilledFormData = () => ({
+    ...emptyFormData,
+    translator_cost: book.translator_cost ? String(book.translator_cost) : "",
+    cover_design_cost: book.cover_design_cost
+      ? String(book.cover_design_cost)
+      : "",
+    text_design_cost: book.text_design_cost ? String(book.text_design_cost) : "",
+    editor_cost: book.editor_cost ? String(book.editor_cost) : "",
+    typewriting_cost: book.typewriting_cost ? String(book.typewriting_cost) : "",
+    store_cost: book.store_cost ? String(book.store_cost) : "",
+    distribution_cost: book.distribution_cost ? String(book.distribution_cost) : "",
+    advertisement_cost: book.advertisement_cost
+      ? String(book.advertisement_cost)
+      : "",
+    purchasing_right_cost: book.purchasing_right_cost
+      ? String(book.purchasing_right_cost)
+      : "",
+    number_of_pages: book.number_of_pages ? String(book.number_of_pages) : "",
+    book_image_url: book.book_image_url || "",
   });
+
+  const [formData, setFormData] = useState(emptyFormData);
+
+  const lastEdition = book.bookedition && book.bookedition.length > 0
+    ? book.bookedition[0]
+    : null;
+  const lastEditionPrice = lastEdition?.selling_price;
 
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -105,31 +137,7 @@ export default function EditionsInfo({ book }: EditionsInfoProps) {
         toast.success("Edition added successfully");
         addEdition(response.data);
         setIsAdding(false);
-        setFormData({
-          edition_name: "",
-          selling_price: "",
-          production_price: "",
-          printing_cost: "",
-          binding_cost: "",
-          design_cost: "",
-          editing_cost: "",
-          other_expenses: "",
-          transportation_cost: "",
-          translation_cost: "",
-          translator_cost: "",
-          cover_design_cost: "",
-          text_design_cost: "",
-          editor_cost: "",
-          typewriting_cost: "",
-          store_cost: "",
-          distribution_cost: "",
-          advertisement_cost: "",
-          purchasing_right_cost: "",
-          memo: "",
-          book_image_url: "",
-          total_print_count: "",
-          number_of_pages: "",
-        });
+        setFormData(getPrefilledFormData());
       } else {
         toast.error(response.error || "Failed to add edition");
       }
@@ -175,7 +183,11 @@ export default function EditionsInfo({ book }: EditionsInfoProps) {
             </div>
           </div>
           <Button
-            onClick={() => setIsAdding(true)}
+            onClick={() => {
+              setFormData(getPrefilledFormData());
+              setShowMoreForm(false);
+              setIsAdding(true);
+            }}
             className="h-14 px-8 rounded-2xl bg-primarycolor hover:bg-secondarycolor font-black uppercase tracking-widest text-xs gap-3 shadow-xl shadow-primarycolor/20 transition-all active:scale-95"
           >
             <Plus className="size-5" /> Add New Edition
@@ -502,204 +514,244 @@ export default function EditionsInfo({ book }: EditionsInfoProps) {
               <form
                 id="add-edition-form"
                 onSubmit={handleAdd}
-                className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8"
+                className="space-y-8"
               >
-                <div className="space-y-6">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">
+                    Edition Name <span className="text-destructive">*</span>
+                  </label>
+                  <Input
+                    required
+                    value={formData.edition_name}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        edition_name: e.target.value,
+                      })
+                    }
+                    placeholder="e.g. Collector's Hardcover"
+                    className="h-14 px-6 rounded-2xl border-2 font-bold"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">
-                      Edition Name
+                      Print Count <span className="text-destructive">*</span>
                     </label>
                     <Input
                       required
-                      value={formData.edition_name}
+                      type="number"
+                      value={formData.total_print_count}
                       onChange={(e) =>
                         setFormData({
                           ...formData,
-                          edition_name: e.target.value,
+                          total_print_count: e.target.value,
                         })
                       }
-                      placeholder="e.g. Collector's Hardcover"
+                      onWheel={(e) => (e.target as HTMLInputElement).blur()}
+                      onFocus={(e) => e.target.select()}
                       className="h-14 px-6 rounded-2xl border-2 font-bold"
                     />
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">
-                        Selling Price{" "}
-                        <span className="text-destructive">*</span>
-                      </label>
-                      <div className="relative">
-                        <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-                        <Input
-                          required
-                          type="number"
-                          step="0.01"
-                          value={formData.selling_price}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              selling_price: e.target.value,
-                            })
-                          }
-                          onWheel={(e) => (e.target as HTMLInputElement).blur()}
-                          onFocus={(e) => e.target.select()}
-                          className="h-14 pl-10 rounded-2xl border-2 font-bold"
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">
-                        Base Cost
-                      </label>
-                      <div className="relative">
-                        <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-                        <Input
-                          type="number"
-                          step="0.01"
-                          value={formData.production_price}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              production_price: e.target.value,
-                            })
-                          }
-                          onWheel={(e) => (e.target as HTMLInputElement).blur()}
-                          onFocus={(e) => e.target.select()}
-                          className="h-14 pl-10 rounded-2xl border-2 font-bold bg-slate-50"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-slate-50/80 p-6 rounded-[2rem] border-2 border-primarycolor/5 space-y-4">
-                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-2">
-                      Cost Breakdown Details
-                    </p>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-1.5">
-                        <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Printing</label>
-                        <Input type="number" step="0.01" value={formData.printing_cost} onChange={(e) => setFormData({ ...formData, printing_cost: e.target.value })} onWheel={(e) => (e.target as HTMLInputElement).blur()} onFocus={(e) => e.target.select()} className="h-11 px-4 rounded-xl border-2 font-bold text-sm" />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Binding</label>
-                        <Input type="number" step="0.01" value={formData.binding_cost} onChange={(e) => setFormData({ ...formData, binding_cost: e.target.value })} onWheel={(e) => (e.target as HTMLInputElement).blur()} onFocus={(e) => e.target.select()} className="h-11 px-4 rounded-xl border-2 font-bold text-sm" />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Design</label>
-                        <Input type="number" step="0.01" value={formData.design_cost} onChange={(e) => setFormData({ ...formData, design_cost: e.target.value })} onWheel={(e) => (e.target as HTMLInputElement).blur()} onFocus={(e) => e.target.select()} className="h-11 px-4 rounded-xl border-2 font-bold text-sm" />
-                      </div>
-
-                      <div className="space-y-1.5 col-span-2">
-                        <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Other Expenses</label>
-                        <Input type="number" step="0.01" value={formData.other_expenses} onChange={(e) => setFormData({ ...formData, other_expenses: e.target.value })} onWheel={(e) => (e.target as HTMLInputElement).blur()} onFocus={(e) => e.target.select()} className="h-11 px-4 rounded-xl border-2 font-bold text-sm" />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-emerald-50/80 p-6 rounded-[2rem] border-2 border-emerald-200/50 space-y-4">
-                    <p className="text-[10px] font-black text-emerald-700 uppercase tracking-[0.2em] mb-2">
-                      Additional Production Costs
-                    </p>
-                    <p className="text-[8px] font-bold text-emerald-600/60 -mt-2 mb-2">
-                      Leave blank to use book-level defaults, or override per-edition.
-                    </p>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-1.5">
-                        <label className="text-[8px] font-black uppercase tracking-widest text-emerald-700/60 ml-1">Translator</label>
-                        <Input type="number" step="0.01" value={formData.translator_cost} onChange={(e) => setFormData({ ...formData, translator_cost: e.target.value })} onWheel={(e) => (e.target as HTMLInputElement).blur()} onFocus={(e) => e.target.select()} className="h-11 px-4 rounded-xl border-2 border-emerald-200 font-bold text-sm bg-white" />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-[8px] font-black uppercase tracking-widest text-emerald-700/60 ml-1">Cover Design</label>
-                        <Input type="number" step="0.01" value={formData.cover_design_cost} onChange={(e) => setFormData({ ...formData, cover_design_cost: e.target.value })} onWheel={(e) => (e.target as HTMLInputElement).blur()} onFocus={(e) => e.target.select()} className="h-11 px-4 rounded-xl border-2 border-emerald-200 font-bold text-sm bg-white" />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-[8px] font-black uppercase tracking-widest text-emerald-700/60 ml-1">Text Design</label>
-                        <Input type="number" step="0.01" value={formData.text_design_cost} onChange={(e) => setFormData({ ...formData, text_design_cost: e.target.value })} onWheel={(e) => (e.target as HTMLInputElement).blur()} onFocus={(e) => e.target.select()} className="h-11 px-4 rounded-xl border-2 border-emerald-200 font-bold text-sm bg-white" />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-[8px] font-black uppercase tracking-widest text-emerald-700/60 ml-1">Editor</label>
-                        <Input type="number" step="0.01" value={formData.editor_cost} onChange={(e) => setFormData({ ...formData, editor_cost: e.target.value })} onWheel={(e) => (e.target as HTMLInputElement).blur()} onFocus={(e) => e.target.select()} className="h-11 px-4 rounded-xl border-2 border-emerald-200 font-bold text-sm bg-white" />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-[8px] font-black uppercase tracking-widest text-emerald-700/60 ml-1">Typewriting</label>
-                        <Input type="number" step="0.01" value={formData.typewriting_cost} onChange={(e) => setFormData({ ...formData, typewriting_cost: e.target.value })} onWheel={(e) => (e.target as HTMLInputElement).blur()} onFocus={(e) => e.target.select()} className="h-11 px-4 rounded-xl border-2 border-emerald-200 font-bold text-sm bg-white" />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-[8px] font-black uppercase tracking-widest text-emerald-700/60 ml-1">Store Cost</label>
-                        <Input type="number" step="0.01" value={formData.store_cost} onChange={(e) => setFormData({ ...formData, store_cost: e.target.value })} onWheel={(e) => (e.target as HTMLInputElement).blur()} onFocus={(e) => e.target.select()} className="h-11 px-4 rounded-xl border-2 border-emerald-200 font-bold text-sm bg-white" />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-[8px] font-black uppercase tracking-widest text-emerald-700/60 ml-1">Distribution</label>
-                        <Input type="number" step="0.01" value={formData.distribution_cost} onChange={(e) => setFormData({ ...formData, distribution_cost: e.target.value })} onWheel={(e) => (e.target as HTMLInputElement).blur()} onFocus={(e) => e.target.select()} className="h-11 px-4 rounded-xl border-2 border-emerald-200 font-bold text-sm bg-white" />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-[8px] font-black uppercase tracking-widest text-emerald-700/60 ml-1">Advertisement</label>
-                        <Input type="number" step="0.01" value={formData.advertisement_cost} onChange={(e) => setFormData({ ...formData, advertisement_cost: e.target.value })} onWheel={(e) => (e.target as HTMLInputElement).blur()} onFocus={(e) => e.target.select()} className="h-11 px-4 rounded-xl border-2 border-emerald-200 font-bold text-sm bg-white" />
-                      </div>
-                      <div className="space-y-1.5 col-span-2">
-                        <label className="text-[8px] font-black uppercase tracking-widest text-emerald-700/60 ml-1">Purchasing Right</label>
-                        <Input type="number" step="0.01" value={formData.purchasing_right_cost} onChange={(e) => setFormData({ ...formData, purchasing_right_cost: e.target.value })} onWheel={(e) => (e.target as HTMLInputElement).blur()} onFocus={(e) => e.target.select()} className="h-11 px-4 rounded-xl border-2 border-emerald-200 font-bold text-sm bg-white" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-6">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">
-                        Print Count <span className="text-destructive">*</span>
-                      </label>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">
+                      Selling Price <span className="text-destructive">*</span>
+                    </label>
+                    <div className="relative">
+                      <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                       <Input
                         required
                         type="number"
-                        value={formData.total_print_count}
+                        step="0.01"
+                        value={formData.selling_price}
                         onChange={(e) =>
                           setFormData({
                             ...formData,
-                            total_print_count: e.target.value,
+                            selling_price: e.target.value,
                           })
                         }
-                        onWheel={(e) => (e.target as HTMLInputElement).blur()}
-                        onFocus={(e) => e.target.select()}
-                        className="h-14 px-6 rounded-2xl border-2 font-bold"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">
-                        Page Count
-                      </label>
-                      <Input
-                        type="number"
-                        value={formData.number_of_pages}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            number_of_pages: e.target.value,
-                          })
+                        onWheel={(e) =>
+                          (e.target as HTMLInputElement).blur()
                         }
-                        onWheel={(e) => (e.target as HTMLInputElement).blur()}
                         onFocus={(e) => e.target.select()}
-                        className="h-14 px-6 rounded-2xl border-2 font-bold"
+                        className="h-14 pl-10 rounded-2xl border-2 font-bold"
                       />
                     </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">
-                      Production Memo
-                    </label>
-                    <textarea
-                      value={formData.memo}
-                      onChange={(e) =>
-                        setFormData({ ...formData, memo: e.target.value })
-                      }
-                      rows={6}
-                      className="w-full p-6 rounded-2xl border-2 border-primarycolor/10 focus:border-primarycolor outline-none font-bold text-sm bg-slate-50/50 transition-all resize-none"
-                      placeholder="Add notes about paper quality, binding type, etc."
-                    />
+                    {lastEditionPrice != null && (
+                      <p className="text-[9px] font-bold text-secondarycolor/80 ml-1 flex items-center gap-1.5 pt-1">
+                        <Info className="size-3 shrink-0" />
+                        Last edition sold at{" "}
+                        {Number(lastEditionPrice).toLocaleString()} ETB
+                      </p>
+                    )}
                   </div>
                 </div>
+
+                <div className="flex items-center justify-between gap-4 p-5 rounded-2xl border-2 border-primarycolor/10 bg-primarycolor/5">
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-primarycolor">
+                      Show more form parts
+                    </p>
+                    <p className="text-[9px] font-bold text-muted-foreground mt-1">
+                      Reveal cost breakdown, page count, and memo (pre-filled
+                      from the main book info — editable here).
+                    </p>
+                  </div>
+                  <Toggle
+                    pressed={showMoreForm}
+                    onPressedChange={setShowMoreForm}
+                    aria-label="Show more form parts"
+                    className="data-[state=on]:bg-primarycolor data-[state=on]:text-white rounded-xl h-10 w-12 shrink-0"
+                  >
+                    <ChevronDown
+                      className={cn(
+                        "size-4 transition-transform",
+                        showMoreForm && "rotate-180",
+                      )}
+                    />
+                  </Toggle>
+                </div>
+
+                {showMoreForm && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8 animate-in fade-in slide-in-from-top-2 duration-300">
+                    <div className="space-y-6">
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">
+                          Base Cost
+                        </label>
+                        <div className="relative">
+                          <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                          <Input
+                            type="number"
+                            step="0.01"
+                            value={formData.production_price}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                production_price: e.target.value,
+                              })
+                            }
+                            onWheel={(e) =>
+                              (e.target as HTMLInputElement).blur()
+                            }
+                            onFocus={(e) => e.target.select()}
+                            className="h-14 pl-10 rounded-2xl border-2 font-bold bg-slate-50"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="bg-slate-50/80 p-6 rounded-[2rem] border-2 border-primarycolor/5 space-y-4">
+                        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-2">
+                          Cost Breakdown Details
+                        </p>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-1.5">
+                            <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Printing</label>
+                            <Input type="number" step="0.01" value={formData.printing_cost} onChange={(e) => setFormData({ ...formData, printing_cost: e.target.value })} onWheel={(e) => (e.target as HTMLInputElement).blur()} onFocus={(e) => e.target.select()} className="h-11 px-4 rounded-xl border-2 font-bold text-sm" />
+                          </div>
+                          <div className="space-y-1.5">
+                            <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Binding</label>
+                            <Input type="number" step="0.01" value={formData.binding_cost} onChange={(e) => setFormData({ ...formData, binding_cost: e.target.value })} onWheel={(e) => (e.target as HTMLInputElement).blur()} onFocus={(e) => e.target.select()} className="h-11 px-4 rounded-xl border-2 font-bold text-sm" />
+                          </div>
+                          <div className="space-y-1.5">
+                            <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Design</label>
+                            <Input type="number" step="0.01" value={formData.design_cost} onChange={(e) => setFormData({ ...formData, design_cost: e.target.value })} onWheel={(e) => (e.target as HTMLInputElement).blur()} onFocus={(e) => e.target.select()} className="h-11 px-4 rounded-xl border-2 font-bold text-sm" />
+                          </div>
+
+                          <div className="space-y-1.5 col-span-2">
+                            <label className="text-[8px] font-black uppercase tracking-widest text-primarycolor/60 ml-1">Other Expenses</label>
+                            <Input type="number" step="0.01" value={formData.other_expenses} onChange={(e) => setFormData({ ...formData, other_expenses: e.target.value })} onWheel={(e) => (e.target as HTMLInputElement).blur()} onFocus={(e) => e.target.select()} className="h-11 px-4 rounded-xl border-2 font-bold text-sm" />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="bg-emerald-50/80 p-6 rounded-[2rem] border-2 border-emerald-200/50 space-y-4">
+                        <p className="text-[10px] font-black text-emerald-700 uppercase tracking-[0.2em] mb-2">
+                          Additional Production Costs
+                        </p>
+                        <p className="text-[8px] font-bold text-emerald-600/60 -mt-2 mb-2">
+                          Pre-filled from the main book info. Leave blank to use
+                          book-level defaults, or override per-edition.
+                        </p>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-1.5">
+                            <label className="text-[8px] font-black uppercase tracking-widest text-emerald-700/60 ml-1">Translator</label>
+                            <Input type="number" step="0.01" value={formData.translator_cost} onChange={(e) => setFormData({ ...formData, translator_cost: e.target.value })} onWheel={(e) => (e.target as HTMLInputElement).blur()} onFocus={(e) => e.target.select()} className="h-11 px-4 rounded-xl border-2 border-emerald-200 font-bold text-sm bg-white" />
+                          </div>
+                          <div className="space-y-1.5">
+                            <label className="text-[8px] font-black uppercase tracking-widest text-emerald-700/60 ml-1">Cover Design</label>
+                            <Input type="number" step="0.01" value={formData.cover_design_cost} onChange={(e) => setFormData({ ...formData, cover_design_cost: e.target.value })} onWheel={(e) => (e.target as HTMLInputElement).blur()} onFocus={(e) => e.target.select()} className="h-11 px-4 rounded-xl border-2 border-emerald-200 font-bold text-sm bg-white" />
+                          </div>
+                          <div className="space-y-1.5">
+                            <label className="text-[8px] font-black uppercase tracking-widest text-emerald-700/60 ml-1">Text Design</label>
+                            <Input type="number" step="0.01" value={formData.text_design_cost} onChange={(e) => setFormData({ ...formData, text_design_cost: e.target.value })} onWheel={(e) => (e.target as HTMLInputElement).blur()} onFocus={(e) => e.target.select()} className="h-11 px-4 rounded-xl border-2 border-emerald-200 font-bold text-sm bg-white" />
+                          </div>
+                          <div className="space-y-1.5">
+                            <label className="text-[8px] font-black uppercase tracking-widest text-emerald-700/60 ml-1">Editor</label>
+                            <Input type="number" step="0.01" value={formData.editor_cost} onChange={(e) => setFormData({ ...formData, editor_cost: e.target.value })} onWheel={(e) => (e.target as HTMLInputElement).blur()} onFocus={(e) => e.target.select()} className="h-11 px-4 rounded-xl border-2 border-emerald-200 font-bold text-sm bg-white" />
+                          </div>
+                          <div className="space-y-1.5">
+                            <label className="text-[8px] font-black uppercase tracking-widest text-emerald-700/60 ml-1">Typewriting</label>
+                            <Input type="number" step="0.01" value={formData.typewriting_cost} onChange={(e) => setFormData({ ...formData, typewriting_cost: e.target.value })} onWheel={(e) => (e.target as HTMLInputElement).blur()} onFocus={(e) => e.target.select()} className="h-11 px-4 rounded-xl border-2 border-emerald-200 font-bold text-sm bg-white" />
+                          </div>
+                          <div className="space-y-1.5">
+                            <label className="text-[8px] font-black uppercase tracking-widest text-emerald-700/60 ml-1">Store Cost</label>
+                            <Input type="number" step="0.01" value={formData.store_cost} onChange={(e) => setFormData({ ...formData, store_cost: e.target.value })} onWheel={(e) => (e.target as HTMLInputElement).blur()} onFocus={(e) => e.target.select()} className="h-11 px-4 rounded-xl border-2 border-emerald-200 font-bold text-sm bg-white" />
+                          </div>
+                          <div className="space-y-1.5">
+                            <label className="text-[8px] font-black uppercase tracking-widest text-emerald-700/60 ml-1">Distribution</label>
+                            <Input type="number" step="0.01" value={formData.distribution_cost} onChange={(e) => setFormData({ ...formData, distribution_cost: e.target.value })} onWheel={(e) => (e.target as HTMLInputElement).blur()} onFocus={(e) => e.target.select()} className="h-11 px-4 rounded-xl border-2 border-emerald-200 font-bold text-sm bg-white" />
+                          </div>
+                          <div className="space-y-1.5">
+                            <label className="text-[8px] font-black uppercase tracking-widest text-emerald-700/60 ml-1">Advertisement</label>
+                            <Input type="number" step="0.01" value={formData.advertisement_cost} onChange={(e) => setFormData({ ...formData, advertisement_cost: e.target.value })} onWheel={(e) => (e.target as HTMLInputElement).blur()} onFocus={(e) => e.target.select()} className="h-11 px-4 rounded-xl border-2 border-emerald-200 font-bold text-sm bg-white" />
+                          </div>
+                          <div className="space-y-1.5 col-span-2">
+                            <label className="text-[8px] font-black uppercase tracking-widest text-emerald-700/60 ml-1">Purchasing Right</label>
+                            <Input type="number" step="0.01" value={formData.purchasing_right_cost} onChange={(e) => setFormData({ ...formData, purchasing_right_cost: e.target.value })} onWheel={(e) => (e.target as HTMLInputElement).blur()} onFocus={(e) => e.target.select()} className="h-11 px-4 rounded-xl border-2 border-emerald-200 font-bold text-sm bg-white" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-6">
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">
+                          Page Count
+                        </label>
+                        <Input
+                          type="number"
+                          value={formData.number_of_pages}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              number_of_pages: e.target.value,
+                            })
+                          }
+                          onWheel={(e) => (e.target as HTMLInputElement).blur()}
+                          onFocus={(e) => e.target.select()}
+                          className="h-14 px-6 rounded-2xl border-2 font-bold"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">
+                          Production Memo
+                        </label>
+                        <textarea
+                          value={formData.memo}
+                          onChange={(e) =>
+                            setFormData({ ...formData, memo: e.target.value })
+                          }
+                          rows={6}
+                          className="w-full p-6 rounded-2xl border-2 border-primarycolor/10 focus:border-primarycolor outline-none font-bold text-sm bg-slate-50/50 transition-all resize-none"
+                          placeholder="Add notes about paper quality, binding type, etc."
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
               </form>
             </div>
 

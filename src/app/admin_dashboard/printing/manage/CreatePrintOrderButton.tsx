@@ -248,6 +248,12 @@ export default function CreatePrintOrderButton({ printers, editions, books }: Cr
         setDrawerSelectedBookId(bookId)
         setDrawerBookOpen(false)
         setDrawerEditionName(generateNextEditionName(bookId))
+        const selected = books.find(b => b.id === bookId)
+        setDrawerEditionPages(
+            selected?.number_of_pages
+                ? String(selected.number_of_pages)
+                : ''
+        )
     }
 
     // Submit drawer form
