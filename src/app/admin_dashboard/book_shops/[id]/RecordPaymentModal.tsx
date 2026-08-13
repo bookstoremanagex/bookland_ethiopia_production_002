@@ -9,6 +9,16 @@ import {
     DialogDescription,
     DialogFooter,
 } from "@/components/ui/dialog";
+import {
+    AlertDialog,
+    AlertDialogContent,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogCancel,
+    AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DateInput } from "@/components/ui/date-input";
@@ -30,6 +40,7 @@ import {
     Calendar,
     X,
     Upload,
+    CheckSquare,
 } from 'lucide-react';
 import { createPayment } from '@/app/actions/payment-actions';
 import { getChecks, createCheck, uploadCheckImageAction } from '@/app/actions/check-actions';
@@ -47,6 +58,8 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName }
     const [amount, setAmount] = useState(0);
     const [paymentType, setPaymentType] = useState<"DIRECT" | "CHECK">("DIRECT");
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [approveDirect, setApproveDirect] = useState(false);
+    const [showApproveConfirm, setShowApproveConfirm] = useState(false);
 
     // Check-related state
     const [checkOption, setCheckOption] = useState<"new" | "existing">("new");
@@ -78,6 +91,8 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName }
             setCheckFormData({ username: "", bankname: "", type: "PAYMENT", amount: "", recordeddate: "", memo: "" });
             setCheckImageFile(null);
             setCheckImagePreview("");
+            setApproveDirect(false);
+            setShowApproveConfirm(false);
         }
     }, [isOpen]);
 
@@ -110,6 +125,15 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName }
             }
         }
 
+        if (paymentType === "DIRECT" && approveDirect) {
+            setShowApproveConfirm(true);
+            return;
+        }
+
+        await doSubmit();
+    };
+
+    const doSubmit = async () => {
         setIsSubmitting(true);
         try {
             let finalCheckId: number | null = selectedCheckId;
@@ -136,10 +160,13 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName }
                 amount,
                 payment_type: paymentType,
                 checkId: finalCheckId,
+                approve: paymentType === "DIRECT" && approveDirect || null,
             });
 
             if (res.success) {
-                toast.success("Payment recorded successfully! Pending admin approval.");
+                toast.success(approveDirect && paymentType === "DIRECT"
+                    ? "Payment recorded and approved automatically!"
+                    : "Payment recorded successfully! Pending admin approval.");
                 onClose();
             } else {
                 toast.error(res.error || "Failed to record payment");
@@ -349,6 +376,34 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName }
                                 )}
                             </div>
                         )}
+
+                        {paymentType === "DIRECT" && (
+                            <button
+                                type="button"
+                                onClick={() => setApproveDirect(!approveDirect)}
+                                className={cn(
+                                    "w-full flex items-center gap-3 p-4 rounded-2xl border-2 transition-all cursor-pointer text-left",
+                                    approveDirect
+                                        ? "border-emerald-400 bg-emerald-50"
+                                        : "border-slate-100 bg-white hover:border-emerald-300"
+                                )}
+                            >
+                                <div
+                                    className={cn(
+                                        "size-6 rounded-md border-2 flex items-center justify-center shrink-0 transition-all",
+                                        approveDirect ? "bg-emerald-500 border-emerald-500 text-white" : "border-slate-300 bg-white text-transparent"
+                                    )}
+                                >
+                                    <CheckSquare className="size-4" />
+                                </div>
+                                <div>
+                                    <p className="text-[9px] font-black uppercase tracking-widest text-emerald-800">Approve</p>
+                                    <p className="text-[8px] font-bold text-emerald-600/70">
+                                        Record this direct payment as already approved
+                                    </p>
+                                </div>
+                            </button>
+                        )}
                     </div>
                 </div>
 
@@ -365,6 +420,39 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName }
                 </DialogFooter>
             </DialogContent>
         </Dialog>
+
+        {/* Auto-approve confirmation */}
+        <AlertDialog open={showApproveConfirm} onOpenChange={setShowApproveConfirm}>
+            <AlertDialogContent className="rounded-[2rem] border-2 border-primarycolor/5 p-6 max-w-sm">
+                <AlertDialogHeader>
+                    <AlertDialogTitle className="text-lg font-black text-primarycolor uppercase tracking-tight italic">
+                        Approve <span className="text-secondarycolor not-italic">Payment</span>
+                    </AlertDialogTitle>
+                    <AlertDialogDescription className="text-[10px] font-bold text-muted-foreground">
+                        This direct payment of {amount.toLocaleString()} ETB will be recorded as APPROVED automatically and
+                        deducted from the shop&apos;s debt. Do you want to continue?
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter className="gap-2 pt-2">
+                    <AlertDialogCancel asChild>
+                        <Button variant="outline" className="h-12 rounded-2xl border-2 font-black uppercase tracking-widest text-[10px] flex-1">
+                            Cancel
+                        </Button>
+                    </AlertDialogCancel>
+                    <AlertDialogAction asChild>
+                        <Button
+                            onClick={async () => {
+                                setShowApproveConfirm(false);
+                                await doSubmit();
+                            }}
+                            className="h-12 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black uppercase tracking-widest text-[10px] flex-1"
+                        >
+                            Confirm & Approve
+                        </Button>
+                    </AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
 
         {/* Existing Check Selector */}
         <Dialog open={showCheckSelector} onOpenChange={(o) => !o && setShowCheckSelector(false)}>

@@ -48,10 +48,13 @@ export async function createPayment(data: {
     memo?: string | null;
     image?: string | null;
     is_for_previous_debts?: boolean | null;
+    approve?: boolean | null;
 }) {
     try {
         const session = await getCurrentSession();
         if (!session) return { success: false, error: "Unauthorized" };
+
+        const approveImmediately = data.approve && data.payment_type === "DIRECT";
 
         const payment = await (prisma as any).payments.create({
             data: {
@@ -63,7 +66,7 @@ export async function createPayment(data: {
                 memo: data.memo || null,
                 image: data.image || null,
                 is_for_previous_debts: data.is_for_previous_debts || null,
-                status: "PENDING",
+                status: approveImmediately ? "APPROVED" : "PENDING",
             }
         });
 
@@ -71,7 +74,7 @@ export async function createPayment(data: {
 
         await createNotification({
             title: `New Payment from ${shop?.name || "Unknown Shop"}`,
-            message: `A payment of ${data.amount.toLocaleString()} ETB has been recorded (${data.payment_type}). Status: PENDING.`,
+            message: `A payment of ${data.amount.toLocaleString()} ETB has been recorded (${data.payment_type}). Status: ${approveImmediately ? "APPROVED" : "PENDING"}.`,
             details: JSON.stringify({
                 shopId: data.shopId,
                 shopName: shop?.name,
@@ -101,6 +104,14 @@ export async function createPayment(data: {
             }
         });
 
+        // Auto-approve distribution when "Approve" was selected for a direct payment
+        if (approveImmediately) {
+            const approveResult = await approvePaymentInternal(payment.id);
+            if (!approveResult.success) {
+                return { success: false, error: approveResult.error || "Payment recorded but auto-approval failed" };
+            }
+        }
+
         return { success: true, data: payment };
     } catch (error) {
         console.error("Error creating payment:", error);
@@ -108,7 +119,7 @@ export async function createPayment(data: {
     }
 }
 
-export async function approvePayment(paymentId: number) {
+export async function approvePaymentInternal(paymentId: number) {
     try {
         const session = await getCurrentSession();
         if (!session) return { success: false, error: "Unauthorized" };
@@ -119,13 +130,12 @@ export async function approvePayment(paymentId: number) {
         });
 
         if (!payment) return { success: false, error: "Payment not found" };
-        if (payment.status === "APPROVED") return { success: false, error: "Payment already approved" };
-
-        // Approve the payment first
-        await (prisma as any).payments.update({
-            where: { id: paymentId },
-            data: { status: "APPROVED" }
-        });
+        if (payment.status !== "APPROVED") {
+            await (prisma as any).payments.update({
+                where: { id: paymentId },
+                data: { status: "APPROVED" }
+            });
+        }
 
         // Distribute the payment: linked order first, then remaining across other orders (oldest first)
         try {
@@ -237,6 +247,26 @@ export async function approvePayment(paymentId: number) {
         revalidatePath("/delivery_sample_dashboard", "layout");
 
         return { success: true, data: payment };
+    } catch (error) {
+        console.error("Error approving payment:", error);
+        return { success: false, error: "Failed to approve payment" };
+    }
+}
+
+export async function approvePayment(paymentId: number) {
+    try {
+        const session = await getCurrentSession();
+        if (!session) return { success: false, error: "Unauthorized" };
+
+        const payment = await (prisma as any).payments.findUnique({
+            where: { id: paymentId },
+            include: { shop: true }
+        });
+
+        if (!payment) return { success: false, error: "Payment not found" };
+        if (payment.status === "APPROVED") return { success: false, error: "Payment already approved" };
+
+        return await approvePaymentInternal(paymentId);
     } catch (error) {
         console.error("Error approving payment:", error);
         return { success: false, error: "Failed to approve payment" };

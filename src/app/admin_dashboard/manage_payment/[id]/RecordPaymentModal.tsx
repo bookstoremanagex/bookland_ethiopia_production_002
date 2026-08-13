@@ -9,6 +9,16 @@ import {
     DialogDescription,
     DialogFooter,
 } from "@/components/ui/dialog";
+import {
+    AlertDialog,
+    AlertDialogContent,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogCancel,
+    AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DateInput } from "@/components/ui/date-input";
@@ -48,6 +58,7 @@ import {
     X,
     ListOrdered,
     Upload,
+    ShieldCheck,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -70,6 +81,8 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName, 
     const [memo, setMemo] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isForPreviousDebts, setIsForPreviousDebts] = useState(false);
+    const [approveDirect, setApproveDirect] = useState(false);
+    const [showApproveConfirm, setShowApproveConfirm] = useState(false);
 
     const [checks, setChecks] = useState<any[]>([]);
     const [openCheckSearch, setOpenCheckSearch] = useState(false);
@@ -187,6 +200,16 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName, 
             return;
         }
 
+        if (paymentType === "DIRECT" && approveDirect) {
+            setShowApproveConfirm(true);
+            return;
+        }
+
+        await doSubmit();
+    };
+
+    const doSubmit = async () => {
+        const parsedAmount = parseFloat(amount);
         setIsSubmitting(true);
         try {
             const res = await createPayment({
@@ -196,11 +219,14 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName, 
                 checkId: paymentType === "CHECK" ? selectedCheck?.id || null : null,
                 orderid: orderId ? String(orderId) : null,
                 memo: memo || null,
-                is_for_previous_debts: isForPreviousDebts || null,
+                is_for_previous_debts: orderId ? null : (isForPreviousDebts || null),
+                approve: paymentType === "DIRECT" && approveDirect || null,
             });
 
             if (res.success) {
-                toast.success("Payment recorded successfully");
+                toast.success(approveDirect && paymentType === "DIRECT"
+                    ? "Payment recorded and approved automatically!"
+                    : "Payment recorded successfully");
                 onClose();
                 setAmount("");
                 setMemo("");
@@ -208,6 +234,7 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName, 
                 setPaymentType("DIRECT");
                 setShowNewCheck(false);
                 setIsForPreviousDebts(false);
+                setApproveDirect(false);
                 router.refresh();
             } else {
                 toast.error(res.error);
@@ -280,24 +307,26 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName, 
                         </Select>
                     </div>
 
-                    <div className="flex items-center gap-3 p-4 rounded-2xl bg-amber-50 border-2 border-amber-200">
-                        <div
-                            onClick={() => setIsForPreviousDebts(!isForPreviousDebts)}
-                            className={cn(
-                                "relative w-11 h-6 rounded-full transition-colors cursor-pointer shrink-0",
-                                isForPreviousDebts ? "bg-amber-500" : "bg-slate-300"
-                            )}
-                        >
-                            <div className={cn(
-                                "absolute top-0.5 left-0.5 size-5 rounded-full bg-white shadow-sm transition-transform",
-                                isForPreviousDebts && "translate-x-5"
-                            )} />
+                    {!orderId && (
+                        <div className="flex items-center gap-3 p-4 rounded-2xl bg-amber-50 border-2 border-amber-200">
+                            <div
+                                onClick={() => setIsForPreviousDebts(!isForPreviousDebts)}
+                                className={cn(
+                                    "relative w-11 h-6 rounded-full transition-colors cursor-pointer shrink-0",
+                                    isForPreviousDebts ? "bg-amber-500" : "bg-slate-300"
+                                )}
+                            >
+                                <div className={cn(
+                                    "absolute top-0.5 left-0.5 size-5 rounded-full bg-white shadow-sm transition-transform",
+                                    isForPreviousDebts && "translate-x-5"
+                                )} />
+                            </div>
+                            <div className="min-w-0">
+                                <p className="text-[10px] font-black uppercase tracking-widest text-amber-800">For Previous Debt</p>
+                                <p className="text-[8px] font-bold text-amber-600/70">Mark this payment as settling previous debt</p>
+                            </div>
                         </div>
-                        <div className="min-w-0">
-                            <p className="text-[10px] font-black uppercase tracking-widest text-amber-800">For Previous Debt</p>
-                            <p className="text-[8px] font-bold text-amber-600/70">Mark this payment as settling previous debt</p>
-                        </div>
-                    </div>
+                    )}
 
                     <div className="space-y-2">
                         <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">
@@ -330,6 +359,34 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName, 
                             />
                         </div>
                     </div>
+
+                    {paymentType === "DIRECT" && (
+                        <button
+                            type="button"
+                            onClick={() => setApproveDirect(!approveDirect)}
+                            className={cn(
+                                "w-full flex items-center gap-3 p-4 rounded-2xl border-2 transition-all cursor-pointer text-left",
+                                approveDirect
+                                    ? "border-emerald-400 bg-emerald-50"
+                                    : "border-slate-100 bg-white hover:border-emerald-300"
+                            )}
+                        >
+                            <div
+                                className={cn(
+                                    "size-6 rounded-md border-2 flex items-center justify-center shrink-0 transition-all",
+                                    approveDirect ? "bg-emerald-500 border-emerald-500 text-white" : "border-slate-300 bg-white text-transparent"
+                                )}
+                            >
+                                <ShieldCheck className="size-4" />
+                            </div>
+                            <div>
+                                <p className="text-[10px] font-black uppercase tracking-widest text-emerald-800">Approve</p>
+                                <p className="text-[8px] font-bold text-emerald-600/70">
+                                    Record this direct payment as already approved and deducted from debt
+                                </p>
+                            </div>
+                        </button>
+                    )}
 
                     {paymentType === "CHECK" && (
                         <div className="space-y-4 p-4 md:p-5 rounded-2xl bg-purple-50/50 border-2 border-purple-100">
@@ -620,6 +677,39 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName, 
                     </Button>
                 </DialogFooter>
             </DialogContent>
+
+            {/* Auto-approve confirmation */}
+            <AlertDialog open={showApproveConfirm} onOpenChange={setShowApproveConfirm}>
+                <AlertDialogContent className="rounded-[2rem] border-2 border-primarycolor/5 p-6 max-w-sm">
+                    <AlertDialogHeader>
+                        <AlertDialogTitle className="text-lg font-black text-primarycolor uppercase tracking-tight italic">
+                            Approve <span className="text-secondarycolor not-italic">Payment</span>
+                        </AlertDialogTitle>
+                        <AlertDialogDescription className="text-[10px] font-bold text-muted-foreground">
+                            This direct payment of {amount ? parseFloat(amount).toLocaleString() : "0"} ETB will be recorded as APPROVED
+                            automatically and deducted from the shop&apos;s debt. Do you want to continue?
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter className="gap-2 pt-2">
+                        <AlertDialogCancel asChild>
+                            <Button variant="outline" className="h-12 rounded-2xl border-2 font-black uppercase tracking-widest text-[10px] flex-1">
+                                Cancel
+                            </Button>
+                        </AlertDialogCancel>
+                        <AlertDialogAction asChild>
+                            <Button
+                                onClick={async () => {
+                                    setShowApproveConfirm(false);
+                                    await doSubmit();
+                                }}
+                                className="h-12 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black uppercase tracking-widest text-[10px] flex-1"
+                            >
+                                Confirm & Approve
+                            </Button>
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </Dialog>
     );
 }

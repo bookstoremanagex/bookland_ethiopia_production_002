@@ -195,3 +195,29 @@ Added a menu search field to the admin dashboard top navbar (left of the calenda
 
 ## Blockers
 - None.
+
+---
+
+# 2026-08-13 — Admin Payment: Auto-Approve Option for Direct Payments
+
+## Summary
+Added an "Approve" checkbox to the admin payment recording forms. It only appears when Direct Payment is selected. When checked and the user submits, a confirmation dialog warns that the payment will be recorded as APPROVED and deducted from debt automatically.
+
+## Decisions
+- Only applies to admin payment forms: `book_shops/[id]/RecordPaymentModal.tsx` and `manage_payment/[id]/RecordPaymentModal.tsx`.
+- Checkbox is unchecked by default, only shown when `paymentType === "DIRECT"`.
+- On submit with the checkbox checked, an AlertDialog asks for confirmation ("Confirm & Approve") before creating the payment.
+- Refactored `approvePayment` logic into `approvePaymentInternal` (no status pre-check) so `createPayment` can reuse the distribution/notification flow.
+- `createPayment` accepts a new `approve` flag; when true and type is DIRECT, payment is created as APPROVED and distribution runs inline. Check payments ignore the flag.
+
+## Files Changed
+- `src/app/actions/payment-actions.ts` — added `approve` param; extracted `approvePaymentInternal`.
+- `src/app/admin_dashboard/book_shops/[id]/RecordPaymentModal.tsx` — approve checkbox + confirmation dialog.
+- `src/app/admin_dashboard/manage_payment/[id]/RecordPaymentModal.tsx` — approve checkbox + confirmation dialog.
+
+## Verification
+- `npx tsc --noEmit` — no errors.
+- `npx eslint` — only pre-existing warnings (unused `error`/`Calendar`, `<img>`, effect deps).
+
+## Blockers
+- None.
