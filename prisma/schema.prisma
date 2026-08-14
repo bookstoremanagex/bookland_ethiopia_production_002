@@ -43,6 +43,7 @@ model bookedition {
   translation_cost            Float?
   memo                        String?
   book_image_url              String?
+  visiblitiy_to_printer       Boolean                 @default(true)
   total_print_count           Int?
   book_id                     Int?
   number_of_pages             Int?

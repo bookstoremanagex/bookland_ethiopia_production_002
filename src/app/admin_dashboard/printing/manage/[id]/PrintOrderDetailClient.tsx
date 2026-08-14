@@ -27,6 +27,8 @@ import {
     Receipt,
     Plus,
     X,
+    Eye,
+    EyeOff,
     Printer as PrinterIcon
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -39,6 +41,7 @@ import Link from 'next/link'
 import { format } from 'date-fns'
 import { useCalendar } from "@/lib/calendar-context"
 import { updatePrintOrder, deletePrintOrder, addPrintOrderPayment, updatePrintOrderPayment, deletePrintOrderPayment } from '@/app/actions/print-order-actions'
+import { toggleEditionVisibilityToPrinter, toggleProjectEditionsVisibilityToPrinter } from '@/app/actions/edition-actions'
 import {
     Command,
     CommandEmpty,
@@ -109,6 +112,10 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
     const [contentDialogItem, setContentDialogItem] = useState<PrintOrderItem | null>(null)
     const [contentDialogValue, setContentDialogValue] = useState("")
     const [isSavingContent, setIsSavingContent] = useState(false)
+    const [editionsList, setEditionsList] = useState<any[]>(editions)
+    const [visibilityDialogEdition, setVisibilityDialogEdition] = useState<any | null>(null)
+    const [isTogglingVisibility, setIsTogglingVisibility] = useState(false)
+    const [isTogglingProjectVisibility, setIsTogglingProjectVisibility] = useState(false)
 
     // Parse initial items
     const initialItems: PrintOrderItem[] = (order.printorder_items || []).map((item: any) => ({
@@ -136,8 +143,8 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
 
     const selectedBook = books.find(b => b.id === selectedBookId)
     const filteredEditions = selectedBookId 
-        ? editions.filter(ed => ed.bookId === selectedBookId)
-        : editions
+        ? editionsList.filter(ed => ed.bookId === selectedBookId)
+        : editionsList
 
     // Auto calculate total price
     useEffect(() => {
@@ -168,10 +175,14 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
             id: Date.now(),
             bookId: selectedBookId!,
             bookEditionId: selectedEditionId,
-            quantity: "",
+            quantity: (() => {
+                const ed = editionsList.find(e => e.id === selectedEditionId);
+                const total = ed?.total_print_count;
+                return total != null && total > 0 ? total.toString() : "";
+            })(),
             total_price: "",
             price_per_book: (() => {
-                const ed = editions.find(e => e.id === selectedEditionId);
+                const ed = editionsList.find(e => e.id === selectedEditionId);
                 const price = ed?.selling_price ?? ed?.production_price;
                 return price != null && price > 0 ? price.toString() : "";
             })(),
@@ -201,6 +212,11 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
             items: prev.items.map(item => item.id === id ? { ...item, [field]: value } : item)
         }))
     }
+
+    const quantityChanged = formData.items.some(item => {
+        const original = initialItems.find(i => i.id === item.id)?.quantity;
+        return original !== undefined && item.quantity !== original;
+    });
 
     const handleUpdate = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -322,8 +338,52 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
         window.print()
     }
 
+    const handleToggleVisibility = async (edition: any) => {
+        setIsTogglingVisibility(true)
+        try {
+            const res = await toggleEditionVisibilityToPrinter(edition.id)
+            if (res.success) {
+                toast.success(res.data.visiblitiy_to_printer ? "Visible to printers" : "Hidden from printers")
+                setEditionsList(prev => prev.map(e => e.id === edition.id ? res.data : e))
+                setVisibilityDialogEdition(null)
+                router.refresh()
+            } else {
+                toast.error(res.error || "Failed to update visibility")
+            }
+        } catch (error) {
+            toast.error("An error occurred")
+        } finally {
+            setIsTogglingVisibility(false)
+        }
+    }
+
+    const handleToggleProjectVisibility = async (visible: boolean) => {
+        setIsTogglingProjectVisibility(true)
+        try {
+            const res = await toggleProjectEditionsVisibilityToPrinter(order.id, visible)
+            if (res.success) {
+                toast.success((res.updatedCount ?? 0) > 0
+                    ? `All editions ${visible ? "visible" : "hidden"} to printers`
+                    : "No editions to update")
+                setEditionsList(prev => prev.map(e => e.visiblitiy_to_printer !== undefined ? { ...e, visiblitiy_to_printer: visible } : e))
+                setVisibilityDialogEdition(null)
+                router.refresh()
+            } else {
+                toast.error(res.error || "Failed to update project visibility")
+            }
+        } catch (error) {
+            toast.error("An error occurred")
+        } finally {
+            setIsTogglingProjectVisibility(false)
+        }
+    }
+
     const totalBooks = formData.items.length;
     const totalUnits = formData.items.reduce((sum, item) => sum + (parseInt(item.quantity) || 0), 0);
+
+    const projectEditionIds = formData.items.map(item => item.bookEditionId);
+    const projectEditions = editionsList.filter((e: any) => projectEditionIds.includes(e.id));
+    const allProjectEditionsVisible = projectEditions.length > 0 && projectEditions.every((e: any) => e.visiblitiy_to_printer);
     
     // Financial Calculations
     const totalPrice = parseFloat(formData.total_price) || 0;
@@ -780,8 +840,28 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
 
                         {/* Books Section */}
                         <div className="space-y-4 pt-6 border-t border-slate-100">
-                            <div className="flex items-center justify-between">
+                            <div className="flex items-center justify-between gap-3">
                                 <h4 className="font-black text-lg text-primarycolor uppercase tracking-widest">Books to Print</h4>
+                                {projectEditionIds.length > 0 && (
+                                    <Button
+                                        type="button"
+                                        onClick={() => handleToggleProjectVisibility(!allProjectEditionsVisible)}
+                                        disabled={isTogglingProjectVisibility}
+                                        className={cn(
+                                            "h-9 px-4 rounded-xl font-black uppercase tracking-widest text-[10px] gap-2",
+                                            allProjectEditionsVisible
+                                                ? "bg-rose-500 hover:bg-rose-600 text-white shadow-lg shadow-rose-500/20"
+                                                : "bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/20"
+                                        )}
+                                    >
+                                        {allProjectEditionsVisible ? <EyeOff className="size-3.5" /> : <Eye className="size-3.5" />}
+                                        {isTogglingProjectVisibility
+                                            ? "Updating..."
+                                            : allProjectEditionsVisible
+                                                ? "Hide All from Printer"
+                                                : "Show All to Printer"}
+                                    </Button>
+                                )}
                             </div>
 
                             {/* Add Book Controls */}
@@ -839,7 +919,7 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
                                                 disabled={!selectedBookId}
                                                 className="w-full h-12 px-4 rounded-xl border-2 border-slate-200 bg-white font-bold justify-between hover:bg-slate-100 transition-all text-slate-700 disabled:opacity-50"
                                             >
-                                                <span className="truncate">{editions.find(e => e.id === selectedEditionId)?.edition_name || (selectedBookId ? "Choose Edition..." : "Select book first")}</span>
+                                                <span className="truncate">{editionsList.find(e => e.id === selectedEditionId)?.edition_name || (selectedBookId ? "Choose Edition..." : "Select book first")}</span>
                                                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                             </Button>
                                         </PopoverTrigger>
@@ -921,24 +1001,38 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
                                         <tbody>
                                             {formData.items.map((item, index) => {
                                                 const bookName = books.find(b => b.id === item.bookId)?.title;
-                                                const editionName = editions.find(e => e.id === item.bookEditionId)?.edition_name;
+                                                const editionName = editionsList.find(e => e.id === item.bookEditionId)?.edition_name;
+                                                const rowEdition = editionsList.find((e: any) => e.id === item.bookEditionId);
                                                 const qty = parseFloat(item.quantity) || 0;
                                                 const price = parseFloat(item.price_per_book) || 0;
                                                 const storedTotal = parseFloat(item.total_price);
                                                 const totalPrice = storedTotal > 0 ? storedTotal : (qty * price);
-                                                const remainingCount = editions.find((e: any) => e.id === item.bookEditionId)?.count_remening_for_transfer
+                                                const remainingCount = editionsList.find((e: any) => e.id === item.bookEditionId)?.count_remening_for_transfer
                                                 
                                                 return (
                                                     <tr key={item.id} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
                                                         <td className="py-3.5 px-4 text-xs font-bold text-slate-400">{index + 1}</td>
                                                         <td className="py-3.5 px-4">
                                                             <div className="flex items-center gap-3">
+                                                                <span className={cn("size-2.5 rounded-full shrink-0", rowEdition?.visiblitiy_to_printer ? "bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.6)]" : "bg-slate-300")} title={rowEdition?.visiblitiy_to_printer ? "Visible to printers" : "Hidden from printers"} />
                                                                 <div className="size-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500 border border-blue-100 shrink-0">
                                                                     <BookOpen className="size-4" />
                                                                 </div>
                                                                 <div>
                                                                     <p className="font-bold text-sm text-slate-800 truncate max-w-[200px]" title={bookName}>{bookName || "Unknown Book"}</p>
-                                                                    <p className="font-bold text-[10px] text-muted-foreground uppercase tracking-widest">{editionName || "Unknown Edition"}</p>
+                                                                    <p className="font-bold text-[10px] text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
+                                                                        {editionName || "Unknown Edition"}
+                                                                        {rowEdition && (
+                                                                            <button
+                                                                                type="button"
+                                                                                onClick={() => setVisibilityDialogEdition(rowEdition)}
+                                                                                title="Printer visibility"
+                                                                                className="ml-0.5 text-primarycolor/60 hover:text-primarycolor transition-colors"
+                                                                            >
+                                                                                {rowEdition.visiblitiy_to_printer ? <Eye className="size-3.5" /> : <EyeOff className="size-3.5" />}
+                                                                            </button>
+                                                                        )}
+                                                                    </p>
                                                                 </div>
                                                             </div>
                                                         </td>
@@ -966,7 +1060,19 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
                                                             </span>
                                                         </td>
                                                         <td className="py-3.5 px-4 text-right">
-                                                            <span className="font-black text-emerald-600">{totalPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                                                            {isEditingBooks ? (
+                                                                <Input 
+                                                                    type="number"
+                                                                    step="0.01"
+                                                                    min="0"
+                                                                    value={item.total_price || (qty * price).toString()}
+                                                                    onChange={(e) => updateItem(item.id, 'total_price', e.target.value)}
+                                                                    className="h-9 w-28 ml-auto rounded-xl font-bold text-right text-sm bg-white border-slate-200"
+                                                                    placeholder={(qty * price).toFixed(2)}
+                                                                />
+                                                            ) : (
+                                                                <span className="font-black text-emerald-600">{totalPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                                                            )}
                                                         </td>
                                                         <td className="py-3.5 px-4 text-center">
                                                             {isEditingBooks ? (
@@ -1037,6 +1143,20 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
                                         <Layers className="size-8" />
                                     </div>
                                     <p className="font-bold text-slate-400">No books in this project.</p>
+                                </div>
+                            )}
+
+                            {quantityChanged && (
+                                <div className="flex items-start gap-4 p-4 rounded-2xl border-2 border-amber-300 bg-amber-50">
+                                    <AlertTriangle className="size-5 text-amber-600 shrink-0 mt-0.5" />
+                                    <div className="space-y-1">
+                                        <p className="text-sm font-black text-amber-700 uppercase tracking-widest">
+                                            Quantity changed
+                                        </p>
+                                        <p className="text-xs font-bold text-amber-700/80 leading-relaxed">
+                                            The edition's main total print count will be updated when you commit these changes. If the new quantity is lower, the edition's total print count (and central remaining count) will be reduced to match.
+                                        </p>
+                                    </div>
                                 </div>
                             )}
                         </div>
@@ -1126,7 +1246,7 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
                                     <div>
                                         <h3 className="font-black text-primarycolor text-lg uppercase tracking-tight">Content Notes</h3>
                                         <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-                                            {books.find(b => b.id === contentDialogItem.bookId)?.title || "Unknown Book"} — {editions.find(e => e.id === contentDialogItem.bookEditionId)?.edition_name || "Unknown Edition"}
+                                            {books.find(b => b.id === contentDialogItem.bookId)?.title || "Unknown Book"} — {editionsList.find(e => e.id === contentDialogItem.bookEditionId)?.edition_name || "Unknown Edition"}
                                         </p>
                                     </div>
                                 </div>
@@ -1175,6 +1295,72 @@ export default function PrintOrderDetailClient({ order, printers, editions, book
                                     className="flex-[2] h-12 rounded-xl bg-primarycolor hover:bg-secondarycolor font-black uppercase tracking-widest text-xs gap-2"
                                 >
                                     {isSavingContent ? "Saving..." : "Save Content"}
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Printer Visibility Dialog */}
+                {visibilityDialogEdition && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+                        <div className="w-full max-w-lg bg-white rounded-[3rem] p-10 shadow-2xl space-y-6 animate-in zoom-in-95 duration-300">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-4">
+                                    <div className="size-12 rounded-2xl bg-primarycolor/10 flex items-center justify-center text-primarycolor border-2 border-primarycolor/20">
+                                        {visibilityDialogEdition.visiblitiy_to_printer ? <Eye className="size-6" /> : <EyeOff className="size-6" />}
+                                    </div>
+                                    <div>
+                                        <h3 className="font-black text-primarycolor text-lg uppercase tracking-tight">Printer Visibility</h3>
+                                        <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                                            {books.find(b => b.id === visibilityDialogEdition.bookId)?.title || "Unknown Book"} — {visibilityDialogEdition.edition_name || "Unknown Edition"}
+                                        </p>
+                                    </div>
+                                </div>
+                                <Button variant="ghost" size="icon" className="rounded-xl" onClick={() => setVisibilityDialogEdition(null)}>
+                                    <X className="size-5" />
+                                </Button>
+                            </div>
+
+                            <div className="p-8 rounded-[2rem] border-2 border-slate-100 bg-slate-50/50 space-y-4">
+                                <div className="flex items-center gap-3">
+                                    <span className={cn("size-3 rounded-full", visibilityDialogEdition.visiblitiy_to_printer ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]" : "bg-slate-300")} />
+                                    <p className="font-bold text-sm text-slate-700">
+                                        {visibilityDialogEdition.visiblitiy_to_printer ? "Visible to printers" : "Hidden from printers"}
+                                    </p>
+                                </div>
+                                <p className="text-xs font-bold text-muted-foreground leading-relaxed">
+                                    {visibilityDialogEdition.visiblitiy_to_printer
+                                        ? "This edition is currently shown to printers. Turn it off to hide it from printer selection."
+                                        : "This edition is currently hidden from printers. Turn it on to make it available to printers again."}
+                                </p>
+                            </div>
+
+                            <div className="flex gap-3">
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={() => setVisibilityDialogEdition(null)}
+                                    className="flex-1 h-12 rounded-xl border-2 font-black uppercase tracking-widest text-xs"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    type="button"
+                                    disabled={isTogglingVisibility}
+                                    onClick={() => handleToggleVisibility(visibilityDialogEdition)}
+                                    className={cn(
+                                        "flex-[2] h-12 rounded-xl font-black uppercase tracking-widest text-xs gap-2",
+                                        visibilityDialogEdition.visiblitiy_to_printer
+                                            ? "bg-rose-500 hover:bg-rose-600 text-white"
+                                            : "bg-primarycolor hover:bg-secondarycolor text-white"
+                                    )}
+                                >
+                                    {isTogglingVisibility
+                                        ? "Updating..."
+                                        : visibilityDialogEdition.visiblitiy_to_printer
+                                            ? <><EyeOff className="size-4" /> Turn Off</>
+                                            : <><Eye className="size-4" /> Turn On</>}
                                 </Button>
                             </div>
                         </div>

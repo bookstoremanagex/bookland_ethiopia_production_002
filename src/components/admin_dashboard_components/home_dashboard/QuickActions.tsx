@@ -78,9 +78,10 @@ export function QuickActions({ pendingOrders, pendingPayments }: QuickActionsPro
   const props = { pendingOrders, pendingPayments };
 
   return (
-    <div className="rounded-2xl border border-slate-200/80 bg-white p-4 sm:p-6">
-      <h2 className="text-base font-semibold tracking-tight text-slate-900 mb-4 px-1">
-        Quick Actions
+    <div className="relative rounded-2xl border border-slate-200/80 bg-white p-4 gradient-shadow sm:p-6">
+      <div className="absolute inset-x-0 top-0 h-1 rounded-t-2xl bg-gradient-to-r from-primarycolor via-tertiarycolor to-secondarycolor" aria-hidden />
+      <h2 className="mb-4 px-1 text-base font-semibold tracking-tight text-slate-900">
+        Quick <span className="bg-gradient-to-r from-primarycolor to-secondarycolor bg-clip-text text-transparent">Actions</span>
       </h2>
       <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
         {actions.map((action) => {
@@ -89,17 +90,17 @@ export function QuickActions({ pendingOrders, pendingPayments }: QuickActionsPro
             <Link
               key={action.label}
               href={action.href}
-              className="group relative flex flex-col items-center gap-2 rounded-xl border border-slate-100 p-4 text-center transition-all hover:border-primarycolor/20 hover:shadow-sm hover:-translate-y-0.5"
+              className="group relative flex flex-col items-center gap-2 rounded-xl border border-slate-100 bg-white p-4 text-center gradient-shadow-inset transition-all duration-300 hover:-translate-y-1 hover:border-transparent hover:bg-gradient-to-br hover:from-primarycolor hover:to-secondarycolor hover:gradient-shadow-hover"
             >
               {badgeValue != null && (
-                <span className="absolute -top-1.5 -right-1.5 min-w-[22px] h-[22px] px-1.5 rounded-full bg-primarycolor text-white text-[9px] font-black flex items-center justify-center shadow-sm">
+                <span className="absolute -top-1.5 -right-1.5 min-w-[22px] h-[22px] px-1.5 rounded-full bg-primarycolor text-white text-[9px] font-black flex items-center justify-center shadow-sm transition-colors duration-300 group-hover:bg-white group-hover:text-primarycolor">
                   {badgeValue}
                 </span>
               )}
-              <div className={`size-10 rounded-xl flex items-center justify-center ${action.color} transition-colors`}>
-                <action.icon className="size-5" />
+              <div className={`size-10 rounded-xl flex items-center justify-center ${action.color} transition-all duration-300 group-hover:bg-white/20`}>
+                <action.icon className="size-5 transition-colors duration-300 group-hover:text-white" />
               </div>
-              <span className="text-xs font-semibold text-slate-700 group-hover:text-primarycolor transition-colors">
+              <span className="text-xs font-semibold text-slate-700 transition-colors duration-300 group-hover:text-white">
                 {action.label}
               </span>
             </Link>

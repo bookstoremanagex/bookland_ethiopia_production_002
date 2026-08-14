@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import {
     updateEdition,
-    deleteEdition
+    deleteEdition,
+    toggleEditionVisibilityToPrinter
 } from '../../../../actions/edition-actions';
 import { uploadBookImageAction } from '../../../../actions/book-actions';
 import { useRouter, usePathname } from 'next/navigation';
@@ -31,6 +32,9 @@ import {
     ShieldAlert,
     AlertTriangle,
     Upload,
+    ShoppingCart,
+    Repeat,
+    Package,
 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '../../../../../components/ui/button';
@@ -121,6 +125,7 @@ export default function EditionDetailsClient({ initialEdition, stores }: Edition
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [isUploading, setIsUploading] = useState(false);
+    const [isTogglingVisibility, setIsTogglingVisibility] = useState(false);
     const router = useRouter();
     const pathname = usePathname();
     const dashboardRoot = pathname.split('/').slice(0, 2).join('/');
@@ -161,6 +166,24 @@ export default function EditionDetailsClient({ initialEdition, stores }: Edition
             toast.error("An unexpected error occurred");
         } finally {
             setIsDeleting(false);
+        }
+    };
+
+    const handleToggleVisibility = async () => {
+        setIsTogglingVisibility(true);
+        try {
+            const response = await toggleEditionVisibilityToPrinter(edition.id);
+            if (response.success) {
+                toast.success(response.data.visiblitiy_to_printer ? "Visible to printers" : "Hidden from printers");
+                setEdition(response.data);
+                router.refresh();
+            } else {
+                toast.error(response.error || "Failed to update visibility");
+            }
+        } catch (error) {
+            toast.error("An unexpected error occurred");
+        } finally {
+            setIsTogglingVisibility(false);
         }
     };
 
@@ -278,6 +301,72 @@ export default function EditionDetailsClient({ initialEdition, stores }: Edition
         </div>
     );
 
+    const inStoreLedger = (edition.bookeditionstores || []).reduce(
+        (sum: number, bes: any) => sum + (bes.quantity || 0),
+        0
+    );
+    const orderItems = edition.order_items || [];
+    const isFulfilledOrder = (order: any) =>
+        order?.is_approved === true || order?.status === "Approved";
+    const soldAsOrder = orderItems
+        .filter((item: any) => item.order?.order_type === "requested" && isFulfilledOrder(item.order))
+        .reduce((sum: number, item: any) => sum + (item.quantity || 0), 0);
+    const soldAsOrderRounds = orderItems
+        .filter((item: any) => item.order?.order_type === "on round" && isFulfilledOrder(item.order))
+        .reduce((sum: number, item: any) => sum + (item.quantity || 0), 0);
+    const endedRounds = edition.round_books || [];
+    const soldAsRoundBooks = endedRounds.reduce(
+        (sum: number, rb: any) => sum + ((rb.starting_amount || 0) - (rb.returned_amount || 0)),
+        0
+    );
+    const unallocatedRoundSold = endedRounds
+        .filter((rb: any) => !rb.allocated)
+        .reduce((sum: number, rb: any) => sum + ((rb.starting_amount || 0) - (rb.returned_amount || 0)), 0);
+    const inStore = inStoreLedger - unallocatedRoundSold;
+    const soldAsRound = soldAsRoundBooks + soldAsOrderRounds;
+    const soldAsRetail = (edition.retail_purchase_items || []).reduce(
+        (sum: number, item: any) => sum + (item.quantity || 0),
+        0
+    );
+    const soldTotal = soldAsOrder + soldAsRound + soldAsRetail;
+    const damagedTotal = (edition.damagedbooks || []).reduce(
+        (sum: number, db: any) => sum + (db.count || 0),
+        0
+    );
+    const grandTotal = inStore + soldTotal + damagedTotal;
+    const connectedPrinter =
+        edition.bookeditionprinters?.[0]?.printer ||
+        edition.printorder_items?.[0]?.printorder?.printer ||
+        null;
+    const remainingAtPrinter = Number(edition.count_remening_for_transfer || 0);
+
+    const storeNameMap = new Map<number, string>(
+        (edition.bookeditionstores || []).map((bes: any) => [bes.storeId, bes.stores?.name as string])
+    );
+    const transferByStore = new Map<number, { count: number; total: number }>();
+    let totalTransferCount = 0;
+    let totalTransferred = 0;
+    (edition.printorder_items || []).forEach((pi: any) => {
+        (pi.printer_delivery_records || []).forEach((rec: any) => {
+            if (!rec.storeId) return;
+            const entry = transferByStore.get(rec.storeId) || { count: 0, total: 0 };
+            entry.count += 1;
+            entry.total += rec.quantity_deliverd || 0;
+            transferByStore.set(rec.storeId, entry);
+            totalTransferCount += 1;
+            totalTransferred += rec.quantity_deliverd || 0;
+        });
+    });
+    const storeTransferRows: { storeId: number; name: string; count: number; total: number }[] =
+        Array.from(transferByStore.entries())
+            .map(([storeId, data]) => ({
+                storeId,
+                name: storeNameMap.get(storeId) || `Store #${storeId}`,
+                count: data.count,
+                total: data.total,
+            }))
+            .sort((a, b) => b.total - a.total);
+
     return (
         <div className="min-h-screen bg-[#F8FAFC] p-4 md:p-8">
             <div className="max-w-6xl mx-auto space-y-10">
@@ -303,15 +392,13 @@ export default function EditionDetailsClient({ initialEdition, stores }: Edition
                                 Configuration for <span className="text-primarycolor italic">"{edition.books.title}"</span>
                             </p>
                             {(() => {
-                                const bep = edition.bookeditionprinters?.[0];
-                                const printerName = bep
-                                    ? bep.printer?.name
-                                    : edition.printorder_items?.[0]?.printorder?.printer?.name;
-                                if (!printerName) return null;
+                                const printerName = connectedPrinter?.name;
                                 return (
                                     <div className="flex items-center gap-1.5 mt-1.5 md:mt-2">
                                         <Printer className="size-3 md:size-3.5 text-primarycolor/50" />
-                                        <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-primarycolor/60">{printerName}</span>
+                                        <span className={cn("text-[9px] md:text-[10px] font-black uppercase tracking-widest", printerName ? "text-primarycolor/60" : "text-slate-300")}>
+                                            {printerName || "No printer added"}
+                                        </span>
                                     </div>
                                 );
                             })()}
@@ -348,6 +435,150 @@ export default function EditionDetailsClient({ initialEdition, stores }: Edition
                                     <h2 className="text-xl md:text-2xl font-black text-primarycolor uppercase tracking-tight">Financial <span className="text-secondarycolor">& Production</span></h2>
                                     <p className="text-muted-foreground font-bold text-xs md:text-base">Manage costs and pricing for this release.</p>
                                 </div>
+                            </div>
+
+                            {/* Edition Quantity Snapshot */}
+                            <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4">
+                                        <div className="p-4 md:p-5 rounded-2xl bg-emerald-50 border-2 border-emerald-200/60">
+                                            <div className="flex items-center gap-1.5 mb-1">
+                                                <Store className="size-3.5 text-emerald-600" />
+                                                <span className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-emerald-700">In Stores</span>
+                                            </div>
+                                            <p className="text-xl md:text-2xl font-black text-emerald-700 tabular-nums">{inStore.toLocaleString()}</p>
+                                        </div>
+                                        <div className="p-4 md:p-5 rounded-2xl bg-primarycolor/5 border-2 border-primarycolor/15">
+                                            <div className="flex items-center gap-1.5 mb-1">
+                                                <ShoppingCart className="size-3.5 text-primarycolor" />
+                                                <span className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-primarycolor/80">Sold (Order)</span>
+                                            </div>
+                                            <p className="text-xl md:text-2xl font-black text-primarycolor tabular-nums">{soldAsOrder.toLocaleString()}</p>
+                                            <p className="text-[7px] md:text-[8px] font-bold text-primarycolor/60 mt-0.5 uppercase tracking-wider">
+                                                Retail: {soldAsRetail.toLocaleString()}
+                                            </p>
+                                        </div>
+                                        <div className="p-4 md:p-5 rounded-2xl bg-purple-50 border-2 border-purple-200/60">
+                                            <div className="flex items-center gap-1.5 mb-1">
+                                                <Repeat className="size-3.5 text-purple-600" />
+                                                <span className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-purple-700">Sold (Round)</span>
+                                            </div>
+                                            <p className="text-xl md:text-2xl font-black text-purple-700 tabular-nums">{soldAsRound.toLocaleString()}</p>
+                                            <p className="text-[7px] md:text-[8px] font-bold text-purple-500/80 mt-0.5 uppercase tracking-wider">
+                                                (Orders: {soldAsOrderRounds.toLocaleString()} · Direct: {soldAsRoundBooks.toLocaleString()})
+                                            </p>
+                                        </div>
+                                        <div className="p-4 md:p-5 rounded-2xl bg-rose-50 border-2 border-rose-200/60">
+                                            <div className="flex items-center gap-1.5 mb-1">
+                                                <ShieldAlert className="size-3.5 text-rose-600" />
+                                                <span className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-rose-700">Damaged</span>
+                                            </div>
+                                            <p className="text-xl md:text-2xl font-black text-rose-700 tabular-nums">{damagedTotal.toLocaleString()}</p>
+                                        </div>
+                                        <div className="p-4 md:p-5 rounded-2xl bg-gradient-to-br from-primarycolor to-secondarycolor border-2 border-primarycolor/10">
+                                            <div className="flex items-center gap-1.5 mb-1">
+                                                <Activity className="size-3.5 text-white/80" />
+                                                <span className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-white/80">Total</span>
+                                            </div>
+                                            <p className="text-xl md:text-2xl font-black text-white tabular-nums">{grandTotal.toLocaleString()}</p>
+                                        </div>
+                                    </div>
+
+                            {/* Printer & Remaining */}
+                            <div className="rounded-2xl border-2 border-slate-100 bg-slate-50/60 p-4 md:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                        <div className="flex items-center gap-3">
+                                            <div className={`size-11 rounded-xl flex items-center justify-center ${connectedPrinter ? "bg-primarycolor/10 text-primarycolor" : "bg-slate-200/70 text-slate-400"}`}>
+                                                <Printer className="size-5" />
+                                            </div>
+                                            <div>
+                                                <p className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-muted-foreground">Connected Printer</p>
+                                                <p className={`text-sm md:text-base font-black ${connectedPrinter ? "text-primarycolor" : "text-slate-400"}`}>
+                                                    {connectedPrinter ? connectedPrinter.name : "No printer added"}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-3 sm:pl-4 sm:border-l-2 sm:border-slate-200">
+                                            <div className="size-11 rounded-xl bg-secondarycolor/10 flex items-center justify-center text-secondarycolor">
+                                                <Package className="size-5" />
+                                            </div>
+                                            <div>
+                                                <p className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-muted-foreground">Remaining for Transfer</p>
+                                                <p className="text-sm md:text-base font-black text-secondarycolor tabular-nums">
+                                                    {remainingAtPrinter.toLocaleString()}
+                                                    <span className="text-[8px] md:text-[9px] font-bold text-muted-foreground ml-1">units</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                            {/* Transfer to Store History */}
+                            <div className="bg-white rounded-2xl md:rounded-3xl border-2 border-primarycolor/10 shadow-xl shadow-primarycolor/5 p-4 md:p-6">
+                                <div className="flex items-center gap-4 md:gap-6 mb-4 md:mb-6">
+                                    <div className="size-11 md:size-14 rounded-xl md:rounded-2xl bg-secondarycolor/10 flex items-center justify-center text-secondarycolor border-2 border-secondarycolor/15 shrink-0">
+                                        <Truck className="size-5 md:size-6" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <h3 className="text-base md:text-xl font-black text-primarycolor uppercase tracking-tight">Transfer to Store History</h3>
+                                        <p className="text-[10px] md:text-xs font-bold text-muted-foreground">Transfers of this edition from central/printer stock to stores.</p>
+                                    </div>
+                                    <div className="flex items-center gap-2 md:gap-3">
+                                        <div className="text-right">
+                                            <p className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-muted-foreground">Times</p>
+                                            <p className="text-lg md:text-2xl font-black text-secondarycolor tabular-nums">{totalTransferCount.toLocaleString()}</p>
+                                        </div>
+                                        <div className="h-10 w-px bg-slate-200" />
+                                        <div className="text-right">
+                                            <p className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-muted-foreground">Books</p>
+                                            <p className="text-lg md:text-2xl font-black text-primarycolor tabular-nums">{totalTransferred.toLocaleString()}</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {storeTransferRows.length === 0 ? (
+                                    <div className="rounded-xl border-2 border-dashed border-slate-200 p-6 text-center">
+                                        <Truck className="size-5 text-slate-300 mx-auto mb-2" />
+                                        <p className="text-xs font-black text-muted-foreground/60 uppercase tracking-widest">No transfers recorded yet</p>
+                                    </div>
+                                ) : (
+                                    <div className="overflow-x-auto">
+                                        <table className="w-full text-left">
+                                            <thead>
+                                                <tr className="border-b-2 border-slate-100">
+                                                    <th className="py-2.5 pr-4 text-[8px] md:text-[9px] font-black uppercase tracking-widest text-muted-foreground">Store</th>
+                                                    <th className="py-2.5 pr-4 text-[8px] md:text-[9px] font-black uppercase tracking-widest text-muted-foreground text-right">Times Transferred</th>
+                                                    <th className="py-2.5 text-[8px] md:text-[9px] font-black uppercase tracking-widest text-muted-foreground text-right">Total Books</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {storeTransferRows.map((row) => (
+                                                    <tr key={row.storeId} className="border-b border-slate-50 last:border-0 hover:bg-primarycolor/[0.02] transition-colors">
+                                                        <td className="py-3 pr-4">
+                                                            <div className="flex items-center gap-2.5">
+                                                                <div className="size-8 rounded-lg bg-secondarycolor/10 flex items-center justify-center text-secondarycolor shrink-0">
+                                                                    <Store className="size-3.5" />
+                                                                </div>
+                                                                <div>
+                                                                    <p className="font-black text-sm text-slate-800">{row.name}</p>
+                                                                    <p className="text-[9px] font-bold text-muted-foreground">Store ID #{row.storeId}</p>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td className="py-3 pr-4 text-right">
+                                                            <span className="inline-flex items-center gap-1 font-black text-secondarycolor tabular-nums">
+                                                                <Repeat className="size-3 text-secondarycolor/60" />
+                                                                {row.count.toLocaleString()}
+                                                            </span>
+                                                        </td>
+                                                        <td className="py-3 text-right">
+                                                            <span className="inline-flex items-center gap-1 font-black text-primarycolor tabular-nums">
+                                                                <Package className="size-3 text-primarycolor/60" />
+                                                                {row.total.toLocaleString()}
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                )}
                             </div>
 
                             <form onSubmit={handleUpdate} className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -609,33 +840,15 @@ export default function EditionDetailsClient({ initialEdition, stores }: Edition
                             </div>
                             <div className="space-y-4">
                                 <div className="p-5 md:p-6 rounded-[1.2rem] md:rounded-3xl bg-secondarycolor/5 border-2 border-secondarycolor/10">
-                                    <div className="text-[8px] md:text-[10px] font-black text-secondarycolor uppercase tracking-[0.2em] mb-2">Projected Margin</div>
-                                    <div className="text-2xl md:text-3xl font-black text-primarycolor flex items-baseline gap-2">
-                                        <span>ETB</span>
-                                        {(
-                                            (parseFloat(formData.selling_price) || 0) -
-                                            (
-                                                (parseFloat(formData.production_price) || 0) +
-                                                (parseFloat(formData.printing_cost) || 0) +
-                                                (parseFloat(formData.binding_cost) || 0) +
-                                                (parseFloat(formData.design_cost) || 0) +
-                                                (parseFloat(formData.editing_cost) || 0) +
-                                        (parseFloat(formData.transportation_cost) || 0) +
-                                        (parseFloat(formData.translation_cost) || 0) +
-                                        (parseFloat(formData.other_expenses) || 0) +
-                                        (parseFloat(formData.translator_cost) || 0) +
-                                        (parseFloat(formData.cover_design_cost) || 0) +
-                                        (parseFloat(formData.text_design_cost) || 0) +
-                                        (parseFloat(formData.editor_cost) || 0) +
-                                        (parseFloat(formData.typewriting_cost) || 0) +
-                                        (parseFloat(formData.store_cost) || 0) +
-                                        (parseFloat(formData.distribution_cost) || 0) +
-                                        (parseFloat(formData.advertisement_cost) || 0) +
-                                        (parseFloat(formData.purchasing_right_cost) || 0)
-                                    )
-                                        ).toLocaleString()}
-                                        <span className="text-[10px] md:text-sm font-bold text-muted-foreground">/ unit</span>
-                                    </div>
+                                    <div className="text-[10px] md:text-xs font-black text-secondarycolor uppercase tracking-[0.2em] mb-3 md:mb-4">Visibility to Printer</div>
+                                    <button
+                                        type="button"
+                                        onClick={handleToggleVisibility}
+                                        disabled={isTogglingVisibility}
+                                        className={`relative inline-flex h-7 w-[52px] items-center rounded-full transition-colors ${edition.visiblitiy_to_printer ? "bg-emerald-500" : "bg-slate-300"} disabled:opacity-50 disabled:cursor-not-allowed`}
+                                    >
+                                        <span className={`inline-block size-5 transform rounded-full bg-white shadow-md transition-transform ${edition.visiblitiy_to_printer ? "translate-x-[26px]" : "translate-x-1"}`} />
+                                    </button>
                                 </div>
                             </div>
                         </div>

@@ -6300,6 +6300,7 @@ export namespace Prisma {
     translation_cost: number | null
     memo: string | null
     book_image_url: string | null
+    visiblitiy_to_printer: boolean | null
     total_print_count: number | null
     book_id: number | null
     number_of_pages: number | null
@@ -6334,6 +6335,7 @@ export namespace Prisma {
     translation_cost: number | null
     memo: string | null
     book_image_url: string | null
+    visiblitiy_to_printer: boolean | null
     total_print_count: number | null
     book_id: number | null
     number_of_pages: number | null
@@ -6368,6 +6370,7 @@ export namespace Prisma {
     translation_cost: number
     memo: number
     book_image_url: number
+    visiblitiy_to_printer: number
     total_print_count: number
     book_id: number
     number_of_pages: number
@@ -6458,6 +6461,7 @@ export namespace Prisma {
     translation_cost?: true
     memo?: true
     book_image_url?: true
+    visiblitiy_to_printer?: true
     total_print_count?: true
     book_id?: true
     number_of_pages?: true
@@ -6492,6 +6496,7 @@ export namespace Prisma {
     translation_cost?: true
     memo?: true
     book_image_url?: true
+    visiblitiy_to_printer?: true
     total_print_count?: true
     book_id?: true
     number_of_pages?: true
@@ -6526,6 +6531,7 @@ export namespace Prisma {
     translation_cost?: true
     memo?: true
     book_image_url?: true
+    visiblitiy_to_printer?: true
     total_print_count?: true
     book_id?: true
     number_of_pages?: true
@@ -6647,6 +6653,7 @@ export namespace Prisma {
     translation_cost: number | null
     memo: string | null
     book_image_url: string | null
+    visiblitiy_to_printer: boolean
     total_print_count: number | null
     book_id: number | null
     number_of_pages: number | null
@@ -6700,6 +6707,7 @@ export namespace Prisma {
     translation_cost?: boolean
     memo?: boolean
     book_image_url?: boolean
+    visiblitiy_to_printer?: boolean
     total_print_count?: boolean
     book_id?: boolean
     number_of_pages?: boolean
@@ -6747,6 +6755,7 @@ export namespace Prisma {
     translation_cost?: boolean
     memo?: boolean
     book_image_url?: boolean
+    visiblitiy_to_printer?: boolean
     total_print_count?: boolean
     book_id?: boolean
     number_of_pages?: boolean
@@ -6770,7 +6779,7 @@ export namespace Prisma {
     purchasing_right_cost?: boolean
   }
 
-  export type bookeditionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "edition_name" | "selling_price" | "production_price" | "printing_cost" | "binding_cost" | "design_cost" | "translation_cost" | "memo" | "book_image_url" | "total_print_count" | "book_id" | "number_of_pages" | "bookId" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt" | "editing_cost" | "other_expenses" | "transportation_cost" | "count_remening_for_transfer" | "translator_cost" | "cover_design_cost" | "text_design_cost" | "editor_cost" | "typewriting_cost" | "store_cost" | "distribution_cost" | "advertisement_cost" | "purchasing_right_cost", ExtArgs["result"]["bookedition"]>
+  export type bookeditionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "edition_name" | "selling_price" | "production_price" | "printing_cost" | "binding_cost" | "design_cost" | "translation_cost" | "memo" | "book_image_url" | "visiblitiy_to_printer" | "total_print_count" | "book_id" | "number_of_pages" | "bookId" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt" | "editing_cost" | "other_expenses" | "transportation_cost" | "count_remening_for_transfer" | "translator_cost" | "cover_design_cost" | "text_design_cost" | "editor_cost" | "typewriting_cost" | "store_cost" | "distribution_cost" | "advertisement_cost" | "purchasing_right_cost", ExtArgs["result"]["bookedition"]>
   export type bookeditionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     locked_editions?: boolean | bookedition$locked_editionsArgs<ExtArgs>
     books?: boolean | booksDefaultArgs<ExtArgs>
@@ -6810,6 +6819,7 @@ export namespace Prisma {
       translation_cost: number | null
       memo: string | null
       book_image_url: string | null
+      visiblitiy_to_printer: boolean
       total_print_count: number | null
       book_id: number | null
       number_of_pages: number | null
@@ -7220,6 +7230,7 @@ export namespace Prisma {
     readonly translation_cost: FieldRef<"bookedition", 'Float'>
     readonly memo: FieldRef<"bookedition", 'String'>
     readonly book_image_url: FieldRef<"bookedition", 'String'>
+    readonly visiblitiy_to_printer: FieldRef<"bookedition", 'Boolean'>
     readonly total_print_count: FieldRef<"bookedition", 'Int'>
     readonly book_id: FieldRef<"bookedition", 'Int'>
     readonly number_of_pages: FieldRef<"bookedition", 'Int'>
@@ -49080,6 +49091,7 @@ export namespace Prisma {
     translation_cost: 'translation_cost',
     memo: 'memo',
     book_image_url: 'book_image_url',
+    visiblitiy_to_printer: 'visiblitiy_to_printer',
     total_print_count: 'total_print_count',
     book_id: 'book_id',
     number_of_pages: 'number_of_pages',
@@ -50341,6 +50353,7 @@ export namespace Prisma {
     translation_cost?: FloatNullableFilter<"bookedition"> | number | null
     memo?: StringNullableFilter<"bookedition"> | string | null
     book_image_url?: StringNullableFilter<"bookedition"> | string | null
+    visiblitiy_to_printer?: BoolFilter<"bookedition"> | boolean
     total_print_count?: IntNullableFilter<"bookedition"> | number | null
     book_id?: IntNullableFilter<"bookedition"> | number | null
     number_of_pages?: IntNullableFilter<"bookedition"> | number | null
@@ -50385,6 +50398,7 @@ export namespace Prisma {
     translation_cost?: SortOrderInput | SortOrder
     memo?: SortOrderInput | SortOrder
     book_image_url?: SortOrderInput | SortOrder
+    visiblitiy_to_printer?: SortOrder
     total_print_count?: SortOrderInput | SortOrder
     book_id?: SortOrderInput | SortOrder
     number_of_pages?: SortOrderInput | SortOrder
@@ -50433,6 +50447,7 @@ export namespace Prisma {
     translation_cost?: FloatNullableFilter<"bookedition"> | number | null
     memo?: StringNullableFilter<"bookedition"> | string | null
     book_image_url?: StringNullableFilter<"bookedition"> | string | null
+    visiblitiy_to_printer?: BoolFilter<"bookedition"> | boolean
     total_print_count?: IntNullableFilter<"bookedition"> | number | null
     book_id?: IntNullableFilter<"bookedition"> | number | null
     number_of_pages?: IntNullableFilter<"bookedition"> | number | null
@@ -50477,6 +50492,7 @@ export namespace Prisma {
     translation_cost?: SortOrderInput | SortOrder
     memo?: SortOrderInput | SortOrder
     book_image_url?: SortOrderInput | SortOrder
+    visiblitiy_to_printer?: SortOrder
     total_print_count?: SortOrderInput | SortOrder
     book_id?: SortOrderInput | SortOrder
     number_of_pages?: SortOrderInput | SortOrder
@@ -50519,6 +50535,7 @@ export namespace Prisma {
     translation_cost?: FloatNullableWithAggregatesFilter<"bookedition"> | number | null
     memo?: StringNullableWithAggregatesFilter<"bookedition"> | string | null
     book_image_url?: StringNullableWithAggregatesFilter<"bookedition"> | string | null
+    visiblitiy_to_printer?: BoolWithAggregatesFilter<"bookedition"> | boolean
     total_print_count?: IntNullableWithAggregatesFilter<"bookedition"> | number | null
     book_id?: IntNullableWithAggregatesFilter<"bookedition"> | number | null
     number_of_pages?: IntNullableWithAggregatesFilter<"bookedition"> | number | null
@@ -54184,6 +54201,7 @@ export namespace Prisma {
     translation_cost?: number | null
     memo?: string | null
     book_image_url?: string | null
+    visiblitiy_to_printer?: boolean
     total_print_count?: number | null
     book_id?: number | null
     number_of_pages?: number | null
@@ -54227,6 +54245,7 @@ export namespace Prisma {
     translation_cost?: number | null
     memo?: string | null
     book_image_url?: string | null
+    visiblitiy_to_printer?: boolean
     total_print_count?: number | null
     book_id?: number | null
     number_of_pages?: number | null
@@ -54269,6 +54288,7 @@ export namespace Prisma {
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
     total_print_count?: NullableIntFieldUpdateOperationsInput | number | null
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
     number_of_pages?: NullableIntFieldUpdateOperationsInput | number | null
@@ -54312,6 +54332,7 @@ export namespace Prisma {
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
     total_print_count?: NullableIntFieldUpdateOperationsInput | number | null
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
     number_of_pages?: NullableIntFieldUpdateOperationsInput | number | null
@@ -54355,6 +54376,7 @@ export namespace Prisma {
     translation_cost?: number | null
     memo?: string | null
     book_image_url?: string | null
+    visiblitiy_to_printer?: boolean
     total_print_count?: number | null
     book_id?: number | null
     number_of_pages?: number | null
@@ -54388,6 +54410,7 @@ export namespace Prisma {
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
     total_print_count?: NullableIntFieldUpdateOperationsInput | number | null
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
     number_of_pages?: NullableIntFieldUpdateOperationsInput | number | null
@@ -54421,6 +54444,7 @@ export namespace Prisma {
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
     total_print_count?: NullableIntFieldUpdateOperationsInput | number | null
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
     number_of_pages?: NullableIntFieldUpdateOperationsInput | number | null
@@ -58591,6 +58615,7 @@ export namespace Prisma {
     translation_cost?: SortOrder
     memo?: SortOrder
     book_image_url?: SortOrder
+    visiblitiy_to_printer?: SortOrder
     total_print_count?: SortOrder
     book_id?: SortOrder
     number_of_pages?: SortOrder
@@ -58652,6 +58677,7 @@ export namespace Prisma {
     translation_cost?: SortOrder
     memo?: SortOrder
     book_image_url?: SortOrder
+    visiblitiy_to_printer?: SortOrder
     total_print_count?: SortOrder
     book_id?: SortOrder
     number_of_pages?: SortOrder
@@ -58686,6 +58712,7 @@ export namespace Prisma {
     translation_cost?: SortOrder
     memo?: SortOrder
     book_image_url?: SortOrder
+    visiblitiy_to_printer?: SortOrder
     total_print_count?: SortOrder
     book_id?: SortOrder
     number_of_pages?: SortOrder
@@ -65428,6 +65455,7 @@ export namespace Prisma {
     translation_cost?: number | null
     memo?: string | null
     book_image_url?: string | null
+    visiblitiy_to_printer?: boolean
     total_print_count?: number | null
     book_id?: number | null
     number_of_pages?: number | null
@@ -65470,6 +65498,7 @@ export namespace Prisma {
     translation_cost?: number | null
     memo?: string | null
     book_image_url?: string | null
+    visiblitiy_to_printer?: boolean
     total_print_count?: number | null
     book_id?: number | null
     number_of_pages?: number | null
@@ -65559,6 +65588,7 @@ export namespace Prisma {
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
     total_print_count?: NullableIntFieldUpdateOperationsInput | number | null
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
     number_of_pages?: NullableIntFieldUpdateOperationsInput | number | null
@@ -65601,6 +65631,7 @@ export namespace Prisma {
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
     total_print_count?: NullableIntFieldUpdateOperationsInput | number | null
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
     number_of_pages?: NullableIntFieldUpdateOperationsInput | number | null
@@ -65680,6 +65711,7 @@ export namespace Prisma {
     translation_cost?: number | null
     memo?: string | null
     book_image_url?: string | null
+    visiblitiy_to_printer?: boolean
     total_print_count?: number | null
     book_id?: number | null
     number_of_pages?: number | null
@@ -65722,6 +65754,7 @@ export namespace Prisma {
     translation_cost?: number | null
     memo?: string | null
     book_image_url?: string | null
+    visiblitiy_to_printer?: boolean
     total_print_count?: number | null
     book_id?: number | null
     number_of_pages?: number | null
@@ -65813,6 +65846,7 @@ export namespace Prisma {
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
     total_print_count?: NullableIntFieldUpdateOperationsInput | number | null
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
     number_of_pages?: NullableIntFieldUpdateOperationsInput | number | null
@@ -65855,6 +65889,7 @@ export namespace Prisma {
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
     total_print_count?: NullableIntFieldUpdateOperationsInput | number | null
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
     number_of_pages?: NullableIntFieldUpdateOperationsInput | number | null
@@ -65971,6 +66006,7 @@ export namespace Prisma {
     translation_cost?: number | null
     memo?: string | null
     book_image_url?: string | null
+    visiblitiy_to_printer?: boolean
     total_print_count?: number | null
     book_id?: number | null
     number_of_pages?: number | null
@@ -66013,6 +66049,7 @@ export namespace Prisma {
     translation_cost?: number | null
     memo?: string | null
     book_image_url?: string | null
+    visiblitiy_to_printer?: boolean
     total_print_count?: number | null
     book_id?: number | null
     number_of_pages?: number | null
@@ -66180,6 +66217,7 @@ export namespace Prisma {
     translation_cost?: FloatNullableFilter<"bookedition"> | number | null
     memo?: StringNullableFilter<"bookedition"> | string | null
     book_image_url?: StringNullableFilter<"bookedition"> | string | null
+    visiblitiy_to_printer?: BoolFilter<"bookedition"> | boolean
     total_print_count?: IntNullableFilter<"bookedition"> | number | null
     book_id?: IntNullableFilter<"bookedition"> | number | null
     number_of_pages?: IntNullableFilter<"bookedition"> | number | null
@@ -66265,6 +66303,7 @@ export namespace Prisma {
     translation_cost?: number | null
     memo?: string | null
     book_image_url?: string | null
+    visiblitiy_to_printer?: boolean
     total_print_count?: number | null
     book_id?: number | null
     number_of_pages?: number | null
@@ -66307,6 +66346,7 @@ export namespace Prisma {
     translation_cost?: number | null
     memo?: string | null
     book_image_url?: string | null
+    visiblitiy_to_printer?: boolean
     total_print_count?: number | null
     book_id?: number | null
     number_of_pages?: number | null
@@ -66410,6 +66450,7 @@ export namespace Prisma {
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
     total_print_count?: NullableIntFieldUpdateOperationsInput | number | null
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
     number_of_pages?: NullableIntFieldUpdateOperationsInput | number | null
@@ -66452,6 +66493,7 @@ export namespace Prisma {
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
     total_print_count?: NullableIntFieldUpdateOperationsInput | number | null
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
     number_of_pages?: NullableIntFieldUpdateOperationsInput | number | null
@@ -66545,6 +66587,7 @@ export namespace Prisma {
     translation_cost?: number | null
     memo?: string | null
     book_image_url?: string | null
+    visiblitiy_to_printer?: boolean
     total_print_count?: number | null
     book_id?: number | null
     number_of_pages?: number | null
@@ -66587,6 +66630,7 @@ export namespace Prisma {
     translation_cost?: number | null
     memo?: string | null
     book_image_url?: string | null
+    visiblitiy_to_printer?: boolean
     total_print_count?: number | null
     book_id?: number | null
     number_of_pages?: number | null
@@ -66682,6 +66726,7 @@ export namespace Prisma {
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
     total_print_count?: NullableIntFieldUpdateOperationsInput | number | null
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
     number_of_pages?: NullableIntFieldUpdateOperationsInput | number | null
@@ -66724,6 +66769,7 @@ export namespace Prisma {
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
     total_print_count?: NullableIntFieldUpdateOperationsInput | number | null
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
     number_of_pages?: NullableIntFieldUpdateOperationsInput | number | null
@@ -67392,6 +67438,7 @@ export namespace Prisma {
     translation_cost?: number | null
     memo?: string | null
     book_image_url?: string | null
+    visiblitiy_to_printer?: boolean
     total_print_count?: number | null
     book_id?: number | null
     number_of_pages?: number | null
@@ -67434,6 +67481,7 @@ export namespace Prisma {
     translation_cost?: number | null
     memo?: string | null
     book_image_url?: string | null
+    visiblitiy_to_printer?: boolean
     total_print_count?: number | null
     book_id?: number | null
     number_of_pages?: number | null
@@ -67543,6 +67591,7 @@ export namespace Prisma {
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
     total_print_count?: NullableIntFieldUpdateOperationsInput | number | null
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
     number_of_pages?: NullableIntFieldUpdateOperationsInput | number | null
@@ -67585,6 +67634,7 @@ export namespace Prisma {
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
     total_print_count?: NullableIntFieldUpdateOperationsInput | number | null
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
     number_of_pages?: NullableIntFieldUpdateOperationsInput | number | null
@@ -67752,6 +67802,7 @@ export namespace Prisma {
     translation_cost?: number | null
     memo?: string | null
     book_image_url?: string | null
+    visiblitiy_to_printer?: boolean
     total_print_count?: number | null
     book_id?: number | null
     number_of_pages?: number | null
@@ -67794,6 +67845,7 @@ export namespace Prisma {
     translation_cost?: number | null
     memo?: string | null
     book_image_url?: string | null
+    visiblitiy_to_printer?: boolean
     total_print_count?: number | null
     book_id?: number | null
     number_of_pages?: number | null
@@ -68055,6 +68107,7 @@ export namespace Prisma {
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
     total_print_count?: NullableIntFieldUpdateOperationsInput | number | null
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
     number_of_pages?: NullableIntFieldUpdateOperationsInput | number | null
@@ -68097,6 +68150,7 @@ export namespace Prisma {
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
     total_print_count?: NullableIntFieldUpdateOperationsInput | number | null
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
     number_of_pages?: NullableIntFieldUpdateOperationsInput | number | null
@@ -69077,6 +69131,7 @@ export namespace Prisma {
     translation_cost?: number | null
     memo?: string | null
     book_image_url?: string | null
+    visiblitiy_to_printer?: boolean
     total_print_count?: number | null
     book_id?: number | null
     number_of_pages?: number | null
@@ -69119,6 +69174,7 @@ export namespace Prisma {
     translation_cost?: number | null
     memo?: string | null
     book_image_url?: string | null
+    visiblitiy_to_printer?: boolean
     total_print_count?: number | null
     book_id?: number | null
     number_of_pages?: number | null
@@ -69259,6 +69315,7 @@ export namespace Prisma {
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
     total_print_count?: NullableIntFieldUpdateOperationsInput | number | null
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
     number_of_pages?: NullableIntFieldUpdateOperationsInput | number | null
@@ -69301,6 +69358,7 @@ export namespace Prisma {
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
     total_print_count?: NullableIntFieldUpdateOperationsInput | number | null
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
     number_of_pages?: NullableIntFieldUpdateOperationsInput | number | null
@@ -70088,6 +70146,7 @@ export namespace Prisma {
     translation_cost?: number | null
     memo?: string | null
     book_image_url?: string | null
+    visiblitiy_to_printer?: boolean
     total_print_count?: number | null
     book_id?: number | null
     number_of_pages?: number | null
@@ -70130,6 +70189,7 @@ export namespace Prisma {
     translation_cost?: number | null
     memo?: string | null
     book_image_url?: string | null
+    visiblitiy_to_printer?: boolean
     total_print_count?: number | null
     book_id?: number | null
     number_of_pages?: number | null
@@ -70306,6 +70366,7 @@ export namespace Prisma {
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
     total_print_count?: NullableIntFieldUpdateOperationsInput | number | null
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
     number_of_pages?: NullableIntFieldUpdateOperationsInput | number | null
@@ -70348,6 +70409,7 @@ export namespace Prisma {
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
     total_print_count?: NullableIntFieldUpdateOperationsInput | number | null
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
     number_of_pages?: NullableIntFieldUpdateOperationsInput | number | null
@@ -71279,6 +71341,7 @@ export namespace Prisma {
     translation_cost?: number | null
     memo?: string | null
     book_image_url?: string | null
+    visiblitiy_to_printer?: boolean
     total_print_count?: number | null
     book_id?: number | null
     number_of_pages?: number | null
@@ -71321,6 +71384,7 @@ export namespace Prisma {
     translation_cost?: number | null
     memo?: string | null
     book_image_url?: string | null
+    visiblitiy_to_printer?: boolean
     total_print_count?: number | null
     book_id?: number | null
     number_of_pages?: number | null
@@ -71418,6 +71482,7 @@ export namespace Prisma {
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
     total_print_count?: NullableIntFieldUpdateOperationsInput | number | null
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
     number_of_pages?: NullableIntFieldUpdateOperationsInput | number | null
@@ -71460,6 +71525,7 @@ export namespace Prisma {
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
     total_print_count?: NullableIntFieldUpdateOperationsInput | number | null
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
     number_of_pages?: NullableIntFieldUpdateOperationsInput | number | null
@@ -72093,6 +72159,7 @@ export namespace Prisma {
     translation_cost?: number | null
     memo?: string | null
     book_image_url?: string | null
+    visiblitiy_to_printer?: boolean
     total_print_count?: number | null
     book_id?: number | null
     number_of_pages?: number | null
@@ -72193,6 +72260,7 @@ export namespace Prisma {
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
     total_print_count?: NullableIntFieldUpdateOperationsInput | number | null
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
     number_of_pages?: NullableIntFieldUpdateOperationsInput | number | null
@@ -72235,6 +72303,7 @@ export namespace Prisma {
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
     total_print_count?: NullableIntFieldUpdateOperationsInput | number | null
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
     number_of_pages?: NullableIntFieldUpdateOperationsInput | number | null
@@ -72277,6 +72346,7 @@ export namespace Prisma {
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
     total_print_count?: NullableIntFieldUpdateOperationsInput | number | null
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
     number_of_pages?: NullableIntFieldUpdateOperationsInput | number | null

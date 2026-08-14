@@ -5,17 +5,17 @@ import {
     Plus, 
     X, 
     AlertCircle, 
-    BookOpen, 
     Store, 
     Hash, 
-    FileText,
-    Activity
+    Activity,
+    Printer,
+    ShieldCheck
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from 'sonner'
-import { createDamagedBookReport } from '@/app/actions/damaged-book-actions'
+import { createDamagedBookReport, getEditionDamageSources } from '@/app/actions/damaged-book-actions'
 import { checkCurrentUserRole } from '@/app/actions/book-shop-actions'
 import { cn } from '@/lib/utils'
 import {
@@ -39,21 +39,35 @@ interface ReportDamageButtonProps {
     stores: any[]
 }
 
+interface Allocation {
+    sourceType: "store" | "central"
+    storeStockId?: number
+    storeId?: number
+    name: string
+    available: number
+    quantity: string
+}
+
 export default function ReportDamageButton({ books, editions, stores }: ReportDamageButtonProps) {
     const [isOpen, setIsOpen] = useState(false)
     const [bookOpen, setBookOpen] = useState(false)
     const [editionOpen, setEditionOpen] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const [showConfirm, setShowConfirm] = useState(false)
+    const [allocations, setAllocations] = useState<Allocation[]>([])
+    const [sourcesLoaded, setSourcesLoaded] = useState(false)
     const [formData, setFormData] = useState({
         book_id: "",
         edition_id: "",
-        store_id: "",
         type: "STORE",
         count: "",
         memo: ""
     })
 
     const filteredEditions = editions.filter(ed => ed.bookId === parseInt(formData.book_id))
+
+    const enteredTotal = allocations.reduce((sum, a) => sum + (parseInt(a.quantity) || 0), 0)
+    const enteredCount = parseInt(formData.count) || 0
 
     const handleOpen = async () => {
         const roleCheck = await checkCurrentUserRole("adding_damaged_books");
@@ -64,32 +78,116 @@ export default function ReportDamageButton({ books, editions, stores }: ReportDa
         setIsOpen(true);
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleClose = () => {
+        setIsOpen(false)
+        setShowConfirm(false)
+        setAllocations([])
+        setSourcesLoaded(false)
+        setFormData({ book_id: "", edition_id: "", type: "STORE", count: "", memo: "" })
+    }
+
+    const loadSources = async (editionId: number) => {
+        const res = await getEditionDamageSources(editionId)
+        if (!res.success) {
+            toast.error(res.error || "Failed to load stock sources")
+            setAllocations([])
+            setSourcesLoaded(false)
+            return
+        }
+        const d = res.data as any
+        const list: Allocation[] = [
+            ...d.stores.map((s: any) => ({
+                sourceType: "store" as const,
+                storeStockId: s.storeStockId,
+                storeId: s.storeId,
+                name: s.storeName,
+                available: s.available,
+                quantity: "",
+            })),
+            ...(d.centralAvailable > 0 ? [{
+                sourceType: "central" as const,
+                name: "Central / Not Yet Transferred",
+                available: d.centralAvailable,
+                quantity: "",
+            }] : []),
+        ]
+        setAllocations(list)
+        setSourcesLoaded(true)
+    }
+
+    const handleBookSelect = (bookId: string) => {
+        setFormData({ ...formData, book_id: bookId, edition_id: "" })
+        setAllocations([])
+        setSourcesLoaded(false)
+    }
+
+    const handleEditionSelect = (editionId: string) => {
+        setFormData({ ...formData, edition_id: editionId })
+        setAllocations([])
+        setSourcesLoaded(false)
+        loadSources(parseInt(editionId))
+    }
+
+    const updateAllocation = (index: number, quantity: string) => {
+        setAllocations(prev => prev.map((a, i) => i === index ? { ...a, quantity } : a))
+    }
+
+    const allocationsValid = allocations.length > 0
+        && allocations.every(a => (parseInt(a.quantity) || 0) >= 0)
+        && allocations.every(a => (parseInt(a.quantity) || 0) <= a.available)
+        && enteredTotal > 0
+
+    const confirmSummary = allocations
+        .filter(a => (parseInt(a.quantity) || 0) > 0)
+        .map(a => ({
+            name: a.name,
+            quantity: parseInt(a.quantity),
+            sourceType: a.sourceType,
+        }))
+
+    const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
         if (!formData.book_id || !formData.edition_id || !formData.count) {
             toast.error("Please fill in all required fields")
             return
         }
+        if (!sourcesLoaded || allocations.length === 0) {
+            toast.error("No stock sources found for this edition")
+            return
+        }
+        if (enteredTotal !== enteredCount) {
+            toast.error(`Allocation total (${enteredTotal}) must equal damaged count (${enteredCount})`)
+            return
+        }
+        if (!allocationsValid) {
+            toast.error("Some allocations exceed the available stock in that source")
+            return
+        }
+        setShowConfirm(true)
+    }
 
+    const handleConfirm = async () => {
         setIsSubmitting(true)
         try {
-            const response = await createDamagedBookReport(formData)
+            const payload = allocations
+                .filter(a => (parseInt(a.quantity) || 0) > 0)
+                .map(a => ({
+                    sourceType: a.sourceType,
+                    storeStockId: a.storeStockId ?? null,
+                    storeId: a.storeId ?? null,
+                    quantity: parseInt(a.quantity),
+                }))
+            const response = await createDamagedBookReport(formData, payload)
             if (response.success) {
-                toast.success("Damage reported successfully")
-                setIsOpen(false)
-                setFormData({
-                    book_id: "",
-                    edition_id: "",
-                    store_id: "",
-                    type: "STORE",
-                    count: "",
-                    memo: ""
-                })
+                toast.success("Damage reported and stock deducted successfully")
+                handleClose()
             } else {
                 toast.error(response.error || "Failed to report damage")
+                setShowConfirm(false)
             }
         } catch (error) {
             toast.error("An unexpected error occurred")
+            setShowConfirm(false)
         } finally {
             setIsSubmitting(false)
         }
@@ -114,10 +212,10 @@ export default function ReportDamageButton({ books, editions, stores }: ReportDa
                                 </div>
                                 <div>
                                     <h3 className="text-xl md:text-2xl font-black text-primarycolor uppercase tracking-tight italic">Report <span className="text-rose-500 not-italic">Damage</span></h3>
-                                    <p className="text-muted-foreground font-bold text-[10px] md:text-sm">Document physical defects or inventory loss.</p>
+                                    <p className="text-muted-foreground font-bold text-[10px] md:text-sm">Stock will be deducted from each selected source.</p>
                                 </div>
                             </div>
-                            <Button variant="ghost" size="icon" className="rounded-xl" onClick={() => setIsOpen(false)}>
+                            <Button variant="ghost" size="icon" className="rounded-xl" onClick={handleClose}>
                                 <X className="size-5 md:size-6" />
                             </Button>
                         </div>
@@ -153,7 +251,7 @@ export default function ReportDamageButton({ books, editions, stores }: ReportDa
                                                             key={book.id}
                                                             value={book.title}
                                                             onSelect={() => {
-                                                                setFormData({ ...formData, book_id: book.id.toString(), edition_id: "" })
+                                                                handleBookSelect(book.id.toString())
                                                                 setBookOpen(false)
                                                             }}
                                                             className="h-12 px-4 font-bold text-sm text-primarycolor cursor-pointer data-[selected=true]:bg-primarycolor data-[selected=true]:text-white"
@@ -205,7 +303,7 @@ export default function ReportDamageButton({ books, editions, stores }: ReportDa
                                                             key={ed.id}
                                                             value={ed.edition_name}
                                                             onSelect={() => {
-                                                                setFormData({ ...formData, edition_id: ed.id.toString() })
+                                                                handleEditionSelect(ed.id.toString())
                                                                 setEditionOpen(false)
                                                             }}
                                                             className="h-12 px-4 font-bold text-sm text-primarycolor cursor-pointer data-[selected=true]:bg-primarycolor data-[selected=true]:text-white"
@@ -226,24 +324,9 @@ export default function ReportDamageButton({ books, editions, stores }: ReportDa
                                 </Popover>
                             </div>
 
-                            {/* Location / Store */}
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">Report Location</label>
-                                <select 
-                                    value={formData.store_id}
-                                    onChange={(e) => setFormData({...formData, store_id: e.target.value})}
-                                    className="w-full h-12 md:h-14 px-4 md:px-6 rounded-xl md:rounded-2xl border-2 border-slate-100 bg-slate-50 font-bold focus:border-rose-500 outline-none transition-all appearance-none"
-                                >
-                                    <option value="">Direct / Production</option>
-                                    {stores.map(store => (
-                                        <option key={store.id} value={store.id}>{store.name}</option>
-                                    ))}
-                                </select>
-                            </div>
-
                             {/* Damage Type */}
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">Damage Source</label>
+                                <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">Damage Type</label>
                                 <select 
                                     value={formData.type}
                                     onChange={(e) => setFormData({...formData, type: e.target.value})}
@@ -260,7 +343,7 @@ export default function ReportDamageButton({ books, editions, stores }: ReportDa
 
                             {/* Quantity */}
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">Units Damaged</label>
+                                <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">Units Damaged (Total)</label>
                                 <div className="relative">
                                     <Hash className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                                     <Input 
@@ -273,6 +356,71 @@ export default function ReportDamageButton({ books, editions, stores }: ReportDa
                                         placeholder="0"
                                     />
                                 </div>
+                            </div>
+
+                            {/* Allocation breakdown */}
+                            <div className="md:col-span-2 space-y-3">
+                                <div className="flex items-center gap-2">
+                                    <Activity className="size-4 text-rose-500" />
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor">
+                                        Where did the damage come from?
+                                    </label>
+                                </div>
+
+                                {!formData.edition_id && (
+                                    <p className="text-xs font-bold text-muted-foreground">Select an edition to see available stock per location.</p>
+                                )}
+                                {formData.edition_id && !sourcesLoaded && allocations.length === 0 && (
+                                    <p className="text-xs font-bold text-muted-foreground animate-pulse">Loading stock sources...</p>
+                                )}
+                                {sourcesLoaded && allocations.length === 0 && (
+                                    <p className="text-xs font-bold text-muted-foreground">No available stock found for this edition.</p>
+                                )}
+
+                                {allocations.map((alloc, index) => (
+                                    <div key={index} className="flex items-center gap-3 md:gap-4 rounded-xl md:rounded-2xl border-2 border-slate-100 bg-slate-50/50 px-4 md:px-5 py-3">
+                                        <div className="size-9 md:size-10 rounded-lg md:rounded-xl flex items-center justify-center shrink-0 bg-white border-2 border-slate-100">
+                                            {alloc.sourceType === "central"
+                                                ? <Printer className="size-4 md:size-5 text-sky-500" />
+                                                : <Store className="size-4 md:size-5 text-emerald-500" />}
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <p className="text-xs md:text-sm font-black text-primarycolor truncate">{alloc.name}</p>
+                                            <p className="text-[10px] md:text-xs font-bold text-muted-foreground">
+                                                Available: <span className="text-emerald-600">{alloc.available}</span>
+                                            </p>
+                                        </div>
+                                        <div className="w-24 md:w-28">
+                                            <Input 
+                                                type="number"
+                                                min="0"
+                                                max={alloc.available}
+                                                value={alloc.quantity}
+                                                onChange={(e) => updateAllocation(index, e.target.value)}
+                                                className={cn(
+                                                    "h-10 md:h-12 rounded-lg md:rounded-xl border-2 font-black text-center",
+                                                    parseInt(alloc.quantity) > alloc.available && "border-rose-500 text-rose-600",
+                                                    parseInt(alloc.quantity) > 0 && parseInt(alloc.quantity) <= alloc.available && "border-emerald-500"
+                                                )}
+                                                placeholder="0"
+                                            />
+                                        </div>
+                                    </div>
+                                ))}
+
+                                {sourcesLoaded && allocations.length > 0 && (
+                                    <div className={cn(
+                                        "flex items-center justify-between rounded-xl md:rounded-2xl border-2 px-4 md:px-5 py-3 font-black",
+                                        enteredTotal === enteredCount && enteredTotal > 0
+                                            ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                                            : "border-amber-200 bg-amber-50 text-amber-700"
+                                    )}>
+                                        <span className="text-xs md:text-sm uppercase tracking-widest">Total Allocated</span>
+                                        <span className="text-sm md:text-base">
+                                            {enteredTotal} / {enteredCount || 0}
+                                        </span>
+                                    </div>
+                                )}
                             </div>
 
                             {/* Memo */}
@@ -293,18 +441,74 @@ export default function ReportDamageButton({ books, editions, stores }: ReportDa
                                     disabled={isSubmitting}
                                     className="flex-[2] h-14 md:h-16 rounded-xl md:rounded-2xl bg-rose-500 hover:bg-rose-600 font-black uppercase tracking-widest shadow-2xl shadow-rose-500/20 transition-all text-[10px] md:text-xs"
                                 >
-                                    {isSubmitting ? "Reporting..." : "Submit Report"}
+                                    {isSubmitting ? "Processing..." : "Review Deduction"}
                                 </Button>
                                 <Button 
                                     type="button"
                                     variant="outline"
-                                    onClick={() => setIsOpen(false)}
+                                    onClick={handleClose}
                                     className="flex-1 h-14 md:h-16 rounded-xl md:rounded-2xl border-2 font-black uppercase tracking-widest text-[10px] md:text-xs"
                                 >
                                     Cancel
                                 </Button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            )}
+
+            {showConfirm && (
+                <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="w-full max-w-md bg-white rounded-[1.8rem] md:rounded-[2.5rem] p-6 md:p-8 shadow-2xl space-y-5 animate-in zoom-in-95 duration-300">
+                        <div className="flex items-center gap-4">
+                            <div className="size-12 md:size-14 rounded-xl md:rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 border-2 border-emerald-500/20 shrink-0">
+                                <ShieldCheck className="size-6 md:size-7" />
+                            </div>
+                            <div>
+                                <h4 className="text-lg md:text-xl font-black text-primarycolor uppercase tracking-tight">Confirm Deduction</h4>
+                                <p className="text-xs font-bold text-muted-foreground">
+                                    {enteredTotal} unit{enteredTotal !== 1 ? "s" : ""} will be deducted from stock.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="space-y-2 rounded-xl md:rounded-2xl border-2 border-slate-100 bg-slate-50 p-4">
+                            {confirmSummary.map((item, idx) => (
+                                <div key={idx} className="flex items-center justify-between py-1.5">
+                                    <span className="text-xs md:text-sm font-bold text-primarycolor flex items-center gap-2">
+                                        {item.sourceType === "central"
+                                            ? <Printer className="size-4 text-sky-500" />
+                                            : <Store className="size-4 text-emerald-500" />}
+                                        {item.name}
+                                    </span>
+                                    <span className="text-xs md:text-sm font-black text-rose-600">-{item.quantity}</span>
+                                </div>
+                            ))}
+                            <div className="border-t-2 border-slate-200 my-2" />
+                            <div className="flex items-center justify-between">
+                                <span className="text-xs md:text-sm font-black uppercase tracking-widest text-primarycolor">Total Deducted</span>
+                                <span className="text-sm md:text-base font-black text-rose-600">-{enteredTotal}</span>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col md:flex-row gap-3 pt-2">
+                            <Button
+                                onClick={handleConfirm}
+                                disabled={isSubmitting}
+                                className="flex-[2] h-14 rounded-xl md:rounded-2xl bg-rose-500 hover:bg-rose-600 font-black uppercase tracking-widest shadow-xl shadow-rose-500/20 text-[10px] md:text-xs"
+                            >
+                                {isSubmitting ? "Deducting..." : "Yes, Deduct Stock"}
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => setShowConfirm(false)}
+                                disabled={isSubmitting}
+                                className="flex-1 h-14 rounded-xl md:rounded-2xl border-2 font-black uppercase tracking-widest text-[10px] md:text-xs"
+                            >
+                                Go Back
+                            </Button>
+                        </div>
                     </div>
                 </div>
             )}

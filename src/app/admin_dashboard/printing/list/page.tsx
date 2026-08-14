@@ -122,6 +122,7 @@ export default async function PrintingBooksListPage() {
                 totalPrintCount: totalPrint,
                 inStore: inStore,
                 printerStocks,
+                visibility: edition?.visiblitiy_to_printer,
             };
         })
     );
@@ -179,6 +180,7 @@ export default async function PrintingBooksListPage() {
                 totalPrintCount: parseInt(ed.total_print_count) || 0,
                 inStore: parseInt(ed.count_remening_for_transfer) || 0,
                 printerStocks,
+                visibility: ed.visiblitiy_to_printer,
             };
         });
 
@@ -205,6 +207,7 @@ export default async function PrintingBooksListPage() {
             totalPrintCount: 0,
             inStore: 0,
             printerStocks: [],
+            visibility: null,
         }));
 
     const allItems = [...deduped, ...notInProject, ...notAssignedBooks];

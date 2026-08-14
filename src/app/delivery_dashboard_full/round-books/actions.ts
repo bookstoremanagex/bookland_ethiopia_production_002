@@ -124,7 +124,20 @@ export async function updateRoundBook(
   },
 ) {
   try {
-    const roundbook = await (prisma as any).roundbooks.update({
+    const roundbook = await (prisma as any).roundbooks.findUnique({
+      where: { id },
+      select: { allocated: true, status: true, starting_amount: true, returned_amount: true, is_deleted: true },
+    });
+    if (!roundbook || roundbook.is_deleted) return { success: false, error: "Round not found" };
+
+    // Once a round is allocated, its stock has been deducted from stores/printers.
+    // Any later change to amounts or status would desync the ledger.
+    if (roundbook.allocated) {
+      return { success: false, error: "This round has already been allocated and cannot be edited" };
+    }
+
+    // Reversing an ended (but not yet allocated) round back to active is fine.
+    const updated = await (prisma as any).roundbooks.update({
       where: { id },
       data: {
         ...(data.starting_amount !== undefined ? { starting_amount: data.starting_amount } : {}),
@@ -132,7 +145,7 @@ export async function updateRoundBook(
         ...(data.status !== undefined ? { status: data.status } : {}),
       },
     });
-    return { success: true, data: roundbook };
+    return { success: true, data: updated };
   } catch (error: any) {
     return { success: false, error: error.message };
   }
@@ -474,6 +487,16 @@ export async function getShopRoundPaymentInfo(shopId: number) {
 
 export async function deleteRoundBook(id: number) {
   try {
+    const roundbook = await (prisma as any).roundbooks.findUnique({
+      where: { id },
+      select: { allocated: true, is_deleted: true },
+    });
+    if (!roundbook || roundbook.is_deleted) return { success: false, error: "Round not found" };
+
+    if (roundbook.allocated) {
+      return { success: false, error: "This round has already been allocated; stock was deducted and cannot be deleted" };
+    }
+
     await (prisma as any).roundbooks.update({
       where: { id },
       data: { is_deleted: true },

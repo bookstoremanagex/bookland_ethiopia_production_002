@@ -68,6 +68,19 @@ export async function createPrintOrder(formData: any) {
         },
       },
     });
+
+    // Keep edition print counts in sync with the print order items
+    await (prisma as any).$transaction(async (tx: any) => {
+      const editionIds = new Set<number>();
+      for (const item of formData.items || []) {
+        const id = parseInt(item.bookEditionId);
+        if (Number.isInteger(id)) editionIds.add(id);
+      }
+      for (const editionId of editionIds) {
+        await syncEditionPrintCount(tx, editionId);
+      }
+    }, { timeout: 15000 });
+
     revalidatePath("/admin_dashboard/printing/manage");
     revalidatePath("/admin_dashboard/printing/printers");
     return { success: true, data: order };
@@ -108,10 +121,11 @@ export async function updatePrintOrder(id: number, formData: any) {
     // Reconcile items by ID instead of delete-all + re-create, so existing rows
     // keep their IDs and are only touched when their values actually change.
     // Only rows the user removed from the list are deleted.
+    const syncedEditionIds = new Set<number>();
     if (formData.items) {
       const currentItems = await (prisma as any).printorder_items.findMany({
         where: { printorder_id: id },
-        select: { id: true },
+        select: { id: true, bookEditionId: true },
       });
       const currentIds = currentItems.map((i: any) => i.id);
 
@@ -169,7 +183,25 @@ export async function updatePrintOrder(id: number, formData: any) {
           data: itemsToCreate,
         });
       }
+
+      for (const item of formData.items) {
+        const eid = parseInt(item.bookEditionId);
+        if (Number.isInteger(eid)) syncedEditionIds.add(eid);
+      }
+      for (const u of itemsToUpdate) {
+        if (Number.isInteger(u.data.bookEditionId)) syncedEditionIds.add(u.data.bookEditionId);
+      }
+      for (const removedItem of removed) {
+        if (Number.isInteger(removedItem.bookEditionId)) syncedEditionIds.add(removedItem.bookEditionId);
+      }
     }
+
+    // Keep edition print counts in sync after item changes
+    await (prisma as any).$transaction(async (tx: any) => {
+      for (const editionId of syncedEditionIds) {
+        await syncEditionPrintCount(tx, editionId);
+      }
+    }, { timeout: 15000 });
 
     revalidatePath("/admin_dashboard/printing/manage");
     revalidatePath(`/admin_dashboard/printing/manage/${id}`);
@@ -185,15 +217,79 @@ export async function updatePrintOrder(id: number, formData: any) {
 
 export async function deletePrintOrder(id: number) {
   try {
+    const items = await (prisma as any).printorder_items.findMany({
+      where: { printorder_id: id, is_deleted: false },
+      select: { bookEditionId: true },
+    });
+
     await (prisma as any).printorder.update({
       where: { id },
       data: { is_deleted: true, deletedAt: new Date(), updatedAt: new Date() },
     });
+
+    await (prisma as any).$transaction(async (tx: any) => {
+      const editionIds = new Set<number>();
+      for (const item of items) {
+        if (Number.isInteger(item.bookEditionId)) editionIds.add(item.bookEditionId);
+      }
+      for (const editionId of editionIds) {
+        await syncEditionPrintCount(tx, editionId);
+      }
+    }, { timeout: 15000 });
+
     revalidatePath("/admin_dashboard/printing/manage");
     return { success: true };
   } catch (error) {
     return { success: false, error: "Failed to delete print order" };
   }
+}
+
+/**
+ * Re-sync total_print_count / count_remening_for_transfer for an edition from
+ * its real print order items. Auto-created "Auto-delivery" dummy printorders
+ * (made by recordPrinterDeliveries when no print order existed) are excluded so
+ * transfers don't inflate the recorded print run.
+ *
+ * total_print_count is set to the real printed sum (it may increase OR decrease
+ * as print order quantities change). count_remening_for_transfer moves with the
+ * difference but is clamped at 0 so it can never go negative.
+ */
+async function syncEditionPrintCount(tx: any, editionId: number) {
+  const items = await tx.printorder_items.findMany({
+    where: {
+      bookEditionId: editionId,
+      is_deleted: false,
+      printorder: {
+        is_deleted: false,
+        OR: [
+          { project_name: null },
+          { project_name: { not: { startsWith: "Auto-delivery" } } },
+        ],
+      },
+    },
+    select: { quantity: true },
+  });
+
+  const printedSum = items.reduce((s: number, i: any) => s + (i.quantity || 0), 0);
+  const edition = await tx.bookedition.findUnique({
+    where: { id: editionId },
+    select: { total_print_count: true, count_remening_for_transfer: true },
+  });
+  if (!edition) return;
+
+  const oldTotal = Number(edition.total_print_count || 0);
+  if (printedSum === oldTotal) return;
+
+  const diff = printedSum - oldTotal;
+  const newCentral = Math.max(0, Number(edition.count_remening_for_transfer || 0) + diff);
+  await tx.bookedition.update({
+    where: { id: editionId },
+    data: {
+      total_print_count: printedSum,
+      count_remening_for_transfer: newCentral,
+      updatedAt: new Date(),
+    },
+  });
 }
 
 export async function quickCreateBook(data: {

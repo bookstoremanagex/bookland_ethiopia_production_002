@@ -146,6 +146,7 @@ exports.Prisma.BookeditionScalarFieldEnum = {
   translation_cost: 'translation_cost',
   memo: 'memo',
   book_image_url: 'book_image_url',
+  visiblitiy_to_printer: 'visiblitiy_to_printer',
   total_print_count: 'total_print_count',
   book_id: 'book_id',
   number_of_pages: 'number_of_pages',

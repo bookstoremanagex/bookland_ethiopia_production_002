@@ -27,6 +27,8 @@ import {
     RefreshCw,
     ChevronsUpDown,
     Check,
+    Eye,
+    EyeOff,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -57,6 +59,7 @@ import { useCalendar } from "@/lib/calendar-context"
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
 import { changeEditionPrinter, moveEditionToProject } from "@/app/actions/print-order-actions"
+import { toggleEditionVisibilityToPrinter } from "@/app/actions/edition-actions"
 
 const statusStyles: Record<string, string> = {
     NOT_STARTED: "bg-slate-100 text-slate-600 border-slate-200",
@@ -88,6 +91,7 @@ interface ListItem {
     totalPrintCount: number;
     inStore: number;
     printerStocks: any[];
+    visibility?: boolean | null;
 }
 
 interface PrinterOption {
@@ -123,6 +127,10 @@ function createColumns(
                 const item = row.original;
                 return (
                     <div className="flex items-center gap-3">
+                        <span className={cn(
+                            "size-2.5 rounded-full shrink-0",
+                            item.visibility ? "bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.6)]" : "bg-slate-300"
+                        )} title={item.visibility ? "Visible to printers" : "Hidden from printers"} />
                         <div className="size-9 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500 border border-blue-100 shrink-0">
                             <BookOpen className="size-4" />
                         </div>
@@ -254,6 +262,8 @@ export default function PrintingBooksListTable({ items, printers, projects }: { 
     const [projectSearch, setProjectSearch] = React.useState("")
     const [projectOpen, setProjectOpen] = React.useState(false)
     const [moving, setMoving] = React.useState(false)
+    const [visibility, setVisibility] = React.useState<boolean>(true)
+    const [savingVisibility, setSavingVisibility] = React.useState(false)
 
     const selectedPrinterOption = printers.find((p) => String(p.id) === selectedPrinter)
     const selectedProjectOption = projects.find((p) => String(p.id) === selectedProject)
@@ -282,6 +292,7 @@ export default function PrintingBooksListTable({ items, printers, projects }: { 
             setPrinterSearch("")
             setSelectedProject("")
             setProjectSearch("")
+            setVisibility(item.visibility ?? true)
             setEditItem(item)
         }),
         [formatDate]
@@ -342,6 +353,20 @@ export default function PrintingBooksListTable({ items, printers, projects }: { 
             window.location.reload();
         } else {
             toast.error(res.error || "Failed to move book to project");
+        }
+    }
+
+    const handleSaveVisibility = async () => {
+        if (!editItem) return;
+        setSavingVisibility(true);
+        const res = await toggleEditionVisibilityToPrinter(editItem.editionId);
+        setSavingVisibility(false);
+        if (res.success) {
+            toast.success(res.data.visiblitiy_to_printer ? "Visible to printers" : "Hidden from printers");
+            setEditItem(null);
+            window.location.reload();
+        } else {
+            toast.error(res.error || "Failed to update visibility");
         }
     }
     const table = useReactTable({
@@ -426,7 +451,8 @@ export default function PrintingBooksListTable({ items, printers, projects }: { 
                                         <div className="font-bold text-sm text-slate-800 leading-tight truncate">
                                             {item.bookTitle}
                                         </div>
-                                        <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                                        <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
+                                            <span className={cn("size-2 rounded-full shrink-0", item.visibility ? "bg-emerald-500" : "bg-slate-300")} />
                                             {item.editionName}
                                         </div>
                                         <div className="flex items-center gap-2 mt-1">
@@ -472,6 +498,7 @@ export default function PrintingBooksListTable({ items, printers, projects }: { 
                                                 size="icon"
                                                 onClick={() => {
                                                     setSelectedPrinter(item.printerName ? String(findPrinterId(item.printerName) ?? "") : "")
+                                                    setVisibility(item.visibility ?? true)
                                                     setEditItem(item)
                                                 }}
                                                 className="h-10 w-10 rounded-xl border-amber-500/40 bg-amber-50 hover:bg-amber-100 text-amber-700 shrink-0"
@@ -577,6 +604,29 @@ export default function PrintingBooksListTable({ items, printers, projects }: { 
                                 )}
                             </div>
                         </div>
+                    </div>
+
+                    {/* Visibility to printer */}
+                    <div className="rounded-xl border-2 border-slate-100 bg-slate-50/60 p-4 flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-3 min-w-0">
+                            <span className={cn("size-3 rounded-full shrink-0", visibility ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]" : "bg-slate-300")} />
+                            <div className="min-w-0">
+                                <div className="text-sm font-bold text-slate-700 truncate">
+                                    {visibility ? "Visible to printers" : "Hidden from printers"}
+                                </div>
+                                <div className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest truncate">
+                                    {visibility ? "This edition can be selected by printers" : "This edition is hidden from printers"}
+                                </div>
+                            </div>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={() => setVisibility(v => !v)}
+                            className={`relative inline-flex h-7 w-[52px] items-center rounded-full transition-colors shrink-0 ${visibility ? "bg-emerald-500" : "bg-slate-300"}`}
+                            title="Toggle visibility to printer"
+                        >
+                            <span className={`inline-block size-5 transform rounded-full bg-white shadow-md transition-transform ${visibility ? "translate-x-[26px]" : "translate-x-1"}`} />
+                        </button>
                     </div>
 
                     {/* Move to another project */}
@@ -765,6 +815,15 @@ export default function PrintingBooksListTable({ items, printers, projects }: { 
                         className="rounded-xl h-10 font-black uppercase tracking-widest text-[10px]"
                     >
                         Cancel
+                    </Button>
+                    <Button
+                        variant="outline"
+                        onClick={handleSaveVisibility}
+                        disabled={savingVisibility || saving || moving}
+                        className={cn("rounded-xl h-10 font-black uppercase tracking-widest text-[10px]", visibility ? "text-rose-600 border-rose-300 hover:bg-rose-50" : "text-emerald-600 border-emerald-300 hover:bg-emerald-50")}
+                    >
+                        {savingVisibility ? <Loader2 className="size-4 animate-spin mr-2" /> : visibility ? <EyeOff className="size-4 mr-2" /> : <Eye className="size-4 mr-2" />}
+                        Save Visibility
                     </Button>
                     <Button
                         onClick={handleChangePrinter}

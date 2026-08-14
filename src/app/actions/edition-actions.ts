@@ -73,13 +73,39 @@ export async function getEditionById(id: number) {
                     where: { is_deleted: false },
                     include: { printer: true }
                 },
+                locked_editions: {
+                    where: { is_deleted: false }
+                },
                 printorder_items: {
                     where: { is_deleted: false },
                     include: {
                         printorder: {
                             include: { printer: true }
+                        },
+                        printer_delivery_records: {
+                            where: { is_deleted: false }
                         }
                     }
+                },
+                order_items: {
+                    where: { order: { is_deleted: false } },
+                    include: { order: true }
+                },
+                round_books: {
+                    where: { is_deleted: false, status: false },
+                    include: {
+                        round_records: { where: { is_deleted: false } }
+                    }
+                },
+                damagedbooks: {
+                    where: { is_deleted: false }
+                },
+                retail_purchase_items: {
+                    where: {
+                        is_deleted: false,
+                        purchase: { is_deleted: false, status: { not: "PENDING" } }
+                    },
+                    include: { purchase: true }
                 }
             }
         });
@@ -218,6 +244,59 @@ export async function updateEditionPrintCount(id: number, totalPrintCount: numbe
     } catch (error: any) {
         console.error("Failed to update edition print count:", error);
         return { success: false, error: error.message || "Failed to update edition print count" };
+    }
+}
+
+export async function toggleEditionVisibilityToPrinter(id: number) {
+    try {
+        const edition = await (prisma as any).bookedition.findUnique({
+            where: { id },
+            select: { visiblitiy_to_printer: true }
+        });
+        if (!edition) return { success: false, error: "Edition not found" };
+
+        const updated = await (prisma as any).bookedition.update({
+            where: { id },
+            data: {
+                visiblitiy_to_printer: !edition.visiblitiy_to_printer,
+                updatedAt: new Date()
+            },
+            include: { books: true }
+        });
+        revalidatePath(`/admin_dashboard/books/${updated.books.unique_identification_code}`);
+        revalidatePath(`/admin_dashboard/books/editions/${id}`);
+        revalidatePath("/admin_dashboard/printing/manage");
+        return { success: true, data: updated };
+    } catch (error: any) {
+        console.error("Failed to toggle visibility to printer:", error);
+        return { success: false, error: error.message || "Failed to toggle visibility to printer" };
+    }
+}
+
+export async function toggleProjectEditionsVisibilityToPrinter(orderId: number, visible: boolean) {
+    try {
+        const items = await (prisma as any).printorder_items.findMany({
+            where: {
+                printorder_id: orderId,
+                is_deleted: false,
+            },
+            select: { bookEditionId: true },
+        });
+        const editionIds = [...new Set(items.map((i: any) => i.bookEditionId).filter((id: any) => Number.isInteger(id)))];
+
+        if (editionIds.length > 0) {
+            await (prisma as any).bookedition.updateMany({
+                where: { id: { in: editionIds } },
+                data: { visiblitiy_to_printer: visible, updatedAt: new Date() },
+            });
+        }
+
+        revalidatePath("/admin_dashboard/printing/manage");
+        revalidatePath(`/admin_dashboard/printing/manage/${orderId}`);
+        return { success: true, updatedCount: editionIds.length };
+    } catch (error: any) {
+        console.error("Failed to toggle project editions visibility:", error);
+        return { success: false, error: error.message || "Failed to toggle project editions visibility" };
     }
 }
 

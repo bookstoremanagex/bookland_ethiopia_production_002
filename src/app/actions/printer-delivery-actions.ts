@@ -25,8 +25,21 @@ export async function getPrinterDeliveries(printerId: number) {
         orderBy: { createdAt: "desc" },
     });
 
+    // Hide deliveries for editions not visible to printers and deliveries that
+    // belong to auto-created "Auto-delivery" dummy projects (no real print order).
+    const isAutoDeliveryOrder = (o: any): boolean => {
+        const name = o?.project_name || "";
+        return name.startsWith("Auto-delivery for") || name.startsWith("[Auto Delivery]");
+    };
+
+    const visibleRecords = records.filter(
+        (r: any) =>
+            r.printorderId?.bookedition?.visiblitiy_to_printer !== false &&
+            !isAutoDeliveryOrder(r.printorderId?.printorder),
+    );
+
     const storeIds = [
-        ...new Set(records.map((r: any) => r.storeId).filter(Boolean)),
+        ...new Set(visibleRecords.map((r: any) => r.storeId).filter(Boolean)),
     ];
 
     const stores = storeIds.length
@@ -40,7 +53,7 @@ export async function getPrinterDeliveries(printerId: number) {
         stores.map((s: any) => [s.id, s.name])
     );
 
-    return records.map((r: any) => ({
+    return visibleRecords.map((r: any) => ({
         id: r.id,
         bookTitle:
             r.printorderId?.bookedition?.books?.title ?? "Unknown",

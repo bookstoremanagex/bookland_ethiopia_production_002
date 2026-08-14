@@ -152,6 +152,30 @@
 }
 
 @layer utilities {
+  .gradient-shadow {
+    box-shadow:
+      0 1px 2px rgb(15 23 42 / 0.04),
+      0 10px 30px -10px rgb(64 138 113 / 0.2),
+      0 30px 60px -20px rgb(40 90 72 / 0.15);
+  }
+  .gradient-shadow-lg {
+    box-shadow:
+      0 2px 4px rgb(15 23 42 / 0.05),
+      0 16px 40px -12px rgb(64 138 113 / 0.3),
+      0 48px 80px -24px rgb(40 90 72 / 0.2);
+  }
+  .gradient-shadow-hover {
+    box-shadow:
+      0 2px 4px rgb(15 23 42 / 0.06),
+      0 20px 48px -14px rgb(64 138 113 / 0.35),
+      0 60px 96px -28px rgb(40 90 72 / 0.22);
+  }
+  .gradient-shadow-inset {
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.6),
+      0 1px 2px rgb(15 23 42 / 0.04),
+      0 10px 30px -10px rgb(64 138 113 / 0.2);
+  }
   .rich-text {
     line-height: 1.625;
   }
