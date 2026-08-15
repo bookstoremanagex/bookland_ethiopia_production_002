@@ -694,6 +694,37 @@ export async function getAllOrders() {
 }
 
 /**
+ * Fetch a single order (same include shape as getAllOrders) so the admin can
+ * refresh the approval dialog in place after mutating the order.
+ */
+export async function getOrderById(orderId: number) {
+  try {
+    const order = await (prisma as any).orders.findUnique({
+      where: { id: Number(orderId) },
+      include: {
+        bookshopes: true,
+        checks: true,
+        locked_editions: {
+          where: { is_deleted: false },
+        },
+        order_items: {
+          include: {
+            bookedition: {
+              include: { books: true },
+            },
+          },
+        },
+      },
+    });
+    if (!order) return { success: false, error: "Order not found" };
+    return { success: true, data: order };
+  } catch (error) {
+    console.error("Get order by id error:", error);
+    return { success: false, error: "Failed to fetch order" };
+  }
+}
+
+/**
  * For each edition of a given book, returns the list of stores that have stock,
  * with the store name, storeId, editionId, edition name, price, and available quantity.
  */
@@ -1219,6 +1250,78 @@ export async function removeBookFromOrder(orderId: number, bookId: number) {
   } catch (error: any) {
     console.error("Remove book from order error:", error);
     return { success: false, error: error?.message || "Failed to remove book from order" };
+  }
+}
+
+/**
+ * Bulk-remove multiple books from a pending (unapproved) order in a single
+ * transaction. For each selected book it:
+ * - Deletes the matching order_items
+ * - Decrements the order total by the sum of removed item amounts
+ * - Frees the locked stock for those books' editions (locked_editions rows)
+ * Returns a count of removed items and the total amount subtracted.
+ */
+export async function removeBooksFromOrder(orderId: number, bookIds: number[]) {
+  try {
+    const session = await getCurrentSession();
+    if (!session || session.role !== "ADMIN") {
+      return { success: false, error: "Only administrators can modify orders" };
+    }
+
+    const id = Number(orderId);
+    const ids = (bookIds || []).map(Number).filter((n) => !isNaN(n) && n > 0);
+    if (ids.length === 0) return { success: false, error: "No books selected" };
+
+    const order = await (prisma as any).orders.findUnique({ where: { id } });
+    if (!order) return { success: false, error: "Order not found" };
+    if (order.is_approved) return { success: false, error: "Cannot modify an approved order" };
+
+    // Fetch order_items with their edition info for the selected books
+    const itemsWithBooks = await (prisma as any).order_items.findMany({
+      where: { orderId: id },
+      include: { bookedition: true },
+    });
+
+    const targetItems = itemsWithBooks.filter(
+      (item: any) => item.bookedition && ids.includes(item.bookedition.bookId),
+    );
+
+    if (targetItems.length === 0) {
+      return { success: false, error: "No items found for the selected books" };
+    }
+
+    const removedTotal = targetItems.reduce(
+      (sum: number, item: any) => sum + item.quantity * item.price_at_order,
+      0,
+    );
+    const editionIds = targetItems.map((item: any) => item.bookEditionId);
+
+    await (prisma as any).$transaction(async (tx: any) => {
+      await tx.order_items.deleteMany({
+        where: { id: { in: targetItems.map((i: any) => i.id) } },
+      });
+
+      await tx.orders.update({
+        where: { id },
+        data: {
+          total_amount: { decrement: removedTotal },
+          updatedAt: new Date(),
+        },
+      });
+
+      // Free locked stock for the removed books' editions on this order
+      if (editionIds.length > 0) {
+        await tx.locked_editions.deleteMany({
+          where: { order_id: id, editionId: { in: editionIds } },
+        });
+      }
+    });
+
+    revalidatePath("/admin_dashboard/manage_orders");
+    return { success: true, data: { removedTotal, removedItems: targetItems.length } };
+  } catch (error: any) {
+    console.error("Bulk remove books from order error:", error);
+    return { success: false, error: error?.message || "Failed to remove books from order" };
   }
 }
 

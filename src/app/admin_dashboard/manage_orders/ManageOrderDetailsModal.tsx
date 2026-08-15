@@ -47,11 +47,12 @@ import {
     CalendarDays,
     Trash2,
     Pencil,
+    X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCalendar } from "@/lib/calendar-context";
 import { toast } from "sonner";
-import { getBookStockBreakdown, approveOrder, markOrderDelivered, removeBookFromOrder, getShopTotalDebt, deleteOrder } from "@/app/actions/order-actions";
+import { getBookStockBreakdown, approveOrder, markOrderDelivered, removeBookFromOrder, removeBooksFromOrder, getShopTotalDebt, deleteOrder, getOrderById } from "@/app/actions/order-actions";
 import { OrderModal } from "@/components/deliver_full_dashboard_components/OrderModal";
 import RecordPaymentModal from "@/app/admin_dashboard/manage_payment/[id]/RecordPaymentModal";
 import type { AdminOrder } from "./ManageOrdersPageContent";
@@ -139,6 +140,10 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
     const [editedEditionQtys, setEditedEditionQtys] = useState<Record<number, Record<number, number>>>({});
     const [advancedBookId, setAdvancedBookId] = useState<number | null>(null);
     const [removeConfirmOpen, setRemoveConfirmOpen] = useState(false);
+    const [selectionMode, setSelectionMode] = useState(false);
+    const [selectedBookIds, setSelectedBookIds] = useState<Set<number>>(new Set());
+    const [bulkRemoveConfirmOpen, setBulkRemoveConfirmOpen] = useState(false);
+    const [isBulkRemoving, setIsBulkRemoving] = useState(false);
     const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [editOrderOpen, setEditOrderOpen] = useState(false);
@@ -252,14 +257,14 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
     const handleAutoFillAll = () => {
         const storeId = selectedGlobalStoreId ?? (allStores.length === 1 ? allStores[0].storeId : null);
         if (storeId === null) return;
-        setBookAllocations(prev => prev.map((ba, bookIdx) => {
-            const bd = bookBreakdowns[bookIdx];
-            if (!bd) return ba;
+
+        const newAllocations = bookBreakdowns.map((bd, bookIdx) => {
             const edBreakdown = editionBreakdownPerBook.get(bd.bookId);
-            if (!edBreakdown) return ba;
+            if (!edBreakdown) return bookAllocations[bookIdx];
+            const prev = bookAllocations[bookIdx] || { bookId: bd.bookId, editions: bd.editions.map(e => ({ editionId: e.editionId, storeAllocations: e.stores.map(s => ({ storeStockId: s.storeStockId, quantity: 0 })) })) };
             return {
-                ...ba,
-                editions: ba.editions.map((edAlloc, edIdx) => {
+                ...prev,
+                editions: prev.editions.map((edAlloc, edIdx) => {
                     const editionData = bd.editions[edIdx];
                     if (!editionData) return edAlloc;
                     const fifo = edBreakdown.find((e: any) => e.editionId === editionData.editionId);
@@ -275,7 +280,81 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                     return { ...edAlloc, storeAllocations: newStoreAllocs };
                 }),
             };
-        }));
+        });
+
+        // Reorder: books fully satisfied by the selected store move to the top;
+        // partially satisfied or books not available in the store sink to the bottom.
+        // Both arrays are kept parallel so index-based lookups (bookTotals, etc.) stay aligned.
+        const pairs = bookBreakdowns.map((bd, i) => {
+            const alloc = newAllocations[i];
+            const allocatedTotal = (alloc?.editions || []).reduce(
+                (s, ed) => s + ed.storeAllocations.reduce((ss, st) => ss + st.quantity, 0),
+                0,
+            );
+            return { bd, alloc, satisfied: allocatedTotal === bd.requestedQty };
+        });
+        const sorted = [...pairs.filter(p => p.satisfied), ...pairs.filter(p => !p.satisfied)];
+
+        setBookBreakdowns(sorted.map(p => p.bd));
+        setBookAllocations(sorted.map(p => p.alloc));
+    };
+
+    // Toggle selection mode on/off. Leaving selection mode clears the current selection.
+    const toggleSelectionMode = () => {
+        setSelectionMode(prev => {
+            const next = !prev;
+            if (!next) setSelectedBookIds(new Set());
+            return next;
+        });
+    };
+
+    const toggleBookSelection = (bookId: number) => {
+        setSelectedBookIds(prev => {
+            const next = new Set(prev);
+            if (next.has(bookId)) {
+                next.delete(bookId);
+            } else {
+                next.add(bookId);
+            }
+            return next;
+        });
+    };
+
+    const selectedBookCount = selectedBookIds.size;
+
+    // Refetch the order after a mutation so the dialog content refreshes in place.
+    const refreshOrder = async () => {
+        if (!order) return;
+        try {
+            const res = await getOrderById(order.id);
+            if (res.success && res.data && onUpdated) {
+                onUpdated(res.data as AdminOrder);
+            }
+        } catch (error) {
+            console.error("Refresh order error:", error);
+        }
+    };
+
+    const handleBulkRemove = async () => {
+        if (!order || selectedBookIds.size === 0) return;
+        setIsBulkRemoving(true);
+        try {
+            const res = await removeBooksFromOrder(order.id, Array.from(selectedBookIds));
+            if (res.success) {
+                toast.success(`Removed ${res.data?.removedItems ?? selectedBookIds.size} book item(s) from order`);
+                setBulkRemoveConfirmOpen(false);
+                setSelectionMode(false);
+                setSelectedBookIds(new Set());
+                await refreshOrder();
+            } else {
+                toast.error(res.error || "Failed to remove books from order");
+            }
+        } catch (error) {
+            console.error("Bulk remove error:", error);
+            toast.error("An unexpected error occurred while removing books");
+        } finally {
+            setIsBulkRemoving(false);
+        }
     };
 
     useEffect(() => {
@@ -1009,9 +1088,33 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                             })();
                             return (
                                 <div key={bd.bookId} className={cn(
-                                    "bg-white rounded-2xl sm:rounded-[2rem] border-2 shadow-sm overflow-hidden",
-                                    isBookValid ? "border-emerald-100" : "border-amber-100"
+                                    "relative bg-white rounded-2xl sm:rounded-[2rem] border-2 shadow-sm overflow-hidden transition-colors",
+                                    isBookValid ? "border-emerald-100" : "border-amber-100",
+                                    selectionMode && selectedBookIds.has(bd.bookId) && "border-primarycolor ring-2 ring-primarycolor/20"
                                 )}>
+                                    {selectionMode && (
+                                        <button
+                                            type="button"
+                                            onClick={() => toggleBookSelection(bd.bookId)}
+                                            className={cn(
+                                                "absolute top-3 right-3 z-20 flex size-7 items-center justify-center rounded-full border-2 bg-white shadow-md transition-all active:scale-90",
+                                                selectedBookIds.has(bd.bookId)
+                                                    ? "border-primarycolor bg-primarycolor text-white"
+                                                    : "border-slate-300 text-transparent hover:border-primarycolor"
+                                            )}
+                                            aria-label={selectedBookIds.has(bd.bookId) ? `Deselect ${bd.bookTitle}` : `Select ${bd.bookTitle}`}
+                                        >
+                                            <CheckCircle2 className="size-4" />
+                                        </button>
+                                    )}
+                                    {selectionMode && (
+                                        <button
+                                            type="button"
+                                            onClick={() => toggleBookSelection(bd.bookId)}
+                                            className="absolute inset-0 z-10 cursor-pointer"
+                                            aria-label={`Toggle selection for ${bd.bookTitle}`}
+                                        />
+                                    )}
                                     {/* Book Image — horizontal on desktop, compact top bar on mobile */}
                                     <div className="hidden sm:flex w-1/4 shrink-0 bg-white p-5 items-center justify-center border-r-2 border-slate-100">
                                         <div className="w-full max-w-[200px]">
@@ -1318,53 +1421,86 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                 </div>
 
                 {/* Footer */}
-                <DialogFooter className="bg-white px-5 py-3 sm:p-6 border-t border-slate-100 shrink-0 flex flex-col sm:flex-row items-center sm:items-center justify-center sm:justify-between gap-2 sm:gap-4">
-                    <div className="grid grid-cols-2 gap-2 w-full sm:w-auto sm:flex sm:items-center sm:justify-center sm:gap-2">
+                <DialogFooter className="bg-white px-5 py-3 sm:p-6 border-t border-slate-100 shrink-0 flex flex-col sm:flex-row items-center sm:items-center justify-center sm:justify-center gap-2 sm:gap-4">
+                    <div className={cn(
+                        "grid gap-2 w-full sm:w-auto sm:flex sm:items-center sm:justify-center sm:gap-2",
+                        selectionMode ? "grid-cols-2 sm:flex-wrap" : "grid-cols-2"
+                    )}>
                         <Button
                             variant="outline"
                             onClick={onClose}
-                            className="rounded-xl sm:rounded-2xl h-10 sm:h-12 px-4 sm:px-8 font-black uppercase tracking-widest text-[8px] sm:text-[10px] border-2 shrink-0 w-full sm:w-auto"
+                            className="rounded-xl sm:rounded-2xl h-8 sm:h-9 px-2.5 sm:px-3 font-black uppercase tracking-widest text-[7px] sm:text-[8px] border-2 shrink-0 w-full sm:w-auto"
                         >
                             {order.is_approved ? "Close" : "Cancel"}
                         </Button>
                         <Button
                             variant="outline"
                             onClick={handlePrint}
-                            className="rounded-xl sm:rounded-2xl h-10 sm:h-12 px-3 sm:px-5 font-black uppercase tracking-widest text-[8px] sm:text-[10px] border-2 gap-1.5 sm:gap-2 shrink-0 w-full sm:w-auto"
+                            className="rounded-xl sm:rounded-2xl h-8 sm:h-9 px-2 sm:px-3 font-black uppercase tracking-widest text-[7px] sm:text-[8px] border-2 gap-1 shrink-0 w-full sm:w-auto"
                         >
-                            <Printer className="size-3.5 sm:size-4" /> Print
+                            <Printer className="size-3 sm:size-3.5" /> Print
                         </Button>
                         <Button
                             variant="outline"
                             onClick={() => setPrintOptionsOpen(true)}
-                            className="rounded-xl sm:rounded-2xl h-10 sm:h-12 px-3 sm:px-5 font-black uppercase tracking-widest text-[8px] sm:text-[10px] border-2 gap-1.5 sm:gap-2 shrink-0 w-full sm:w-auto"
+                            className="rounded-xl sm:rounded-2xl h-8 sm:h-9 px-2 sm:px-3 font-black uppercase tracking-widest text-[7px] sm:text-[8px] border-2 gap-1 shrink-0 w-full sm:w-auto"
                         >
-                            <Settings2 className="size-3.5 sm:size-4" /> Options
+                            <Settings2 className="size-3 sm:size-3.5" /> Options
                         </Button>
                         <Button
                             variant="outline"
                             onClick={() => setIsPaymentModalOpen(true)}
-                            className="rounded-xl sm:rounded-2xl h-10 sm:h-12 px-3 sm:px-5 font-black uppercase tracking-widest text-[8px] sm:text-[10px] border-2 border-primarycolor/30 text-primarycolor hover:bg-primarycolor/5 gap-1.5 sm:gap-2 shrink-0 w-full sm:w-auto"
+                            className="rounded-xl sm:rounded-2xl h-8 sm:h-9 px-2 sm:px-3 font-black uppercase tracking-widest text-[7px] sm:text-[8px] border-2 border-primarycolor/30 text-primarycolor hover:bg-primarycolor/5 gap-1 shrink-0 w-full sm:w-auto"
                         >
-                            <Banknote className="size-3.5 sm:size-4" /> Payment
+                            <Banknote className="size-3 sm:size-3.5" /> Payment
                         </Button>
                         {!order.is_approved && (
                             <Button
                                 variant="outline"
                                 onClick={() => setEditOrderOpen(true)}
-                                className="rounded-xl sm:rounded-2xl h-10 sm:h-12 px-3 sm:px-5 font-black uppercase tracking-widest text-[8px] sm:text-[10px] border-2 border-primarycolor/30 text-primarycolor hover:bg-primarycolor/5 gap-1.5 sm:gap-2 shrink-0 w-full sm:w-auto"
+                                className="rounded-xl sm:rounded-2xl h-8 sm:h-9 px-2 sm:px-3 font-black uppercase tracking-widest text-[7px] sm:text-[8px] border-2 border-primarycolor/30 text-primarycolor hover:bg-primarycolor/5 gap-1 shrink-0 w-full sm:w-auto"
                             >
-                                <Pencil className="size-3.5 sm:size-4" /> Edit Order
+                                <Pencil className="size-3 sm:size-3.5" /> Edit Order
                             </Button>
                         )}
-                        {!order.is_approved && (
+                        {!order.is_approved && !selectionMode && (
                             <Button
                                 variant="outline"
                                 onClick={() => setDeleteConfirmOpen(true)}
-                                className="rounded-xl sm:rounded-2xl h-10 sm:h-12 px-3 sm:px-5 font-black uppercase tracking-widest text-[8px] sm:text-[10px] border-2 border-rose-200 text-rose-600 hover:bg-rose-50 hover:border-rose-300 gap-1.5 sm:gap-2 shrink-0 w-full sm:w-auto"
+                                className="rounded-xl sm:rounded-2xl h-8 sm:h-9 px-2 sm:px-3 font-black uppercase tracking-widest text-[7px] sm:text-[8px] border-2 border-rose-200 text-rose-600 hover:bg-rose-50 hover:border-rose-300 gap-1 shrink-0 w-full sm:w-auto"
                             >
-                                <Trash2 className="size-3.5 sm:size-4" /> Delete Order
+                                <Trash2 className="size-3 sm:size-3.5" /> Delete Order
                             </Button>
+                        )}
+                        {!order.is_approved && (
+                            selectionMode ? (
+                                <>
+                                    <Button
+                                        variant="outline"
+                                        onClick={toggleSelectionMode}
+                                        className="rounded-xl sm:rounded-2xl h-8 sm:h-9 px-2 sm:px-3 font-black uppercase tracking-widest text-[7px] sm:text-[8px] border-2 border-slate-300 text-slate-600 hover:bg-slate-50 gap-1 shrink-0 w-full sm:w-auto"
+                                    >
+                                        <X className="size-3 sm:size-3.5" /> Cancel Selection
+                                    </Button>
+                                    {selectedBookCount > 0 && (
+                                        <Button
+                                            variant="outline"
+                                            onClick={() => setBulkRemoveConfirmOpen(true)}
+                                            className="rounded-xl sm:rounded-2xl h-8 sm:h-9 px-2 sm:px-3 font-black uppercase tracking-widest text-[7px] sm:text-[8px] gap-1 shrink-0 w-full sm:w-auto border-rose-200 text-rose-600 hover:bg-rose-50 hover:border-rose-300"
+                                        >
+                                            <Trash2 className="size-3 sm:size-3.5" /> Delete Selected ({selectedBookCount})
+                                        </Button>
+                                    )}
+                                </>
+                            ) : (
+                                <Button
+                                    variant="outline"
+                                    onClick={toggleSelectionMode}
+                                    className="rounded-xl sm:rounded-2xl h-8 sm:h-9 px-2 sm:px-3 font-black uppercase tracking-widest text-[7px] sm:text-[8px] border-2 border-rose-200 text-rose-600 hover:bg-rose-50 hover:border-rose-300 gap-1 shrink-0 w-full sm:w-auto"
+                                >
+                                    <Trash2 className="size-3 sm:size-3.5" /> Delete Selected
+                                </Button>
+                            )
                         )}
                     </div>
                     {!order.is_approved && (
@@ -1372,16 +1508,16 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                             onClick={handleApprove}
                             disabled={!canApprove || isApproving}
                             className={cn(
-                                "rounded-xl sm:rounded-2xl h-10 sm:h-12 px-6 sm:px-10 font-black uppercase tracking-widest text-[9px] sm:text-[10px] shadow-xl gap-1.5 sm:gap-2 w-full sm:w-auto",
+                                "rounded-xl sm:rounded-2xl h-8 sm:h-9 px-4 sm:px-6 font-black uppercase tracking-widest text-[7px] sm:text-[8px] shadow-xl gap-1 w-full sm:w-auto",
                                 canApprove
                                     ? "bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-600/20"
                                     : "bg-slate-200 text-slate-400 cursor-not-allowed"
                             )}
                         >
                             {isApproving ? (
-                                <><Loader2 className="size-3.5 sm:size-4 animate-spin" /> Approving...</>
+                                <><Loader2 className="size-3 sm:size-3.5 animate-spin" /> Approving...</>
                             ) : (
-                                <><CheckCircle2 className="size-3.5 sm:size-4" /> Approve Order</>
+                                <><CheckCircle2 className="size-3 sm:size-3.5" /> Approve Order</>
                             )}
                         </Button>
                     )}
@@ -1465,7 +1601,83 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
             </AlertDialogContent>
         </AlertDialog>
 
-        {/* Edit Order Modal */}
+        {/* Bulk Remove Selected Books Confirmation */}
+        <AlertDialog open={bulkRemoveConfirmOpen} onOpenChange={setBulkRemoveConfirmOpen}>
+            <AlertDialogContent className="sm:max-w-lg w-full rounded-[2rem] border-0 sm:border-4 border-rose-100 bg-white p-0 overflow-hidden shadow-2xl max-h-[90vh] flex flex-col">
+                <AlertDialogHeader className="p-6 pb-4 border-b border-slate-100 shrink-0">
+                    <div className="flex items-center gap-3">
+                        <div className="size-10 rounded-2xl bg-rose-100 flex items-center justify-center text-rose-600 shrink-0">
+                            <Trash2 className="size-5" />
+                        </div>
+                        <div>
+                            <AlertDialogTitle className="text-base font-black uppercase italic text-rose-700">
+                                Remove {selectedBookCount} selected book{selectedBookCount === 1 ? "" : "s"}?
+                            </AlertDialogTitle>
+                            <AlertDialogDescription className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground">
+                                {order ? `Order ORD-${order.id} · ${order.bookshopes?.name || ""}` : ""}
+                            </AlertDialogDescription>
+                        </div>
+                    </div>
+                </AlertDialogHeader>
+                <div className="p-6 space-y-3 overflow-y-auto flex-1">
+                    <div className="flex items-start gap-3 bg-rose-50 border-2 border-rose-200 rounded-2xl p-4">
+                        <AlertTriangle className="size-6 sm:size-7 text-rose-500 shrink-0 mt-0.5" />
+                        <div>
+                            <p className="font-black text-rose-800 text-sm uppercase tracking-widest">Warning</p>
+                            <p className="text-[10px] sm:text-[11px] font-bold text-rose-700 mt-1 leading-relaxed">
+                                This will remove the selected books from the order and release any locked stock for them.
+                            </p>
+                        </div>
+                    </div>
+                    <p className="text-[8px] font-black uppercase tracking-widest text-muted-foreground px-1">Selected books</p>
+                    <div className="space-y-1.5">
+                        {bookBreakdowns
+                            .filter(bd => selectedBookIds.has(bd.bookId))
+                            .map((bd, idx) => (
+                                <div key={bd.bookId} className="flex items-center gap-3 bg-slate-50 border-2 border-slate-100 rounded-xl px-4 py-2.5">
+                                    <span className="flex size-6 items-center justify-center rounded-full bg-rose-100 text-rose-700 text-[10px] font-black shrink-0">
+                                        {idx + 1}
+                                    </span>
+                                    <p className="flex-1 min-w-0 font-black text-slate-700 text-xs truncate">{bd.bookTitle}</p>
+                                    <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest shrink-0">
+                                        {bd.requestedQty} unit{bd.requestedQty === 1 ? "" : "s"}
+                                    </span>
+                                </div>
+                            ))}
+                    </div>
+                </div>
+                <AlertDialogFooter className="p-5 pt-0 border-t border-slate-100 shrink-0">
+                    <div className="flex gap-3 w-full">
+                        <AlertDialogCancel asChild>
+                            <Button
+                                variant="outline"
+                                disabled={isBulkRemoving}
+                                onClick={() => setBulkRemoveConfirmOpen(false)}
+                                className="flex-1 rounded-2xl h-12 font-black uppercase tracking-widest text-[9px] border-2"
+                            >
+                                Cancel
+                            </Button>
+                        </AlertDialogCancel>
+                        <AlertDialogAction asChild>
+                            <Button
+                                onClick={e => {
+                                    e.preventDefault();
+                                    if (!isBulkRemoving) handleBulkRemove();
+                                }}
+                                disabled={isBulkRemoving}
+                                className="flex-1 rounded-2xl h-12 font-black uppercase tracking-widest text-[9px] bg-rose-600 hover:bg-rose-700 text-white shadow-lg gap-1.5"
+                            >
+                                {isBulkRemoving ? (
+                                    <><Loader2 className="size-4 animate-spin" /> Removing...</>
+                                ) : (
+                                    <><Trash2 className="size-4" /> Yes, Remove</>
+                                )}
+                            </Button>
+                        </AlertDialogAction>
+                    </div>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
         {order && (
             <OrderModal
                 shop={{
@@ -1677,48 +1889,6 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                         })()}
                     </DialogDescription>
                 </DialogHeader>
-                {removeConfirmOpen ? (
-                    <div className="p-5 sm:p-6 space-y-5 sm:space-y-5">
-                        <div className="flex items-start gap-3 bg-rose-50 border-2 border-rose-200 rounded-2xl p-4 sm:p-5">
-                            <AlertTriangle className="size-7 sm:size-8 text-rose-500 shrink-0" />
-                            <div>
-                                <p className="font-black text-rose-800 text-sm uppercase">Remove this book?</p>
-                                <p className="text-[10px] font-bold text-rose-600 mt-1">
-                                    This will permanently remove all order items for this book and update the order total.
-                                </p>
-                            </div>
-                        </div>
-                        <div className="flex gap-3">
-                            <Button
-                                variant="outline"
-                                onClick={() => setRemoveConfirmOpen(false)}
-                                className="flex-1 rounded-2xl h-12 font-black uppercase tracking-widest text-[9px] sm:text-[9px] border-2"
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                onClick={async () => {
-                                    if (advancedBookId !== null && order) {
-                                        const res = await removeBookFromOrder(order.id, advancedBookId);
-                                        if (res.success) {
-                                            toast.success("Book removed from order");
-                                            setAdvancedBookId(null);
-                                            setRemoveConfirmOpen(false);
-                                            onClose();
-                                            setTimeout(() => window.location.reload(), 500);
-                                        } else {
-                                            toast.error(res.error || "Failed to remove book");
-                                            setRemoveConfirmOpen(false);
-                                        }
-                                    }
-                                }}
-                                className="flex-1 rounded-2xl h-12 font-black uppercase tracking-widest text-[9px] sm:text-[9px] bg-rose-600 hover:bg-rose-700 text-white shadow-lg"
-                            >
-                                Remove
-                            </Button>
-                        </div>
-                    </div>
-                ) : (
                 <div className="p-5 sm:p-6 space-y-4 sm:space-y-4 max-h-[60vh] overflow-y-auto flex-1">
                     {(() => {
                         const bd = bookBreakdowns.find(b => b.bookId === advancedBookId);
@@ -1777,23 +1947,55 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                         );
                     })()}
                 </div>
-                )}
                 <DialogFooter className="bg-white p-5 sm:p-4 border-t border-slate-100 shrink-0">
-                    <div className="flex gap-3 w-full">
-                        <Button
-                            variant="outline"
-                            onClick={() => setRemoveConfirmOpen(true)}
-                            className="flex-1 rounded-2xl h-12 font-black uppercase tracking-widest text-[9px] border-2 border-rose-200 text-rose-600 hover:bg-rose-50"
-                        >
-                            Remove Order
-                        </Button>
-                        <Button
-                            onClick={() => setAdvancedBookId(null)}
-                            className="flex-1 rounded-2xl h-12 font-black uppercase tracking-widest text-[9px] bg-primarycolor hover:bg-secondarycolor text-white shadow-lg"
-                        >
-                            Confirm
-                        </Button>
-                    </div>
+                    {removeConfirmOpen ? (
+                        <div className="flex gap-3 w-full">
+                            <Button
+                                variant="outline"
+                                onClick={() => setRemoveConfirmOpen(false)}
+                                className="flex-1 rounded-2xl h-12 font-black uppercase tracking-widest text-[9px] sm:text-[9px] border-2"
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                onClick={async () => {
+                                    if (advancedBookId !== null && order) {
+                                        const res = await removeBookFromOrder(order.id, advancedBookId);
+                                        if (res.success) {
+                                            toast.success("Book removed from order");
+                                            const removedBookId = advancedBookId;
+                                            setAdvancedBookId(null);
+                                            setRemoveConfirmOpen(false);
+                                            setBookBreakdowns(prev => prev.filter(b => b.bookId !== removedBookId));
+                                            await refreshOrder();
+                                        } else {
+                                            toast.error(res.error || "Failed to remove book");
+                                            setRemoveConfirmOpen(false);
+                                        }
+                                    }
+                                }}
+                                className="flex-1 rounded-2xl h-12 font-black uppercase tracking-widest text-[9px] sm:text-[9px] bg-rose-600 hover:bg-rose-700 text-white shadow-lg"
+                            >
+                                Remove
+                            </Button>
+                        </div>
+                    ) : (
+                        <div className="flex gap-3 w-full">
+                            <Button
+                                variant="outline"
+                                onClick={() => setRemoveConfirmOpen(true)}
+                                className="flex-1 rounded-2xl h-12 font-black uppercase tracking-widest text-[9px] border-2 border-rose-200 text-rose-600 hover:bg-rose-50"
+                            >
+                                Remove Book
+                            </Button>
+                            <Button
+                                onClick={() => setAdvancedBookId(null)}
+                                className="flex-1 rounded-2xl h-12 font-black uppercase tracking-widest text-[9px] bg-primarycolor hover:bg-secondarycolor text-white shadow-lg"
+                            >
+                                Confirm
+                            </Button>
+                        </div>
+                    )}
                 </DialogFooter>
             </DialogContent>
         </Dialog>
