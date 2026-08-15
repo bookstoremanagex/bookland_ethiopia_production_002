@@ -30,6 +30,7 @@ import {
     Settings,
     List,
     Repeat,
+    TrendingUp,
 } from "lucide-react"
 
 export interface MenuItem {
@@ -111,7 +112,8 @@ export const ALL_DASHBOARD_MENUS: MenuItem[] = [
         path: "production",
         menuName: "Production - Books",
         subItems: [
-            { title: "Books", icon: BookOpen, path: "production/books", menuName: "Production - Books" }
+            { title: "Books", icon: BookOpen, path: "production/books", menuName: "Production - Books" },
+            { title: "80 20", icon: TrendingUp, path: "production/80-20", menuName: "80 20" }
         ]
     },
     { 

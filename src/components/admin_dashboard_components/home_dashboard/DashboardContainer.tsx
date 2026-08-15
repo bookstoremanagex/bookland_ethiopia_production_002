@@ -6,6 +6,7 @@ import { FinancialChart } from "./FinancialChart";
 import { RecentActivity } from "./RecentActivity";
 import { ProductionOverview } from "./ProductionOverview";
 import { QuickActions } from "./QuickActions";
+import { TopBooksCarousel } from "./TopBooksCarousel";
 import { OrderSummary } from "./OrderSummary";
 import { LowStockAlerts } from "./LowStockAlerts";
 import {
@@ -150,6 +151,9 @@ export default function DashboardContainer({ data }: DashboardContainerProps) {
 
       {/* Quick Actions */}
       <QuickActions pendingOrders={data.stats.pendingOrders} pendingPayments={data.stats.pendingPayments} />
+
+      {/* Top 20% Best Sellers (all-time) */}
+      <TopBooksCarousel books={data.topBooks} />
 
       {/* Unread Notifications */}
       {data.notifications.length > 0 && (

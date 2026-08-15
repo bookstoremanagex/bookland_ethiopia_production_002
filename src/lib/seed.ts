@@ -70,7 +70,9 @@ const menuTree = [
   { name: "Manage Checks", order: 12 },
   { name: "Retail Management", order: 13 },
   { name: "Activity Log", order: 14 },
-  { name: "Production - Books", order: 15 },
+  { name: "Production - Books", order: 15, children: [
+    { name: "80 20", order: 1 },
+  ]},
   { name: "Translations", order: 16, children: [
     { name: "Translation List", order: 1 },
     { name: "Translation Work", order: 2 },

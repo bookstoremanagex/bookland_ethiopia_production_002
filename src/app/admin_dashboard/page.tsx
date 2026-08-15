@@ -2,6 +2,7 @@ import prisma from "@/lib/prisma";
 import DashboardContainer from "@/components/admin_dashboard_components/home_dashboard/DashboardContainer";
 import { getServerCalendarPref } from "@/lib/server-calendar"
 import { formatDate, convertToEthiopian, ETHIOPIAN_MONTHS } from "@/lib/calendar-utils"
+import { getTopSellers } from "@/app/actions/top-sellers-actions";
 
 const LOW_STOCK_THRESHOLD = 50;
 
@@ -48,6 +49,14 @@ export interface DashboardData {
     editionCount: number;
     uniqueCode: string;
   }[];
+  topBooks: {
+    id: number;
+    uniqueCode: string;
+    title: string;
+    author: string;
+    bookImage: string | null;
+    totalQty: number;
+  }[];
 }
 
 export default async function AdminHomePage() {
@@ -65,6 +74,7 @@ export default async function AdminHomePage() {
     rawPendingPayments,
     rawPendingOrdersCount,
     prevAssignments,
+    rawTopSellers,
   ] = await Promise.all([
     (prisma as any).books.count({ where: { is_deleted: false } }),
     (prisma as any).bookshopes.count({ where: { is_deleted: false } }),
@@ -118,6 +128,7 @@ export default async function AdminHomePage() {
         },
       },
     }),
+    getTopSellers("all_time"),
   ]);
 
   // Stats
@@ -240,6 +251,17 @@ export default async function AdminHomePage() {
 
   // Shop orders data
 
+  const topBooks = (rawTopSellers?.books || [])
+    .filter((b: any) => b.book_image_url)
+    .map((b: any) => ({
+      id: b.bookId,
+      uniqueCode: b.unique_identification_code || "",
+      title: b.title || "Unknown",
+      author: b.author || "",
+      bookImage: b.book_image_url || null,
+      totalQty: b.totalQty || 0,
+    }));
+
   const dashboardData: DashboardData = {
     stats: {
       totalBooks,
@@ -257,6 +279,7 @@ export default async function AdminHomePage() {
     notifications,
     recentOrders,
     lowStockItems,
+    topBooks,
   };
 
   return (

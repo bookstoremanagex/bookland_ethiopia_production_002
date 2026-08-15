@@ -123,11 +123,15 @@ export async function updateBook(id: string, data: Partial<BookFormValues>) {
       },
     });
 
-    // 3. Delete old blob from Vercel Blob if the cover URL changed and update was successful
+    // 3. Delete old blob from Vercel Blob only if the caller explicitly provided a
+    //    different cover URL. When book_image_url is NOT in `data` (e.g. editing a
+    //    single non-image field), the cover must be left untouched — otherwise the
+    //    blob is deleted while the DB still points to it and the image breaks.
     if (
       currentBook &&
       currentBook.book_image_url &&
-      currentBook.book_image_url !== data.book_image_url
+      "book_image_url" in data &&
+      data.book_image_url !== currentBook.book_image_url
     ) {
       await deleteBlobIfExists(currentBook.book_image_url);
     }
