@@ -1531,6 +1531,8 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
             shopId={order?.bookshopes?.id ?? 0}
             shopName={order?.bookshopes?.name || ""}
             orderId={order?.id ?? null}
+            orderTotal={order?.total_amount ?? null}
+            orderPaid={order?.amount_paid ?? null}
         />
 
         {/* Delete Order Confirmation */}

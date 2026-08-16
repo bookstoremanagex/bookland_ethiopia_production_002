@@ -72,9 +72,11 @@ interface Props {
     shopId: number;
     shopName: string;
     orderId?: number | null;
+    orderTotal?: number | null;
+    orderPaid?: number | null;
 }
 
-export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName, orderId }: Props) {
+export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName, orderId, orderTotal, orderPaid }: Props) {
     const router = useRouter();
     const [paymentType, setPaymentType] = useState<string>("DIRECT");
     const [amount, setAmount] = useState<string>("");
@@ -278,6 +280,23 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName, 
                 </DialogHeader>
 
                 <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-5 md:space-y-6">
+                    {orderId && orderTotal != null && (
+                        <div className="grid grid-cols-3 gap-2 md:gap-3">
+                            <div className="text-center p-3 md:p-4 rounded-2xl bg-slate-50 border-2 border-slate-100">
+                                <p className="text-[7px] md:text-[8px] font-black uppercase tracking-widest text-muted-foreground">Order Total</p>
+                                <p className="font-black text-primarycolor text-sm md:text-lg mt-0.5">{orderTotal.toLocaleString()} <span className="text-[7px] md:text-[8px]">ETB</span></p>
+                            </div>
+                            <div className="text-center p-3 md:p-4 rounded-2xl bg-emerald-50 border-2 border-emerald-100">
+                                <p className="text-[7px] md:text-[8px] font-black uppercase tracking-widest text-emerald-700">Paid</p>
+                                <p className="font-black text-emerald-800 text-sm md:text-lg mt-0.5">{(orderPaid ?? 0).toLocaleString()} <span className="text-[7px] md:text-[8px]">ETB</span></p>
+                            </div>
+                            <div className="text-center p-3 md:p-4 rounded-2xl bg-rose-50 border-2 border-rose-100">
+                                <p className="text-[7px] md:text-[8px] font-black uppercase tracking-widest text-rose-700">Remaining</p>
+                                <p className="font-black text-rose-800 text-sm md:text-lg mt-0.5">{(orderTotal - (orderPaid ?? 0)).toLocaleString()} <span className="text-[7px] md:text-[8px]">ETB</span></p>
+                            </div>
+                        </div>
+                    )}
+
                     <div className="space-y-2">
                         <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">
                             Payment Type
