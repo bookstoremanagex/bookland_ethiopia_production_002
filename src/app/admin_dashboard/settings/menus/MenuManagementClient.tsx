@@ -38,13 +38,14 @@ import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import { getAllMenusWithAssignments, saveMenuAssignments } from "@/app/actions/menu-actions"
+import { seedDashboardMenus } from "@/app/actions/menu-seed-actions"
+import { DASHBOARD_MENU_REGISTRY } from "@/lib/dashboard-menu-registry"
 import { cn } from "@/lib/utils"
 
 const ACCOUNT_TYPES = [
   "Operations Manager",
   "Inventory Manager",
   "Finance Officer",
-  "Sales Staff",
   "Viewer",
 ];
 
@@ -69,6 +70,23 @@ const ICON_MAP: Record<string, any> = {
   Accounts: User, "Menu Management": FolderOpen,
   "Theme Customization": Settings,
   "Delivery Sample": Truck,
+  Translators: Languages,
+  "Translation Books": Languages,
+  "Books List": FileText,
+  "Delivery Records": Truck,
+  "Printing Info": Printer,
+  "Shop Table": BarChart3,
+  "Edition Table": Library,
+  Costs: FileText,
+  "Round Info": History,
+  "Payments Due": BadgeDollarSign,
+  "Daily Report": BarChart3,
+  "Period Report": BarChart3,
+  "Low Stock": Package,
+  "Manage Store": Store,
+  "Store Options": Store,
+  Statistics: BarChart3,
+  "Book Shops": ShoppingBag,
 };
 
 function Clock(props: any) {
@@ -96,6 +114,27 @@ export default function MenuManagementClient({ menus: initialMenus, assignments:
   const [selectedRole, setSelectedRole] = useState(ACCOUNT_TYPES[0]);
   const [assignments, setAssignments] = useState<Record<string, string[]>>(initialAssignments);
   const [isSaving, setIsSaving] = useState(false);
+  const [isSeeding, setIsSeeding] = useState(false);
+
+  const handleSeed = async () => {
+    setIsSeeding(true);
+    const result = await seedDashboardMenus();
+    if (result.success) {
+      toast.success("Dashboard menus seeded successfully");
+      window.location.reload();
+    } else {
+      toast.error(result.error || "Failed to seed dashboard menus");
+      setIsSeeding(false);
+    }
+  };
+
+  const allNodesById = useMemo(() => {
+    const map = new Map<number, MenuNode>();
+    for (const m of initialMenus) {
+      map.set(m.id, { id: m.id, name: m.name, parentId: m.parentId, order: m.order, children: [] });
+    }
+    return map;
+  }, [initialMenus]);
 
   const menuTree = useMemo(() => {
     const childrenMap: Record<number, MenuNode[]> = {};
@@ -122,9 +161,53 @@ export default function MenuManagementClient({ menus: initialMenus, assignments:
     return roots.sort((a, b) => a.order - b.order);
   }, [initialMenus]);
 
+  const currentDashboard = useMemo(
+    () => DASHBOARD_MENU_REGISTRY.find((d) => d.accountType === selectedRole) ?? null,
+    [selectedRole]
+  );
+
+  const allowedNames = useMemo(() => {
+    const set = new Set<string>();
+    for (const m of currentDashboard?.menus ?? []) set.add(m.name);
+    return set;
+  }, [currentDashboard]);
+
+  // Filter the DB tree down to only the menus that exist for the selected
+  // dashboard. A parent is shown only if it (or a child) is in the registry;
+  // children are shown only if in the registry.
+  const filteredTree = useMemo(() => {
+    if (!currentDashboard) return [];
+    const orphanChildren: MenuNode[] = [];
+
+    const roots = menuTree
+      .map((parent) => {
+        const children = parent.children.filter((c) => allowedNames.has(c.name));
+        const parentAllowed = allowedNames.has(parent.name);
+        if (!parentAllowed && children.length === 0) return null;
+        if (!parentAllowed) {
+          orphanChildren.push(...children);
+          return null;
+        }
+        return { ...parent, children };
+      })
+      .filter((n): n is MenuNode => n !== null);
+
+    // Children whose parent menu isn't part of this dashboard's registry are
+    // still shown as top-level rows (e.g. "Translation Work" lives under the
+    // admin-only "Translations" parent).
+    return [...roots, ...orphanChildren];
+  }, [menuTree, allowedNames, currentDashboard]);
+
   const currentIds = new Set(assignments[selectedRole] || []);
 
   const toggleMenu = async (menuId: number) => {
+    const isTurningOff = currentIds.has(String(menuId));
+    const menuNode = allNodesById.get(menuId);
+    if (isTurningOff && menuNode?.name === "Home") {
+      toast.info("Home is always enabled for every dashboard");
+      return;
+    }
+
     const newIds = currentIds.has(String(menuId))
       ? [...(assignments[selectedRole] || [])].filter(id => id !== String(menuId))
       : [...(assignments[selectedRole] || []), String(menuId)];
@@ -200,10 +283,20 @@ export default function MenuManagementClient({ menus: initialMenus, assignments:
                   Toggle menus to show in this dashboard
                 </p>
               </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleSeed}
+                disabled={isSeeding}
+                className="gap-2 rounded-xl"
+              >
+                {isSeeding ? <Loader2 className="size-4 animate-spin" /> : <Settings className="size-4" />}
+                {isSeeding ? "Seeding..." : "Seed Menus"}
+              </Button>
             </div>
 
             <div className="space-y-6">
-              {menuTree.map((parent) => (
+              {filteredTree.map((parent) => (
                 <div key={parent.id} className="bg-gray-50/50 rounded-2xl p-4 sm:p-5 border border-gray-200/60 space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
@@ -221,9 +314,12 @@ export default function MenuManagementClient({ menus: initialMenus, assignments:
                     <button
                       type="button"
                       onClick={() => toggleMenu(parent.id)}
+                      disabled={parent.name === "Home"}
+                      title={parent.name === "Home" ? "Home is always enabled" : undefined}
                       className={cn(
                         "relative inline-flex h-6 w-10 items-center rounded-full transition-colors flex-shrink-0",
-                        currentIds.has(String(parent.id)) ? "bg-primarycolor" : "bg-gray-200"
+                        currentIds.has(String(parent.id)) ? "bg-primarycolor" : "bg-gray-200",
+                        parent.name === "Home" && "cursor-not-allowed opacity-90"
                       )}
                     >
                       <span className={cn(

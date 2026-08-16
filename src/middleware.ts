@@ -1,7 +1,41 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import prisma from '@/lib/prisma';
+import {
+  DASHBOARD_MENU_REGISTRY,
+  getMenuNameForPath,
+  type DashboardDef,
+} from '@/lib/dashboard-menu-registry';
 
-export function middleware(request: NextRequest) {
+export const runtime = 'nodejs';
+
+// Cache enabled menu lookups to avoid a DB round-trip on every request.
+const menuCache = new Map<string, { enabled: Set<string>; fetchedAt: number }>();
+const CACHE_TTL_MS = 10_000;
+
+async function getEnabledMenuNames(accountType: string): Promise<Set<string>> {
+  const cached = menuCache.get(accountType);
+  if (cached && Date.now() - cached.fetchedAt < CACHE_TTL_MS) {
+    return cached.enabled;
+  }
+
+  const management = await (prisma as any).menu_management.findMany({
+    where: { account_type: accountType, is_deleted: false },
+    include: { menus: true },
+  });
+
+  const enabled = new Set<string>(
+    management.map((m: any) => m.menus?.name).filter(Boolean)
+  );
+  menuCache.set(accountType, { enabled, fetchedAt: Date.now() });
+  return enabled;
+}
+
+function getDashboardByRootPath(rootPath: string): DashboardDef | undefined {
+  return DASHBOARD_MENU_REGISTRY.find((d) => d.rootPath === rootPath);
+}
+
+export async function middleware(request: NextRequest) {
   const session = request.cookies.get('session');
   const { pathname } = request.nextUrl;
 
@@ -17,17 +51,12 @@ export function middleware(request: NextRequest) {
     try {
       const sessionData = JSON.parse(session.value);
       const role = sessionData.role;
-      
+
       const rolePathMap: Record<string, string> = {
         'ADMIN': '/admin_dashboard',
         'Operations Manager': '/operation_manager_full_dashboard',
         'Inventory Manager': '/inventory_manager_dashboard',
         'Finance Officer': '/finance_officer_dashboard',
-        'Sales Staff': '/sales_staff_dashboard',
-        
-        'Delivery and Sales Management': '/delivery_and_sales_dashboard',
-        'Delivery Sample': '/delivery_sample_dashboard',
-        'Printer': '/printer_full',
         'Viewer': '/viewer_dashboard',
         'Delivery Account': '/delivery_dashboard_full'
       };
@@ -36,7 +65,7 @@ export function middleware(request: NextRequest) {
 
       // If the user is trying to access a dashboard path that doesn't belong to their role
       const dashboardPaths = Object.values(rolePathMap);
-      const isTryingToAccessOtherDashboard = dashboardPaths.some(path => 
+      const isTryingToAccessOtherDashboard = dashboardPaths.some(path =>
         pathname.startsWith(path) && path !== allowedPath
       );
 
@@ -52,6 +81,24 @@ export function middleware(request: NextRequest) {
         }
         return NextResponse.redirect(new URL(newPathname, request.url));
       }
+
+      // Menu on/off enforcement for the four managed dashboards.
+      const dashboard = getDashboardByRootPath(allowedPath);
+      if (dashboard && pathname.startsWith(dashboard.rootPath)) {
+        const menuName = getMenuNameForPath(dashboard, pathname);
+
+        if (menuName) {
+          const menuDef = dashboard.menus.find((m) => m.name === menuName);
+          const isAlwaysOn = !!menuDef?.alwaysOn;
+
+          if (!isAlwaysOn) {
+            const enabledNames = await getEnabledMenuNames(dashboard.accountType);
+            if (!enabledNames.has(menuName)) {
+              return new NextResponse('Not Found', { status: 404 });
+            }
+          }
+        }
+      }
     } catch (e) {
       // If parsing fails, redirect to login
       return NextResponse.redirect(new URL('/', request.url));
@@ -63,21 +110,16 @@ export function middleware(request: NextRequest) {
     try {
       const sessionData = JSON.parse(session.value);
       const role = sessionData.role;
-      
+
       const rolePathMap: Record<string, string> = {
         'ADMIN': '/admin_dashboard',
         'Operations Manager': '/operation_manager_full_dashboard',
         'Inventory Manager': '/inventory_manager_dashboard',
         'Finance Officer': '/finance_officer_dashboard',
-        'Sales Staff': '/sales_staff_dashboard',
-        
-        'Delivery and Sales Management': '/delivery_and_sales_dashboard',
-        'Delivery Sample': '/delivery_sample_dashboard',
-        'Printer': '/printer_full',
         'Viewer': '/viewer_dashboard',
         'Delivery Account': '/delivery_dashboard_full'
       };
-      
+
       const redirectPath = rolePathMap[role] || '/admin_dashboard';
       return NextResponse.redirect(new URL(redirectPath, request.url));
     } catch (e) {

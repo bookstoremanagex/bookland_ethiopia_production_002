@@ -41,38 +41,46 @@ import { useSidebarStore } from "@/store/use-sidebar-store";
 import { useSidebar } from "@/components/ui/sidebar";
 import React from "react";
 import Link from "next/link";
+import { getEnabledMenuNamesForRole } from "@/app/actions/menu-actions";
 
-const topItems = [
-  { title: "Home", icon: Home, url: "/viewer_dashboard" },
-  { title: "Profile", icon: User, url: "/viewer_dashboard/profile" },
+interface ViewerMenuItem {
+  title: string;
+  icon: any;
+  url: string;
+  menuName: string;
+}
+
+const topItems: ViewerMenuItem[] = [
+  { title: "Home", icon: Home, url: "/viewer_dashboard", menuName: "Home" },
+  { title: "Profile", icon: User, url: "/viewer_dashboard/profile", menuName: "Profile" },
 ];
 
-const catalogItems = [
-  { title: "Books", icon: BookOpen, url: "/viewer_dashboard/books" },
-  { title: "Book Shelf", icon: Library, url: "/viewer_dashboard/books/shelf" },
+const catalogItems: ViewerMenuItem[] = [
+  { title: "Books", icon: BookOpen, url: "/viewer_dashboard/books", menuName: "Books" },
+  { title: "Book Shelf", icon: Library, url: "/viewer_dashboard/books/shelf", menuName: "Book Shelf" },
 ];
 
-const analyticsItems = [
-  { title: "General", icon: BarChart3, url: "/viewer_dashboard/statistics" },
-  { title: "Books", icon: BookOpen, url: "/viewer_dashboard/statistics/books" },
-  { title: "Stores", icon: Store, url: "/viewer_dashboard/statistics/stores" },
-  { title: "Income", icon: BarChart3, url: "/viewer_dashboard/statistics/income" },
+const analyticsItems: ViewerMenuItem[] = [
+  { title: "General", icon: BarChart3, url: "/viewer_dashboard/statistics", menuName: "Statistics" },
+  { title: "Books", icon: BookOpen, url: "/viewer_dashboard/statistics/books", menuName: "Statistics" },
+  { title: "Stores", icon: Store, url: "/viewer_dashboard/statistics/stores", menuName: "Statistics" },
+  { title: "Income", icon: BarChart3, url: "/viewer_dashboard/statistics/income", menuName: "Statistics" },
 ];
 
-const networkItems = [
-  { title: "Stores", icon: Store, url: "/viewer_dashboard/stores" },
-  { title: "Book Shops", icon: ShoppingBag, url: "/viewer_dashboard/book_shops" },
+const networkItems: ViewerMenuItem[] = [
+  { title: "Stores", icon: Store, url: "/viewer_dashboard/stores", menuName: "Stores" },
+  { title: "Book Shops", icon: ShoppingBag, url: "/viewer_dashboard/book_shops", menuName: "Book Shops" },
 ];
 
-const reportItems = [
-  { title: "Completed Deliveries", icon: CheckCircle2, url: "/viewer_dashboard/reports/completed-deliveries" },
-  { title: "Pending Deliveries", icon: Clock, url: "/viewer_dashboard/reports/pending-deliveries" },
+const reportItems: ViewerMenuItem[] = [
+  { title: "Completed Deliveries", icon: CheckCircle2, url: "/viewer_dashboard/reports/completed-deliveries", menuName: "Completed Deliveries" },
+  { title: "Pending Deliveries", icon: Clock, url: "/viewer_dashboard/reports/pending-deliveries", menuName: "Pending Deliveries" },
 ];
 
-const productionItems = [
-  { title: "Translators", icon: Languages, url: "/viewer_dashboard/production/translators" },
-  { title: "Translation Work", icon: PenTool, url: "/viewer_dashboard/production/translation-work" },
-  { title: "Printing Info", icon: Printer, url: "/viewer_dashboard/printing/info" },
+const productionItems: ViewerMenuItem[] = [
+  { title: "Translators", icon: Languages, url: "/viewer_dashboard/production/translators", menuName: "Translators" },
+  { title: "Translation Work", icon: PenTool, url: "/viewer_dashboard/production/translation-work", menuName: "Translation Work" },
+  { title: "Printing Info", icon: Printer, url: "/viewer_dashboard/printing/info", menuName: "Printing Info" },
 ];
 
 interface SidebarMenuItemsProps {
@@ -159,11 +167,37 @@ export function ViewerSidebar() {
   const pathname = usePathname();
   const { isMounted, setMounted, activePath, setActivePath } = useSidebarStore();
   const { setOpenMobile } = useSidebar();
+  const [enabledMenuNames, setEnabledMenuNames] = React.useState<string[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
     setMounted(true);
     setActivePath(pathname);
   }, [pathname, setMounted, setActivePath]);
+
+  React.useEffect(() => {
+    const fetchConfig = async () => {
+      const result = await getEnabledMenuNamesForRole("viewer");
+      if (result.success && result.data) {
+        setEnabledMenuNames(result.data as string[]);
+      }
+      setIsLoading(false);
+    };
+    fetchConfig();
+  }, []);
+
+  const isEnabled = React.useCallback(
+    (item: ViewerMenuItem) =>
+      item.menuName === "Home" || enabledMenuNames.includes(item.menuName),
+    [enabledMenuNames]
+  );
+
+  const visibleTopItems = React.useMemo(() => topItems.filter(isEnabled), [isEnabled]);
+  const visibleCatalogItems = React.useMemo(() => catalogItems.filter(isEnabled), [isEnabled]);
+  const visibleAnalyticsItems = React.useMemo(() => analyticsItems.filter(isEnabled), [isEnabled]);
+  const visibleNetworkItems = React.useMemo(() => networkItems.filter(isEnabled), [isEnabled]);
+  const visibleReportItems = React.useMemo(() => reportItems.filter(isEnabled), [isEnabled]);
+  const visibleProductionItems = React.useMemo(() => productionItems.filter(isEnabled), [isEnabled]);
 
   const activeUrl = React.useMemo(() => {
     if (!isMounted) return "";
@@ -179,11 +213,11 @@ export function ViewerSidebar() {
     return "";
   }, [isMounted, activePath]);
 
-  const isCatalogActive = isMounted && catalogItems.some(i => activePath?.startsWith(i.url));
-  const isAnalyticsActive = isMounted && analyticsItems.some(i => activePath?.startsWith(i.url));
-  const isNetworkActive = isMounted && networkItems.some(i => activePath?.startsWith(i.url));
-  const isReportsActive = isMounted && reportItems.some(i => activePath?.startsWith(i.url));
-  const isProductionActive = isMounted && productionItems.some(i => activePath?.startsWith(i.url));
+  const isCatalogActive = isMounted && visibleCatalogItems.some(i => activePath?.startsWith(i.url));
+  const isAnalyticsActive = isMounted && visibleAnalyticsItems.some(i => activePath?.startsWith(i.url));
+  const isNetworkActive = isMounted && visibleNetworkItems.some(i => activePath?.startsWith(i.url));
+  const isReportsActive = isMounted && visibleReportItems.some(i => activePath?.startsWith(i.url));
+  const isProductionActive = isMounted && visibleProductionItems.some(i => activePath?.startsWith(i.url));
 
   return (
     <TooltipProvider delayDuration={0}>
@@ -202,52 +236,70 @@ export function ViewerSidebar() {
             <SidebarGroupLabel>Overview</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                <SimpleMenuItems items={topItems} activeUrl={activeUrl} setOpenMobile={setOpenMobile} />
+                {isLoading ? (
+                  <div className="flex items-center justify-center p-8">
+                    <span className="size-4 animate-spin rounded-full border-2 border-primarycolor/30 border-t-primarycolor" />
+                  </div>
+                ) : (
+                <>
+                <SimpleMenuItems items={visibleTopItems} activeUrl={activeUrl} setOpenMobile={setOpenMobile} />
 
+                {visibleCatalogItems.length > 0 && (
                 <CollapsibleGroup
                   label="Catalog"
                   icon={BookOpen}
-                  items={catalogItems}
+                  items={visibleCatalogItems}
                   activeUrl={activeUrl}
                   setOpenMobile={setOpenMobile}
                   defaultOpen={isCatalogActive}
                 />
+                )}
 
+                {visibleAnalyticsItems.length > 0 && (
                 <CollapsibleGroup
                   label="Analytics"
                   icon={BarChart3}
-                  items={analyticsItems}
+                  items={visibleAnalyticsItems}
                   activeUrl={activeUrl}
                   setOpenMobile={setOpenMobile}
                   defaultOpen={isAnalyticsActive}
                 />
+                )}
 
+                {visibleNetworkItems.length > 0 && (
                 <CollapsibleGroup
                   label="Network"
                   icon={Store}
-                  items={networkItems}
+                  items={visibleNetworkItems}
                   activeUrl={activeUrl}
                   setOpenMobile={setOpenMobile}
                   defaultOpen={isNetworkActive}
                 />
+                )}
 
+                {visibleReportItems.length > 0 && (
                 <CollapsibleGroup
                   label="Reports"
                   icon={CheckCircle2}
-                  items={reportItems}
+                  items={visibleReportItems}
                   activeUrl={activeUrl}
                   setOpenMobile={setOpenMobile}
                   defaultOpen={isReportsActive}
                 />
+                )}
 
+                {visibleProductionItems.length > 0 && (
                 <CollapsibleGroup
                   label="Production"
                   icon={Languages}
-                  items={productionItems}
+                  items={visibleProductionItems}
                   activeUrl={activeUrl}
                   setOpenMobile={setOpenMobile}
                   defaultOpen={isProductionActive}
                 />
+                )}
+                </>
+                )}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>

@@ -28,8 +28,6 @@ export async function updateDashboardMenu(role: string, enabledMenus: string[]) 
     revalidatePath("/finance_officer_dashboard", "layout");
     revalidatePath("/inventory_manager_dashboard", "layout");
     revalidatePath("/operation_manager_full_dashboard", "layout");
-    revalidatePath("/sales_staff_dashboard", "layout");
-    revalidatePath("/printer_dashboard", "layout");
     revalidatePath("/viewer_dashboard", "layout");
     return { success: true };
   } catch (error) {
@@ -57,10 +55,6 @@ const ROLE_TO_ACCOUNT_TYPE: Record<string, string> = {
   finance_officer: "Finance Officer",
   inventory_manager: "Inventory Manager",
   operation_manager: "Operations Manager",
-  sales_staff: "Sales Staff",
-  delivery_sales: "Delivery and Sales Management",
-  delivery_sample: "Delivery Sample",
-  printer: "Printer",
   viewer: "Viewer",
 };
 
@@ -76,13 +70,6 @@ export async function getEnabledMenuNamesForRole(role: string) {
 
     const names: string[] = management.map((m: any) => m.menus?.name).filter(Boolean);
 
-    // Always enable Settings and Theme Customization for all non-admin roles
-    // except Inventory Manager, who has no settings pages
-    if (role !== "admin" && role !== "inventory_manager") {
-      if (!names.includes("Settings")) names.push("Settings");
-      if (!names.includes("Theme Customization")) names.push("Theme Customization");
-    }
-
     return { success: true, data: names };
   } catch (error) {
     console.error("Failed to fetch enabled menus:", error);
@@ -94,10 +81,6 @@ const ACCOUNT_TYPES = [
   "Operations Manager",
   "Inventory Manager",
   "Finance Officer",
-  "Sales Staff",
-  "Delivery and Sales Management",
-  "Delivery Sample",
-  "Printer",
   "Viewer",
 ];
 
@@ -174,10 +157,6 @@ export async function saveMenuAssignments(accountType: string, menuIds: number[]
       "Operations Manager": "/operation_manager_full_dashboard",
       "Inventory Manager": "/inventory_manager_dashboard",
       "Finance Officer": "/finance_officer_dashboard",
-      "Sales Staff": "/sales_staff_dashboard",
-      "Delivery and Sales Management": "/delivery_and_sales_dashboard",
-      "Delivery Sample": "/delivery_sample_dashboard",
-      "Printer": "/printer_dashboard",
       "Viewer": "/viewer_dashboard",
     };
     revalidatePath("/admin_dashboard/settings/menus");
