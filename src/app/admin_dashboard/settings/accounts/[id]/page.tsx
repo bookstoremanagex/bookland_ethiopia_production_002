@@ -24,10 +24,5 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
     notFound();
   }
 
-  const roletypes = await (prisma as any).roletypes.findMany({
-    where: { is_deleted: false },
-    orderBy: { id: "asc" }
-  });
-
-  return <AccountDetailClient account={account} roletypes={roletypes} />;
+  return <AccountDetailClient account={account} />;
 }
