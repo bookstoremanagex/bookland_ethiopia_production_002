@@ -1,6 +1,8 @@
 "use client"
 
 import * as React from "react"
+import { usePathname } from "next/navigation"
+import { editionDetailHref } from "@/lib/finance-nav"
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -50,7 +52,18 @@ export interface EditionFinanceData {
     image: string | null
 }
 
-export const columns: ColumnDef<EditionFinanceData>[] = [
+export function EditionFinanceDetailLink({ editionId }: { editionId: number }) {
+  const pathname = usePathname();
+  return (
+    <Link href={editionDetailHref(pathname, editionId)}>
+      <Button variant="ghost" size="icon" className="rounded-full hover:bg-primarycolor hover:text-white transition-all">
+        <ExternalLink className="size-4" />
+      </Button>
+    </Link>
+  )
+}
+
+const columns: ColumnDef<EditionFinanceData>[] = [
   {
     accessorKey: "edition_name",
     header: ({ column }) => (
@@ -145,11 +158,7 @@ export const columns: ColumnDef<EditionFinanceData>[] = [
   {
     id: "actions",
     cell: ({ row }) => (
-        <Link href={`/admin_dashboard/books/editions/${row.original.id}`}>
-            <Button variant="ghost" size="icon" className="rounded-full hover:bg-primarycolor hover:text-white transition-all">
-                <ExternalLink className="size-4" />
-            </Button>
-        </Link>
+        <EditionFinanceDetailLink editionId={row.original.id} />
     ),
   },
 ]
@@ -212,6 +221,7 @@ export default function EditionFinanceTable({ data }: { data: EditionFinanceData
       </div>
 
       <div className="bg-white rounded-[2.5rem] border-2 border-primarycolor/5 shadow-2xl overflow-hidden">
+        <div className="overflow-x-auto">
         <Table>
           <TableHeader className="bg-slate-50/50">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -260,6 +270,7 @@ export default function EditionFinanceTable({ data }: { data: EditionFinanceData
             )}
           </TableBody>
         </Table>
+        </div>
       </div>
 
       <div className="flex items-center justify-between px-4">

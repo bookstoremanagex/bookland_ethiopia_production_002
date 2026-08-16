@@ -1,6 +1,8 @@
 "use client"
 
 import * as React from "react"
+import { usePathname } from "next/navigation"
+import { shopDetailHref } from "@/lib/finance-nav"
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -47,6 +49,17 @@ export interface ShopFinanceData {
     previousDebt: number
     totalValue: number
     collectionRate: number
+}
+
+function ShopFinanceDetailLink({ shopId }: { shopId: number }) {
+  const pathname = usePathname();
+  return (
+    <Link href={shopDetailHref(pathname, shopId)}>
+      <Button variant="ghost" size="icon" className="rounded-full hover:bg-primarycolor hover:text-white transition-all">
+        <ExternalLink className="size-4" />
+      </Button>
+    </Link>
+  )
 }
 
 export const columns: ColumnDef<ShopFinanceData>[] = [
@@ -146,11 +159,7 @@ export const columns: ColumnDef<ShopFinanceData>[] = [
       const shop = row.original
  
       return (
-        <Link href={`/admin_dashboard/book_shops/${shop.id}`}>
-            <Button variant="ghost" size="icon" className="rounded-full hover:bg-primarycolor hover:text-white transition-all">
-                <ExternalLink className="size-4" />
-            </Button>
-        </Link>
+        <ShopFinanceDetailLink shopId={shop.id} />
       )
     },
   },
@@ -281,11 +290,7 @@ export default function ShopFinanceTable({ data }: { data: ShopFinanceData[] }) 
                       <div className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">{item.branch}</div>
                     </div>
                   </div>
-                  <Link href={`/admin_dashboard/book_shops/${item.id}`}>
-                    <Button variant="ghost" size="icon" className="rounded-full hover:bg-primarycolor hover:text-white transition-all shrink-0">
-                      <ExternalLink className="size-4" />
-                    </Button>
-                  </Link>
+                  <ShopFinanceDetailLink shopId={item.id} />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">

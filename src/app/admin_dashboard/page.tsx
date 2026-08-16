@@ -240,7 +240,7 @@ export default async function AdminHomePage() {
   }));
 
   // Recent orders (latest 10)
-  const recentOrders = ordersList.slice(0, 10).map((o: any) => ({
+  const recentOrders = ordersList.slice(0, 5).map((o: any) => ({
     id: o.id,
     shopName: o.bookshopes?.name || "Unknown",
     totalAmount: o.total_amount || 0,

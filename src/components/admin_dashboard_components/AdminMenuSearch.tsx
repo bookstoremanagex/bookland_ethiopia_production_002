@@ -38,6 +38,7 @@ import {
   UserCog,
   Palette,
   AlertTriangle,
+  TrendingUp,
   CornerDownLeft,
   type LucideIcon,
 } from "lucide-react"
@@ -78,6 +79,7 @@ const menuEntries: MenuEntry[] = [
 
   { title: "Production Books", url: "/admin_dashboard/production/books", group: "Production", icon: Package },
   { title: "Low Stock", url: "/admin_dashboard/production/low-stock", group: "Production", icon: AlertTriangle },
+  { title: "80 20", url: "/admin_dashboard/production/80-20", group: "Production", icon: TrendingUp },
 
   { title: "Translators", url: "/admin_dashboard/production/translators", group: "Translations", icon: Languages },
   { title: "Translation Work", url: "/admin_dashboard/production/translation_work", group: "Translations", icon: PenTool },

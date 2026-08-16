@@ -4,12 +4,10 @@ import {
     Banknote, 
     Receipt, 
     AlertCircle, 
-    ArrowRight,
     TrendingUp,
     Search
 } from "lucide-react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import ShopFinanceDetailLink from "./ShopFinanceDetailLink";
 
 export default async function FinanceBookShopPage() {
     const shops = await (prisma as any).bookshopes.findMany({
@@ -202,11 +200,7 @@ export default async function FinanceBookShopPage() {
                                         {Math.round(shop.collectionRate)}%
                                     </div>
                                 </div>
-                                <Link href={`/admin_dashboard/book_shops/${shop.id}`}>
-                                    <Button variant="ghost" size="icon" className="rounded-full hover:bg-primarycolor hover:text-white transition-all">
-                                        <ArrowRight className="size-5" />
-                                    </Button>
-                                </Link>
+                                <ShopFinanceDetailLink shopId={shop.id} />
                             </div>
                         </div>
                     </div>

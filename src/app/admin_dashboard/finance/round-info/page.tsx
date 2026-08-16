@@ -63,32 +63,38 @@ export default async function RoundInfoPage() {
                     </p>
                 </div>
 
-                <div className="flex items-center gap-4">
-                    <div className="bg-emerald-600 px-6 py-3 rounded-[2rem] shadow-2xl shadow-emerald-600/20 text-white flex items-center gap-4">
-                        <Package className="size-8 opacity-40" />
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full md:w-auto">
+                    <div className="bg-white px-5 sm:px-6 py-3 rounded-[2rem] border-2 border-primarycolor/5 shadow-xl flex items-center gap-3 sm:gap-4">
+                        <div className="size-10 sm:size-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-600 border-2 border-emerald-500/10 shrink-0">
+                            <Package className="size-5 sm:size-6" />
+                        </div>
                         <div>
-                            <p className="text-[10px] font-black uppercase tracking-widest opacity-60 leading-none">Total Books</p>
-                            <p className="text-2xl font-black mt-1">{grandTotalBooks.toLocaleString()}</p>
+                            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground leading-none">Total Books</p>
+                            <p className="text-lg sm:text-2xl font-black text-primarycolor mt-1">{grandTotalBooks.toLocaleString()}</p>
                         </div>
                     </div>
-                    <div className="bg-emerald-600 px-6 py-3 rounded-[2rem] shadow-2xl shadow-emerald-600/20 text-white flex items-center gap-4">
-                        <Banknote className="size-8 opacity-40" />
+                    <div className="bg-white px-5 sm:px-6 py-3 rounded-[2rem] border-2 border-primarycolor/5 shadow-xl flex items-center gap-3 sm:gap-4">
+                        <div className="size-10 sm:size-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-600 border-2 border-emerald-500/10 shrink-0">
+                            <Banknote className="size-5 sm:size-6" />
+                        </div>
                         <div>
-                            <p className="text-[10px] font-black uppercase tracking-widest opacity-60 leading-none">Total Paid</p>
-                            <p className="text-2xl font-black mt-1">{grandTotalPaid.toLocaleString()} <span className="text-sm opacity-60 font-bold">ETB</span></p>
+                            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground leading-none">Total Paid</p>
+                            <p className="text-lg sm:text-2xl font-black text-primarycolor mt-1">{grandTotalPaid.toLocaleString()} <span className="text-xs sm:text-sm font-bold text-muted-foreground">ETB</span></p>
                         </div>
                     </div>
-                    <div className="bg-rose-600 px-6 py-3 rounded-[2rem] shadow-2xl shadow-rose-600/20 text-white flex items-center gap-4">
-                        <Banknote className="size-8 opacity-40" />
+                    <div className="bg-white px-5 sm:px-6 py-3 rounded-[2rem] border-2 border-primarycolor/5 shadow-xl flex items-center gap-3 sm:gap-4">
+                        <div className="size-10 sm:size-12 rounded-2xl bg-rose-500/10 flex items-center justify-center text-rose-600 border-2 border-rose-500/10 shrink-0">
+                            <Banknote className="size-5 sm:size-6" />
+                        </div>
                         <div>
-                            <p className="text-[10px] font-black uppercase tracking-widest opacity-60 leading-none">Total Remaining</p>
-                            <p className="text-2xl font-black mt-1">{grandTotalRemaining.toLocaleString()} <span className="text-sm opacity-60 font-bold">ETB</span></p>
+                            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground leading-none">Total Remaining</p>
+                            <p className="text-lg sm:text-2xl font-black text-primarycolor mt-1">{grandTotalRemaining.toLocaleString()} <span className="text-xs sm:text-sm font-bold text-muted-foreground">ETB</span></p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div className="bg-white rounded-[2rem] border border-primarycolor/10 shadow-xl overflow-hidden">
+            <div className="bg-white rounded-[2rem] border border-primarycolor/10 shadow-xl overflow-hidden hidden md:block">
                 <div className="overflow-x-auto">
                     <table className="w-full">
                         <thead>
@@ -101,12 +107,10 @@ export default async function RoundInfoPage() {
                                 <th className="text-right px-6 py-5 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Total Price (ETB)</th>
                                 <th className="text-right px-6 py-5 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Paid (ETB)</th>
                                 <th className="text-right px-6 py-5 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Remaining (ETB)</th>
-                                <th className="text-center px-6 py-5 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Collection</th>
                             </tr>
                         </thead>
                         <tbody>
                             {shopData.map((shop, index) => {
-                                const collectionRate = shop.totalPrice > 0 ? (shop.totalPaid / shop.totalPrice) * 100 : 0;
                                 return (
                                     <tr key={shop.id} className="border-b border-primarycolor/5 hover:bg-slate-50 transition-colors">
                                         <td className="px-6 py-5 text-sm font-bold text-muted-foreground">{index + 1}</td>
@@ -121,19 +125,6 @@ export default async function RoundInfoPage() {
                                         <td className={`px-6 py-5 text-sm font-bold text-right ${shop.remainingBirr > 0 ? 'text-rose-600' : 'text-emerald-600'}`}>
                                             {shop.remainingBirr.toLocaleString()}
                                         </td>
-                                        <td className="px-6 py-5">
-                                            <div className="flex items-center gap-3 justify-center">
-                                                <div className="w-24 h-2 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
-                                                    <div
-                                                        className="h-full bg-emerald-500 rounded-full transition-all"
-                                                        style={{ width: `${collectionRate}%` }}
-                                                    />
-                                                </div>
-                                                <span className="text-[10px] font-black text-muted-foreground w-10 text-right">
-                                                    {collectionRate.toFixed(0)}%
-                                                </span>
-                                            </div>
-                                        </td>
                                     </tr>
                                 );
                             })}
@@ -147,19 +138,6 @@ export default async function RoundInfoPage() {
                                     <td className={`px-6 py-5 text-sm font-black text-right ${grandTotalRemaining > 0 ? 'text-rose-600' : 'text-emerald-600'}`}>
                                         {grandTotalRemaining.toLocaleString()}
                                     </td>
-                                    <td className="px-6 py-5">
-                                        <div className="flex items-center gap-3 justify-center">
-                                            <div className="w-24 h-2 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
-                                                <div
-                                                    className="h-full bg-emerald-500 rounded-full transition-all"
-                                                    style={{ width: `${(grandTotalPaid / (shopData.reduce((a, s) => a + s.totalPrice, 0) || 1)) * 100}%` }}
-                                                />
-                                            </div>
-                                            <span className="text-[10px] font-black text-primarycolor w-10 text-right">
-                                                {((grandTotalPaid / (shopData.reduce((a, s) => a + s.totalPrice, 0) || 1)) * 100).toFixed(0)}%
-                                            </span>
-                                        </div>
-                                    </td>
                                 </tr>
                             )}
                         </tbody>
@@ -168,6 +146,56 @@ export default async function RoundInfoPage() {
 
                 {shopData.length === 0 && (
                     <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
+                        <Repeat className="size-16 mb-4 opacity-20" />
+                        <p className="text-lg font-bold uppercase tracking-widest">No round data found</p>
+                        <p className="text-[10px] font-bold uppercase tracking-widest mt-1">Shops have no round records yet</p>
+                    </div>
+                )}
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 md:hidden">
+                {shopData.length > 0 ? (
+                    shopData.map((shop, index) => {
+                        return (
+                            <div key={shop.id} className="bg-white rounded-2xl border-2 border-primarycolor/5 p-5 space-y-4 hover:shadow-md transition-all">
+                                <div className="flex items-start justify-between gap-3">
+                                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                                        <div className="size-10 rounded-xl bg-primarycolor/5 flex items-center justify-center shrink-0">
+                                            <span className="text-sm font-black text-primarycolor">{index + 1}</span>
+                                        </div>
+                                        <div className="min-w-0">
+                                            <div className="font-black text-primarycolor uppercase text-sm truncate">{shop.name}</div>
+                                            <div className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">{shop.location}</div>
+                                        </div>
+                                    </div>
+                                    <div className="shrink-0 bg-slate-50 rounded-full px-3 py-1 text-[9px] font-black uppercase tracking-widest text-muted-foreground">
+                                        {shop.roundCount} Round{shop.roundCount !== 1 ? "s" : ""}
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="bg-slate-50 rounded-xl px-4 py-3">
+                                        <p className="text-[8px] font-black uppercase tracking-widest text-muted-foreground">Books Received</p>
+                                        <p className="text-base font-black text-primarycolor mt-0.5">{shop.totalBooksReceived.toLocaleString()}</p>
+                                    </div>
+                                    <div className="bg-slate-50 rounded-xl px-4 py-3">
+                                        <p className="text-[8px] font-black uppercase tracking-widest text-muted-foreground">Total Price</p>
+                                        <p className="text-base font-black text-primarycolor mt-0.5">{shop.totalPrice.toLocaleString()} <span className="text-[9px] font-bold text-muted-foreground">ETB</span></p>
+                                    </div>
+                                    <div className="bg-emerald-500/5 rounded-xl px-4 py-3">
+                                        <p className="text-[8px] font-black uppercase tracking-widest text-emerald-600">Paid</p>
+                                        <p className="text-base font-black text-emerald-600 mt-0.5">{shop.totalPaid.toLocaleString()} <span className="text-[9px] font-bold text-emerald-600/60">ETB</span></p>
+                                    </div>
+                                    <div className={`rounded-xl px-4 py-3 ${shop.remainingBirr > 0 ? 'bg-rose-500/5' : 'bg-emerald-500/5'}`}>
+                                        <p className={`text-[8px] font-black uppercase tracking-widest ${shop.remainingBirr > 0 ? 'text-rose-600' : 'text-emerald-600'}`}>Remaining</p>
+                                        <p className={`text-base font-black mt-0.5 ${shop.remainingBirr > 0 ? 'text-rose-600' : 'text-emerald-600'}`}>{shop.remainingBirr.toLocaleString()} <span className={`text-[9px] font-bold ${shop.remainingBirr > 0 ? 'text-rose-600/60' : 'text-emerald-600/60'}`}>ETB</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })
+                ) : (
+                    <div className="flex flex-col items-center justify-center py-20 text-muted-foreground bg-white rounded-2xl border-2 border-primarycolor/5">
                         <Repeat className="size-16 mb-4 opacity-20" />
                         <p className="text-lg font-bold uppercase tracking-widest">No round data found</p>
                         <p className="text-[10px] font-bold uppercase tracking-widest mt-1">Shops have no round records yet</p>

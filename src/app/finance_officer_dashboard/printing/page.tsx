@@ -1,0 +1,1 @@
+export { default } from "@/app/admin_dashboard/finance/printing/page";

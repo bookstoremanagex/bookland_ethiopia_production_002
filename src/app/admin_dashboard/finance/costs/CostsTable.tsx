@@ -166,6 +166,7 @@ export default function CostsTable({ data }: { data: BookCostData[] }) {
       </div>
 
       <div className="bg-white rounded-[2.5rem] border-2 border-primarycolor/5 shadow-2xl overflow-hidden">
+        <div className="overflow-x-auto">
         <Table>
           <TableHeader className="bg-slate-50/50">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -213,6 +214,7 @@ export default function CostsTable({ data }: { data: BookCostData[] }) {
             )}
           </TableBody>
         </Table>
+        </div>
       </div>
 
       <div className="flex items-center justify-between px-2">

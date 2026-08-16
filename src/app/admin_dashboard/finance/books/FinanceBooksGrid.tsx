@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import {
   Search,
   BookOpen,
@@ -54,6 +54,7 @@ export function FinanceBooksGrid({
   search,
 }: Props) {
   const router = useRouter();
+  const pathname = usePathname();
   const [searchInput, setSearchInput] = useState(search);
   const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -61,7 +62,7 @@ export function FinanceBooksGrid({
     const params = new URLSearchParams();
     if (query) params.set("search", query);
     params.set("page", "1");
-    router.push(`/admin_dashboard/finance/books?${params.toString()}`);
+    router.push(`${pathname}?${params.toString()}`);
   };
 
   const handleSearchChange = (value: string) => {
@@ -85,7 +86,7 @@ export function FinanceBooksGrid({
     const params = new URLSearchParams();
     if (search) params.set("search", search);
     params.set("page", String(page));
-    router.push(`/admin_dashboard/finance/books?${params.toString()}`);
+    router.push(`${pathname}?${params.toString()}`);
   };
 
   return (
@@ -113,7 +114,7 @@ export function FinanceBooksGrid({
               type="button"
               onClick={() => {
                 setSearchInput("");
-                router.push("/admin_dashboard/finance/books");
+                router.push(pathname);
               }}
               className="h-14 px-5 rounded-2xl border-2 border-slate-200 bg-white font-black uppercase tracking-widest text-[10px] text-muted-foreground hover:bg-slate-50 transition-all"
             >

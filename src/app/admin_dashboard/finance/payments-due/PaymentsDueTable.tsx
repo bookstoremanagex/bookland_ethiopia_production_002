@@ -35,6 +35,8 @@ import {
 } from "@/components/ui/table"
 import Link from "next/link"
 import { convertToEthiopian, ETHIOPIAN_MONTHS } from "@/lib/calendar-utils"
+import { usePathname } from "next/navigation"
+import { paymentDetailHref, shopDetailHref } from "@/lib/finance-nav"
 
 export interface PaymentsDueData {
     id: number
@@ -48,7 +50,7 @@ export interface PaymentsDueData {
     totalDebt: number
 }
 
-function buildColumns(managePaymentBasePath: string, shopBasePath: string): ColumnDef<PaymentsDueData>[] {
+function buildColumns(managePaymentBasePath: string, shopBasePath: string, pathname: string | null): ColumnDef<PaymentsDueData>[] {
   return [
   {
     accessorKey: "name",
@@ -188,12 +190,12 @@ function buildColumns(managePaymentBasePath: string, shopBasePath: string): Colu
       const shop = row.original
       return (
         <div className="flex items-center gap-1">
-            <Link href={`${managePaymentBasePath}/${shop.id}/debts-payments`}>
+            <Link href={paymentDetailHref(pathname, shop.id)}>
                 <Button variant="ghost" size="icon" className="rounded-full hover:bg-emerald-500 hover:text-white transition-all" title="Payment Detail">
                     <FileText className="size-4" />
                 </Button>
             </Link>
-            <Link href={`${shopBasePath}/${shop.id}`}>
+            <Link href={shopDetailHref(pathname, shop.id)}>
                 <Button variant="ghost" size="icon" className="rounded-full hover:bg-primarycolor hover:text-white transition-all" title="Shop Profile">
                     <ExternalLink className="size-4" />
                 </Button>
@@ -205,6 +207,7 @@ function buildColumns(managePaymentBasePath: string, shopBasePath: string): Colu
 ]}
 
 export default function PaymentsDueTable({ data, managePaymentBasePath = "/admin_dashboard/manage_payment", shopBasePath = "/admin_dashboard/book_shops" }: { data: PaymentsDueData[]; managePaymentBasePath?: string; shopBasePath?: string }) {
+  const pathname = usePathname();
   const [sorting, setSorting] = React.useState<SortingState>([{ id: "totalDebt", desc: true }])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
@@ -298,8 +301,8 @@ export default function PaymentsDueTable({ data, managePaymentBasePath = "/admin
   }
 
   const columns = React.useMemo(
-    () => buildColumns(managePaymentBasePath, shopBasePath),
-    [managePaymentBasePath, shopBasePath]
+    () => buildColumns(managePaymentBasePath, shopBasePath, pathname),
+    [managePaymentBasePath, shopBasePath, pathname]
   );
 
   const table = useReactTable({
@@ -427,12 +430,12 @@ export default function PaymentsDueTable({ data, managePaymentBasePath = "/admin
                     </div>
                   </div>
                   <div className="flex items-center gap-1 shrink-0">
-                    <Link href={`${managePaymentBasePath}/${item.id}/debts-payments`}>
+                    <Link href={paymentDetailHref(pathname, item.id)}>
                       <Button variant="ghost" size="icon" className="rounded-full hover:bg-emerald-500 hover:text-white transition-all" title="Payment Detail">
                         <FileText className="size-4" />
                       </Button>
                     </Link>
-                    <Link href={`${shopBasePath}/${item.id}`}>
+                    <Link href={shopDetailHref(pathname, item.id)}>
                       <Button variant="ghost" size="icon" className="rounded-full hover:bg-primarycolor hover:text-white transition-all" title="Shop Profile">
                         <ExternalLink className="size-4" />
                       </Button>

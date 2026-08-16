@@ -1,0 +1,1 @@
+export { default } from "@/app/admin_dashboard/profile/page";
