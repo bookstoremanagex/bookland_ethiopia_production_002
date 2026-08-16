@@ -101,6 +101,7 @@ export const ALL_DASHBOARD_MENUS: MenuItem[] = [
         menuName: "Production - Books",
         subItems: [
             { title: "Books", icon: BookOpen, path: "production/books", menuName: "Production - Books" },
+            { title: "Low Stock", icon: TrendingUp, path: "production/low-stock", menuName: "Low Stock" },
             { title: "80 20", icon: TrendingUp, path: "production/80-20", menuName: "80 20" }
         ]
     },

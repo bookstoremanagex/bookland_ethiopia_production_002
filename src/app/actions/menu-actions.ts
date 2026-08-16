@@ -79,7 +79,8 @@ export async function getEnabledMenuNamesForRole(role: string) {
     const names: string[] = management.map((m: any) => m.menus?.name).filter(Boolean);
 
     // Always enable Settings and Theme Customization for all non-admin roles
-    if (role !== "admin") {
+    // except Inventory Manager, who has no settings pages
+    if (role !== "admin" && role !== "inventory_manager") {
       if (!names.includes("Settings")) names.push("Settings");
       if (!names.includes("Theme Customization")) names.push("Theme Customization");
     }
