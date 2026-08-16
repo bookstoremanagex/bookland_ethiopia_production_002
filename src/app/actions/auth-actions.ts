@@ -1,7 +1,6 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import retailPrisma from "@/lib/retail-prisma";
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
 
@@ -18,7 +17,6 @@ function getRedirectPath(role: string): string {
     case "Printer": return "/printer_full";
     case "Viewer": return "/viewer_dashboard";
     case "Delivery Account": return "/delivery_dashboard_full";
-    case "Retail Shop": return "/retail_shop_dashboard";
     default: return "/admin_dashboard";
   }
 }
@@ -99,37 +97,6 @@ export async function loginAction(email: string, password: string) {
         return {
           success: true,
           redirectPath: getRedirectPath(account.account_type),
-          user: sessionData,
-        };
-      }
-    }
-
-    // 3. Fall back to retail database users table
-    const retailUser = await retailPrisma.users.findFirst({
-      where: { email },
-    });
-
-    if (retailUser && retailUser.password) {
-      const isPasswordValid = await bcrypt.compare(password, retailUser.password);
-      if (isPasswordValid) {
-        const role = retailUser.role ?? "Retail Shop";
-        const sessionData = {
-          id: retailUser.id,
-          name: retailUser.name ?? "Retail User",
-          email: retailUser.email ?? email,
-          role,
-        };
-
-        (await cookies()).set("session", JSON.stringify(sessionData), {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
-          maxAge: 60 * 60 * 24 * 7,
-          path: "/",
-        });
-
-        return {
-          success: true,
-          redirectPath: getRedirectPath(role),
           user: sessionData,
         };
       }

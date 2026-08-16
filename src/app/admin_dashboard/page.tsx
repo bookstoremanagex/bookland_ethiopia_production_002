@@ -4,7 +4,7 @@ import { getServerCalendarPref } from "@/lib/server-calendar"
 import { formatDate, convertToEthiopian, ETHIOPIAN_MONTHS } from "@/lib/calendar-utils"
 import { getTopSellers } from "@/app/actions/top-sellers-actions";
 
-const LOW_STOCK_THRESHOLD = 50;
+const LOW_STOCK_THRESHOLD = 500;
 
 export interface DashboardData {
   stats: {
@@ -48,6 +48,7 @@ export interface DashboardData {
     totalQuantity: number;
     editionCount: number;
     uniqueCode: string;
+    readyToTransfer: number;
   }[];
   topBooks: {
     id: number;
@@ -69,6 +70,7 @@ export default async function AdminHomePage() {
     rawNotifications,
     rawOrders,
     rawLowStock,
+    rawCentralEditions,
     rawLogs,
     rawStores,
     rawPendingPayments,
@@ -98,6 +100,10 @@ export default async function AdminHomePage() {
       include: {
         bookedition: { include: { books: true } },
       },
+    }),
+    (prisma as any).bookedition.findMany({
+      where: { is_deleted: false, count_remening_for_transfer: { gt: 0 } },
+      include: { books: true },
     }),
     (prisma as any).activityLogs.findMany({
       where: { is_deleted: false },
@@ -141,6 +147,7 @@ export default async function AdminHomePage() {
   const pendingPaymentsCount = rawPendingPayments || 0;
 
   const lowStockList = (rawLowStock as any[]) || [];
+  const centralEditionsList = (rawCentralEditions as any[]) || [];
 
   // Aggregate all edition/store inventory per book, then keep books whose total is below the threshold
   const bookStockMap = new Map<number, { book: any; total: number; editionCount: number }>();
@@ -156,6 +163,18 @@ export default async function AdminHomePage() {
       bookStockMap.set(bookId, { book, total: entry.quantity || 0, editionCount: 1 });
     }
   }
+
+  // Aggregate copies available to transfer (printed but not yet in stores) per book
+  const centralStockMap = new Map<number, number>();
+  for (const edition of centralEditionsList) {
+    const bookId = edition?.books?.id;
+    if (!bookId) continue;
+    centralStockMap.set(
+      bookId,
+      (centralStockMap.get(bookId) || 0) + Number(edition.count_remening_for_transfer || 0)
+    );
+  }
+
   const lowStockBooks = Array.from(bookStockMap.values()).filter(
     (bs) => bs.total >= 1 && bs.total < LOW_STOCK_THRESHOLD
   );
@@ -169,6 +188,7 @@ export default async function AdminHomePage() {
     totalQuantity: bs.total,
     editionCount: bs.editionCount,
     uniqueCode: bs.book.unique_identification_code || "",
+    readyToTransfer: centralStockMap.get(bs.book.id) || 0,
   }));
 
   const prevRevenue = prevAssignments.reduce((acc: any, a: any) => acc + (a.total_price || 0), 0);

@@ -65,10 +65,6 @@ const menuEntries: MenuEntry[] = [
   { title: "Selling to individual", url: "/admin_dashboard/retail_management", group: "Management", icon: ShoppingBag },
   { title: "Activity Log", url: "/admin_dashboard/activity_log", group: "Management", icon: History },
 
-  { title: "Retail Shop Main", url: "/admin_dashboard/retail-shop", group: "Retail Shop", icon: Store },
-  { title: "Our Books", url: "/admin_dashboard/retail-shop/our-books", group: "Retail Shop", icon: BookOpen },
-  { title: "Retail Orders", url: "/admin_dashboard/retail-shop/orders", group: "Retail Shop", icon: ClipboardList },
-
   { title: "Statistics General", url: "/admin_dashboard/statistics", group: "Statistics", icon: BarChart3 },
   { title: "Statistics Books", url: "/admin_dashboard/statistics/books", group: "Statistics", icon: BookOpen },
   { title: "Statistics Stores", url: "/admin_dashboard/statistics/stores", group: "Statistics", icon: Store },
@@ -114,7 +110,6 @@ const menuEntries: MenuEntry[] = [
   { title: "Pending Deliveries", url: "/admin_dashboard/reports/pending_deliveries", group: "Reports", icon: Clock },
 
   { title: "Accounts", url: "/admin_dashboard/settings/accounts", group: "Settings", icon: UserCog },
-  { title: "Retail Shop Accounts", url: "/admin_dashboard/settings/retail-shop-accounts", group: "Settings", icon: Store },
   { title: "Menu Management", url: "/admin_dashboard/settings/menus", group: "Settings", icon: TableProperties },
   { title: "Theme Customization", url: "/admin_dashboard/settings/theme", group: "Settings", icon: Palette },
 ]

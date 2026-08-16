@@ -1,4 +1,4 @@
-import { AlertTriangle, ArrowRight, PackageX } from "lucide-react";
+import { AlertTriangle, ArrowRight, PackageX, Truck } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
@@ -11,10 +11,11 @@ interface LowStockAlertsProps {
     totalQuantity: number;
     editionCount: number;
     uniqueCode: string;
+    readyToTransfer: number;
   }[];
 }
 
-const THRESHOLD = 50;
+const THRESHOLD = 500;
 
 function urgency(qty: number) {
   if (qty <= 10) {
@@ -107,12 +108,21 @@ export function LowStockAlerts({ items }: LowStockAlertsProps) {
                     </p>
                   </div>
                 </div>
-                <div className="shrink-0 text-left sm:text-right">
-                  <span className={`inline-flex items-center gap-1 text-sm font-bold tabular-nums ${u.text}`}>
-                    <span className={`size-1.5 rounded-full ${u.chip} animate-pulse`} />
-                    {item.totalQuantity}
-                  </span>
-                  <span className="text-xs text-slate-500 ml-1">copies total</span>
+                <div className="flex items-center gap-4 shrink-0">
+                  <div className="flex flex-col items-center gap-1 rounded-xl border border-emerald-200/60 bg-emerald-50/70 px-3 py-2 min-w-[96px]">
+                    <span className="inline-flex items-center gap-1 text-sm font-bold tabular-nums text-emerald-700">
+                      <Truck className="size-3.5" />
+                      {item.readyToTransfer}
+                    </span>
+                    <span className="text-[9px] font-black uppercase tracking-wider text-emerald-600/70">Ready to transfer</span>
+                  </div>
+                  <div className="text-left sm:text-right">
+                    <span className={`inline-flex items-center gap-1 text-sm font-bold tabular-nums ${u.text}`}>
+                      <span className={`size-1.5 rounded-full ${u.chip} animate-pulse`} />
+                      {item.totalQuantity}
+                    </span>
+                    <span className="text-xs text-slate-500 ml-1">copies total</span>
+                  </div>
                 </div>
               </div>
             );
