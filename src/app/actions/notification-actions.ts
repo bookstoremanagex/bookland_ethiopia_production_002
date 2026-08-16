@@ -74,8 +74,7 @@ export async function createNotification(data: {
     revalidatePath("/delivery_dashboard_full/notifications")
     revalidatePath("/finance_officer_dashboard/notifications")
     revalidatePath("/inventory_manager_dashboard/notifications")
-    revalidatePath("/operation_manager_dashboard/notifications")
-    revalidatePath("/retail_manager_dashboard/notifications")
+    revalidatePath("/operation_manager_full_dashboard/notifications")
     revalidatePath("/sales_staff_dashboard/notifications")
     revalidatePath("/viewer_dashboard/notifications")
     return { success: true, data: notification }
@@ -92,8 +91,7 @@ function revalidateAllNotificationPaths() {
     "/delivery_dashboard_full/notifications",
     "/finance_officer_dashboard/notifications",
     "/inventory_manager_dashboard/notifications",
-    "/operation_manager_dashboard/notifications",
-    "/retail_manager_dashboard/notifications",
+    "/operation_manager_full_dashboard/notifications",
     "/sales_staff_dashboard/notifications",
     "/viewer_dashboard/notifications",
   ];

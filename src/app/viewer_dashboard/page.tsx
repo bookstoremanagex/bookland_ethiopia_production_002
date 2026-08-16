@@ -2,20 +2,37 @@ import React from 'react'
 import {
     Eye,
     BarChart3,
-    Globe,
-    ArrowUpRight,
-    Search,
+    BookOpen,
+    Store,
+    ShoppingBag,
     Activity
 } from 'lucide-react'
 import { Card } from "@/components/ui/card"
+import Link from "next/link"
 
 import { getViewerStats } from '../actions/dashboard-stats'
+import { getBooks } from '../actions/get-books'
+import { getStores } from '../actions/get-stores'
+import { getBookShops } from '../actions/book-shop-actions'
 
 export default async function ViewerHomePage() {
     const statsResult = await getViewerStats();
-    const stats = statsResult.success ? statsResult.data : {
-        totalBooks: 0
-    };
+    const stats = statsResult.success ? statsResult.data : { totalBooks: 0 };
+
+    const booksRes = await getBooks();
+    const storesRes = await getStores();
+    const shopsRes = await getBookShops();
+
+    const books = booksRes.success ? booksRes.data ?? [] : [];
+    const stores = storesRes.success ? storesRes.data ?? [] : [];
+    const shops = shopsRes.success ? shopsRes.data : [];
+
+    const quickLinks = [
+        { title: "Browse Books", desc: "Explore the full catalog", icon: BookOpen, href: "/viewer_dashboard/books" },
+        { title: "Analytics", desc: "Platform statistics", icon: BarChart3, href: "/viewer_dashboard/statistics" },
+        { title: "Stores", desc: "Physical locations", icon: Store, href: "/viewer_dashboard/stores" },
+        { title: "Book Shops", desc: "Partner distribution", icon: ShoppingBag, href: "/viewer_dashboard/book_shops" },
+    ];
 
     return (
         <div className="p-4 md:p-10 space-y-8 md:space-y-10 bg-[#F8FAFC] min-h-screen">
@@ -41,7 +58,7 @@ export default async function ViewerHomePage() {
                     </div>
                     <div className="flex flex-col items-center px-6">
                         <Activity className="size-6 text-secondarycolor animate-pulse mb-1" />
-                        <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Public Feed</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Read Only</span>
                     </div>
                 </div>
             </div>
@@ -64,56 +81,57 @@ export default async function ViewerHomePage() {
 
                 <Card className="p-6 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] border-2 border-primarycolor/5 shadow-lg bg-white relative overflow-hidden group">
                     <div className="absolute top-0 right-0 p-6 md:p-8 opacity-5 group-hover:opacity-10 transition-opacity">
-                        <Globe className="size-16 md:size-24" />
+                        <Store className="size-16 md:size-24" />
                     </div>
                     <div className="space-y-4 relative z-10">
-                        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Platform Transparency</p>
+                        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Active Stores</p>
                         <div className="flex items-end gap-2">
-                            <h2 className="text-2xl md:text-4xl font-black text-primarycolor italic leading-none">High</h2>
-                            <span className="text-xs font-black text-secondarycolor flex items-center mb-1 uppercase tracking-tighter">
-                                Reliable
-                            </span>
+                            <h2 className="text-2xl md:text-4xl font-black text-primarycolor italic leading-none">
+                                {stores.length.toLocaleString()}
+                            </h2>
                         </div>
                     </div>
                 </Card>
 
                 <Card className="p-6 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] border-2 border-primarycolor/5 shadow-lg bg-white relative overflow-hidden group">
                     <div className="absolute top-0 right-0 p-6 md:p-8 opacity-5 group-hover:opacity-10 transition-opacity">
-                        <Search className="size-16 md:size-24" />
+                        <ShoppingBag className="size-16 md:size-24" />
                     </div>
                     <div className="space-y-4 relative z-10">
-                        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Catalog Coverage</p>
-                        <div className="flex items-center gap-3">
-                            <div className="size-3 rounded-full bg-emerald-500 animate-pulse" />
-                            <h2 className="text-xl md:text-2xl font-black text-primarycolor uppercase tracking-tight italic leading-none">100% Transparent</h2>
+                        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Partner Book Shops</p>
+                        <div className="flex items-end gap-2">
+                            <h2 className="text-2xl md:text-4xl font-black text-primarycolor italic leading-none">
+                                {shops.length.toLocaleString()}
+                            </h2>
+                            <span className="text-xs font-black text-secondarycolor flex items-center mb-1 uppercase tracking-tighter">
+                                {books.length.toLocaleString()} Titles
+                            </span>
                         </div>
                     </div>
                 </Card>
             </div>
 
-            {/* Notification Bar */}
-            <div className="bg-slate-900 text-white p-8 rounded-[3rem] shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.1),transparent)]" />
-                <div className="space-y-1 relative z-10">
-                    <h3 className="text-xl font-black uppercase italic tracking-tight">Public Data Request</h3>
-                    <p className="text-white/40 font-bold text-sm uppercase tracking-widest">You can request specific data exports for educational purposes.</p>
-                </div>
-                <Button className="bg-primarycolor hover:bg-white hover:text-primarycolor text-white font-black uppercase tracking-widest text-[10px] px-8 h-12 rounded-xl transition-all relative z-10">
-                    Request Data
-                </Button>
+            {/* Quick Links */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+                {quickLinks.map((q) => (
+                    <Link
+                        key={q.title}
+                        href={q.href}
+                        className="group bg-white p-8 rounded-[2.5rem] border-2 border-primarycolor/5 shadow-xl flex items-center gap-6 hover:border-primarycolor/20 hover:shadow-2xl transition-all hover:-translate-y-1"
+                    >
+                        <div className="size-16 rounded-2xl bg-primarycolor/10 flex items-center justify-center text-primarycolor group-hover:bg-primarycolor group-hover:text-white transition-all">
+                            <q.icon className="size-8" />
+                        </div>
+                        <div className="flex-1">
+                            <h3 className="text-lg font-black text-primarycolor uppercase tracking-tight">{q.title}</h3>
+                            <p className="text-muted-foreground font-bold text-sm">{q.desc}</p>
+                        </div>
+                        <div className="size-10 rounded-xl bg-primarycolor/5 flex items-center justify-center text-primarycolor opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0">
+                            →
+                        </div>
+                    </Link>
+                ))}
             </div>
         </div>
     )
-}
-
-function Button({ children, className, ...props }: any) {
-    return (
-        <button className={cn("inline-flex items-center justify-center whitespace-nowrap", className)} {...props}>
-            {children}
-        </button>
-    )
-}
-
-function cn(...inputs: any[]) {
-    return inputs.filter(Boolean).join(' ')
 }

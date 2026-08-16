@@ -27,8 +27,7 @@ export async function updateDashboardMenu(role: string, enabledMenus: string[]) 
     revalidatePath("/admin_dashboard/settings/menus");
     revalidatePath("/finance_officer_dashboard", "layout");
     revalidatePath("/inventory_manager_dashboard", "layout");
-    revalidatePath("/operation_manager_dashboard", "layout");
-    revalidatePath("/retail_manager_dashboard", "layout");
+    revalidatePath("/operation_manager_full_dashboard", "layout");
     revalidatePath("/sales_staff_dashboard", "layout");
     revalidatePath("/printer_dashboard", "layout");
     revalidatePath("/viewer_dashboard", "layout");
@@ -58,7 +57,6 @@ const ROLE_TO_ACCOUNT_TYPE: Record<string, string> = {
   finance_officer: "Finance Officer",
   inventory_manager: "Inventory Manager",
   operation_manager: "Operations Manager",
-  retail_manager: "Retail Manager",
   sales_staff: "Sales Staff",
   delivery_sales: "Delivery and Sales Management",
   delivery_sample: "Delivery Sample",
@@ -97,7 +95,6 @@ const ACCOUNT_TYPES = [
   "Inventory Manager",
   "Finance Officer",
   "Sales Staff",
-  "Retail Manager",
   "Delivery and Sales Management",
   "Delivery Sample",
   "Printer",
@@ -174,11 +171,10 @@ export async function saveMenuAssignments(accountType: string, menuIds: number[]
     }
 
     const ACCOUNT_TYPE_TO_DASHBOARD: Record<string, string> = {
-      "Operations Manager": "/operation_manager_dashboard",
+      "Operations Manager": "/operation_manager_full_dashboard",
       "Inventory Manager": "/inventory_manager_dashboard",
       "Finance Officer": "/finance_officer_dashboard",
       "Sales Staff": "/sales_staff_dashboard",
-      "Retail Manager": "/retail_manager_dashboard",
       "Delivery and Sales Management": "/delivery_and_sales_dashboard",
       "Delivery Sample": "/delivery_sample_dashboard",
       "Printer": "/printer_dashboard",

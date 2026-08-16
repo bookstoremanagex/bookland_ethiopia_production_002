@@ -12,7 +12,6 @@ const ROLE_TO_NOTIFICATION_TO: Record<string, string> = {
     "Inventory Manager": "INVENTORY_MANAGER",
     "Finance Officer": "FINANCE",
     "Sales Staff": "DELIVERY_AND_SALES",
-    "Retail Manager": "RETAIL_MANAGER",
     "Delivery and Sales Management": "DELIVERY_AND_SALES",
     "Delivery Sample": "DELIVERY_AND_SALES",
     "Printer": "PRINTER",

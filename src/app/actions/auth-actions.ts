@@ -11,7 +11,6 @@ function getRedirectPath(role: string): string {
     case "Inventory Manager": return "/inventory_manager_dashboard";
     case "Finance Officer": return "/finance_officer_dashboard";
     case "Sales Staff": return "/sales_staff_dashboard";
-    case "Retail Manager": return "/retail_manager_dashboard";
     case "Delivery and Sales Management": return "/delivery_and_sales_dashboard";
     case "Delivery Sample": return "/delivery_sample_dashboard";
     case "Printer": return "/printer_full";

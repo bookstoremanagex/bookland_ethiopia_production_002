@@ -1,26 +1,33 @@
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
-import { GenericAppSidebar } from "@/components/sidebar_components/generic_sideboard"
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { ViewerSidebar } from "@/components/viewer_dashboard_components/ViewerSidebar";
 import { getCurrentSession } from "../actions/auth-actions";
 import UserMenu from "@/components/admin_dashboard_components/UserMenu";
+import CalendarClientWrapper, { CalendarToggleButton } from "@/components/CalendarClientWrapper";
+
+export const dynamic = "force-dynamic";
 
 export default async function ViewerLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   const session = await getCurrentSession();
+
   return (
-    <SidebarProvider>
-      <GenericAppSidebar title="Data Viewer" rootPath="/viewer_dashboard" role="viewer" footerText="Public View" />
-      <div className="flex-1 flex flex-col min-h-screen">
-        <header className="h-16 flex items-center justify-between px-4 border-b bg-white/50 backdrop-blur-md sticky top-0 z-30">
-          <SidebarTrigger />
-          <UserMenu name={session?.name} role={session?.role} basePath="/viewer_dashboard" />
-        </header>
-        <main className="flex-1">
+    <CalendarClientWrapper>
+      <SidebarProvider>
+        <ViewerSidebar />
+        <main className="flex-1 min-w-0 min-h-screen bg-transparent font-sans text-slate-800 antialiased pb-20 md:pb-0">
+          <div className="sticky top-0 z-10 flex items-center justify-between border-b border-primarycolor/10 bg-white/80 px-3 py-2 backdrop-blur-md md:px-4">
+            <SidebarTrigger className="text-primarycolor hover:bg-primarycolor/10" />
+            <div className="flex items-center gap-2">
+              <CalendarToggleButton />
+              <UserMenu name={session?.name} role={session?.role} basePath="/viewer_dashboard" />
+            </div>
+          </div>
           {children}
         </main>
-      </div>
-    </SidebarProvider>
+      </SidebarProvider>
+    </CalendarClientWrapper>
   );
 }
