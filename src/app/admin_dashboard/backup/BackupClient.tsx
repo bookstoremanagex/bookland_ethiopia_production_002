@@ -3,9 +3,39 @@
 import React, { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { DatabaseBackup, Download, Loader2, CheckCircle2, XCircle, HardDrive, CalendarDays, Trash2 } from "lucide-react";
-import { createLocalBackup, deleteLocalBackup, getLocalBackups } from "@/app/actions/backup-actions";
+import {
+    ColumnDef,
+    SortingState,
+    flexRender,
+    getCoreRowModel,
+    getFilteredRowModel,
+    getPaginationRowModel,
+    getSortedRowModel,
+    useReactTable,
+} from "@tanstack/react-table";
+import {
+    DatabaseBackup,
+    Loader2,
+    CheckCircle2,
+    XCircle,
+    HardDrive,
+    CalendarDays,
+    Search,
+    ArrowUpDown,
+    ChevronLeft,
+    ChevronRight,
+} from "lucide-react";
+import { createLocalBackup, getLocalBackups } from "@/app/actions/backup-actions";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
 import { useCalendar } from "@/lib/calendar-context";
 import { cn } from "@/lib/utils";
 
@@ -46,49 +76,8 @@ export default function BackupClient({ initialBackups }: BackupClientProps) {
     const [backups, setBackups] = useState<BackupRecord[]>(initialBackups);
     const [isCreating, setIsCreating] = useState(false);
     const [isPending, startTransition] = useTransition();
-    const [downloadProgress, setDownloadProgress] = useState<number | null>(null);
-    const [downloadingId, setDownloadingId] = useState<number | null>(null);
-
-    const streamDownload = async (id: number, fileName: string) => {
-        setDownloadingId(id);
-        setDownloadProgress(0);
-        try {
-            const res = await fetch(`/api/backup/download/${id}`);
-            if (!res.ok) {
-                throw new Error(`Download failed (${res.status})`);
-            }
-            const contentLength = Number(res.headers.get("Content-Length")) || 0;
-            if (!res.body) {
-                throw new Error("Response body unavailable");
-            }
-
-            const reader = res.body.getReader();
-            const chunks: BlobPart[] = [];
-            let received = 0;
-
-            for (;;) {
-                const { done, value } = await reader.read();
-                if (done) break;
-                if (value) {
-                    chunks.push(value.buffer as ArrayBuffer);
-                    received += value.length;
-                    if (contentLength > 0) {
-                        setDownloadProgress(Math.min(100, Math.round((received / contentLength) * 100)));
-                    }
-                }
-            }
-
-            setDownloadProgress(100);
-            const blob = new Blob(chunks, { type: "application/sql" });
-            triggerBlobDownload(blob, fileName);
-        } catch (error) {
-            console.error("Download error:", error);
-            toast.error("Failed to download backup file");
-        } finally {
-            setDownloadingId(null);
-            setDownloadProgress(null);
-        }
-    };
+    const [sorting, setSorting] = useState<SortingState>([]);
+    const [globalFilter, setGlobalFilter] = useState("");
 
     const handleCreateBackup = async () => {
         setIsCreating(true);
@@ -99,7 +88,7 @@ export default function BackupClient({ initialBackups }: BackupClientProps) {
                 return;
             }
             const data = (res as any).data;
-            await streamDownload(data.id, data.fileName);
+            triggerBlobDownload(new Blob([data.content], { type: "application/sql" }), data.fileName);
             toast.success("Backup created and downloaded successfully");
             startTransition(() => {
                 router.refresh();
@@ -114,18 +103,129 @@ export default function BackupClient({ initialBackups }: BackupClientProps) {
         }
     };
 
-    const handleDeleteBackup = async (id: number) => {
-        if (!confirm("Are you sure you want to delete this backup record?")) return;
-        const res = await deleteLocalBackup(id);
-        if (res.success) {
-            toast.success("Backup record deleted");
-            setBackups((prev) => prev.filter((b) => b.id !== id));
-        } else {
-            toast.error((res as any).error || "Failed to delete backup record");
-        }
-    };
+    const columns: ColumnDef<BackupRecord>[] = [
+        {
+            accessorKey: "databaseName",
+            header: ({ column }) => (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    className="hover:bg-transparent p-0 font-black uppercase tracking-wider text-muted-foreground"
+                >
+                    File Name
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            ),
+            cell: ({ row }) => (
+                <div className="flex items-center gap-2">
+                    <DatabaseBackup className="h-4 w-4 text-primarycolor/70 shrink-0" />
+                    <span className="font-bold text-slate-800 font-mono text-xs break-all">
+                        {row.original.databaseName || "Untitled backup"}
+                    </span>
+                </div>
+            ),
+        },
+        {
+            accessorKey: "fileSizeBytes",
+            header: ({ column }) => (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    className="hover:bg-transparent p-0 font-black uppercase tracking-wider text-muted-foreground"
+                >
+                    Size
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            ),
+            cell: ({ row }) => (
+                <span className="text-xs font-bold text-muted-foreground tabular-nums">
+                    {formatFileSize(row.original.fileSizeBytes)}
+                </span>
+            ),
+        },
+        {
+            accessorKey: "status",
+            header: ({ column }) => (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    className="hover:bg-transparent p-0 font-black uppercase tracking-wider text-muted-foreground"
+                >
+                    Status
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            ),
+            cell: ({ row }) => {
+                const isSuccess = row.original.status === "success";
+                return (
+                    <span
+                        className={cn(
+                            "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase",
+                            isSuccess
+                                ? "bg-green-50/50 border border-green-100 text-green-700"
+                                : "bg-red-50/50 border border-red-100 text-red-700",
+                        )}
+                    >
+                        {isSuccess ? (
+                            <CheckCircle2 className="h-3 w-3" />
+                        ) : (
+                            <XCircle className="h-3 w-3" />
+                        )}
+                        {row.original.status}
+                    </span>
+                );
+            },
+        },
+        {
+            accessorKey: "createdAt",
+            header: ({ column }) => (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    className="hover:bg-transparent p-0 font-black uppercase tracking-wider text-muted-foreground"
+                >
+                    Created
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            ),
+            cell: ({ row }) => {
+                const createdDate = row.original.createdAt instanceof Date ? row.original.createdAt : new Date(row.original.createdAt);
+                return (
+                    <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground">
+                        <CalendarDays className="h-3.5 w-3.5 text-primarycolor/60" />
+                        <span>{formatDateTime(createdDate)}</span>
+                    </div>
+                );
+            },
+        },
+    ];
 
-    const showProgress = downloadProgress !== null;
+    const table = useReactTable({
+        data: backups,
+        columns,
+        onSortingChange: setSorting,
+        getCoreRowModel: getCoreRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        onGlobalFilterChange: setGlobalFilter,
+        globalFilterFn: (row, _columnId, filterValue) => {
+            const item = row.original;
+            const q = String(filterValue).toLowerCase().trim();
+            if (!q) return true;
+            return (
+                String(item.databaseName || "").toLowerCase().includes(q) ||
+                String(item.status || "").toLowerCase().includes(q)
+            );
+        },
+        state: {
+            sorting,
+            globalFilter,
+        },
+        initialState: {
+            pagination: { pageSize: 10 },
+        },
+    });
 
     return (
         <div className="w-full py-10 px-4 md:px-8 max-w-none mx-auto">
@@ -154,27 +254,8 @@ export default function BackupClient({ initialBackups }: BackupClientProps) {
                 </div>
             </div>
 
-            {showProgress && (
-                <div className="mb-8 rounded-2xl border border-primarycolor/20 bg-primarycolor/5 p-5">
-                    <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-black text-primarycolor uppercase tracking-wide">
-                            Downloading backup...
-                        </span>
-                        <span className="text-sm font-black text-primarycolor tabular-nums">
-                            {downloadProgress}%
-                        </span>
-                    </div>
-                    <div className="h-3 w-full rounded-full bg-primarycolor/10 overflow-hidden">
-                        <div
-                            className="h-full rounded-full bg-primarycolor transition-all duration-200 ease-out"
-                            style={{ width: `${downloadProgress ?? 0}%` }}
-                        />
-                    </div>
-                </div>
-            )}
-
             <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-                <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 px-6 py-4 border-b border-slate-100">
                     <div className="flex items-center gap-2">
                         <HardDrive className="h-4 w-4 text-primarycolor" />
                         <span className="text-sm font-black text-slate-800 uppercase tracking-wide">
@@ -195,106 +276,88 @@ export default function BackupClient({ initialBackups }: BackupClientProps) {
                         </p>
                     </div>
                 ) : (
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-sm">
-                            <thead>
-                                <tr className="border-b border-slate-100 bg-slate-50/50 text-left">
-                                    <th className="px-6 py-3 text-[10px] font-black uppercase tracking-wider text-muted-foreground">
-                                        File Name
-                                    </th>
-                                    <th className="px-6 py-3 text-[10px] font-black uppercase tracking-wider text-muted-foreground">
-                                        Size
-                                    </th>
-                                    <th className="px-6 py-3 text-[10px] font-black uppercase tracking-wider text-muted-foreground">
-                                        Status
-                                    </th>
-                                    <th className="px-6 py-3 text-[10px] font-black uppercase tracking-wider text-muted-foreground">
-                                        Created
-                                    </th>
-                                    <th className="px-6 py-3 text-[10px] font-black uppercase tracking-wider text-muted-foreground text-right">
-                                        Actions
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {backups.map((backup) => {
-                                    const createdDate = backup.createdAt instanceof Date ? backup.createdAt : new Date(backup.createdAt);
-                                    const isSuccess = backup.status === "success";
-                                    const isDownloading = downloadingId === backup.id;
-                                    return (
-                                        <tr key={backup.id} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
-                                            <td className="px-6 py-4">
-                                                <div className="flex items-center gap-2">
-                                                    <DatabaseBackup className="h-4 w-4 text-primarycolor/70 shrink-0" />
-                                                    <span className="font-bold text-slate-800 font-mono text-xs break-all">
-                                                        {backup.databaseName || "Untitled backup"}
-                                                    </span>
+                    <>
+                        <div className="px-6 py-4 border-b border-slate-100">
+                            <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50/50 px-4">
+                                <Search className="h-4 w-4 text-slate-400 shrink-0" />
+                                <Input
+                                    placeholder="Search by file name or status..."
+                                    value={globalFilter}
+                                    onChange={(e) => setGlobalFilter(e.target.value)}
+                                    className="h-10 border-none focus-visible:ring-0 bg-transparent font-bold text-slate-700 placeholder:text-slate-300 px-0"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="overflow-x-auto">
+                            <Table>
+                                <TableHeader className="bg-slate-50/50">
+                                    {table.getHeaderGroups().map((headerGroup) => (
+                                        <TableRow key={headerGroup.id} className="hover:bg-transparent border-b border-slate-100">
+                                            {headerGroup.headers.map((header) => (
+                                                <TableHead key={header.id} className="px-6 py-3 text-[10px] font-black uppercase tracking-wider text-muted-foreground">
+                                                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                                                </TableHead>
+                                            ))}
+                                        </TableRow>
+                                    ))}
+                                </TableHeader>
+                                <TableBody>
+                                    {table.getRowModel().rows?.length ? (
+                                        table.getRowModel().rows.map((row) => (
+                                            <TableRow key={row.id} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
+                                                {row.getVisibleCells().map((cell) => (
+                                                    <TableCell key={cell.id} className="px-6 py-4">
+                                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                                    </TableCell>
+                                                ))}
+                                            </TableRow>
+                                        ))
+                                    ) : (
+                                        <TableRow>
+                                            <TableCell colSpan={columns.length} className="h-40 text-center">
+                                                <div className="flex flex-col items-center gap-2 opacity-40">
+                                                    <Search className="h-8 w-8 text-slate-300" />
+                                                    <p className="text-sm font-black uppercase tracking-widest text-muted-foreground">
+                                                        No backups match your search
+                                                    </p>
                                                 </div>
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                <span className="text-xs font-bold text-muted-foreground tabular-nums">
-                                                    {formatFileSize(backup.fileSizeBytes)}
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                <span
-                                                    className={cn(
-                                                        "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase",
-                                                        isSuccess
-                                                            ? "bg-green-50/50 border border-green-100 text-green-700"
-                                                            : "bg-red-50/50 border border-red-100 text-red-700",
-                                                    )}
-                                                >
-                                                    {isSuccess ? (
-                                                        <CheckCircle2 className="h-3 w-3" />
-                                                    ) : (
-                                                        <XCircle className="h-3 w-3" />
-                                                    )}
-                                                    {backup.status}
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground">
-                                                    <CalendarDays className="h-3.5 w-3.5 text-primarycolor/60" />
-                                                    <span>{formatDateTime(createdDate)}</span>
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                <div className="flex items-center justify-end gap-2">
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                        className="h-8 w-8 text-secondarycolor hover:bg-secondarycolor/10"
-                                                        title="Download backup file"
-                                                        disabled={downloadingId !== null}
-                                                        onClick={() =>
-                                                            streamDownload(backup.id, backup.databaseName || `backup_${backup.id}.sql`)
-                                                        }
-                                                    >
-                                                        {isDownloading ? (
-                                                            <Loader2 className="h-4 w-4 animate-spin" />
-                                                        ) : (
-                                                            <Download className="h-4 w-4" />
-                                                        )}
-                                                    </Button>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                        className="h-8 w-8 text-red-500 hover:bg-red-50"
-                                                        title="Delete backup record"
-                                                        disabled={downloadingId !== null}
-                                                        onClick={() => handleDeleteBackup(backup.id)}
-                                                    >
-                                                        <Trash2 className="h-4 w-4" />
-                                                    </Button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
-                    </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    )}
+                                </TableBody>
+                            </Table>
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-6 py-4 border-t border-slate-100">
+                            <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                                Showing {table.getRowModel().rows.length} of {backups.length} records
+                            </div>
+                            <div className="flex items-center space-x-2">
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => table.previousPage()}
+                                    disabled={!table.getCanPreviousPage()}
+                                    className="rounded-xl h-9 w-9 p-0 border-2 border-primarycolor/5"
+                                >
+                                    <ChevronLeft className="h-4 w-4" />
+                                </Button>
+                                <div className="px-4 py-1.5 rounded-xl bg-white border-2 border-primarycolor/5 text-[10px] font-black text-primarycolor tabular-nums">
+                                    {table.getState().pagination.pageIndex + 1}
+                                </div>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => table.nextPage()}
+                                    disabled={!table.getCanNextPage()}
+                                    className="rounded-xl h-9 w-9 p-0 border-2 border-primarycolor/5"
+                                >
+                                    <ChevronRight className="h-4 w-4" />
+                                </Button>
+                            </div>
+                        </div>
+                    </>
                 )}
             </div>
         </div>

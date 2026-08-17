@@ -27,7 +27,6 @@ export default function BackupStatusCard({ lastBackupAt }: BackupStatusCardProps
     const router = useRouter();
     const [now, setNow] = useState(() => Date.now());
     const [creating, setCreating] = useState(false);
-    const [progress, setProgress] = useState<number | null>(null);
 
     useEffect(() => {
         const t = setInterval(() => setNow(Date.now()), 30000);
@@ -86,37 +85,6 @@ export default function BackupStatusCard({ lastBackupAt }: BackupStatusCardProps
         },
     }[level];
 
-    const streamDownload = async (id: number, fileName: string) => {
-        setProgress(0);
-        try {
-            const res = await fetch(`/api/backup/download/${id}`);
-            if (!res.ok) throw new Error(`Download failed (${res.status})`);
-            const contentLength = Number(res.headers.get("Content-Length")) || 0;
-            if (!res.body) throw new Error("Response body unavailable");
-            const reader = res.body.getReader();
-            const chunks: BlobPart[] = [];
-            let received = 0;
-            for (;;) {
-                const { done, value } = await reader.read();
-                if (done) break;
-                if (value) {
-                    chunks.push(value.buffer as ArrayBuffer);
-                    received += value.length;
-                    if (contentLength > 0) {
-                        setProgress(Math.min(100, Math.round((received / contentLength) * 100)));
-                    }
-                }
-            }
-            setProgress(100);
-            triggerBlobDownload(new Blob(chunks, { type: "application/sql" }), fileName);
-        } catch (error) {
-            console.error("Download error:", error);
-            toast.error("Failed to download backup file");
-        } finally {
-            setProgress(null);
-        }
-    };
-
     const handleRecordBackup = async () => {
         setCreating(true);
         try {
@@ -126,8 +94,8 @@ export default function BackupStatusCard({ lastBackupAt }: BackupStatusCardProps
                 return;
             }
             const data = (res as any).data;
-            await streamDownload(data.id, data.fileName);
-            toast.success("Backup recorded successfully");
+            triggerBlobDownload(new Blob([data.content], { type: "application/sql" }), data.fileName);
+            toast.success("Backup recorded and downloaded successfully");
             router.refresh();
         } catch (error) {
             console.error("Backup error:", error);
@@ -183,7 +151,7 @@ export default function BackupStatusCard({ lastBackupAt }: BackupStatusCardProps
                 <div className="flex flex-col items-stretch gap-3 md:items-end">
                     <Button
                         onClick={handleRecordBackup}
-                        disabled={creating || progress !== null}
+                        disabled={creating}
                         className="h-11 w-full gap-2 rounded-xl bg-primarycolor px-5 text-white font-black uppercase tracking-wider shadow-lg shadow-primarycolor/20 hover:brightness-110 active:scale-[0.98] transition-all duration-300 md:w-auto"
                     >
                         {creating ? (
@@ -193,18 +161,6 @@ export default function BackupStatusCard({ lastBackupAt }: BackupStatusCardProps
                         )}
                         {creating ? "Recording..." : "Record Backup"}
                     </Button>
-
-                    {progress !== null && (
-                        <div className="w-full md:w-56">
-                            <div className="flex items-center justify-between mb-1">
-                                <span className="text-[10px] font-black uppercase tracking-wider text-muted-foreground">Downloading</span>
-                                <span className="text-[10px] font-black tabular-nums text-muted-foreground">{progress}%</span>
-                            </div>
-                            <div className="h-2 w-full rounded-full bg-primarycolor/10 overflow-hidden">
-                                <div className="h-full rounded-full bg-primarycolor transition-all duration-200 ease-out" style={{ width: `${progress}%` }} />
-                            </div>
-                        </div>
-                    )}
                 </div>
             </div>
         </section>
