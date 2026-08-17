@@ -58,6 +58,7 @@ export interface DashboardData {
     bookImage: string | null;
     totalQty: number;
   }[];
+  lastBackupAt: string | null;
 }
 
 export default async function AdminHomePage() {
@@ -77,6 +78,7 @@ export default async function AdminHomePage() {
     rawPendingOrdersCount,
     prevAssignments,
     rawTopSellers,
+    rawLastBackup,
   ] = await Promise.all([
     (prisma as any).books.count({ where: { is_deleted: false } }),
     (prisma as any).bookshopes.count({ where: { is_deleted: false } }),
@@ -135,6 +137,11 @@ export default async function AdminHomePage() {
       },
     }),
     getTopSellers("all_time"),
+    (prisma as any).local_backup_records.findFirst({
+      where: { status: "success" },
+      orderBy: { createdAt: "desc" },
+      select: { createdAt: true },
+    }),
   ]);
 
   // Stats
@@ -300,6 +307,7 @@ export default async function AdminHomePage() {
     recentOrders,
     lowStockItems,
     topBooks,
+    lastBackupAt: rawLastBackup?.createdAt instanceof Date ? rawLastBackup.createdAt.toISOString() : rawLastBackup?.createdAt ?? null,
   };
 
   return (

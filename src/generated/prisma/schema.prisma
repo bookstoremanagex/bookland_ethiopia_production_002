@@ -769,6 +769,16 @@ model retail_purchase_items {
   @@index([edition_id])
 }
 
+model local_backup_records {
+  id            Int      @id @default(autoincrement())
+  databaseName  String
+  fileSizeBytes Int?
+  status        String   @default("success") // "success" | "failed"
+  createdAt     DateTime @default(now())
+
+  @@index([createdAt])
+}
+
 enum check_types {
   COLLATERAL
   PAYMENT

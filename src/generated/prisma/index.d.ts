@@ -218,6 +218,11 @@ export type retail_purchases = $Result.DefaultSelection<Prisma.$retail_purchases
  * 
  */
 export type retail_purchase_items = $Result.DefaultSelection<Prisma.$retail_purchase_itemsPayload>
+/**
+ * Model local_backup_records
+ * 
+ */
+export type local_backup_records = $Result.DefaultSelection<Prisma.$local_backup_recordsPayload>
 
 /**
  * Enums
@@ -915,6 +920,16 @@ export class PrismaClient<
     * ```
     */
   get retail_purchase_items(): Prisma.retail_purchase_itemsDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.local_backup_records`: Exposes CRUD operations for the **local_backup_records** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Local_backup_records
+    * const local_backup_records = await prisma.local_backup_records.findMany()
+    * ```
+    */
+  get local_backup_records(): Prisma.local_backup_recordsDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1396,7 +1411,8 @@ export namespace Prisma {
     checks: 'checks',
     payments: 'payments',
     retail_purchases: 'retail_purchases',
-    retail_purchase_items: 'retail_purchase_items'
+    retail_purchase_items: 'retail_purchase_items',
+    local_backup_records: 'local_backup_records'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1415,7 +1431,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "accounts" | "bookedition" | "bookeditionstores" | "bookeditionprinters" | "books" | "locked_editions" | "bookshopeditions" | "bookshopes" | "orders" | "order_items" | "damagedbooks" | "dashboardmenu" | "menus" | "menu_management" | "printer" | "printorder" | "printorder_payments" | "printer_delivery_records" | "printorder_items" | "roletypes" | "roles" | "stores" | "translator" | "translatorbook" | "notification" | "activityLogs" | "notes" | "contracts" | "roundbooks" | "roundrecords" | "round_payments" | "round_checks" | "print_agreements" | "delivery_notes" | "invoices" | "approval_documents" | "settings" | "checks" | "payments" | "retail_purchases" | "retail_purchase_items"
+      modelProps: "accounts" | "bookedition" | "bookeditionstores" | "bookeditionprinters" | "books" | "locked_editions" | "bookshopeditions" | "bookshopes" | "orders" | "order_items" | "damagedbooks" | "dashboardmenu" | "menus" | "menu_management" | "printer" | "printorder" | "printorder_payments" | "printer_delivery_records" | "printorder_items" | "roletypes" | "roles" | "stores" | "translator" | "translatorbook" | "notification" | "activityLogs" | "notes" | "contracts" | "roundbooks" | "roundrecords" | "round_payments" | "round_checks" | "print_agreements" | "delivery_notes" | "invoices" | "approval_documents" | "settings" | "checks" | "payments" | "retail_purchases" | "retail_purchase_items" | "local_backup_records"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -4125,6 +4141,72 @@ export namespace Prisma {
           }
         }
       }
+      local_backup_records: {
+        payload: Prisma.$local_backup_recordsPayload<ExtArgs>
+        fields: Prisma.local_backup_recordsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.local_backup_recordsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$local_backup_recordsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.local_backup_recordsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$local_backup_recordsPayload>
+          }
+          findFirst: {
+            args: Prisma.local_backup_recordsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$local_backup_recordsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.local_backup_recordsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$local_backup_recordsPayload>
+          }
+          findMany: {
+            args: Prisma.local_backup_recordsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$local_backup_recordsPayload>[]
+          }
+          create: {
+            args: Prisma.local_backup_recordsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$local_backup_recordsPayload>
+          }
+          createMany: {
+            args: Prisma.local_backup_recordsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.local_backup_recordsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$local_backup_recordsPayload>
+          }
+          update: {
+            args: Prisma.local_backup_recordsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$local_backup_recordsPayload>
+          }
+          deleteMany: {
+            args: Prisma.local_backup_recordsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.local_backup_recordsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.local_backup_recordsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$local_backup_recordsPayload>
+          }
+          aggregate: {
+            args: Prisma.Local_backup_recordsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateLocal_backup_records>
+          }
+          groupBy: {
+            args: Prisma.local_backup_recordsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Local_backup_recordsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.local_backup_recordsCountArgs<ExtArgs>
+            result: $Utils.Optional<Local_backup_recordsCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -4262,6 +4344,7 @@ export namespace Prisma {
     payments?: paymentsOmit
     retail_purchases?: retail_purchasesOmit
     retail_purchase_items?: retail_purchase_itemsOmit
+    local_backup_records?: local_backup_recordsOmit
   }
 
   /* Types for Logging */
@@ -49050,6 +49133,926 @@ export namespace Prisma {
 
 
   /**
+   * Model local_backup_records
+   */
+
+  export type AggregateLocal_backup_records = {
+    _count: Local_backup_recordsCountAggregateOutputType | null
+    _avg: Local_backup_recordsAvgAggregateOutputType | null
+    _sum: Local_backup_recordsSumAggregateOutputType | null
+    _min: Local_backup_recordsMinAggregateOutputType | null
+    _max: Local_backup_recordsMaxAggregateOutputType | null
+  }
+
+  export type Local_backup_recordsAvgAggregateOutputType = {
+    id: number | null
+    fileSizeBytes: number | null
+  }
+
+  export type Local_backup_recordsSumAggregateOutputType = {
+    id: number | null
+    fileSizeBytes: number | null
+  }
+
+  export type Local_backup_recordsMinAggregateOutputType = {
+    id: number | null
+    databaseName: string | null
+    fileSizeBytes: number | null
+    status: string | null
+    createdAt: Date | null
+  }
+
+  export type Local_backup_recordsMaxAggregateOutputType = {
+    id: number | null
+    databaseName: string | null
+    fileSizeBytes: number | null
+    status: string | null
+    createdAt: Date | null
+  }
+
+  export type Local_backup_recordsCountAggregateOutputType = {
+    id: number
+    databaseName: number
+    fileSizeBytes: number
+    status: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type Local_backup_recordsAvgAggregateInputType = {
+    id?: true
+    fileSizeBytes?: true
+  }
+
+  export type Local_backup_recordsSumAggregateInputType = {
+    id?: true
+    fileSizeBytes?: true
+  }
+
+  export type Local_backup_recordsMinAggregateInputType = {
+    id?: true
+    databaseName?: true
+    fileSizeBytes?: true
+    status?: true
+    createdAt?: true
+  }
+
+  export type Local_backup_recordsMaxAggregateInputType = {
+    id?: true
+    databaseName?: true
+    fileSizeBytes?: true
+    status?: true
+    createdAt?: true
+  }
+
+  export type Local_backup_recordsCountAggregateInputType = {
+    id?: true
+    databaseName?: true
+    fileSizeBytes?: true
+    status?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type Local_backup_recordsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which local_backup_records to aggregate.
+     */
+    where?: local_backup_recordsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of local_backup_records to fetch.
+     */
+    orderBy?: local_backup_recordsOrderByWithRelationInput | local_backup_recordsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: local_backup_recordsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` local_backup_records from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` local_backup_records.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned local_backup_records
+    **/
+    _count?: true | Local_backup_recordsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: Local_backup_recordsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: Local_backup_recordsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Local_backup_recordsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Local_backup_recordsMaxAggregateInputType
+  }
+
+  export type GetLocal_backup_recordsAggregateType<T extends Local_backup_recordsAggregateArgs> = {
+        [P in keyof T & keyof AggregateLocal_backup_records]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateLocal_backup_records[P]>
+      : GetScalarType<T[P], AggregateLocal_backup_records[P]>
+  }
+
+
+
+
+  export type local_backup_recordsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: local_backup_recordsWhereInput
+    orderBy?: local_backup_recordsOrderByWithAggregationInput | local_backup_recordsOrderByWithAggregationInput[]
+    by: Local_backup_recordsScalarFieldEnum[] | Local_backup_recordsScalarFieldEnum
+    having?: local_backup_recordsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Local_backup_recordsCountAggregateInputType | true
+    _avg?: Local_backup_recordsAvgAggregateInputType
+    _sum?: Local_backup_recordsSumAggregateInputType
+    _min?: Local_backup_recordsMinAggregateInputType
+    _max?: Local_backup_recordsMaxAggregateInputType
+  }
+
+  export type Local_backup_recordsGroupByOutputType = {
+    id: number
+    databaseName: string
+    fileSizeBytes: number | null
+    status: string
+    createdAt: Date
+    _count: Local_backup_recordsCountAggregateOutputType | null
+    _avg: Local_backup_recordsAvgAggregateOutputType | null
+    _sum: Local_backup_recordsSumAggregateOutputType | null
+    _min: Local_backup_recordsMinAggregateOutputType | null
+    _max: Local_backup_recordsMaxAggregateOutputType | null
+  }
+
+  type GetLocal_backup_recordsGroupByPayload<T extends local_backup_recordsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Local_backup_recordsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Local_backup_recordsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Local_backup_recordsGroupByOutputType[P]>
+            : GetScalarType<T[P], Local_backup_recordsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type local_backup_recordsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    databaseName?: boolean
+    fileSizeBytes?: boolean
+    status?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["local_backup_records"]>
+
+
+
+  export type local_backup_recordsSelectScalar = {
+    id?: boolean
+    databaseName?: boolean
+    fileSizeBytes?: boolean
+    status?: boolean
+    createdAt?: boolean
+  }
+
+  export type local_backup_recordsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "databaseName" | "fileSizeBytes" | "status" | "createdAt", ExtArgs["result"]["local_backup_records"]>
+
+  export type $local_backup_recordsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "local_backup_records"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      databaseName: string
+      fileSizeBytes: number | null
+      status: string
+      createdAt: Date
+    }, ExtArgs["result"]["local_backup_records"]>
+    composites: {}
+  }
+
+  type local_backup_recordsGetPayload<S extends boolean | null | undefined | local_backup_recordsDefaultArgs> = $Result.GetResult<Prisma.$local_backup_recordsPayload, S>
+
+  type local_backup_recordsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<local_backup_recordsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Local_backup_recordsCountAggregateInputType | true
+    }
+
+  export interface local_backup_recordsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['local_backup_records'], meta: { name: 'local_backup_records' } }
+    /**
+     * Find zero or one Local_backup_records that matches the filter.
+     * @param {local_backup_recordsFindUniqueArgs} args - Arguments to find a Local_backup_records
+     * @example
+     * // Get one Local_backup_records
+     * const local_backup_records = await prisma.local_backup_records.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends local_backup_recordsFindUniqueArgs>(args: SelectSubset<T, local_backup_recordsFindUniqueArgs<ExtArgs>>): Prisma__local_backup_recordsClient<$Result.GetResult<Prisma.$local_backup_recordsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Local_backup_records that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {local_backup_recordsFindUniqueOrThrowArgs} args - Arguments to find a Local_backup_records
+     * @example
+     * // Get one Local_backup_records
+     * const local_backup_records = await prisma.local_backup_records.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends local_backup_recordsFindUniqueOrThrowArgs>(args: SelectSubset<T, local_backup_recordsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__local_backup_recordsClient<$Result.GetResult<Prisma.$local_backup_recordsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Local_backup_records that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {local_backup_recordsFindFirstArgs} args - Arguments to find a Local_backup_records
+     * @example
+     * // Get one Local_backup_records
+     * const local_backup_records = await prisma.local_backup_records.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends local_backup_recordsFindFirstArgs>(args?: SelectSubset<T, local_backup_recordsFindFirstArgs<ExtArgs>>): Prisma__local_backup_recordsClient<$Result.GetResult<Prisma.$local_backup_recordsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Local_backup_records that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {local_backup_recordsFindFirstOrThrowArgs} args - Arguments to find a Local_backup_records
+     * @example
+     * // Get one Local_backup_records
+     * const local_backup_records = await prisma.local_backup_records.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends local_backup_recordsFindFirstOrThrowArgs>(args?: SelectSubset<T, local_backup_recordsFindFirstOrThrowArgs<ExtArgs>>): Prisma__local_backup_recordsClient<$Result.GetResult<Prisma.$local_backup_recordsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Local_backup_records that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {local_backup_recordsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Local_backup_records
+     * const local_backup_records = await prisma.local_backup_records.findMany()
+     * 
+     * // Get first 10 Local_backup_records
+     * const local_backup_records = await prisma.local_backup_records.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const local_backup_recordsWithIdOnly = await prisma.local_backup_records.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends local_backup_recordsFindManyArgs>(args?: SelectSubset<T, local_backup_recordsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$local_backup_recordsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Local_backup_records.
+     * @param {local_backup_recordsCreateArgs} args - Arguments to create a Local_backup_records.
+     * @example
+     * // Create one Local_backup_records
+     * const Local_backup_records = await prisma.local_backup_records.create({
+     *   data: {
+     *     // ... data to create a Local_backup_records
+     *   }
+     * })
+     * 
+     */
+    create<T extends local_backup_recordsCreateArgs>(args: SelectSubset<T, local_backup_recordsCreateArgs<ExtArgs>>): Prisma__local_backup_recordsClient<$Result.GetResult<Prisma.$local_backup_recordsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Local_backup_records.
+     * @param {local_backup_recordsCreateManyArgs} args - Arguments to create many Local_backup_records.
+     * @example
+     * // Create many Local_backup_records
+     * const local_backup_records = await prisma.local_backup_records.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends local_backup_recordsCreateManyArgs>(args?: SelectSubset<T, local_backup_recordsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Local_backup_records.
+     * @param {local_backup_recordsDeleteArgs} args - Arguments to delete one Local_backup_records.
+     * @example
+     * // Delete one Local_backup_records
+     * const Local_backup_records = await prisma.local_backup_records.delete({
+     *   where: {
+     *     // ... filter to delete one Local_backup_records
+     *   }
+     * })
+     * 
+     */
+    delete<T extends local_backup_recordsDeleteArgs>(args: SelectSubset<T, local_backup_recordsDeleteArgs<ExtArgs>>): Prisma__local_backup_recordsClient<$Result.GetResult<Prisma.$local_backup_recordsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Local_backup_records.
+     * @param {local_backup_recordsUpdateArgs} args - Arguments to update one Local_backup_records.
+     * @example
+     * // Update one Local_backup_records
+     * const local_backup_records = await prisma.local_backup_records.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends local_backup_recordsUpdateArgs>(args: SelectSubset<T, local_backup_recordsUpdateArgs<ExtArgs>>): Prisma__local_backup_recordsClient<$Result.GetResult<Prisma.$local_backup_recordsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Local_backup_records.
+     * @param {local_backup_recordsDeleteManyArgs} args - Arguments to filter Local_backup_records to delete.
+     * @example
+     * // Delete a few Local_backup_records
+     * const { count } = await prisma.local_backup_records.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends local_backup_recordsDeleteManyArgs>(args?: SelectSubset<T, local_backup_recordsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Local_backup_records.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {local_backup_recordsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Local_backup_records
+     * const local_backup_records = await prisma.local_backup_records.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends local_backup_recordsUpdateManyArgs>(args: SelectSubset<T, local_backup_recordsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Local_backup_records.
+     * @param {local_backup_recordsUpsertArgs} args - Arguments to update or create a Local_backup_records.
+     * @example
+     * // Update or create a Local_backup_records
+     * const local_backup_records = await prisma.local_backup_records.upsert({
+     *   create: {
+     *     // ... data to create a Local_backup_records
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Local_backup_records we want to update
+     *   }
+     * })
+     */
+    upsert<T extends local_backup_recordsUpsertArgs>(args: SelectSubset<T, local_backup_recordsUpsertArgs<ExtArgs>>): Prisma__local_backup_recordsClient<$Result.GetResult<Prisma.$local_backup_recordsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Local_backup_records.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {local_backup_recordsCountArgs} args - Arguments to filter Local_backup_records to count.
+     * @example
+     * // Count the number of Local_backup_records
+     * const count = await prisma.local_backup_records.count({
+     *   where: {
+     *     // ... the filter for the Local_backup_records we want to count
+     *   }
+     * })
+    **/
+    count<T extends local_backup_recordsCountArgs>(
+      args?: Subset<T, local_backup_recordsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Local_backup_recordsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Local_backup_records.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Local_backup_recordsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Local_backup_recordsAggregateArgs>(args: Subset<T, Local_backup_recordsAggregateArgs>): Prisma.PrismaPromise<GetLocal_backup_recordsAggregateType<T>>
+
+    /**
+     * Group by Local_backup_records.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {local_backup_recordsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends local_backup_recordsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: local_backup_recordsGroupByArgs['orderBy'] }
+        : { orderBy?: local_backup_recordsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, local_backup_recordsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetLocal_backup_recordsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the local_backup_records model
+   */
+  readonly fields: local_backup_recordsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for local_backup_records.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__local_backup_recordsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the local_backup_records model
+   */
+  interface local_backup_recordsFieldRefs {
+    readonly id: FieldRef<"local_backup_records", 'Int'>
+    readonly databaseName: FieldRef<"local_backup_records", 'String'>
+    readonly fileSizeBytes: FieldRef<"local_backup_records", 'Int'>
+    readonly status: FieldRef<"local_backup_records", 'String'>
+    readonly createdAt: FieldRef<"local_backup_records", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * local_backup_records findUnique
+   */
+  export type local_backup_recordsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the local_backup_records
+     */
+    select?: local_backup_recordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the local_backup_records
+     */
+    omit?: local_backup_recordsOmit<ExtArgs> | null
+    /**
+     * Filter, which local_backup_records to fetch.
+     */
+    where: local_backup_recordsWhereUniqueInput
+  }
+
+  /**
+   * local_backup_records findUniqueOrThrow
+   */
+  export type local_backup_recordsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the local_backup_records
+     */
+    select?: local_backup_recordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the local_backup_records
+     */
+    omit?: local_backup_recordsOmit<ExtArgs> | null
+    /**
+     * Filter, which local_backup_records to fetch.
+     */
+    where: local_backup_recordsWhereUniqueInput
+  }
+
+  /**
+   * local_backup_records findFirst
+   */
+  export type local_backup_recordsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the local_backup_records
+     */
+    select?: local_backup_recordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the local_backup_records
+     */
+    omit?: local_backup_recordsOmit<ExtArgs> | null
+    /**
+     * Filter, which local_backup_records to fetch.
+     */
+    where?: local_backup_recordsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of local_backup_records to fetch.
+     */
+    orderBy?: local_backup_recordsOrderByWithRelationInput | local_backup_recordsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for local_backup_records.
+     */
+    cursor?: local_backup_recordsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` local_backup_records from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` local_backup_records.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of local_backup_records.
+     */
+    distinct?: Local_backup_recordsScalarFieldEnum | Local_backup_recordsScalarFieldEnum[]
+  }
+
+  /**
+   * local_backup_records findFirstOrThrow
+   */
+  export type local_backup_recordsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the local_backup_records
+     */
+    select?: local_backup_recordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the local_backup_records
+     */
+    omit?: local_backup_recordsOmit<ExtArgs> | null
+    /**
+     * Filter, which local_backup_records to fetch.
+     */
+    where?: local_backup_recordsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of local_backup_records to fetch.
+     */
+    orderBy?: local_backup_recordsOrderByWithRelationInput | local_backup_recordsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for local_backup_records.
+     */
+    cursor?: local_backup_recordsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` local_backup_records from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` local_backup_records.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of local_backup_records.
+     */
+    distinct?: Local_backup_recordsScalarFieldEnum | Local_backup_recordsScalarFieldEnum[]
+  }
+
+  /**
+   * local_backup_records findMany
+   */
+  export type local_backup_recordsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the local_backup_records
+     */
+    select?: local_backup_recordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the local_backup_records
+     */
+    omit?: local_backup_recordsOmit<ExtArgs> | null
+    /**
+     * Filter, which local_backup_records to fetch.
+     */
+    where?: local_backup_recordsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of local_backup_records to fetch.
+     */
+    orderBy?: local_backup_recordsOrderByWithRelationInput | local_backup_recordsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing local_backup_records.
+     */
+    cursor?: local_backup_recordsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` local_backup_records from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` local_backup_records.
+     */
+    skip?: number
+    distinct?: Local_backup_recordsScalarFieldEnum | Local_backup_recordsScalarFieldEnum[]
+  }
+
+  /**
+   * local_backup_records create
+   */
+  export type local_backup_recordsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the local_backup_records
+     */
+    select?: local_backup_recordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the local_backup_records
+     */
+    omit?: local_backup_recordsOmit<ExtArgs> | null
+    /**
+     * The data needed to create a local_backup_records.
+     */
+    data: XOR<local_backup_recordsCreateInput, local_backup_recordsUncheckedCreateInput>
+  }
+
+  /**
+   * local_backup_records createMany
+   */
+  export type local_backup_recordsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many local_backup_records.
+     */
+    data: local_backup_recordsCreateManyInput | local_backup_recordsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * local_backup_records update
+   */
+  export type local_backup_recordsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the local_backup_records
+     */
+    select?: local_backup_recordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the local_backup_records
+     */
+    omit?: local_backup_recordsOmit<ExtArgs> | null
+    /**
+     * The data needed to update a local_backup_records.
+     */
+    data: XOR<local_backup_recordsUpdateInput, local_backup_recordsUncheckedUpdateInput>
+    /**
+     * Choose, which local_backup_records to update.
+     */
+    where: local_backup_recordsWhereUniqueInput
+  }
+
+  /**
+   * local_backup_records updateMany
+   */
+  export type local_backup_recordsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update local_backup_records.
+     */
+    data: XOR<local_backup_recordsUpdateManyMutationInput, local_backup_recordsUncheckedUpdateManyInput>
+    /**
+     * Filter which local_backup_records to update
+     */
+    where?: local_backup_recordsWhereInput
+    /**
+     * Limit how many local_backup_records to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * local_backup_records upsert
+   */
+  export type local_backup_recordsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the local_backup_records
+     */
+    select?: local_backup_recordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the local_backup_records
+     */
+    omit?: local_backup_recordsOmit<ExtArgs> | null
+    /**
+     * The filter to search for the local_backup_records to update in case it exists.
+     */
+    where: local_backup_recordsWhereUniqueInput
+    /**
+     * In case the local_backup_records found by the `where` argument doesn't exist, create a new local_backup_records with this data.
+     */
+    create: XOR<local_backup_recordsCreateInput, local_backup_recordsUncheckedCreateInput>
+    /**
+     * In case the local_backup_records was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<local_backup_recordsUpdateInput, local_backup_recordsUncheckedUpdateInput>
+  }
+
+  /**
+   * local_backup_records delete
+   */
+  export type local_backup_recordsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the local_backup_records
+     */
+    select?: local_backup_recordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the local_backup_records
+     */
+    omit?: local_backup_recordsOmit<ExtArgs> | null
+    /**
+     * Filter which local_backup_records to delete.
+     */
+    where: local_backup_recordsWhereUniqueInput
+  }
+
+  /**
+   * local_backup_records deleteMany
+   */
+  export type local_backup_recordsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which local_backup_records to delete
+     */
+    where?: local_backup_recordsWhereInput
+    /**
+     * Limit how many local_backup_records to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * local_backup_records without action
+   */
+  export type local_backup_recordsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the local_backup_records
+     */
+    select?: local_backup_recordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the local_backup_records
+     */
+    omit?: local_backup_recordsOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -49783,6 +50786,17 @@ export namespace Prisma {
   export type Retail_purchase_itemsScalarFieldEnum = (typeof Retail_purchase_itemsScalarFieldEnum)[keyof typeof Retail_purchase_itemsScalarFieldEnum]
 
 
+  export const Local_backup_recordsScalarFieldEnum: {
+    id: 'id',
+    databaseName: 'databaseName',
+    fileSizeBytes: 'fileSizeBytes',
+    status: 'status',
+    createdAt: 'createdAt'
+  };
+
+  export type Local_backup_recordsScalarFieldEnum = (typeof Local_backup_recordsScalarFieldEnum)[keyof typeof Local_backup_recordsScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -50120,6 +51134,14 @@ export namespace Prisma {
   };
 
   export type retail_purchasesOrderByRelevanceFieldEnum = (typeof retail_purchasesOrderByRelevanceFieldEnum)[keyof typeof retail_purchasesOrderByRelevanceFieldEnum]
+
+
+  export const local_backup_recordsOrderByRelevanceFieldEnum: {
+    databaseName: 'databaseName',
+    status: 'status'
+  };
+
+  export type local_backup_recordsOrderByRelevanceFieldEnum = (typeof local_backup_recordsOrderByRelevanceFieldEnum)[keyof typeof local_backup_recordsOrderByRelevanceFieldEnum]
 
 
   /**
@@ -54078,6 +55100,61 @@ export namespace Prisma {
     quantity?: IntNullableWithAggregatesFilter<"retail_purchase_items"> | number | null
     unit_price?: FloatNullableWithAggregatesFilter<"retail_purchase_items"> | number | null
     is_deleted?: BoolWithAggregatesFilter<"retail_purchase_items"> | boolean
+  }
+
+  export type local_backup_recordsWhereInput = {
+    AND?: local_backup_recordsWhereInput | local_backup_recordsWhereInput[]
+    OR?: local_backup_recordsWhereInput[]
+    NOT?: local_backup_recordsWhereInput | local_backup_recordsWhereInput[]
+    id?: IntFilter<"local_backup_records"> | number
+    databaseName?: StringFilter<"local_backup_records"> | string
+    fileSizeBytes?: IntNullableFilter<"local_backup_records"> | number | null
+    status?: StringFilter<"local_backup_records"> | string
+    createdAt?: DateTimeFilter<"local_backup_records"> | Date | string
+  }
+
+  export type local_backup_recordsOrderByWithRelationInput = {
+    id?: SortOrder
+    databaseName?: SortOrder
+    fileSizeBytes?: SortOrderInput | SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    _relevance?: local_backup_recordsOrderByRelevanceInput
+  }
+
+  export type local_backup_recordsWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: local_backup_recordsWhereInput | local_backup_recordsWhereInput[]
+    OR?: local_backup_recordsWhereInput[]
+    NOT?: local_backup_recordsWhereInput | local_backup_recordsWhereInput[]
+    databaseName?: StringFilter<"local_backup_records"> | string
+    fileSizeBytes?: IntNullableFilter<"local_backup_records"> | number | null
+    status?: StringFilter<"local_backup_records"> | string
+    createdAt?: DateTimeFilter<"local_backup_records"> | Date | string
+  }, "id">
+
+  export type local_backup_recordsOrderByWithAggregationInput = {
+    id?: SortOrder
+    databaseName?: SortOrder
+    fileSizeBytes?: SortOrderInput | SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    _count?: local_backup_recordsCountOrderByAggregateInput
+    _avg?: local_backup_recordsAvgOrderByAggregateInput
+    _max?: local_backup_recordsMaxOrderByAggregateInput
+    _min?: local_backup_recordsMinOrderByAggregateInput
+    _sum?: local_backup_recordsSumOrderByAggregateInput
+  }
+
+  export type local_backup_recordsScalarWhereWithAggregatesInput = {
+    AND?: local_backup_recordsScalarWhereWithAggregatesInput | local_backup_recordsScalarWhereWithAggregatesInput[]
+    OR?: local_backup_recordsScalarWhereWithAggregatesInput[]
+    NOT?: local_backup_recordsScalarWhereWithAggregatesInput | local_backup_recordsScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"local_backup_records"> | number
+    databaseName?: StringWithAggregatesFilter<"local_backup_records"> | string
+    fileSizeBytes?: IntNullableWithAggregatesFilter<"local_backup_records"> | number | null
+    status?: StringWithAggregatesFilter<"local_backup_records"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"local_backup_records"> | Date | string
   }
 
   export type accountsCreateInput = {
@@ -58259,6 +59336,59 @@ export namespace Prisma {
     is_deleted?: BoolFieldUpdateOperationsInput | boolean
   }
 
+  export type local_backup_recordsCreateInput = {
+    databaseName: string
+    fileSizeBytes?: number | null
+    status?: string
+    createdAt?: Date | string
+  }
+
+  export type local_backup_recordsUncheckedCreateInput = {
+    id?: number
+    databaseName: string
+    fileSizeBytes?: number | null
+    status?: string
+    createdAt?: Date | string
+  }
+
+  export type local_backup_recordsUpdateInput = {
+    databaseName?: StringFieldUpdateOperationsInput | string
+    fileSizeBytes?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type local_backup_recordsUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    databaseName?: StringFieldUpdateOperationsInput | string
+    fileSizeBytes?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type local_backup_recordsCreateManyInput = {
+    id?: number
+    databaseName: string
+    fileSizeBytes?: number | null
+    status?: string
+    createdAt?: Date | string
+  }
+
+  export type local_backup_recordsUpdateManyMutationInput = {
+    databaseName?: StringFieldUpdateOperationsInput | string
+    fileSizeBytes?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type local_backup_recordsUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    databaseName?: StringFieldUpdateOperationsInput | string
+    fileSizeBytes?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[]
@@ -61603,6 +62733,46 @@ export namespace Prisma {
     edition_id?: SortOrder
     quantity?: SortOrder
     unit_price?: SortOrder
+  }
+
+  export type local_backup_recordsOrderByRelevanceInput = {
+    fields: local_backup_recordsOrderByRelevanceFieldEnum | local_backup_recordsOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type local_backup_recordsCountOrderByAggregateInput = {
+    id?: SortOrder
+    databaseName?: SortOrder
+    fileSizeBytes?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type local_backup_recordsAvgOrderByAggregateInput = {
+    id?: SortOrder
+    fileSizeBytes?: SortOrder
+  }
+
+  export type local_backup_recordsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    databaseName?: SortOrder
+    fileSizeBytes?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type local_backup_recordsMinOrderByAggregateInput = {
+    id?: SortOrder
+    databaseName?: SortOrder
+    fileSizeBytes?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type local_backup_recordsSumOrderByAggregateInput = {
+    id?: SortOrder
+    fileSizeBytes?: SortOrder
   }
 
   export type activityLogsCreateNestedManyWithoutAccountInput = {

@@ -40,6 +40,7 @@ import {
   AlertTriangle,
   TrendingUp,
   CornerDownLeft,
+  DatabaseBackup,
   type LucideIcon,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -65,6 +66,7 @@ const menuEntries: MenuEntry[] = [
   { title: "Manage Payment", url: "/admin_dashboard/manage_payment", group: "Management", icon: BadgeDollarSign },
   { title: "Selling to individual", url: "/admin_dashboard/retail_management", group: "Management", icon: ShoppingBag },
   { title: "Activity Log", url: "/admin_dashboard/activity_log", group: "Management", icon: History },
+  { title: "Backup", url: "/admin_dashboard/backup", group: "Management", icon: DatabaseBackup },
 
   { title: "Statistics General", url: "/admin_dashboard/statistics", group: "Statistics", icon: BarChart3 },
   { title: "Statistics Books", url: "/admin_dashboard/statistics/books", group: "Statistics", icon: BookOpen },

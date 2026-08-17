@@ -9,6 +9,7 @@ import { QuickActions } from "./QuickActions";
 import { TopBooksCarousel } from "./TopBooksCarousel";
 import { OrderSummary } from "./OrderSummary";
 import { LowStockAlerts } from "./LowStockAlerts";
+import BackupStatusCard from "./BackupStatusCard";
 import {
   Calendar,
   Bell,
@@ -148,6 +149,9 @@ export default function DashboardContainer({ data }: DashboardContainerProps) {
           </div>
         </div>
       </header>
+
+      {/* Backup Status */}
+      <BackupStatusCard lastBackupAt={data.lastBackupAt} />
 
       {/* Quick Actions */}
       <QuickActions pendingOrders={data.stats.pendingOrders} pendingPayments={data.stats.pendingPayments} />

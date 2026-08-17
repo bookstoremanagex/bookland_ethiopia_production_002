@@ -718,6 +718,14 @@ exports.Prisma.Retail_purchase_itemsScalarFieldEnum = {
   is_deleted: 'is_deleted'
 };
 
+exports.Prisma.Local_backup_recordsScalarFieldEnum = {
+  id: 'id',
+  databaseName: 'databaseName',
+  fileSizeBytes: 'fileSizeBytes',
+  status: 'status',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -954,6 +962,11 @@ exports.Prisma.retail_purchasesOrderByRelevanceFieldEnum = {
   name: 'name',
   memo: 'memo'
 };
+
+exports.Prisma.local_backup_recordsOrderByRelevanceFieldEnum = {
+  databaseName: 'databaseName',
+  status: 'status'
+};
 exports.books_productionstatus = exports.$Enums.books_productionstatus = {
   ON_PRODUCTION: 'ON_PRODUCTION',
   TRANSLATION: 'TRANSLATION',
@@ -1082,7 +1095,8 @@ exports.Prisma.ModelName = {
   checks: 'checks',
   payments: 'payments',
   retail_purchases: 'retail_purchases',
-  retail_purchase_items: 'retail_purchase_items'
+  retail_purchase_items: 'retail_purchase_items',
+  local_backup_records: 'local_backup_records'
 };
 
 /**

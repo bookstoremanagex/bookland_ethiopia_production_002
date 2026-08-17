@@ -39,6 +39,7 @@ import {
   CalendarRange,
   AlertTriangle,
   TrendingUp,
+  DatabaseBackup,
 } from "lucide-react";
 
 import {
@@ -107,6 +108,11 @@ const menuItems = [
     title: "Activity Log",
     icon: History,
     url: "/admin_dashboard/activity_log",
+  },
+  {
+    title: "Backup",
+    icon: DatabaseBackup,
+    url: "/admin_dashboard/backup",
   },
 ];
 
