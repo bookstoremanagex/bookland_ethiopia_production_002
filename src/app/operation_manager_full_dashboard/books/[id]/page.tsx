@@ -28,7 +28,7 @@ export default async function InventoryBookDetailsPage({ params }: { params: Pro
                                     include: { printer: true }
                                 }
                             },
-                            take: 1
+                            orderBy: { createdAt: 'desc' }
                         },
                         bookeditionprinters: {
                             where: { is_deleted: false },

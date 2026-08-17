@@ -1,6 +1,10 @@
 import prisma from "@/lib/prisma";
 import DeliveryRecordsView from "./DeliveryRecordsView";
 import AllDeliveryRecordsTable from "./AllDeliveryRecordsTable";
+import {
+    isAutoDeliveryOrder,
+    getEditionAuthoritativePrinters,
+} from "@/lib/printer-resolution";
 
 export default async function DeliveryRecordsPage() {
     const [books, editions, rawRecords] = await Promise.all([
@@ -28,6 +32,15 @@ export default async function DeliveryRecordsPage() {
                             include: {
                                 books: {
                                     select: { title: true },
+                                },
+                                bookeditionprinters: {
+                                    where: { is_deleted: false },
+                                    include: {
+                                        printer: {
+                                            select: { name: true },
+                                        },
+                                    },
+                                    orderBy: { updatedAt: "desc" },
                                 },
                             },
                         },
@@ -58,21 +71,38 @@ export default async function DeliveryRecordsPage() {
         stores.map((s: any) => [s.id, s.name])
     );
 
-    const allRecords = rawRecords.map((r: any) => ({
-        id: r.id,
-        bookTitle:
-            r.printorderId?.bookedition?.books?.title ?? "Unknown",
-        editionName:
-            r.printorderId?.bookedition?.edition_name ?? "Unknown",
-        quantity: r.quantity_deliverd,
-        approvedByPrinter: r.approvedByPrinter,
-        storeName: storeMap[r.storeId] ?? null,
-        printerName:
-            r.printorderId?.printorder?.printer?.name ?? "Unknown",
-        createdAt: r.createdAt?.toISOString?.() ?? r.createdAt,
-        approvedByPrinterAt:
-            r.approvedByPrinterAt?.toISOString?.() ?? null,
-    }));
+    const editionIds = [
+        ...new Set(
+            rawRecords
+                .map((r: any) => r.printorderId?.bookedition?.id)
+                .filter((id: any): id is number => Number.isInteger(id))
+        ),
+    ];
+    const authoritativePrinters = await getEditionAuthoritativePrinters(
+        editionIds as number[]
+    );
+
+    const allRecords = rawRecords.map((r: any) => {
+        const projectName = r.printorderId?.printorder?.project_name || "";
+        const isAutoDelivery = isAutoDeliveryOrder(projectName);
+        const editionId = r.printorderId?.bookedition?.id;
+        return {
+            id: r.id,
+            bookTitle:
+                r.printorderId?.bookedition?.books?.title ?? "Unknown",
+            editionName:
+                r.printorderId?.bookedition?.edition_name ?? "Unknown",
+            quantity: r.quantity_deliverd,
+            approvedByPrinter: r.approvedByPrinter,
+            storeName: storeMap[r.storeId] ?? null,
+            printerName: isAutoDelivery
+                ? authoritativePrinters.get(editionId) ?? "Unknown"
+                : r.printorderId?.printorder?.printer?.name || "Unknown",
+            createdAt: r.createdAt?.toISOString?.() ?? r.createdAt,
+            approvedByPrinterAt:
+                r.approvedByPrinterAt?.toISOString?.() ?? null,
+        };
+    });
 
     return (
         <div className="p-4 md:p-10 space-y-10 bg-[#F8FAFC] min-h-screen">

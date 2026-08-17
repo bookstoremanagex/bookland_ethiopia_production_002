@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import PrintingBooksListTable from "./PrintingBooksListTable";
+import { resolveEditionPrinterName } from "@/lib/printer-resolution";
 
 export default async function PrintingBooksListPage() {
     const orders = await (prisma as any).printorder.findMany({
@@ -43,6 +44,14 @@ export default async function PrintingBooksListPage() {
                 bookeditionprinters: {
                     where: { is_deleted: false },
                     include: { printer: true },
+                },
+                printorder_items: {
+                    where: { is_deleted: false },
+                    include: {
+                        printorder: {
+                            include: { printer: true },
+                        },
+                    },
                 },
             },
             orderBy: { createdAt: "desc" },
@@ -165,7 +174,9 @@ export default async function PrintingBooksListPage() {
                 editionId: ed.id,
                 orderId: 0,
                 projectName: "",
-                printerName: "",
+                printerName:
+                    resolveEditionPrinterName(ed as any) ||
+                    "",
                 printerLocation: "",
                 bookTitle: ed.books?.title || "Unknown Book",
                 editionName: ed.edition_name || "Unknown Edition",

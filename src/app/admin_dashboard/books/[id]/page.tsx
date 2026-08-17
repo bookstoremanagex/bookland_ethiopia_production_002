@@ -40,7 +40,7 @@ export default async function BookDetailsPage({ params }: { params: Promise<{ id
                                     include: { printer: true }
                                 }
                             },
-                            take: 1
+                            orderBy: { createdAt: 'desc' }
                         },
                         bookeditionprinters: {
                             where: { is_deleted: false },

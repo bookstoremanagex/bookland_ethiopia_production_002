@@ -1,16 +1,23 @@
 "use server";
 
 import prisma from "@/lib/prisma";
+import { getEditionAuthoritativePrinters } from "@/lib/printer-resolution";
+
+const isAutoDeliveryOrder = (o: any): boolean => {
+    const name = o?.project_name || "";
+    return name.startsWith("Auto-delivery for") || name.startsWith("[Auto Delivery]");
+};
 
 export async function getPrinterDeliveries(printerId: number) {
+    const printer = await (prisma as any).printer.findUnique({
+        where: { id: printerId },
+        select: { id: true, name: true },
+    });
+    if (!printer) return [];
+
     const records = await (prisma as any).printer_delivery_records.findMany({
         where: {
             is_deleted: false,
-            printorderId: {
-                printorder: {
-                    printerId: printerId,
-                },
-            },
         },
         include: {
             printorderId: {
@@ -25,18 +32,35 @@ export async function getPrinterDeliveries(printerId: number) {
         orderBy: { createdAt: "desc" },
     });
 
-    // Hide deliveries for editions not visible to printers and deliveries that
-    // belong to auto-created "Auto-delivery" dummy projects (no real print order).
-    const isAutoDeliveryOrder = (o: any): boolean => {
-        const name = o?.project_name || "";
-        return name.startsWith("Auto-delivery for") || name.startsWith("[Auto Delivery]");
-    };
-
-    const visibleRecords = records.filter(
-        (r: any) =>
-            r.printorderId?.bookedition?.visiblitiy_to_printer !== false &&
-            !isAutoDeliveryOrder(r.printorderId?.printorder),
+    // For deliveries recorded under auto-created "Auto-delivery" dummy projects
+    // (created by recordPrinterDeliveries / transfers when no real print order
+    // existed), attribute them to the edition's authoritative printer instead of
+    // the arbitrary printer stamped on the dummy order.
+    const editionIds = [
+        ...new Set(
+            records
+                .filter((r: any) => isAutoDeliveryOrder(r.printorderId?.printorder))
+                .map((r: any) => r.printorderId?.bookEditionId)
+                .filter((id: any): id is number => Number.isInteger(id)),
+        ),
+    ];
+    const authoritativePrinters = await getEditionAuthoritativePrinters(
+        editionIds as number[]
     );
+
+    const visibleRecords = records.filter((r: any) => {
+        const edition = r.printorderId?.bookedition;
+        if (edition?.visiblitiy_to_printer === false) return false;
+
+        const order = r.printorderId?.printorder;
+        if (isAutoDeliveryOrder(order)) {
+            return (
+                authoritativePrinters.get(r.printorderId?.bookEditionId) ===
+                printer.name
+            );
+        }
+        return order?.printerId === printerId;
+    });
 
     const storeIds = [
         ...new Set(visibleRecords.map((r: any) => r.storeId).filter(Boolean)),
@@ -78,9 +102,8 @@ export async function approveDelivery(
             include: {
                 printorderId: {
                     include: {
-                        printorder: {
-                            select: { printerId: true },
-                        },
+                        printorder: true,
+                        bookedition: { select: { id: true } },
                     },
                 },
             },
@@ -91,7 +114,23 @@ export async function approveDelivery(
         return { success: false, error: "Delivery record not found" };
     }
 
-    if (delivery.printorderId?.printorder?.printerId !== printerId) {
+    const order = delivery.printorderId?.printorder;
+    const ownsDelivery =
+        order?.printerId === printerId ||
+        (isAutoDeliveryOrder(order) &&
+            (
+                await getEditionAuthoritativePrinters([
+                    delivery.printorderId?.bookEditionId,
+                ])
+            ).get(delivery.printorderId?.bookEditionId) ===
+                (
+                    await (prisma as any).printer.findUnique({
+                        where: { id: printerId },
+                        select: { name: true },
+                    })
+                )?.name);
+
+    if (!ownsDelivery) {
         return {
             success: false,
             error: "Access denied — this delivery does not belong to your printer",

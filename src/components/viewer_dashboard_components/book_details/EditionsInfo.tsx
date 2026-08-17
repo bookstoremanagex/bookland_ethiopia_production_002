@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { useEditionsStore } from "../../../store/use-editions-store";
+import { resolveEditionPrinterName } from "@/lib/printer-utils";
 import {
   Layers,
   Plus,
@@ -274,12 +275,13 @@ export default function EditionsInfo({ book }: EditionsInfoProps) {
                     <td className="p-6">
                       <div className="flex flex-col items-center gap-1.5">
                         {(() => {
-                          const bep = (edition.bookeditionprinters?.length > 0)
-                            ? edition.bookeditionprinters[0]
-                            : null;
-                          const printerName = bep
-                            ? bep.printer?.name
-                            : edition.printorder_items?.[0]?.printorder?.printer?.name;
+                          const printerName = resolveEditionPrinterName({
+                            connected:
+                              edition.bookeditionprinters?.[0]?.printer ??
+                              null,
+                            printorderItems:
+                              edition.printorder_items ?? [],
+                          });
                           if (printerName) {
                             return (
                               <div className="flex items-center gap-2 px-4 py-1.5 rounded-xl bg-primarycolor/5 text-primarycolor border border-primarycolor/10">
@@ -352,12 +354,11 @@ export default function EditionsInfo({ book }: EditionsInfoProps) {
         <div className="md:hidden space-y-3">
           {editions.length > 0 ? (
             editions.map((edition: any) => {
-              const bep = (edition.bookeditionprinters?.length > 0)
-                ? edition.bookeditionprinters[0]
-                : null;
-              const printerName = bep
-                ? bep.printer?.name
-                : edition.printorder_items?.[0]?.printorder?.printer?.name;
+              const printerName = resolveEditionPrinterName({
+                connected:
+                  edition.bookeditionprinters?.[0]?.printer ?? null,
+                printorderItems: edition.printorder_items ?? [],
+              });
               return (
                 <div
                   key={edition.id}

@@ -1,6 +1,10 @@
 "use server";
 
 import prisma from "@/lib/prisma";
+import {
+    isAutoDeliveryOrder,
+    getEditionAuthoritativePrinters,
+} from "@/lib/printer-resolution";
 
 export async function getDeliveryRecords(editionId: number) {
     // First get all printorder_item IDs for this edition
@@ -29,6 +33,19 @@ export async function getDeliveryRecords(editionId: number) {
                             },
                         },
                     },
+                    bookedition: {
+                        include: {
+                            bookeditionprinters: {
+                                where: { is_deleted: false },
+                                include: {
+                                    printer: {
+                                        select: { name: true },
+                                    },
+                                },
+                                orderBy: { updatedAt: "desc" },
+                            },
+                        },
+                    },
                 },
             },
         },
@@ -51,15 +68,24 @@ export async function getDeliveryRecords(editionId: number) {
         stores.map((s: any) => [s.id, s.name])
     );
 
-    return records.map((r: any) => ({
-        id: r.id,
-        printerName:
-            r.printorderId?.printorder?.printer?.name ?? "Unknown",
-        storeName: storeMap[r.storeId] ?? null,
-        quantity_deliverd: r.quantity_deliverd,
-        approvedByPrinter: r.approvedByPrinter,
-        createdAt: r.createdAt?.toISOString?.() ?? r.createdAt,
-        approvedByPrinterAt:
-            r.approvedByPrinterAt?.toISOString?.() ?? null,
-    }));
+    const authoritativePrinters = await getEditionAuthoritativePrinters([
+        editionId,
+    ]);
+
+    return records.map((r: any) => {
+        const projectName = r.printorderId?.printorder?.project_name || "";
+        const isAutoDelivery = isAutoDeliveryOrder(projectName);
+        return {
+            id: r.id,
+            printerName: isAutoDelivery
+                ? authoritativePrinters.get(editionId) ?? "Unknown"
+                : r.printorderId?.printorder?.printer?.name || "Unknown",
+            storeName: storeMap[r.storeId] ?? null,
+            quantity_deliverd: r.quantity_deliverd,
+            approvedByPrinter: r.approvedByPrinter,
+            createdAt: r.createdAt?.toISOString?.() ?? r.createdAt,
+            approvedByPrinterAt:
+                r.approvedByPrinterAt?.toISOString?.() ?? null,
+        };
+    });
 }

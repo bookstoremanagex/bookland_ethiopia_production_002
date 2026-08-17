@@ -1,6 +1,10 @@
 import prisma from "@/lib/prisma";
 import { Info, AlertCircle, Clock, CheckCircle2, BarChart3 } from "lucide-react";
 import PrintingInfoTable from "./PrintingInfoTable";
+import {
+    isAutoDeliveryOrder,
+    getEditionAuthoritativePrinters,
+} from "@/lib/printer-resolution";
 
 export const dynamic = "force-dynamic";
 
@@ -14,6 +18,11 @@ export default async function PrintingInfoPage() {
                     bookedition: {
                         include: {
                             books: true,
+                            bookeditionprinters: {
+                                where: { is_deleted: false },
+                                include: { printer: true },
+                                orderBy: { updatedAt: "desc" },
+                            },
                         },
                     },
                 },
@@ -22,19 +31,38 @@ export default async function PrintingInfoPage() {
         orderBy: { createdAt: "desc" },
     });
 
+    const editionIds = [
+        ...new Set(
+            orders.flatMap((order: any) =>
+                (order.printorder_items || []).map(
+                    (item: any) => item.bookedition?.id
+                )
+            ).filter((id: any): id is number => Number.isInteger(id))
+        ),
+    ];
+    const authoritativePrinters = await getEditionAuthoritativePrinters(
+        editionIds as number[]
+    );
+
     const items = orders.flatMap((order: any) =>
-        (order.printorder_items || []).map((item: any) => ({
-            id: item.id,
-            orderId: order.id,
-            projectName: order.project_name || `Project #${order.id}`,
-            printerName: order.printer?.name || "—",
-            bookTitle: item.bookedition?.books?.title || "Unknown Book",
-            author: item.bookedition?.books?.author || "—",
-            editionName: item.bookedition?.edition_name || "—",
-            quantity: item.quantity || 0,
-            status: item.status || "NOT_STARTED",
-            remaining: item.bookedition?.count_remening_for_transfer ?? null,
-        }))
+        (order.printorder_items || []).map((item: any) => {
+            const projectName = order.project_name || `Project #${order.id}`;
+            const isAutoDelivery = isAutoDeliveryOrder(projectName);
+            return {
+                id: item.id,
+                orderId: order.id,
+                projectName,
+                printerName: isAutoDelivery
+                    ? authoritativePrinters.get(item.bookedition?.id) ?? "—"
+                    : order.printer?.name || "—",
+                bookTitle: item.bookedition?.books?.title || "Unknown Book",
+                author: item.bookedition?.books?.author || "—",
+                editionName: item.bookedition?.edition_name || "—",
+                quantity: item.quantity || 0,
+                status: item.status || "NOT_STARTED",
+                remaining: item.bookedition?.count_remening_for_transfer ?? null,
+            };
+        })
     );
 
     const notStarted = items.filter((i: any) => i.status === "NOT_STARTED").length;

@@ -176,13 +176,14 @@ async function recordPrinterDeliveries(
     quantity: number
 ) {
     // Find all non-deleted printorder_items for this edition, ordered most recent first
-    let items = await tx.printorder_items.findMany({
+    const items = await tx.printorder_items.findMany({
         where: {
             bookEditionId: editionId,
             is_deleted: false,
         },
         orderBy: { createdAt: 'desc' },
         include: {
+            printorder: true,
             printer_delivery_records: {
                 where: { is_deleted: false },
                 select: { quantity_deliverd: true },
@@ -190,19 +191,56 @@ async function recordPrinterDeliveries(
         },
     });
 
+    const isAutoDeliveryOrder = (o: any): boolean => {
+        const name = o?.project_name || "";
+        return name.startsWith("Auto-delivery for") || name.startsWith("[Auto Delivery]");
+    };
+
+    // Prefer real (non-auto-delivery) print orders so new deliveries are attributed
+    // to the edition's actual printing project instead of dummy auto-delivery orders.
+    const realItems = items.filter((i: any) => !isAutoDeliveryOrder(i.printorder));
+    const dummyItems = items.filter((i: any) => isAutoDeliveryOrder(i.printorder));
+    let orderedItems = [...realItems, ...dummyItems];
+
     // If no printorder_items exist, create a minimal one on the fly
-    if (items.length === 0) {
+    if (orderedItems.length === 0) {
         const edition = await tx.bookedition.findUnique({
             where: { id: editionId },
             include: { books: true },
         });
 
-        const anyPrinter = await tx.printer.findFirst({
-            where: { is_deleted: false },
-            select: { id: true },
+        // Prefer the edition's connected printer (same source as Manage Printing
+        // and edition details) so delivery records show the correct printer.
+        const connected = await tx.bookeditionprinters.findFirst({
+            where: { editionId, is_deleted: false },
+            include: { printer: true },
+            orderBy: { updatedAt: "desc" },
         });
 
-        if (!anyPrinter) {
+        let printerId = connected?.printerId ?? null;
+
+        // No connected printer -> fall back to the edition's most recent real
+        // (non-auto-delivery) print order's printer before using an arbitrary one.
+        if (!printerId) {
+            const realOrderItem = await tx.printorder_items.findFirst({
+                where: { bookEditionId: editionId, is_deleted: false },
+                include: { printorder: true },
+                orderBy: { createdAt: "desc" },
+            });
+            if (realOrderItem?.printorder && !isAutoDeliveryOrder(realOrderItem.printorder)) {
+                printerId = realOrderItem.printorder.printerId ?? null;
+            }
+        }
+
+        if (!printerId) {
+            const anyPrinter = await tx.printer.findFirst({
+                where: { is_deleted: false },
+                select: { id: true },
+            });
+            printerId = anyPrinter?.id ?? null;
+        }
+
+        if (!printerId) {
             console.warn(`[recordPrinterDeliveries] No printer found to create fallback printorder for editionId=${editionId}`);
             return;
         }
@@ -210,7 +248,7 @@ async function recordPrinterDeliveries(
         const dummyOrder = await tx.printorder.create({
             data: {
                 project_name: `Auto-delivery for ${edition?.books?.title || `Edition #${editionId}`}`,
-                printerId: anyPrinter.id,
+                printerId: printerId,
                 status: "NOT_STARTED",
                 quality: "STANDARD",
                 edition: "SINGLE",
@@ -232,7 +270,7 @@ async function recordPrinterDeliveries(
             },
         });
 
-        items = [{
+        orderedItems = [{
             ...dummyItem,
             printer_delivery_records: [],
         }];
@@ -240,7 +278,7 @@ async function recordPrinterDeliveries(
 
     let remainingToDeliver = quantity;
 
-    for (const item of items) {
+    for (const item of orderedItems) {
         if (remainingToDeliver <= 0) break;
 
         const alreadyDelivered = (item.printer_delivery_records || []).reduce(
@@ -267,9 +305,10 @@ async function recordPrinterDeliveries(
         remainingToDeliver -= deliverNow;
     }
 
-    // If existing items are exhausted, add a new printorder_item to the same printorder
-    if (remainingToDeliver > 0 && items.length > 0) {
-        const parentOrderId = items[0].printorder_id;
+    // If existing items are exhausted, add a new printorder_item to a real
+    // print order (fall back to any available order for the edition).
+    if (remainingToDeliver > 0 && orderedItems.length > 0) {
+        const parentOrderId = realItems[0]?.printorder_id || orderedItems[0].printorder_id;
 
         const newItem = await tx.printorder_items.create({
             data: {

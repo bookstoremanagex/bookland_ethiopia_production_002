@@ -7,6 +7,7 @@ import {
     toggleEditionVisibilityToPrinter
 } from '../../../../actions/edition-actions';
 import { uploadBookImageAction } from '../../../../actions/book-actions';
+import { isAutoDeliveryOrder } from '@/lib/printer-utils';
 import { useRouter, usePathname } from 'next/navigation';
 import { toast } from 'sonner';
 import {
@@ -334,9 +335,15 @@ export default function EditionDetailsClient({ initialEdition, stores }: Edition
         0
     );
     const grandTotal = inStore + soldTotal + damagedTotal;
+    const realPrintOrderPrinter =
+        (edition.printorder_items || []).find(
+            (pi: any) =>
+                pi.printorder &&
+                !isAutoDeliveryOrder(pi.printorder.project_name)
+        )?.printorder?.printer || null;
     const connectedPrinter =
         edition.bookeditionprinters?.[0]?.printer ||
-        edition.printorder_items?.[0]?.printorder?.printer ||
+        realPrintOrderPrinter ||
         null;
     const remainingAtPrinter = Number(edition.count_remening_for_transfer || 0);
 
