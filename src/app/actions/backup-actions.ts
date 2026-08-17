@@ -9,13 +9,61 @@ import { convertToEthiopian } from "@/lib/calendar-utils";
 function backupsDir(): string {
     const dir = path.join(process.cwd(), "local_backups");
     if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true });
+        try {
+            fs.mkdirSync(dir, { recursive: true });
+        } catch {
+            // Vercel/serverless filesystem may be read-only — non-fatal.
+        }
     }
     return dir;
 }
 
 function backupFilePath(fileName: string): string {
     return path.join(backupsDir(), fileName);
+}
+
+async function ensureBackupContentColumn() {
+    try {
+        const tables: any[] = await (prisma as any).$queryRawUnsafe(
+            "SELECT TABLE_NAME AS t FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = 'local_backup_records'"
+        );
+        if (tables.length === 0) {
+            await (prisma as any).$executeRawUnsafe(`
+                CREATE TABLE IF NOT EXISTS \`local_backup_records\` (
+                    \`id\` INT NOT NULL AUTO_INCREMENT,
+                    \`databaseName\` VARCHAR(255) NOT NULL,
+                    \`fileSizeBytes\` INT NULL,
+                    \`status\` VARCHAR(50) NOT NULL DEFAULT 'success',
+                    \`createdAt\` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+                    PRIMARY KEY (\`id\`),
+                    INDEX \`local_backup_records_createdAt_idx\` (\`createdAt\`)
+                ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
+            `);
+        }
+        const columns: any[] = await (prisma as any).$queryRawUnsafe(
+            "SELECT COLUMN_NAME AS c FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'local_backup_records'"
+        );
+        const hasContent = columns.some((r: any) => r.c === "backupContent");
+        if (!hasContent) {
+            await (prisma as any).$executeRawUnsafe(
+                "ALTER TABLE `local_backup_records` ADD COLUMN `backupContent` LONGTEXT NULL"
+            );
+        }
+    } catch (error) {
+        console.error("Failed to ensure backup table/column:", error);
+    }
+}
+
+function writeBackupFile(fileName: string, sql: string) {
+    try {
+        const filePath = backupFilePath(fileName);
+        if (!fs.existsSync(path.dirname(filePath))) {
+            fs.mkdirSync(path.dirname(filePath), { recursive: true });
+        }
+        fs.writeFileSync(filePath, sql, "utf8");
+    } catch (error) {
+        console.error("Failed to write backup file to disk (non-fatal):", error);
+    }
 }
 
 function pad(n: number): string {
@@ -75,14 +123,20 @@ function escapeSqlValue(value: any): string {
     return `'${escaped}'`;
 }
 
-function uniqueBackupFileName(base: string): string {
+async function uniqueBackupFileName(base: string): Promise<string> {
     const ext = ".sql";
     const stem = base.endsWith(ext) ? base.slice(0, -ext.length) : base;
     let candidate = `${stem}${ext}`;
     let counter = 2;
-    while (fs.existsSync(backupFilePath(candidate))) {
+    let exists = await (prisma as any).local_backup_records.count({
+        where: { databaseName: candidate },
+    });
+    while (exists > 0) {
         candidate = `${stem}-${counter}${ext}`;
         counter++;
+        exists = await (prisma as any).local_backup_records.count({
+            where: { databaseName: candidate },
+        });
     }
     return candidate;
 }
@@ -90,7 +144,7 @@ function uniqueBackupFileName(base: string): string {
 async function generateSqlDump(): Promise<{ sql: string; databaseName: string }> {
     const now = new Date();
     const eth = convertToEthiopian(now);
-    const fileName = uniqueBackupFileName(`${sanitizeFileName(ethiopianNaturalName(now))}.sql`);
+    const fileName = await uniqueBackupFileName(`${sanitizeFileName(ethiopianNaturalName(now))}.sql`);
 
     const tablesResult: any[] = await (prisma as any).$queryRawUnsafe(
         "SELECT table_name AS t FROM information_schema.tables WHERE table_schema = DATABASE() ORDER BY table_name"
@@ -142,12 +196,33 @@ async function generateSqlDump(): Promise<{ sql: string; databaseName: string }>
     return { sql: lines.join("\n"), databaseName: fileName };
 }
 
+export async function getLastBackupTime() {
+    try {
+        await ensureBackupContentColumn();
+        const record = await (prisma as any).local_backup_records.findFirst({
+            where: { status: "success" },
+            orderBy: { createdAt: "desc" },
+            select: { createdAt: true },
+        });
+        const createdAt = record?.createdAt;
+        return {
+            success: true,
+            data: createdAt instanceof Date ? createdAt.toISOString() : createdAt ?? null,
+        };
+    } catch (error) {
+        console.error("Error fetching last backup time:", error);
+        return { success: false, data: null };
+    }
+}
+
 export async function getLocalBackups() {
     try {
         const session = await getCurrentSession();
         if (!session || session.role !== "ADMIN") {
             return { success: false, error: "Unauthorized" };
         }
+
+        await ensureBackupContentColumn();
 
         const backups = await (prisma as any).local_backup_records.findMany({
             orderBy: { createdAt: "desc" },
@@ -166,6 +241,8 @@ export async function createLocalBackup() {
             return { success: false, error: "Unauthorized" };
         }
 
+        await ensureBackupContentColumn();
+
         let dump: { sql: string; databaseName: string } | null = null;
         try {
             dump = await generateSqlDump();
@@ -180,7 +257,7 @@ export async function createLocalBackup() {
         const fileSizeBytes = Buffer.byteLength(dump.sql, "utf8");
         let recordId: number;
         try {
-            fs.writeFileSync(backupFilePath(dump.databaseName), dump.sql, "utf8");
+            writeBackupFile(dump.databaseName, dump.sql);
             const record = await (prisma as any).local_backup_records.create({
                 data: {
                     databaseName: dump.databaseName,
@@ -189,6 +266,11 @@ export async function createLocalBackup() {
                 },
             });
             recordId = record.id;
+            await (prisma as any).$executeRawUnsafe(
+                "UPDATE `local_backup_records` SET `backupContent` = ? WHERE `id` = ?",
+                dump.sql,
+                record.id
+            );
         } catch (error) {
             console.error("Failed to save backup:", error);
             try {
@@ -264,6 +346,20 @@ export async function getBackupFile(id: number) {
             return null;
         }
 
+        // Prefer DB-stored content (works on serverless where filesystem is ephemeral).
+        try {
+            const rows: any[] = await (prisma as any).$queryRawUnsafe(
+                "SELECT `backupContent` AS c FROM `local_backup_records` WHERE `id` = ?",
+                id
+            );
+            if (rows.length && typeof rows[0].c === "string" && rows[0].c.length > 0) {
+                return { fileName: record.databaseName, content: rows[0].c };
+            }
+        } catch (error) {
+            console.error("Failed to read backup content from DB, falling back to disk:", error);
+        }
+
+        // Fallback for legacy records that only exist on disk.
         const filePath = backupFilePath(record.databaseName);
         if (!fs.existsSync(filePath)) {
             return null;

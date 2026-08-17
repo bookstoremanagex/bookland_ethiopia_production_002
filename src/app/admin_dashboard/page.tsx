@@ -3,6 +3,7 @@ import DashboardContainer from "@/components/admin_dashboard_components/home_das
 import { getServerCalendarPref } from "@/lib/server-calendar"
 import { formatDate, convertToEthiopian, ETHIOPIAN_MONTHS } from "@/lib/calendar-utils"
 import { getTopSellers } from "@/app/actions/top-sellers-actions";
+import { getLastBackupTime } from "@/app/actions/backup-actions";
 
 const LOW_STOCK_THRESHOLD = 500;
 
@@ -78,7 +79,7 @@ export default async function AdminHomePage() {
     rawPendingOrdersCount,
     prevAssignments,
     rawTopSellers,
-    rawLastBackup,
+    backupTimeRes,
   ] = await Promise.all([
     (prisma as any).books.count({ where: { is_deleted: false } }),
     (prisma as any).bookshopes.count({ where: { is_deleted: false } }),
@@ -137,11 +138,7 @@ export default async function AdminHomePage() {
       },
     }),
     getTopSellers("all_time"),
-    (prisma as any).local_backup_records.findFirst({
-      where: { status: "success" },
-      orderBy: { createdAt: "desc" },
-      select: { createdAt: true },
-    }),
+    getLastBackupTime(),
   ]);
 
   // Stats
@@ -307,7 +304,7 @@ export default async function AdminHomePage() {
     recentOrders,
     lowStockItems,
     topBooks,
-    lastBackupAt: rawLastBackup?.createdAt instanceof Date ? rawLastBackup.createdAt.toISOString() : rawLastBackup?.createdAt ?? null,
+    lastBackupAt: backupTimeRes?.success ? backupTimeRes.data : null,
   };
 
   return (
