@@ -327,12 +327,15 @@ model printer {
   location String
   phone    String?
   email    String?
-
+ 
   status              String                @default("available")
   is_deleted          Boolean               @default(false)
   updatedAt           DateTime
   createdAt           DateTime              @default(now())
   deletedAt           DateTime              @default(now())
+
+payments payments[]
+
   printorder          printorder[]
   bookeditionprinters bookeditionprinters[]
   damagedbooks        damagedbooks[]
@@ -727,6 +730,15 @@ model payments {
   deletedAt    DateTime @default(now())
   orderid      String?
   is_for_previous_debts   Boolean? @default(false)
+ 
+  
+
+  is_for_printer Boolean @default(false)
+  printer_id  Int?
+  printer   printer? @relation(fields: [printer_id], references: [id])
+  printer_payment_memo String? @db.Text
+
+
   memo  String?    @db.Text
   shop  bookshopes @relation(fields: [shopId], references: [id])
   check checks?    @relation(fields: [checkId], references: [id])

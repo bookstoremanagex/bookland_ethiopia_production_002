@@ -48,6 +48,9 @@ export async function createPayment(data: {
     memo?: string | null;
     image?: string | null;
     is_for_previous_debts?: boolean | null;
+    is_for_printer?: boolean | null;
+    printer_id?: number | null;
+    printer_payment_memo?: string | null;
     approve?: boolean | null;
 }) {
     try {
@@ -66,6 +69,9 @@ export async function createPayment(data: {
                 memo: data.memo || null,
                 image: data.image || null,
                 is_for_previous_debts: data.is_for_previous_debts || null,
+                is_for_printer: data.is_for_printer || null,
+                printer_id: data.printer_id || null,
+                printer_payment_memo: data.printer_payment_memo || null,
                 status: approveImmediately ? "APPROVED" : "PENDING",
             }
         });
@@ -501,6 +507,45 @@ export async function updatePaymentMemo(paymentId: number, memo: string) {
         return { success: true };
     } catch (error) {
         console.error("Error updating payment memo:", error);
+        return { success: false, error: "Failed to update memo" };
+    }
+}
+
+export async function updatePaymentPrinter(
+    paymentId: number,
+    printerId: number | null
+) {
+    try {
+        const session = await getCurrentSession();
+        if (!session) return { success: false, error: "Not authenticated" };
+
+        await (prisma as any).payments.update({
+            where: { id: paymentId },
+            data: { printer_id: printerId },
+        });
+
+        revalidatePath("/admin_dashboard", "layout");
+        return { success: true };
+    } catch (error) {
+        console.error("Error updating payment printer:", error);
+        return { success: false, error: "Failed to update printer" };
+    }
+}
+
+export async function updatePrinterPaymentMemo(paymentId: number, memo: string) {
+    try {
+        const session = await getCurrentSession();
+        if (!session) return { success: false, error: "Not authenticated" };
+
+        await (prisma as any).payments.update({
+            where: { id: paymentId },
+            data: { printer_payment_memo: memo || null },
+        });
+
+        revalidatePath("/admin_dashboard", "layout");
+        return { success: true };
+    } catch (error) {
+        console.error("Error updating printer payment memo:", error);
         return { success: false, error: "Failed to update memo" };
     }
 }

@@ -691,6 +691,9 @@ exports.Prisma.PaymentsScalarFieldEnum = {
   deletedAt: 'deletedAt',
   orderid: 'orderid',
   is_for_previous_debts: 'is_for_previous_debts',
+  is_for_printer: 'is_for_printer',
+  printer_id: 'printer_id',
+  printer_payment_memo: 'printer_payment_memo',
   memo: 'memo'
 };
 
@@ -955,6 +958,7 @@ exports.Prisma.paymentsOrderByRelevanceFieldEnum = {
   image: 'image',
   status: 'status',
   orderid: 'orderid',
+  printer_payment_memo: 'printer_payment_memo',
   memo: 'memo'
 };
 

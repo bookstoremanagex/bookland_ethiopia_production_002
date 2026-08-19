@@ -1533,6 +1533,7 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
             orderId={order?.id ?? null}
             orderTotal={order?.total_amount ?? null}
             orderPaid={order?.amount_paid ?? null}
+            showPrinterPayment
         />
 
         {/* Delete Order Confirmation */}

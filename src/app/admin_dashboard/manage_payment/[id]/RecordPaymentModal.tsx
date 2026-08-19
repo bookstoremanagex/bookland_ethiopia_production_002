@@ -59,12 +59,14 @@ import {
     ListOrdered,
     Upload,
     ShieldCheck,
+    Printer,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { getChecks, createCheck } from "@/app/actions/check-actions";
 import { createPayment } from "@/app/actions/payment-actions";
+import { getPrinters } from "@/app/actions/printer-actions";
 
 interface Props {
     isOpen: boolean;
@@ -74,9 +76,10 @@ interface Props {
     orderId?: number | null;
     orderTotal?: number | null;
     orderPaid?: number | null;
+    showPrinterPayment?: boolean;
 }
 
-export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName, orderId, orderTotal, orderPaid }: Props) {
+export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName, orderId, orderTotal, orderPaid, showPrinterPayment = false }: Props) {
     const router = useRouter();
     const [paymentType, setPaymentType] = useState<string>("DIRECT");
     const [amount, setAmount] = useState<string>("");
@@ -85,6 +88,11 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName, 
     const [isForPreviousDebts, setIsForPreviousDebts] = useState(false);
     const [approveDirect, setApproveDirect] = useState(false);
     const [showApproveConfirm, setShowApproveConfirm] = useState(false);
+
+    const [printers, setPrinters] = useState<any[]>([]);
+    const [isForPrinter, setIsForPrinter] = useState(false);
+    const [selectedPrinter, setSelectedPrinter] = useState("");
+    const [printerPaymentMemo, setPrinterPaymentMemo] = useState("");
 
     const [checks, setChecks] = useState<any[]>([]);
     const [openCheckSearch, setOpenCheckSearch] = useState(false);
@@ -110,6 +118,19 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName, 
             loadChecks();
         }
     }, [isOpen, paymentType]);
+
+    useEffect(() => {
+        if (isOpen && showPrinterPayment) {
+            loadPrinters();
+        }
+    }, [isOpen, showPrinterPayment]);
+
+    const loadPrinters = async () => {
+        const res = await getPrinters();
+        if (res.success) {
+            setPrinters(res.data || []);
+        }
+    };
 
     // Auto-sync check amount with payment amount when opening new check form
     useEffect(() => {
@@ -202,6 +223,16 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName, 
             return;
         }
 
+        if (paymentType === "CHECK" && !selectedCheck) {
+            toast.error("Select a check for the payment");
+            return;
+        }
+
+        if (isForPrinter && !selectedPrinter) {
+            toast.error("Select a printer for this payment");
+            return;
+        }
+
         if (paymentType === "DIRECT" && approveDirect) {
             setShowApproveConfirm(true);
             return;
@@ -222,6 +253,9 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName, 
                 orderid: orderId ? String(orderId) : null,
                 memo: memo || null,
                 is_for_previous_debts: orderId ? null : (isForPreviousDebts || null),
+                is_for_printer: isForPrinter || null,
+                printer_id: isForPrinter && selectedPrinter ? Number(selectedPrinter) : null,
+                printer_payment_memo: isForPrinter && printerPaymentMemo ? printerPaymentMemo : null,
                 approve: paymentType === "DIRECT" && approveDirect || null,
             });
 
@@ -237,6 +271,9 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName, 
                 setShowNewCheck(false);
                 setIsForPreviousDebts(false);
                 setApproveDirect(false);
+                setIsForPrinter(false);
+                setSelectedPrinter("");
+                setPrinterPaymentMemo("");
                 router.refresh();
             } else {
                 toast.error(res.error);
@@ -378,6 +415,74 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName, 
                             />
                         </div>
                     </div>
+
+                    {showPrinterPayment && (
+                        <>
+                            <div className="flex items-center gap-3 p-4 rounded-2xl bg-indigo-50 border-2 border-indigo-200">
+                                <div
+                                    onClick={() => setIsForPrinter(!isForPrinter)}
+                                    className={cn(
+                                        "relative w-11 h-6 rounded-full transition-colors cursor-pointer shrink-0",
+                                        isForPrinter ? "bg-indigo-500" : "bg-slate-300"
+                                    )}
+                                >
+                                    <div className={cn(
+                                        "absolute top-0.5 left-0.5 size-5 rounded-full bg-white shadow-sm transition-transform",
+                                        isForPrinter && "translate-x-5"
+                                    )} />
+                                </div>
+                                <div className="min-w-0">
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-indigo-800">Payment for Printer</p>
+                                    <p className="text-[8px] font-bold text-indigo-600/70">Mark this payment as a payment to a printer</p>
+                                </div>
+                            </div>
+
+                            {isForPrinter && (
+                                <div className="space-y-4 p-4 md:p-5 rounded-2xl bg-indigo-50/50 border-2 border-indigo-100">
+                                    <div className="flex items-center gap-2 text-indigo-700">
+                                        <Printer className="size-4" />
+                                        <h4 className="text-[10px] font-black uppercase tracking-widest">Printer Details</h4>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="text-[9px] font-black uppercase tracking-widest text-primarycolor ml-1">Select Printer</label>
+                                        <Select value={selectedPrinter} onValueChange={setSelectedPrinter}>
+                                            <SelectTrigger className="h-11 md:h-12 rounded-xl border-2 border-indigo-200 font-bold text-xs">
+                                                <SelectValue placeholder="Select a printer..." />
+                                            </SelectTrigger>
+                                            <SelectContent className="rounded-2xl p-2 border-2 bg-white max-h-[220px]">
+                                                {printers.length === 0 && (
+                                                    <div className="p-4 text-center text-xs font-bold text-muted-foreground">
+                                                        No printers found
+                                                    </div>
+                                                )}
+                                                {printers.map((p: any) => (
+                                                    <SelectItem key={p.id} value={String(p.id)} className="rounded-xl h-10 font-bold text-xs">
+                                                        {p.name}{p.location ? ` - ${p.location}` : ""}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="text-[9px] font-black uppercase tracking-widest text-primarycolor ml-1">
+                                            Printer Memo <span className="text-muted-foreground/40">(optional)</span>
+                                        </label>
+                                        <div className="relative">
+                                            <FileText className="absolute left-3 md:left-4 top-3 md:top-3.5 size-3.5 md:size-4 text-muted-foreground" />
+                                            <textarea
+                                                value={printerPaymentMemo}
+                                                onChange={(e) => setPrinterPaymentMemo(e.target.value)}
+                                                className="h-16 md:h-20 w-full pl-9 md:pl-10 pt-2.5 rounded-xl border-2 border-indigo-200 font-bold text-xs resize-none focus:outline-none focus:ring-2 focus:ring-primarycolor/20"
+                                                placeholder="Add a note for the printer payment..."
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </>
+                    )}
 
                     {paymentType === "DIRECT" && (
                         <button

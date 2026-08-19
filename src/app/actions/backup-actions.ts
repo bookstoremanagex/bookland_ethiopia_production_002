@@ -130,23 +130,45 @@ async function generateSqlDump(): Promise<{ sql: string; databaseName: string }>
         lines.push(createStmt + ";");
         lines.push("");
 
-        const rows: any[] = await (prisma as any).$queryRawUnsafe(`SELECT * FROM \`${table}\``);
-        if (rows.length === 0) {
-            lines.push("");
-            continue;
-        }
+        // Read rows in small keyed batches so no single statement exceeds the
+        // MySQL max_statement_time limit (large tables like activityLogs /
+        // notification used to abort the whole dump).
+        const pkResult: any[] = await (prisma as any).$queryRawUnsafe(
+            "SELECT COLUMN_NAME AS c FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = ? AND COLUMN_KEY = 'PRI' LIMIT 1",
+            table
+        );
+        const pk: string | null = pkResult[0]?.c ?? null;
+        const BATCH = 100;
 
-        const columns = Object.keys(rows[0]);
-        const colList = columns.map((c) => `\`${c}\``).join(", ");
+        let lastId = 0;
+        let keepGoing = true;
+        while (keepGoing) {
+            const rows: any[] = pk
+                ? await (prisma as any).$queryRawUnsafe(
+                      `SELECT * FROM \`${table}\` WHERE \`${pk}\` > ${lastId} ORDER BY \`${pk}\` ASC LIMIT ${BATCH}`
+                  )
+                : await (prisma as any).$queryRawUnsafe(
+                      `SELECT * FROM \`${table}\` LIMIT ${BATCH}`
+                  );
 
-        for (let i = 0; i < rows.length; i += 200) {
-            const batch = rows.slice(i, i + 200);
-            const valueRows = batch.map((row) => {
+            if (rows.length === 0) break;
+
+            const columns = Object.keys(rows[0]);
+            const colList = columns.map((c) => `\`${c}\``).join(", ");
+
+            const valueRows = rows.map((row) => {
                 const vals = columns.map((c) => escapeSqlValue(row[c]));
                 return `(${vals.join(", ")})`;
             });
             lines.push(`INSERT INTO \`${table}\` (${colList}) VALUES`);
             lines.push(valueRows.join(",\n") + ";");
+
+            if (pk) {
+                lastId = Number(rows[rows.length - 1][pk]);
+                keepGoing = rows.length >= BATCH;
+            } else {
+                keepGoing = false;
+            }
         }
         lines.push("");
     }

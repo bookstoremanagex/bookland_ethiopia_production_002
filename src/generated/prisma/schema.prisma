@@ -328,11 +328,14 @@ model printer {
   phone    String?
   email    String?
 
-  status              String                @default("available")
-  is_deleted          Boolean               @default(false)
-  updatedAt           DateTime
-  createdAt           DateTime              @default(now())
-  deletedAt           DateTime              @default(now())
+  status     String   @default("available")
+  is_deleted Boolean  @default(false)
+  updatedAt  DateTime
+  createdAt  DateTime @default(now())
+  deletedAt  DateTime @default(now())
+
+  payments payments[]
+
   printorder          printorder[]
   bookeditionprinters bookeditionprinters[]
   damagedbooks        damagedbooks[]
@@ -712,22 +715,28 @@ model checks {
 }
 
 model payments {
-  id                    Int        @id @default(autoincrement())
+  id                    Int      @id @default(autoincrement())
   shopId                Int
   amount                Float
   payment_type          String // "DIRECT" | "CHECK"
   checkId               Int?
   image                 String?
-  status                String     @default("PENDING") // "PENDING" | "APPROVED"
-  is_deleted            Boolean    @default(false)
-  updatedAt             DateTime   @default(now())
-  createdAt             DateTime   @default(now())
-  deletedAt             DateTime   @default(now())
+  status                String   @default("PENDING") // "PENDING" | "APPROVED"
+  is_deleted            Boolean  @default(false)
+  updatedAt             DateTime @default(now())
+  createdAt             DateTime @default(now())
+  deletedAt             DateTime @default(now())
   orderid               String?
-  is_for_previous_debts Boolean?   @default(false)
-  memo                  String?    @db.Text
-  shop                  bookshopes @relation(fields: [shopId], references: [id])
-  check                 checks?    @relation(fields: [checkId], references: [id])
+  is_for_previous_debts Boolean? @default(false)
+
+  is_for_printer       Boolean  @default(false)
+  printer_id           Int?
+  printer              printer? @relation(fields: [printer_id], references: [id])
+  printer_payment_memo String?  @db.Text
+
+  memo  String?    @db.Text
+  shop  bookshopes @relation(fields: [shopId], references: [id])
+  check checks?    @relation(fields: [checkId], references: [id])
 }
 
 enum retail_purchase_status {

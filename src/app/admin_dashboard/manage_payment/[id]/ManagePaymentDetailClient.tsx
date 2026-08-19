@@ -43,6 +43,8 @@ import {
     Repeat,
     Landmark,
     BarChart3,
+    Printer,
+    Pencil,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -61,7 +63,8 @@ import { parseISO } from "date-fns";
 import { useCalendar } from "@/lib/calendar-context";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { approvePayment, checkIsAdminUser, rejectPayment, deletePayment, setPaymentPending, updatePaymentMemo } from "@/app/actions/payment-actions";
+import { approvePayment, checkIsAdminUser, rejectPayment, deletePayment, setPaymentPending, updatePaymentMemo, updatePaymentPrinter } from "@/app/actions/payment-actions";
+import { getPrinters } from "@/app/actions/printer-actions";
 import { approveRoundPayment as approveRoundPaymentAction, deleteRoundPayment, createRoundPayment, createRoundCheck, updateRoundCheckStatus } from "@/app/delivery_dashboard_full/round-books/actions";
 import { setOrderHideRemaining } from "@/app/actions/order-actions";
 import { updateCheckStatus, updateCheckDetails } from "@/app/actions/check-actions";
@@ -143,6 +146,9 @@ interface Payment {
     memo: string | null;
     image?: string | null;
     is_for_previous_debts?: boolean | null;
+    is_for_printer?: boolean | null;
+    printerId?: number | null;
+    printerName?: string | null;
 }
 
 interface ShopInfo {
@@ -317,6 +323,9 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
             createdAt: p.createdAt,
             orderid: null,
             memo: p.memo,
+            is_for_printer: false,
+            printerId: null,
+            printerName: null,
             source: "round" as const,
             bookTitle: p.bookTitle,
         }));
@@ -338,9 +347,43 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
     const [editingMemoValue, setEditingMemoValue] = useState("");
     const [savingMemoId, setSavingMemoId] = useState<number | null>(null);
 
+    const [printersList, setPrintersList] = useState<any[]>([]);
+    const [editingPrinterPayment, setEditingPrinterPayment] = useState<Payment | null>(null);
+    const [editingPrinterId, setEditingPrinterId] = useState("0");
+    const [savingPrinterId, setSavingPrinterId] = useState<number | null>(null);
+
     useEffect(() => {
         checkIsAdminUser().then(res => setIsAdmin(res.isAdmin));
     }, []);
+
+    const openPrinterDialog = async (payment: Payment) => {
+        setEditingPrinterPayment(payment);
+        setEditingPrinterId(payment.printerId ? String(payment.printerId) : "0");
+        if (printersList.length === 0) {
+            const res = await getPrinters();
+            if (res.success) setPrintersList(res.data);
+        }
+    };
+
+    const handleSavePrinter = async () => {
+        if (!editingPrinterPayment) return;
+        setSavingPrinterId(editingPrinterPayment.id);
+        try {
+            const pid = editingPrinterId === "0" ? null : Number(editingPrinterId);
+            const res = await updatePaymentPrinter(editingPrinterPayment.id, pid);
+            if (res.success) {
+                toast.success("Printer updated");
+                setEditingPrinterPayment(null);
+                router.refresh();
+            } else {
+                toast.error(res.error || "Failed to update printer");
+            }
+        } catch {
+            toast.error("Failed to update printer");
+        } finally {
+            setSavingPrinterId(null);
+        }
+    };
 
     const handleOrderApproved = (updatedOrder: AdminOrder) => {
         setSelectedOrder(null);
@@ -1216,6 +1259,22 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
                                                         </button>
                                                     </span>
                                                 )}
+                                                {payment.is_for_printer && (
+                                                    <span className="flex items-center gap-1.5">
+                                                        <Printer className="size-3 text-indigo-500" />
+                                                        <span className="font-black text-indigo-600">
+                                                            {payment.printerName || "No Printer"}
+                                                        </span>
+                                                        {isAdmin && (
+                                                            <button
+                                                                onClick={() => openPrinterDialog(payment)}
+                                                                className="flex items-center gap-1 text-[8px] font-black uppercase tracking-widest text-primarycolor/50 hover:text-primarycolor transition-colors cursor-pointer"
+                                                            >
+                                                                <Pencil className="size-2.5" /> Edit
+                                                            </button>
+                                                        )}
+                                                    </span>
+                                                )}
                                             </div>
                                             {payment.memo && editingMemoId !== payment.id && (
                                                 <div className="flex items-center gap-2 mt-2">
@@ -2043,6 +2102,66 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
                 shopName={shop.name}
                 orderId={paymentOrderId}
             />
+
+            {/* Change Printer Dialog */}
+            <Dialog open={!!editingPrinterPayment} onOpenChange={(o) => { if (!o) setEditingPrinterPayment(null); }}>
+                <DialogContent className="sm:max-w-md w-[95vw] rounded-[2rem] border-2 border-primarycolor/10 p-0 overflow-hidden shadow-2xl">
+                    <DialogHeader className="p-6 pb-4 border-b border-slate-100">
+                        <DialogTitle className="text-lg font-black text-primarycolor uppercase tracking-tight italic">
+                            Change <span className="text-secondarycolor not-italic">Printer</span>
+                        </DialogTitle>
+                        <DialogDescription className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">
+                            Payment #{editingPrinterPayment?.id} · {editingPrinterPayment?.amount.toLocaleString()} ETB
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="p-6 space-y-3">
+                        <div>
+                            <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground mb-1.5">
+                                Select Printer
+                            </p>
+                            <Select value={editingPrinterId} onValueChange={setEditingPrinterId}>
+                                <SelectTrigger className="h-12 rounded-xl border-2 border-slate-200 bg-white font-bold text-xs shadow-sm">
+                                    <SelectValue placeholder="Select a printer..." />
+                                </SelectTrigger>
+                                <SelectContent className="rounded-2xl p-1.5 border-2 bg-white max-h-[260px] overflow-y-auto">
+                                    <SelectItem value="0" className="rounded-xl h-10 font-bold text-xs text-muted-foreground">
+                                        No Printer
+                                    </SelectItem>
+                                    {printersList.length === 0 && (
+                                        <SelectItem value="none" disabled className="rounded-xl h-10 font-bold text-xs">
+                                            No printers found
+                                        </SelectItem>
+                                    )}
+                                    {printersList.map((pr: any) => (
+                                        <SelectItem key={pr.id} value={String(pr.id)} className="rounded-xl h-10 font-bold text-xs">
+                                            {pr.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    </div>
+                    <DialogFooter className="p-6 pt-2 gap-2">
+                        <Button
+                            variant="outline"
+                            onClick={() => setEditingPrinterPayment(null)}
+                            className="h-12 rounded-2xl border-2 border-slate-200 text-slate-600 font-black uppercase tracking-widest text-[10px] flex-1"
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            onClick={handleSavePrinter}
+                            disabled={savingPrinterId === editingPrinterPayment?.id || editingPrinterId === "none"}
+                            className="h-12 rounded-2xl bg-primarycolor hover:bg-secondarycolor text-white font-black uppercase tracking-widest text-[10px] flex-1"
+                        >
+                            {savingPrinterId === editingPrinterPayment?.id ? (
+                                <Loader2 className="size-4 animate-spin" />
+                            ) : null}
+                            Save
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
 
             {/* Payment Action Dialog */}
             <AlertDialog open={showActionDialog} onOpenChange={(o) => { if (!o) { setShowActionDialog(false); setSelectedActionPayment(null); } }}>

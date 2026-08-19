@@ -39,6 +39,14 @@ export default async function ManagePaymentDetailPage({ params }: { params: Prom
                     createdAt: true,
                     orderid: true,
                     memo: true,
+                    is_for_printer: true,
+                    printer_id: true,
+                    printer: {
+                        select: {
+                            id: true,
+                            name: true,
+                        },
+                    },
                     check: {
                         select: {
                             id: true,
@@ -160,6 +168,9 @@ export default async function ManagePaymentDetailPage({ params }: { params: Prom
                 createdAt: p.createdAt,
                 orderid: p.orderid || null,
                 memo: p.memo || null,
+                is_for_printer: p.is_for_printer ?? false,
+                printerId: p.printer_id ?? null,
+                printerName: p.printer?.name ?? null,
             }))}
             orders={shop.orders.map((o: any) => ({
                 id: o.id,

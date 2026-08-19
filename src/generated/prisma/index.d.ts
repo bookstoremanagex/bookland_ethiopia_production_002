@@ -4782,12 +4782,14 @@ export namespace Prisma {
    */
 
   export type PrinterCountOutputType = {
+    payments: number
     printorder: number
     bookeditionprinters: number
     damagedbooks: number
   }
 
   export type PrinterCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    payments?: boolean | PrinterCountOutputTypeCountPaymentsArgs
     printorder?: boolean | PrinterCountOutputTypeCountPrintorderArgs
     bookeditionprinters?: boolean | PrinterCountOutputTypeCountBookeditionprintersArgs
     damagedbooks?: boolean | PrinterCountOutputTypeCountDamagedbooksArgs
@@ -4802,6 +4804,13 @@ export namespace Prisma {
      * Select specific fields to fetch from the PrinterCountOutputType
      */
     select?: PrinterCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * PrinterCountOutputType without action
+   */
+  export type PrinterCountOutputTypeCountPaymentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: paymentsWhereInput
   }
 
   /**
@@ -21232,6 +21241,7 @@ export namespace Prisma {
     updatedAt?: boolean
     createdAt?: boolean
     deletedAt?: boolean
+    payments?: boolean | printer$paymentsArgs<ExtArgs>
     printorder?: boolean | printer$printorderArgs<ExtArgs>
     bookeditionprinters?: boolean | printer$bookeditionprintersArgs<ExtArgs>
     damagedbooks?: boolean | printer$damagedbooksArgs<ExtArgs>
@@ -21255,6 +21265,7 @@ export namespace Prisma {
 
   export type printerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "location" | "phone" | "email" | "status" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt", ExtArgs["result"]["printer"]>
   export type printerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    payments?: boolean | printer$paymentsArgs<ExtArgs>
     printorder?: boolean | printer$printorderArgs<ExtArgs>
     bookeditionprinters?: boolean | printer$bookeditionprintersArgs<ExtArgs>
     damagedbooks?: boolean | printer$damagedbooksArgs<ExtArgs>
@@ -21264,6 +21275,7 @@ export namespace Prisma {
   export type $printerPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "printer"
     objects: {
+      payments: Prisma.$paymentsPayload<ExtArgs>[]
       printorder: Prisma.$printorderPayload<ExtArgs>[]
       bookeditionprinters: Prisma.$bookeditionprintersPayload<ExtArgs>[]
       damagedbooks: Prisma.$damagedbooksPayload<ExtArgs>[]
@@ -21619,6 +21631,7 @@ export namespace Prisma {
    */
   export interface Prisma__printerClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    payments<T extends printer$paymentsArgs<ExtArgs> = {}>(args?: Subset<T, printer$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$paymentsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     printorder<T extends printer$printorderArgs<ExtArgs> = {}>(args?: Subset<T, printer$printorderArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$printorderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     bookeditionprinters<T extends printer$bookeditionprintersArgs<ExtArgs> = {}>(args?: Subset<T, printer$bookeditionprintersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$bookeditionprintersPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     damagedbooks<T extends printer$damagedbooksArgs<ExtArgs> = {}>(args?: Subset<T, printer$damagedbooksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$damagedbooksPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -22001,6 +22014,30 @@ export namespace Prisma {
      * Limit how many printers to delete.
      */
     limit?: number
+  }
+
+  /**
+   * printer.payments
+   */
+  export type printer$paymentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the payments
+     */
+    select?: paymentsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the payments
+     */
+    omit?: paymentsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: paymentsInclude<ExtArgs> | null
+    where?: paymentsWhereInput
+    orderBy?: paymentsOrderByWithRelationInput | paymentsOrderByWithRelationInput[]
+    cursor?: paymentsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PaymentsScalarFieldEnum | PaymentsScalarFieldEnum[]
   }
 
   /**
@@ -45980,6 +46017,7 @@ export namespace Prisma {
     shopId: number | null
     amount: number | null
     checkId: number | null
+    printer_id: number | null
   }
 
   export type PaymentsSumAggregateOutputType = {
@@ -45987,6 +46025,7 @@ export namespace Prisma {
     shopId: number | null
     amount: number | null
     checkId: number | null
+    printer_id: number | null
   }
 
   export type PaymentsMinAggregateOutputType = {
@@ -46003,6 +46042,9 @@ export namespace Prisma {
     deletedAt: Date | null
     orderid: string | null
     is_for_previous_debts: boolean | null
+    is_for_printer: boolean | null
+    printer_id: number | null
+    printer_payment_memo: string | null
     memo: string | null
   }
 
@@ -46020,6 +46062,9 @@ export namespace Prisma {
     deletedAt: Date | null
     orderid: string | null
     is_for_previous_debts: boolean | null
+    is_for_printer: boolean | null
+    printer_id: number | null
+    printer_payment_memo: string | null
     memo: string | null
   }
 
@@ -46037,6 +46082,9 @@ export namespace Prisma {
     deletedAt: number
     orderid: number
     is_for_previous_debts: number
+    is_for_printer: number
+    printer_id: number
+    printer_payment_memo: number
     memo: number
     _all: number
   }
@@ -46047,6 +46095,7 @@ export namespace Prisma {
     shopId?: true
     amount?: true
     checkId?: true
+    printer_id?: true
   }
 
   export type PaymentsSumAggregateInputType = {
@@ -46054,6 +46103,7 @@ export namespace Prisma {
     shopId?: true
     amount?: true
     checkId?: true
+    printer_id?: true
   }
 
   export type PaymentsMinAggregateInputType = {
@@ -46070,6 +46120,9 @@ export namespace Prisma {
     deletedAt?: true
     orderid?: true
     is_for_previous_debts?: true
+    is_for_printer?: true
+    printer_id?: true
+    printer_payment_memo?: true
     memo?: true
   }
 
@@ -46087,6 +46140,9 @@ export namespace Prisma {
     deletedAt?: true
     orderid?: true
     is_for_previous_debts?: true
+    is_for_printer?: true
+    printer_id?: true
+    printer_payment_memo?: true
     memo?: true
   }
 
@@ -46104,6 +46160,9 @@ export namespace Prisma {
     deletedAt?: true
     orderid?: true
     is_for_previous_debts?: true
+    is_for_printer?: true
+    printer_id?: true
+    printer_payment_memo?: true
     memo?: true
     _all?: true
   }
@@ -46208,6 +46267,9 @@ export namespace Prisma {
     deletedAt: Date
     orderid: string | null
     is_for_previous_debts: boolean | null
+    is_for_printer: boolean
+    printer_id: number | null
+    printer_payment_memo: string | null
     memo: string | null
     _count: PaymentsCountAggregateOutputType | null
     _avg: PaymentsAvgAggregateOutputType | null
@@ -46244,7 +46306,11 @@ export namespace Prisma {
     deletedAt?: boolean
     orderid?: boolean
     is_for_previous_debts?: boolean
+    is_for_printer?: boolean
+    printer_id?: boolean
+    printer_payment_memo?: boolean
     memo?: boolean
+    printer?: boolean | payments$printerArgs<ExtArgs>
     shop?: boolean | bookshopesDefaultArgs<ExtArgs>
     check?: boolean | payments$checkArgs<ExtArgs>
   }, ExtArgs["result"]["payments"]>
@@ -46265,11 +46331,15 @@ export namespace Prisma {
     deletedAt?: boolean
     orderid?: boolean
     is_for_previous_debts?: boolean
+    is_for_printer?: boolean
+    printer_id?: boolean
+    printer_payment_memo?: boolean
     memo?: boolean
   }
 
-  export type paymentsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "shopId" | "amount" | "payment_type" | "checkId" | "image" | "status" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt" | "orderid" | "is_for_previous_debts" | "memo", ExtArgs["result"]["payments"]>
+  export type paymentsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "shopId" | "amount" | "payment_type" | "checkId" | "image" | "status" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt" | "orderid" | "is_for_previous_debts" | "is_for_printer" | "printer_id" | "printer_payment_memo" | "memo", ExtArgs["result"]["payments"]>
   export type paymentsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    printer?: boolean | payments$printerArgs<ExtArgs>
     shop?: boolean | bookshopesDefaultArgs<ExtArgs>
     check?: boolean | payments$checkArgs<ExtArgs>
   }
@@ -46277,6 +46347,7 @@ export namespace Prisma {
   export type $paymentsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "payments"
     objects: {
+      printer: Prisma.$printerPayload<ExtArgs> | null
       shop: Prisma.$bookshopesPayload<ExtArgs>
       check: Prisma.$checksPayload<ExtArgs> | null
     }
@@ -46294,6 +46365,9 @@ export namespace Prisma {
       deletedAt: Date
       orderid: string | null
       is_for_previous_debts: boolean | null
+      is_for_printer: boolean
+      printer_id: number | null
+      printer_payment_memo: string | null
       memo: string | null
     }, ExtArgs["result"]["payments"]>
     composites: {}
@@ -46635,6 +46709,7 @@ export namespace Prisma {
    */
   export interface Prisma__paymentsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    printer<T extends payments$printerArgs<ExtArgs> = {}>(args?: Subset<T, payments$printerArgs<ExtArgs>>): Prisma__printerClient<$Result.GetResult<Prisma.$printerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     shop<T extends bookshopesDefaultArgs<ExtArgs> = {}>(args?: Subset<T, bookshopesDefaultArgs<ExtArgs>>): Prisma__bookshopesClient<$Result.GetResult<Prisma.$bookshopesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     check<T extends payments$checkArgs<ExtArgs> = {}>(args?: Subset<T, payments$checkArgs<ExtArgs>>): Prisma__checksClient<$Result.GetResult<Prisma.$checksPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
@@ -46679,6 +46754,9 @@ export namespace Prisma {
     readonly deletedAt: FieldRef<"payments", 'DateTime'>
     readonly orderid: FieldRef<"payments", 'String'>
     readonly is_for_previous_debts: FieldRef<"payments", 'Boolean'>
+    readonly is_for_printer: FieldRef<"payments", 'Boolean'>
+    readonly printer_id: FieldRef<"payments", 'Int'>
+    readonly printer_payment_memo: FieldRef<"payments", 'String'>
     readonly memo: FieldRef<"payments", 'String'>
   }
     
@@ -47020,6 +47098,25 @@ export namespace Prisma {
      * Limit how many payments to delete.
      */
     limit?: number
+  }
+
+  /**
+   * payments.printer
+   */
+  export type payments$printerArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the printer
+     */
+    select?: printerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the printer
+     */
+    omit?: printerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: printerInclude<ExtArgs> | null
+    where?: printerWhereInput
   }
 
   /**
@@ -50750,6 +50847,9 @@ export namespace Prisma {
     deletedAt: 'deletedAt',
     orderid: 'orderid',
     is_for_previous_debts: 'is_for_previous_debts',
+    is_for_printer: 'is_for_printer',
+    printer_id: 'printer_id',
+    printer_payment_memo: 'printer_payment_memo',
     memo: 'memo'
   };
 
@@ -51122,6 +51222,7 @@ export namespace Prisma {
     image: 'image',
     status: 'status',
     orderid: 'orderid',
+    printer_payment_memo: 'printer_payment_memo',
     memo: 'memo'
   };
 
@@ -52745,6 +52846,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"printer"> | Date | string
     createdAt?: DateTimeFilter<"printer"> | Date | string
     deletedAt?: DateTimeFilter<"printer"> | Date | string
+    payments?: PaymentsListRelationFilter
     printorder?: PrintorderListRelationFilter
     bookeditionprinters?: BookeditionprintersListRelationFilter
     damagedbooks?: DamagedbooksListRelationFilter
@@ -52761,6 +52863,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     createdAt?: SortOrder
     deletedAt?: SortOrder
+    payments?: paymentsOrderByRelationAggregateInput
     printorder?: printorderOrderByRelationAggregateInput
     bookeditionprinters?: bookeditionprintersOrderByRelationAggregateInput
     damagedbooks?: damagedbooksOrderByRelationAggregateInput
@@ -52781,6 +52884,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"printer"> | Date | string
     createdAt?: DateTimeFilter<"printer"> | Date | string
     deletedAt?: DateTimeFilter<"printer"> | Date | string
+    payments?: PaymentsListRelationFilter
     printorder?: PrintorderListRelationFilter
     bookeditionprinters?: BookeditionprintersListRelationFilter
     damagedbooks?: DamagedbooksListRelationFilter
@@ -54855,7 +54959,11 @@ export namespace Prisma {
     deletedAt?: DateTimeFilter<"payments"> | Date | string
     orderid?: StringNullableFilter<"payments"> | string | null
     is_for_previous_debts?: BoolNullableFilter<"payments"> | boolean | null
+    is_for_printer?: BoolFilter<"payments"> | boolean
+    printer_id?: IntNullableFilter<"payments"> | number | null
+    printer_payment_memo?: StringNullableFilter<"payments"> | string | null
     memo?: StringNullableFilter<"payments"> | string | null
+    printer?: XOR<PrinterNullableScalarRelationFilter, printerWhereInput> | null
     shop?: XOR<BookshopesScalarRelationFilter, bookshopesWhereInput>
     check?: XOR<ChecksNullableScalarRelationFilter, checksWhereInput> | null
   }
@@ -54874,7 +54982,11 @@ export namespace Prisma {
     deletedAt?: SortOrder
     orderid?: SortOrderInput | SortOrder
     is_for_previous_debts?: SortOrderInput | SortOrder
+    is_for_printer?: SortOrder
+    printer_id?: SortOrderInput | SortOrder
+    printer_payment_memo?: SortOrderInput | SortOrder
     memo?: SortOrderInput | SortOrder
+    printer?: printerOrderByWithRelationInput
     shop?: bookshopesOrderByWithRelationInput
     check?: checksOrderByWithRelationInput
     _relevance?: paymentsOrderByRelevanceInput
@@ -54897,7 +55009,11 @@ export namespace Prisma {
     deletedAt?: DateTimeFilter<"payments"> | Date | string
     orderid?: StringNullableFilter<"payments"> | string | null
     is_for_previous_debts?: BoolNullableFilter<"payments"> | boolean | null
+    is_for_printer?: BoolFilter<"payments"> | boolean
+    printer_id?: IntNullableFilter<"payments"> | number | null
+    printer_payment_memo?: StringNullableFilter<"payments"> | string | null
     memo?: StringNullableFilter<"payments"> | string | null
+    printer?: XOR<PrinterNullableScalarRelationFilter, printerWhereInput> | null
     shop?: XOR<BookshopesScalarRelationFilter, bookshopesWhereInput>
     check?: XOR<ChecksNullableScalarRelationFilter, checksWhereInput> | null
   }, "id">
@@ -54916,6 +55032,9 @@ export namespace Prisma {
     deletedAt?: SortOrder
     orderid?: SortOrderInput | SortOrder
     is_for_previous_debts?: SortOrderInput | SortOrder
+    is_for_printer?: SortOrder
+    printer_id?: SortOrderInput | SortOrder
+    printer_payment_memo?: SortOrderInput | SortOrder
     memo?: SortOrderInput | SortOrder
     _count?: paymentsCountOrderByAggregateInput
     _avg?: paymentsAvgOrderByAggregateInput
@@ -54941,6 +55060,9 @@ export namespace Prisma {
     deletedAt?: DateTimeWithAggregatesFilter<"payments"> | Date | string
     orderid?: StringNullableWithAggregatesFilter<"payments"> | string | null
     is_for_previous_debts?: BoolNullableWithAggregatesFilter<"payments"> | boolean | null
+    is_for_printer?: BoolWithAggregatesFilter<"payments"> | boolean
+    printer_id?: IntNullableWithAggregatesFilter<"payments"> | number | null
+    printer_payment_memo?: StringNullableWithAggregatesFilter<"payments"> | string | null
     memo?: StringNullableWithAggregatesFilter<"payments"> | string | null
   }
 
@@ -56780,6 +56902,7 @@ export namespace Prisma {
     updatedAt: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+    payments?: paymentsCreateNestedManyWithoutPrinterInput
     printorder?: printorderCreateNestedManyWithoutPrinterInput
     bookeditionprinters?: bookeditionprintersCreateNestedManyWithoutPrinterInput
     damagedbooks?: damagedbooksCreateNestedManyWithoutPrinterInput
@@ -56796,6 +56919,7 @@ export namespace Prisma {
     updatedAt: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+    payments?: paymentsUncheckedCreateNestedManyWithoutPrinterInput
     printorder?: printorderUncheckedCreateNestedManyWithoutPrinterInput
     bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutPrinterInput
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutPrinterInput
@@ -56811,6 +56935,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    payments?: paymentsUpdateManyWithoutPrinterNestedInput
     printorder?: printorderUpdateManyWithoutPrinterNestedInput
     bookeditionprinters?: bookeditionprintersUpdateManyWithoutPrinterNestedInput
     damagedbooks?: damagedbooksUpdateManyWithoutPrinterNestedInput
@@ -56827,6 +56952,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    payments?: paymentsUncheckedUpdateManyWithoutPrinterNestedInput
     printorder?: printorderUncheckedUpdateManyWithoutPrinterNestedInput
     bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutPrinterNestedInput
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutPrinterNestedInput
@@ -59069,7 +59195,10 @@ export namespace Prisma {
     deletedAt?: Date | string
     orderid?: string | null
     is_for_previous_debts?: boolean | null
+    is_for_printer?: boolean
+    printer_payment_memo?: string | null
     memo?: string | null
+    printer?: printerCreateNestedOneWithoutPaymentsInput
     shop: bookshopesCreateNestedOneWithoutPaymentsInput
     check?: checksCreateNestedOneWithoutPaymentsInput
   }
@@ -59088,6 +59217,9 @@ export namespace Prisma {
     deletedAt?: Date | string
     orderid?: string | null
     is_for_previous_debts?: boolean | null
+    is_for_printer?: boolean
+    printer_id?: number | null
+    printer_payment_memo?: string | null
     memo?: string | null
   }
 
@@ -59102,7 +59234,10 @@ export namespace Prisma {
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orderid?: NullableStringFieldUpdateOperationsInput | string | null
     is_for_previous_debts?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_for_printer?: BoolFieldUpdateOperationsInput | boolean
+    printer_payment_memo?: NullableStringFieldUpdateOperationsInput | string | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
+    printer?: printerUpdateOneWithoutPaymentsNestedInput
     shop?: bookshopesUpdateOneRequiredWithoutPaymentsNestedInput
     check?: checksUpdateOneWithoutPaymentsNestedInput
   }
@@ -59121,6 +59256,9 @@ export namespace Prisma {
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orderid?: NullableStringFieldUpdateOperationsInput | string | null
     is_for_previous_debts?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_for_printer?: BoolFieldUpdateOperationsInput | boolean
+    printer_id?: NullableIntFieldUpdateOperationsInput | number | null
+    printer_payment_memo?: NullableStringFieldUpdateOperationsInput | string | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -59138,6 +59276,9 @@ export namespace Prisma {
     deletedAt?: Date | string
     orderid?: string | null
     is_for_previous_debts?: boolean | null
+    is_for_printer?: boolean
+    printer_id?: number | null
+    printer_payment_memo?: string | null
     memo?: string | null
   }
 
@@ -59152,6 +59293,8 @@ export namespace Prisma {
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orderid?: NullableStringFieldUpdateOperationsInput | string | null
     is_for_previous_debts?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_for_printer?: BoolFieldUpdateOperationsInput | boolean
+    printer_payment_memo?: NullableStringFieldUpdateOperationsInput | string | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -59169,6 +59312,9 @@ export namespace Prisma {
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orderid?: NullableStringFieldUpdateOperationsInput | string | null
     is_for_previous_debts?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_for_printer?: BoolFieldUpdateOperationsInput | boolean
+    printer_id?: NullableIntFieldUpdateOperationsInput | number | null
+    printer_payment_memo?: NullableStringFieldUpdateOperationsInput | string | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -62546,6 +62692,9 @@ export namespace Prisma {
     deletedAt?: SortOrder
     orderid?: SortOrder
     is_for_previous_debts?: SortOrder
+    is_for_printer?: SortOrder
+    printer_id?: SortOrder
+    printer_payment_memo?: SortOrder
     memo?: SortOrder
   }
 
@@ -62554,6 +62703,7 @@ export namespace Prisma {
     shopId?: SortOrder
     amount?: SortOrder
     checkId?: SortOrder
+    printer_id?: SortOrder
   }
 
   export type paymentsMaxOrderByAggregateInput = {
@@ -62570,6 +62720,9 @@ export namespace Prisma {
     deletedAt?: SortOrder
     orderid?: SortOrder
     is_for_previous_debts?: SortOrder
+    is_for_printer?: SortOrder
+    printer_id?: SortOrder
+    printer_payment_memo?: SortOrder
     memo?: SortOrder
   }
 
@@ -62587,6 +62740,9 @@ export namespace Prisma {
     deletedAt?: SortOrder
     orderid?: SortOrder
     is_for_previous_debts?: SortOrder
+    is_for_printer?: SortOrder
+    printer_id?: SortOrder
+    printer_payment_memo?: SortOrder
     memo?: SortOrder
   }
 
@@ -62595,6 +62751,7 @@ export namespace Prisma {
     shopId?: SortOrder
     amount?: SortOrder
     checkId?: SortOrder
+    printer_id?: SortOrder
   }
 
   export type BoolNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -64179,6 +64336,13 @@ export namespace Prisma {
     update?: XOR<XOR<menusUpdateToOneWithWhereWithoutMenu_managementInput, menusUpdateWithoutMenu_managementInput>, menusUncheckedUpdateWithoutMenu_managementInput>
   }
 
+  export type paymentsCreateNestedManyWithoutPrinterInput = {
+    create?: XOR<paymentsCreateWithoutPrinterInput, paymentsUncheckedCreateWithoutPrinterInput> | paymentsCreateWithoutPrinterInput[] | paymentsUncheckedCreateWithoutPrinterInput[]
+    connectOrCreate?: paymentsCreateOrConnectWithoutPrinterInput | paymentsCreateOrConnectWithoutPrinterInput[]
+    createMany?: paymentsCreateManyPrinterInputEnvelope
+    connect?: paymentsWhereUniqueInput | paymentsWhereUniqueInput[]
+  }
+
   export type printorderCreateNestedManyWithoutPrinterInput = {
     create?: XOR<printorderCreateWithoutPrinterInput, printorderUncheckedCreateWithoutPrinterInput> | printorderCreateWithoutPrinterInput[] | printorderUncheckedCreateWithoutPrinterInput[]
     connectOrCreate?: printorderCreateOrConnectWithoutPrinterInput | printorderCreateOrConnectWithoutPrinterInput[]
@@ -64200,6 +64364,13 @@ export namespace Prisma {
     connect?: damagedbooksWhereUniqueInput | damagedbooksWhereUniqueInput[]
   }
 
+  export type paymentsUncheckedCreateNestedManyWithoutPrinterInput = {
+    create?: XOR<paymentsCreateWithoutPrinterInput, paymentsUncheckedCreateWithoutPrinterInput> | paymentsCreateWithoutPrinterInput[] | paymentsUncheckedCreateWithoutPrinterInput[]
+    connectOrCreate?: paymentsCreateOrConnectWithoutPrinterInput | paymentsCreateOrConnectWithoutPrinterInput[]
+    createMany?: paymentsCreateManyPrinterInputEnvelope
+    connect?: paymentsWhereUniqueInput | paymentsWhereUniqueInput[]
+  }
+
   export type printorderUncheckedCreateNestedManyWithoutPrinterInput = {
     create?: XOR<printorderCreateWithoutPrinterInput, printorderUncheckedCreateWithoutPrinterInput> | printorderCreateWithoutPrinterInput[] | printorderUncheckedCreateWithoutPrinterInput[]
     connectOrCreate?: printorderCreateOrConnectWithoutPrinterInput | printorderCreateOrConnectWithoutPrinterInput[]
@@ -64219,6 +64390,20 @@ export namespace Prisma {
     connectOrCreate?: damagedbooksCreateOrConnectWithoutPrinterInput | damagedbooksCreateOrConnectWithoutPrinterInput[]
     createMany?: damagedbooksCreateManyPrinterInputEnvelope
     connect?: damagedbooksWhereUniqueInput | damagedbooksWhereUniqueInput[]
+  }
+
+  export type paymentsUpdateManyWithoutPrinterNestedInput = {
+    create?: XOR<paymentsCreateWithoutPrinterInput, paymentsUncheckedCreateWithoutPrinterInput> | paymentsCreateWithoutPrinterInput[] | paymentsUncheckedCreateWithoutPrinterInput[]
+    connectOrCreate?: paymentsCreateOrConnectWithoutPrinterInput | paymentsCreateOrConnectWithoutPrinterInput[]
+    upsert?: paymentsUpsertWithWhereUniqueWithoutPrinterInput | paymentsUpsertWithWhereUniqueWithoutPrinterInput[]
+    createMany?: paymentsCreateManyPrinterInputEnvelope
+    set?: paymentsWhereUniqueInput | paymentsWhereUniqueInput[]
+    disconnect?: paymentsWhereUniqueInput | paymentsWhereUniqueInput[]
+    delete?: paymentsWhereUniqueInput | paymentsWhereUniqueInput[]
+    connect?: paymentsWhereUniqueInput | paymentsWhereUniqueInput[]
+    update?: paymentsUpdateWithWhereUniqueWithoutPrinterInput | paymentsUpdateWithWhereUniqueWithoutPrinterInput[]
+    updateMany?: paymentsUpdateManyWithWhereWithoutPrinterInput | paymentsUpdateManyWithWhereWithoutPrinterInput[]
+    deleteMany?: paymentsScalarWhereInput | paymentsScalarWhereInput[]
   }
 
   export type printorderUpdateManyWithoutPrinterNestedInput = {
@@ -64261,6 +64446,20 @@ export namespace Prisma {
     update?: damagedbooksUpdateWithWhereUniqueWithoutPrinterInput | damagedbooksUpdateWithWhereUniqueWithoutPrinterInput[]
     updateMany?: damagedbooksUpdateManyWithWhereWithoutPrinterInput | damagedbooksUpdateManyWithWhereWithoutPrinterInput[]
     deleteMany?: damagedbooksScalarWhereInput | damagedbooksScalarWhereInput[]
+  }
+
+  export type paymentsUncheckedUpdateManyWithoutPrinterNestedInput = {
+    create?: XOR<paymentsCreateWithoutPrinterInput, paymentsUncheckedCreateWithoutPrinterInput> | paymentsCreateWithoutPrinterInput[] | paymentsUncheckedCreateWithoutPrinterInput[]
+    connectOrCreate?: paymentsCreateOrConnectWithoutPrinterInput | paymentsCreateOrConnectWithoutPrinterInput[]
+    upsert?: paymentsUpsertWithWhereUniqueWithoutPrinterInput | paymentsUpsertWithWhereUniqueWithoutPrinterInput[]
+    createMany?: paymentsCreateManyPrinterInputEnvelope
+    set?: paymentsWhereUniqueInput | paymentsWhereUniqueInput[]
+    disconnect?: paymentsWhereUniqueInput | paymentsWhereUniqueInput[]
+    delete?: paymentsWhereUniqueInput | paymentsWhereUniqueInput[]
+    connect?: paymentsWhereUniqueInput | paymentsWhereUniqueInput[]
+    update?: paymentsUpdateWithWhereUniqueWithoutPrinterInput | paymentsUpdateWithWhereUniqueWithoutPrinterInput[]
+    updateMany?: paymentsUpdateManyWithWhereWithoutPrinterInput | paymentsUpdateManyWithWhereWithoutPrinterInput[]
+    deleteMany?: paymentsScalarWhereInput | paymentsScalarWhereInput[]
   }
 
   export type printorderUncheckedUpdateManyWithoutPrinterNestedInput = {
@@ -65085,6 +65284,12 @@ export namespace Prisma {
     deleteMany?: ordersScalarWhereInput | ordersScalarWhereInput[]
   }
 
+  export type printerCreateNestedOneWithoutPaymentsInput = {
+    create?: XOR<printerCreateWithoutPaymentsInput, printerUncheckedCreateWithoutPaymentsInput>
+    connectOrCreate?: printerCreateOrConnectWithoutPaymentsInput
+    connect?: printerWhereUniqueInput
+  }
+
   export type bookshopesCreateNestedOneWithoutPaymentsInput = {
     create?: XOR<bookshopesCreateWithoutPaymentsInput, bookshopesUncheckedCreateWithoutPaymentsInput>
     connectOrCreate?: bookshopesCreateOrConnectWithoutPaymentsInput
@@ -65099,6 +65304,16 @@ export namespace Prisma {
 
   export type NullableBoolFieldUpdateOperationsInput = {
     set?: boolean | null
+  }
+
+  export type printerUpdateOneWithoutPaymentsNestedInput = {
+    create?: XOR<printerCreateWithoutPaymentsInput, printerUncheckedCreateWithoutPaymentsInput>
+    connectOrCreate?: printerCreateOrConnectWithoutPaymentsInput
+    upsert?: printerUpsertWithoutPaymentsInput
+    disconnect?: printerWhereInput | boolean
+    delete?: printerWhereInput | boolean
+    connect?: printerWhereUniqueInput
+    update?: XOR<XOR<printerUpdateToOneWithWhereWithoutPaymentsInput, printerUpdateWithoutPaymentsInput>, printerUncheckedUpdateWithoutPaymentsInput>
   }
 
   export type bookshopesUpdateOneRequiredWithoutPaymentsNestedInput = {
@@ -66971,6 +67186,7 @@ export namespace Prisma {
     updatedAt: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+    payments?: paymentsCreateNestedManyWithoutPrinterInput
     printorder?: printorderCreateNestedManyWithoutPrinterInput
     damagedbooks?: damagedbooksCreateNestedManyWithoutPrinterInput
   }
@@ -66986,6 +67202,7 @@ export namespace Prisma {
     updatedAt: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+    payments?: paymentsUncheckedCreateNestedManyWithoutPrinterInput
     printorder?: printorderUncheckedCreateNestedManyWithoutPrinterInput
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutPrinterInput
   }
@@ -67112,6 +67329,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    payments?: paymentsUpdateManyWithoutPrinterNestedInput
     printorder?: printorderUpdateManyWithoutPrinterNestedInput
     damagedbooks?: damagedbooksUpdateManyWithoutPrinterNestedInput
   }
@@ -67127,6 +67345,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    payments?: paymentsUncheckedUpdateManyWithoutPrinterNestedInput
     printorder?: printorderUncheckedUpdateManyWithoutPrinterNestedInput
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutPrinterNestedInput
   }
@@ -68116,7 +68335,10 @@ export namespace Prisma {
     deletedAt?: Date | string
     orderid?: string | null
     is_for_previous_debts?: boolean | null
+    is_for_printer?: boolean
+    printer_payment_memo?: string | null
     memo?: string | null
+    printer?: printerCreateNestedOneWithoutPaymentsInput
     check?: checksCreateNestedOneWithoutPaymentsInput
   }
 
@@ -68133,6 +68355,9 @@ export namespace Prisma {
     deletedAt?: Date | string
     orderid?: string | null
     is_for_previous_debts?: boolean | null
+    is_for_printer?: boolean
+    printer_id?: number | null
+    printer_payment_memo?: string | null
     memo?: string | null
   }
 
@@ -68265,6 +68490,9 @@ export namespace Prisma {
     deletedAt?: DateTimeFilter<"payments"> | Date | string
     orderid?: StringNullableFilter<"payments"> | string | null
     is_for_previous_debts?: BoolNullableFilter<"payments"> | boolean | null
+    is_for_printer?: BoolFilter<"payments"> | boolean
+    printer_id?: IntNullableFilter<"payments"> | number | null
+    printer_payment_memo?: StringNullableFilter<"payments"> | string | null
     memo?: StringNullableFilter<"payments"> | string | null
   }
 
@@ -69094,6 +69322,7 @@ export namespace Prisma {
     updatedAt: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+    payments?: paymentsCreateNestedManyWithoutPrinterInput
     printorder?: printorderCreateNestedManyWithoutPrinterInput
     bookeditionprinters?: bookeditionprintersCreateNestedManyWithoutPrinterInput
   }
@@ -69109,6 +69338,7 @@ export namespace Prisma {
     updatedAt: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+    payments?: paymentsUncheckedCreateNestedManyWithoutPrinterInput
     printorder?: printorderUncheckedCreateNestedManyWithoutPrinterInput
     bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutPrinterInput
   }
@@ -69411,6 +69641,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    payments?: paymentsUpdateManyWithoutPrinterNestedInput
     printorder?: printorderUpdateManyWithoutPrinterNestedInput
     bookeditionprinters?: bookeditionprintersUpdateManyWithoutPrinterNestedInput
   }
@@ -69426,6 +69657,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    payments?: paymentsUncheckedUpdateManyWithoutPrinterNestedInput
     printorder?: printorderUncheckedUpdateManyWithoutPrinterNestedInput
     bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutPrinterNestedInput
   }
@@ -69673,6 +69905,53 @@ export namespace Prisma {
     children?: menusUncheckedUpdateManyWithoutParentNestedInput
   }
 
+  export type paymentsCreateWithoutPrinterInput = {
+    amount: number
+    payment_type: string
+    image?: string | null
+    status?: string
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    orderid?: string | null
+    is_for_previous_debts?: boolean | null
+    is_for_printer?: boolean
+    printer_payment_memo?: string | null
+    memo?: string | null
+    shop: bookshopesCreateNestedOneWithoutPaymentsInput
+    check?: checksCreateNestedOneWithoutPaymentsInput
+  }
+
+  export type paymentsUncheckedCreateWithoutPrinterInput = {
+    id?: number
+    shopId: number
+    amount: number
+    payment_type: string
+    checkId?: number | null
+    image?: string | null
+    status?: string
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    orderid?: string | null
+    is_for_previous_debts?: boolean | null
+    is_for_printer?: boolean
+    printer_payment_memo?: string | null
+    memo?: string | null
+  }
+
+  export type paymentsCreateOrConnectWithoutPrinterInput = {
+    where: paymentsWhereUniqueInput
+    create: XOR<paymentsCreateWithoutPrinterInput, paymentsUncheckedCreateWithoutPrinterInput>
+  }
+
+  export type paymentsCreateManyPrinterInputEnvelope = {
+    data: paymentsCreateManyPrinterInput | paymentsCreateManyPrinterInput[]
+    skipDuplicates?: boolean
+  }
+
   export type printorderCreateWithoutPrinterInput = {
     project_name?: string | null
     quality?: string | null
@@ -69792,6 +70071,22 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type paymentsUpsertWithWhereUniqueWithoutPrinterInput = {
+    where: paymentsWhereUniqueInput
+    update: XOR<paymentsUpdateWithoutPrinterInput, paymentsUncheckedUpdateWithoutPrinterInput>
+    create: XOR<paymentsCreateWithoutPrinterInput, paymentsUncheckedCreateWithoutPrinterInput>
+  }
+
+  export type paymentsUpdateWithWhereUniqueWithoutPrinterInput = {
+    where: paymentsWhereUniqueInput
+    data: XOR<paymentsUpdateWithoutPrinterInput, paymentsUncheckedUpdateWithoutPrinterInput>
+  }
+
+  export type paymentsUpdateManyWithWhereWithoutPrinterInput = {
+    where: paymentsScalarWhereInput
+    data: XOR<paymentsUpdateManyMutationInput, paymentsUncheckedUpdateManyWithoutPrinterInput>
+  }
+
   export type printorderUpsertWithWhereUniqueWithoutPrinterInput = {
     where: printorderWhereUniqueInput
     update: XOR<printorderUpdateWithoutPrinterInput, printorderUncheckedUpdateWithoutPrinterInput>
@@ -69873,6 +70168,7 @@ export namespace Prisma {
     updatedAt: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+    payments?: paymentsCreateNestedManyWithoutPrinterInput
     bookeditionprinters?: bookeditionprintersCreateNestedManyWithoutPrinterInput
     damagedbooks?: damagedbooksCreateNestedManyWithoutPrinterInput
   }
@@ -69888,6 +70184,7 @@ export namespace Prisma {
     updatedAt: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+    payments?: paymentsUncheckedCreateNestedManyWithoutPrinterInput
     bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutPrinterInput
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutPrinterInput
   }
@@ -69982,6 +70279,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    payments?: paymentsUpdateManyWithoutPrinterNestedInput
     bookeditionprinters?: bookeditionprintersUpdateManyWithoutPrinterNestedInput
     damagedbooks?: damagedbooksUpdateManyWithoutPrinterNestedInput
   }
@@ -69997,6 +70295,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    payments?: paymentsUncheckedUpdateManyWithoutPrinterNestedInput
     bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutPrinterNestedInput
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutPrinterNestedInput
   }
@@ -72145,7 +72444,10 @@ export namespace Prisma {
     deletedAt?: Date | string
     orderid?: string | null
     is_for_previous_debts?: boolean | null
+    is_for_printer?: boolean
+    printer_payment_memo?: string | null
     memo?: string | null
+    printer?: printerCreateNestedOneWithoutPaymentsInput
     shop: bookshopesCreateNestedOneWithoutPaymentsInput
   }
 
@@ -72162,6 +72464,9 @@ export namespace Prisma {
     deletedAt?: Date | string
     orderid?: string | null
     is_for_previous_debts?: boolean | null
+    is_for_printer?: boolean
+    printer_id?: number | null
+    printer_payment_memo?: string | null
     memo?: string | null
   }
 
@@ -72258,6 +72563,42 @@ export namespace Prisma {
     data: XOR<ordersUpdateManyMutationInput, ordersUncheckedUpdateManyWithoutChecksInput>
   }
 
+  export type printerCreateWithoutPaymentsInput = {
+    name: string
+    location: string
+    phone?: string | null
+    email?: string | null
+    status?: string
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    printorder?: printorderCreateNestedManyWithoutPrinterInput
+    bookeditionprinters?: bookeditionprintersCreateNestedManyWithoutPrinterInput
+    damagedbooks?: damagedbooksCreateNestedManyWithoutPrinterInput
+  }
+
+  export type printerUncheckedCreateWithoutPaymentsInput = {
+    id?: number
+    name: string
+    location: string
+    phone?: string | null
+    email?: string | null
+    status?: string
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    printorder?: printorderUncheckedCreateNestedManyWithoutPrinterInput
+    bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutPrinterInput
+    damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutPrinterInput
+  }
+
+  export type printerCreateOrConnectWithoutPaymentsInput = {
+    where: printerWhereUniqueInput
+    create: XOR<printerCreateWithoutPaymentsInput, printerUncheckedCreateWithoutPaymentsInput>
+  }
+
   export type bookshopesCreateWithoutPaymentsInput = {
     name: string
     location: string
@@ -72334,6 +72675,48 @@ export namespace Prisma {
   export type checksCreateOrConnectWithoutPaymentsInput = {
     where: checksWhereUniqueInput
     create: XOR<checksCreateWithoutPaymentsInput, checksUncheckedCreateWithoutPaymentsInput>
+  }
+
+  export type printerUpsertWithoutPaymentsInput = {
+    update: XOR<printerUpdateWithoutPaymentsInput, printerUncheckedUpdateWithoutPaymentsInput>
+    create: XOR<printerCreateWithoutPaymentsInput, printerUncheckedCreateWithoutPaymentsInput>
+    where?: printerWhereInput
+  }
+
+  export type printerUpdateToOneWithWhereWithoutPaymentsInput = {
+    where?: printerWhereInput
+    data: XOR<printerUpdateWithoutPaymentsInput, printerUncheckedUpdateWithoutPaymentsInput>
+  }
+
+  export type printerUpdateWithoutPaymentsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    location?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    printorder?: printorderUpdateManyWithoutPrinterNestedInput
+    bookeditionprinters?: bookeditionprintersUpdateManyWithoutPrinterNestedInput
+    damagedbooks?: damagedbooksUpdateManyWithoutPrinterNestedInput
+  }
+
+  export type printerUncheckedUpdateWithoutPaymentsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    location?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    printorder?: printorderUncheckedUpdateManyWithoutPrinterNestedInput
+    bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutPrinterNestedInput
+    damagedbooks?: damagedbooksUncheckedUpdateManyWithoutPrinterNestedInput
   }
 
   export type bookshopesUpsertWithoutPaymentsInput = {
@@ -73677,6 +74060,9 @@ export namespace Prisma {
     deletedAt?: Date | string
     orderid?: string | null
     is_for_previous_debts?: boolean | null
+    is_for_printer?: boolean
+    printer_id?: number | null
+    printer_payment_memo?: string | null
     memo?: string | null
   }
 
@@ -73805,7 +74191,10 @@ export namespace Prisma {
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orderid?: NullableStringFieldUpdateOperationsInput | string | null
     is_for_previous_debts?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_for_printer?: BoolFieldUpdateOperationsInput | boolean
+    printer_payment_memo?: NullableStringFieldUpdateOperationsInput | string | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
+    printer?: printerUpdateOneWithoutPaymentsNestedInput
     check?: checksUpdateOneWithoutPaymentsNestedInput
   }
 
@@ -73822,6 +74211,9 @@ export namespace Prisma {
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orderid?: NullableStringFieldUpdateOperationsInput | string | null
     is_for_previous_debts?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_for_printer?: BoolFieldUpdateOperationsInput | boolean
+    printer_id?: NullableIntFieldUpdateOperationsInput | number | null
+    printer_payment_memo?: NullableStringFieldUpdateOperationsInput | string | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -73838,6 +74230,9 @@ export namespace Prisma {
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orderid?: NullableStringFieldUpdateOperationsInput | string | null
     is_for_previous_debts?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_for_printer?: BoolFieldUpdateOperationsInput | boolean
+    printer_id?: NullableIntFieldUpdateOperationsInput | number | null
+    printer_payment_memo?: NullableStringFieldUpdateOperationsInput | string | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -74020,6 +74415,25 @@ export namespace Prisma {
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type paymentsCreateManyPrinterInput = {
+    id?: number
+    shopId: number
+    amount: number
+    payment_type: string
+    checkId?: number | null
+    image?: string | null
+    status?: string
+    is_deleted?: boolean
+    updatedAt?: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    orderid?: string | null
+    is_for_previous_debts?: boolean | null
+    is_for_printer?: boolean
+    printer_payment_memo?: string | null
+    memo?: string | null
+  }
+
   export type printorderCreateManyPrinterInput = {
     id?: number
     project_name?: string | null
@@ -74062,6 +74476,62 @@ export namespace Prisma {
     updatedAt: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+  }
+
+  export type paymentsUpdateWithoutPrinterInput = {
+    amount?: FloatFieldUpdateOperationsInput | number
+    payment_type?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orderid?: NullableStringFieldUpdateOperationsInput | string | null
+    is_for_previous_debts?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_for_printer?: BoolFieldUpdateOperationsInput | boolean
+    printer_payment_memo?: NullableStringFieldUpdateOperationsInput | string | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    shop?: bookshopesUpdateOneRequiredWithoutPaymentsNestedInput
+    check?: checksUpdateOneWithoutPaymentsNestedInput
+  }
+
+  export type paymentsUncheckedUpdateWithoutPrinterInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    shopId?: IntFieldUpdateOperationsInput | number
+    amount?: FloatFieldUpdateOperationsInput | number
+    payment_type?: StringFieldUpdateOperationsInput | string
+    checkId?: NullableIntFieldUpdateOperationsInput | number | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orderid?: NullableStringFieldUpdateOperationsInput | string | null
+    is_for_previous_debts?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_for_printer?: BoolFieldUpdateOperationsInput | boolean
+    printer_payment_memo?: NullableStringFieldUpdateOperationsInput | string | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type paymentsUncheckedUpdateManyWithoutPrinterInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    shopId?: IntFieldUpdateOperationsInput | number
+    amount?: FloatFieldUpdateOperationsInput | number
+    payment_type?: StringFieldUpdateOperationsInput | string
+    checkId?: NullableIntFieldUpdateOperationsInput | number | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orderid?: NullableStringFieldUpdateOperationsInput | string | null
+    is_for_previous_debts?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_for_printer?: BoolFieldUpdateOperationsInput | boolean
+    printer_payment_memo?: NullableStringFieldUpdateOperationsInput | string | null
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type printorderUpdateWithoutPrinterInput = {
@@ -74700,6 +75170,9 @@ export namespace Prisma {
     deletedAt?: Date | string
     orderid?: string | null
     is_for_previous_debts?: boolean | null
+    is_for_printer?: boolean
+    printer_id?: number | null
+    printer_payment_memo?: string | null
     memo?: string | null
   }
 
@@ -74733,7 +75206,10 @@ export namespace Prisma {
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orderid?: NullableStringFieldUpdateOperationsInput | string | null
     is_for_previous_debts?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_for_printer?: BoolFieldUpdateOperationsInput | boolean
+    printer_payment_memo?: NullableStringFieldUpdateOperationsInput | string | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
+    printer?: printerUpdateOneWithoutPaymentsNestedInput
     shop?: bookshopesUpdateOneRequiredWithoutPaymentsNestedInput
   }
 
@@ -74750,6 +75226,9 @@ export namespace Prisma {
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orderid?: NullableStringFieldUpdateOperationsInput | string | null
     is_for_previous_debts?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_for_printer?: BoolFieldUpdateOperationsInput | boolean
+    printer_id?: NullableIntFieldUpdateOperationsInput | number | null
+    printer_payment_memo?: NullableStringFieldUpdateOperationsInput | string | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -74766,6 +75245,9 @@ export namespace Prisma {
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orderid?: NullableStringFieldUpdateOperationsInput | string | null
     is_for_previous_debts?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_for_printer?: BoolFieldUpdateOperationsInput | boolean
+    printer_id?: NullableIntFieldUpdateOperationsInput | number | null
+    printer_payment_memo?: NullableStringFieldUpdateOperationsInput | string | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
