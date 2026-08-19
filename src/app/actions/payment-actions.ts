@@ -59,6 +59,14 @@ export async function createPayment(data: {
 
         const approveImmediately = data.approve && data.payment_type === "DIRECT";
 
+        const printerData = data.is_for_printer
+            ? {
+                  is_for_printer: true,
+                  printer_id: data.printer_id || null,
+                  printer_payment_memo: data.printer_payment_memo || null,
+              }
+            : {};
+
         const payment = await (prisma as any).payments.create({
             data: {
                 shopId: data.shopId,
@@ -69,9 +77,7 @@ export async function createPayment(data: {
                 memo: data.memo || null,
                 image: data.image || null,
                 is_for_previous_debts: data.is_for_previous_debts || null,
-                is_for_printer: data.is_for_printer || null,
-                printer_id: data.printer_id || null,
-                printer_payment_memo: data.printer_payment_memo || null,
+                ...printerData,
                 status: approveImmediately ? "APPROVED" : "PENDING",
             }
         });

@@ -60,6 +60,7 @@ interface PrinterPaymentEntry {
 
 type FontSizeKey = "XS" | "S" | "M" | "B" | "XL"
 type DateFormatKey = "ethiopian" | "gregorian"
+type MemoMode = "own-line" | "column" | "hidden"
 
 const FONT_OPTIONS: { key: FontSizeKey; label: string }[] = [
     { key: "XS", label: "Extra Small" },
@@ -88,6 +89,12 @@ const FONT_PRINT_PX: Record<FontSizeKey, number> = {
 const DATE_FORMAT_OPTIONS: { key: DateFormatKey; label: string }[] = [
     { key: "ethiopian", label: "Ethiopian (ግንቦት 5, 2018)" },
     { key: "gregorian", label: "Gregorian (Aug 19, 2026)" },
+]
+
+const MEMO_OPTIONS: { key: MemoMode; label: string }[] = [
+    { key: "own-line", label: "Own Line" },
+    { key: "column", label: "Column" },
+    { key: "hidden", label: "Hidden" },
 ]
 
 function escHtml(s: unknown): string {
@@ -151,7 +158,7 @@ function PrintPaymentsDialog({
     const [printer, setPrinter] = useState(defaultPrinter)
     const [shop, setShop] = useState(defaultShop)
     const [fontSize, setFontSize] = useState<FontSizeKey>("M")
-    const [includeMemo, setIncludeMemo] = useState(true)
+    const [memoMode, setMemoMode] = useState<MemoMode>("own-line")
     const [dateFormat, setDateFormat] = useState<DateFormatKey>("ethiopian")
     const [showPrinter, setShowPrinter] = useState(true)
     const [showOrder, setShowOrder] = useState(true)
@@ -206,6 +213,9 @@ function PrintPaymentsDialog({
             { label: "Status", show: showStatus },
             { label: "Recorded", show: true },
         ].filter((c) => c.show)
+        if (memoMode === "column") {
+            colDefs.push({ label: "Memo", show: true })
+        }
 
         const headerHtml = colDefs
             .map((c) => `<th>${c.label}</th>`)
@@ -215,15 +225,7 @@ function PrintPaymentsDialog({
             .map((p) => {
                 const cells: string[] = []
                 if (showPrinter) {
-                    cells.push(
-                        `<td>${escHtml(p.printerName)}${
-                            p.printerLocation
-                                ? `<br><span class="sub-text">${escHtml(
-                                      p.printerLocation
-                                  )}</span>`
-                                : ""
-                        }</td>`
-                    )
+                    cells.push(`<td>${escHtml(p.printerName)}</td>`)
                 }
                 if (showOrder) {
                     cells.push(
@@ -233,9 +235,7 @@ function PrintPaymentsDialog({
                 if (showShop) {
                     cells.push(`<td>${escHtml(p.shopName)}</td>`)
                 }
-                cells.push(
-                    `<td class="num">${p.amount.toLocaleString()} ETB</td>`
-                )
+                cells.push(`<td>${p.amount.toLocaleString()} ETB</td>`)
                 if (showStatus) {
                     cells.push(`<td>${statusLabel(p.status)}</td>`)
                 }
@@ -244,9 +244,14 @@ function PrintPaymentsDialog({
                         formatDateLong(new Date(p.createdAt), dateFormat)
                     )}</td>`
                 )
+                if (memoMode === "column") {
+                    cells.push(
+                        `<td>${escHtml(p.printerPaymentMemo || "—")}</td>`
+                    )
+                }
 
                 const memoRow =
-                    includeMemo && p.printerPaymentMemo
+                    memoMode === "own-line" && p.printerPaymentMemo
                         ? `<tr class="memo-row"><td colspan="${colDefs.length}"><span class="memo-label">Memo:</span> ${escHtml(
                               p.printerPaymentMemo
                           )}</td></tr>`
@@ -267,27 +272,24 @@ function PrintPaymentsDialog({
     <title>${escHtml(printTitle || "Printer Payments Report")}</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; color: #1e293b; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; color: #0a0a0a; }
         .report-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 2px solid #e2e8f0; }
-        h1 { font-size: 20px; font-weight: 800; color: #0f172a; }
-        .subtitle { font-size: 12px; font-weight: 600; color: #64748b; margin-top: 3px; }
-        .dates { text-align: right; font-size: 10px; font-weight: 600; color: #475569; line-height: 1.7; }
-        .dates strong { color: #0f172a; }
-        .filters { margin-bottom: 12px; font-size: 10px; font-weight: 700; color: #64748b; letter-spacing: 0.06em; }
-        .summary { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
-        .summary-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 18px; text-align: center; min-width: 110px; }
-        .summary-item label { display: block; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #94a3b8; margin-bottom: 3px; }
-        .summary-item span { font-size: 16px; font-weight: 800; color: #0f172a; }
+        h1 { font-size: 20px; font-weight: 800; color: #0a0a0a; }
+        .subtitle { font-size: 12px; font-weight: 600; color: #0a0a0a; margin-top: 3px; }
+        .dates { text-align: right; font-size: 10px; font-weight: 700; color: #0a0a0a; line-height: 1.7; }
+        .filters { margin-bottom: 12px; font-size: 10px; font-weight: 700; color: #0a0a0a; letter-spacing: 0.06em; }
+        .summary { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; justify-content: center; }
+        .summary-item { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 18px; text-align: center; min-width: 110px; }
+        .summary-item label { display: block; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: #0a0a0a; margin-bottom: 3px; }
+        .summary-item span { font-size: 16px; font-weight: 800; color: #0a0a0a; }
         table { width: 100%; border-collapse: collapse; font-size: ${px}px; }
-        th { background: #f1f5f9; padding: 9px 10px; border: 1px solid #cbd5e1; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #475569; text-align: left; }
-        td { padding: 7px 10px; border: 1px solid #cbd5e1; vertical-align: top; }
-        td.num { text-align: right; font-weight: 700; white-space: nowrap; }
+        th { background: #f1f5f9; padding: 9px 10px; border: 1px solid #cbd5e1; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #0a0a0a; text-align: center; }
+        td { padding: 7px 10px; border: 1px solid #cbd5e1; vertical-align: middle; text-align: center; }
         tr:nth-child(even) td { background: #fbfdff; }
-        tr.memo-row td { background: #fdf6ff !important; color: #6b21a8; font-weight: 600; font-style: italic; border-top: none; }
-        .memo-label { font-weight: 800; text-transform: uppercase; font-size: 0.85em; letter-spacing: 0.08em; }
-        .sub-text { font-size: 0.85em; color: #94a3b8; font-weight: 600; }
-        .footer { margin-top: 16px; padding-top: 10px; border-top: 1px solid #e2e8f0; font-size: 10px; font-weight: 600; color: #94a3b8; text-align: center; }
-        @page { size: A4 landscape; margin: 12mm; }
+        tr.memo-row td { background: #f5f5f5 !important; color: #0a0a0a; font-weight: 700; font-style: italic; border-top: none; }
+        .memo-label { font-weight: 800; text-transform: uppercase; font-size: 0.85em; }
+        .footer { margin-top: 16px; padding-top: 10px; border-top: 1px solid #e2e8f0; font-size: 10px; font-weight: 700; color: #0a0a0a; text-align: center; }
+        @page { size: A4 portrait; margin: 15mm; }
         @media print { body { padding: 0; } }
     </style>
 </head>
@@ -560,22 +562,29 @@ function PrintPaymentsDialog({
                                         </label>
                                     </div>
                                 ))}
-                                <div className="flex items-center gap-2.5 rounded-xl border-2 border-slate-200 bg-white p-3 col-span-2">
-                                    <Checkbox
-                                        id="print-include-memo"
-                                        checked={includeMemo}
-                                        onCheckedChange={(v) =>
-                                            setIncludeMemo(v === true)
-                                        }
-                                        className="border-slate-300 data-[state=checked]:bg-primarycolor data-[state=checked]:border-primarycolor"
-                                    />
-                                    <label
-                                        htmlFor="print-include-memo"
-                                        className="text-xs font-bold text-slate-700 cursor-pointer"
-                                    >
-                                        Include memo (shown on its own line
-                                        under each record)
-                                    </label>
+                                <div className="rounded-2xl border-2 border-slate-200 bg-white p-3 col-span-2">
+                                    <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground mb-2">
+                                        Memo Display
+                                    </p>
+                                    <div className="flex flex-wrap gap-2">
+                                        {MEMO_OPTIONS.map((opt) => (
+                                            <Button
+                                                key={opt.key}
+                                                variant="outline"
+                                                onClick={() =>
+                                                    setMemoMode(opt.key)
+                                                }
+                                                className={cn(
+                                                    "h-9 rounded-lg border-2 font-black text-[9px] uppercase tracking-widest px-3",
+                                                    memoMode === opt.key
+                                                        ? "bg-primarycolor text-white border-primarycolor hover:bg-secondarycolor"
+                                                        : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
+                                                )}
+                                            >
+                                                {opt.label}
+                                            </Button>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -666,6 +675,11 @@ function PrintPaymentsDialog({
                                         <TableHead className="whitespace-nowrap">
                                             Recorded
                                         </TableHead>
+                                        {memoMode === "column" && (
+                                            <TableHead className="whitespace-nowrap">
+                                                Memo
+                                            </TableHead>
+                                        )}
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -673,7 +687,7 @@ function PrintPaymentsDialog({
                                         <FragmentRow
                                             key={p.id}
                                             entry={p}
-                                            includeMemo={includeMemo}
+                                            memoMode={memoMode}
                                             colCount={colCount}
                                             showPrinter={showPrinter}
                                             showOrder={showOrder}
@@ -724,7 +738,7 @@ function PrintPaymentsDialog({
 
 function FragmentRow({
     entry,
-    includeMemo,
+    memoMode,
     colCount,
     showPrinter,
     showOrder,
@@ -733,7 +747,7 @@ function FragmentRow({
     dateFormat,
 }: {
     entry: PrinterPaymentEntry
-    includeMemo: boolean
+    memoMode: MemoMode
     colCount: number
     showPrinter: boolean
     showOrder: boolean
@@ -770,8 +784,13 @@ function FragmentRow({
                 <TableCell className="whitespace-nowrap">
                     {formatDateLong(new Date(entry.createdAt), dateFormat)}
                 </TableCell>
+                {memoMode === "column" && (
+                    <TableCell className="break-words min-w-[140px]">
+                        {entry.printerPaymentMemo || "—"}
+                    </TableCell>
+                )}
             </TableRow>
-            {includeMemo && entry.printerPaymentMemo && (
+            {memoMode === "own-line" && entry.printerPaymentMemo && (
                 <TableRow className="hover:bg-transparent">
                     <TableCell
                         colSpan={colCount}
