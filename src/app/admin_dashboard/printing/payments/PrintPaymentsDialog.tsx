@@ -159,6 +159,7 @@ function PrintPaymentsDialog({
     const [shop, setShop] = useState(defaultShop)
     const [fontSize, setFontSize] = useState<FontSizeKey>("M")
     const [memoMode, setMemoMode] = useState<MemoMode>("own-line")
+    const [allBold, setAllBold] = useState(false)
     const [dateFormat, setDateFormat] = useState<DateFormatKey>("ethiopian")
     const [showPrinter, setShowPrinter] = useState(true)
     const [showOrder, setShowOrder] = useState(true)
@@ -289,6 +290,7 @@ function PrintPaymentsDialog({
         tr.memo-row td { background: #f5f5f5 !important; color: #0a0a0a; font-weight: 700; font-style: italic; border-top: none; }
         .memo-label { font-weight: 800; text-transform: uppercase; font-size: 0.85em; }
         .footer { margin-top: 16px; padding-top: 10px; border-top: 1px solid #e2e8f0; font-size: 10px; font-weight: 700; color: #0a0a0a; text-align: center; }
+        ${allBold ? "* { font-weight: 800 !important; }" : ""}
         @page { size: A4 portrait; margin: 15mm; }
         @media print { body { padding: 0; } }
     </style>
@@ -609,6 +611,22 @@ function PrintPaymentsDialog({
                                         {opt.label}
                                     </Button>
                                 ))}
+                            </div>
+                            <div className="flex items-center gap-2.5 rounded-xl border-2 border-slate-200 bg-white p-3">
+                                <Checkbox
+                                    id="print-all-bold"
+                                    checked={allBold}
+                                    onCheckedChange={(v) =>
+                                        setAllBold(v === true)
+                                    }
+                                    className="border-slate-300 data-[state=checked]:bg-primarycolor data-[state=checked]:border-primarycolor"
+                                />
+                                <label
+                                    htmlFor="print-all-bold"
+                                    className="text-xs font-bold text-slate-700 cursor-pointer"
+                                >
+                                    Make all text bold
+                                </label>
                             </div>
                         </div>
                     </div>
