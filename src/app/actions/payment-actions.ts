@@ -51,6 +51,7 @@ export async function createPayment(data: {
     is_for_printer?: boolean | null;
     printer_id?: number | null;
     printer_payment_memo?: string | null;
+    payment_for_printer?: number | null;
     approve?: boolean | null;
 }) {
     try {
@@ -64,6 +65,7 @@ export async function createPayment(data: {
                   is_for_printer: true,
                   printer_id: data.printer_id || null,
                   printer_payment_memo: data.printer_payment_memo || null,
+                  payment_for_printer: data.payment_for_printer ?? null,
               }
             : {};
 

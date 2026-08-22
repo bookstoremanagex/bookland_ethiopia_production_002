@@ -149,6 +149,8 @@ interface Payment {
     is_for_printer?: boolean | null;
     printerId?: number | null;
     printerName?: string | null;
+    payment_for_printer?: number | null;
+    printer_payment_memo?: string | null;
 }
 
 interface ShopInfo {
@@ -326,6 +328,8 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
             is_for_printer: false,
             printerId: null,
             printerName: null,
+            payment_for_printer: null,
+            printer_payment_memo: null,
             source: "round" as const,
             bookTitle: p.bookTitle,
         }));
@@ -1259,12 +1263,17 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
                                                         </button>
                                                     </span>
                                                 )}
-                                                {payment.is_for_printer && (
-                                                    <span className="flex items-center gap-1.5">
+                                                {false && payment.is_for_printer && (
+                                                    <span className="flex items-center gap-1.5 flex-wrap">
                                                         <Printer className="size-3 text-indigo-500" />
                                                         <span className="font-black text-indigo-600">
                                                             {payment.printerName || "No Printer"}
                                                         </span>
+                                                        {payment.payment_for_printer != null && (
+                                                            <span className="px-1.5 py-0.5 rounded bg-indigo-50 border border-indigo-200 text-indigo-700 text-[8px] font-black">
+                                                                Printer: {formatAmount(payment.payment_for_printer ?? 0)} ETB
+                                                            </span>
+                                                        )}
                                                         {isAdmin && (
                                                             <button
                                                                 onClick={() => openPrinterDialog(payment)}
@@ -2101,10 +2110,12 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
                 shopId={shop.id}
                 shopName={shop.name}
                 orderId={paymentOrderId}
+                orderTotal={(() => { const o = orders.find((x: any) => x.id === paymentOrderId); return o ? o.total_amount : null; })()}
+                orderPaid={(() => { const o = orders.find((x: any) => x.id === paymentOrderId); return o ? o.amount_paid : null; })()}
             />
 
             {/* Change Printer Dialog */}
-            <Dialog open={!!editingPrinterPayment} onOpenChange={(o) => { if (!o) setEditingPrinterPayment(null); }}>
+            <Dialog open={false && !!editingPrinterPayment} onOpenChange={(o) => { if (!o) setEditingPrinterPayment(null); }}>
                 <DialogContent className="sm:max-w-md w-[95vw] rounded-[2rem] border-2 border-primarycolor/10 p-0 overflow-hidden shadow-2xl">
                     <DialogHeader className="p-6 pb-4 border-b border-slate-100">
                         <DialogTitle className="text-lg font-black text-primarycolor uppercase tracking-tight italic">

@@ -111,6 +111,9 @@ interface Props {
         createdAt: string | Date;
         memo: string | null;
         orderid: string | null;
+        is_for_printer?: boolean | null;
+        payment_for_printer?: number | null;
+        printer_id?: number | null;
     }>;
 }
 
@@ -1533,7 +1536,6 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
             orderId={order?.id ?? null}
             orderTotal={order?.total_amount ?? null}
             orderPaid={order?.amount_paid ?? null}
-            showPrinterPayment
         />
 
         {/* Delete Order Confirmation */}

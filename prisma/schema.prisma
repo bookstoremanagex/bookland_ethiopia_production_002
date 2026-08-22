@@ -218,6 +218,7 @@ model bookshopes {
   orders           orders[]
   payments         payments[]
    roundrecords      roundrecords[]
+   payment_records_from_shop_to_printer payment_records_from_shop_to_printer[]
 }
 
 model orders {
@@ -242,6 +243,7 @@ model orders {
   bookshopes         bookshopes        @relation(fields: [bookShopId], references: [id], onDelete: Cascade)
   checks             checks?           @relation(fields: [check_id], references: [id])
   order_items        order_items[]
+  payment_records_from_shop_to_printer payment_records_from_shop_to_printer[]
 }
 
 model order_items {
@@ -335,6 +337,8 @@ model printer {
   deletedAt           DateTime              @default(now())
 
 payments payments[]
+
+payment_records_from_shop_to_printer payment_records_from_shop_to_printer[]
 
   printorder          printorder[]
   bookeditionprinters bookeditionprinters[]
@@ -731,18 +735,39 @@ model payments {
   orderid      String?
   is_for_previous_debts   Boolean? @default(false)
  
-  
+  //not using these fields as of 2026-08-23
 
-  is_for_printer Boolean @default(false)
-  printer_id  Int?
-  printer   printer? @relation(fields: [printer_id], references: [id])
-  printer_payment_memo String? @db.Text
-
-
+  is_for_printer Boolean @default(false)  // not using that
+  printer_id  Int? //not using that
+  printer   printer? @relation(fields: [printer_id], references: [id])  //not using that
+  printer_payment_memo String? @db.Text  //not using that
+payment_for_printer Float? //not using that
   memo  String?    @db.Text
   shop  bookshopes @relation(fields: [shopId], references: [id])
   check checks?    @relation(fields: [checkId], references: [id])
 }
+
+
+model payment_records_from_shop_to_printer{
+    id           Int      @id @default(autoincrement())
+    shopId Int?
+    shop bookshopes? @relation(fields: [shopId], references: [id])
+    orderId Int?
+    orders orders? @relation(fields: [orderId], references: [id])
+    printerId  Int?
+    printer   printer? @relation(fields: [printerId], references: [id])
+    amount Float?
+    memo String?
+    status String?
+    createdAt DateTime @default(now())
+    updatedAt DateTime @default(now())
+    is_deleted Boolean @default(false)
+    deletedAt DateTime @default(now())
+
+}
+
+
+
 
 enum retail_purchase_status {
   PENDING

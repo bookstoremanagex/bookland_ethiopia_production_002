@@ -694,7 +694,22 @@ exports.Prisma.PaymentsScalarFieldEnum = {
   is_for_printer: 'is_for_printer',
   printer_id: 'printer_id',
   printer_payment_memo: 'printer_payment_memo',
+  payment_for_printer: 'payment_for_printer',
   memo: 'memo'
+};
+
+exports.Prisma.Payment_records_from_shop_to_printerScalarFieldEnum = {
+  id: 'id',
+  shopId: 'shopId',
+  orderId: 'orderId',
+  printerId: 'printerId',
+  amount: 'amount',
+  memo: 'memo',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  is_deleted: 'is_deleted',
+  deletedAt: 'deletedAt'
 };
 
 exports.Prisma.Retail_purchasesScalarFieldEnum = {
@@ -962,6 +977,11 @@ exports.Prisma.paymentsOrderByRelevanceFieldEnum = {
   memo: 'memo'
 };
 
+exports.Prisma.payment_records_from_shop_to_printerOrderByRelevanceFieldEnum = {
+  memo: 'memo',
+  status: 'status'
+};
+
 exports.Prisma.retail_purchasesOrderByRelevanceFieldEnum = {
   name: 'name',
   memo: 'memo'
@@ -1098,6 +1118,7 @@ exports.Prisma.ModelName = {
   settings: 'settings',
   checks: 'checks',
   payments: 'payments',
+  payment_records_from_shop_to_printer: 'payment_records_from_shop_to_printer',
   retail_purchases: 'retail_purchases',
   retail_purchase_items: 'retail_purchase_items',
   local_backup_records: 'local_backup_records'

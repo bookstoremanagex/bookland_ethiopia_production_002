@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo, useEffect } from "react"
+import React, { useState, useMemo, useEffect } from "react"
 import {
     useReactTable,
     getCoreRowModel,
@@ -63,6 +63,13 @@ import {
     approvePayment,
     updatePrinterPaymentMemo,
 } from "@/app/actions/payment-actions"
+import {
+    updatePrinterShopPaymentMemo,
+    updatePrinterShopPaymentStatus,
+    updatePrinterShopPaymentAmount,
+    updatePrinterShopPaymentPrinter,
+} from "@/app/actions/printer-shop-payment-actions"
+import { getPrinters } from "@/app/actions/printer-actions"
 import { cn } from "@/lib/utils"
 import {
     ChevronLeft,
@@ -104,6 +111,15 @@ interface PrinterPaymentEntry {
     memo: string | null
     printerPaymentMemo: string | null
     image: string | null
+    count?: number
+    entries?: Array<{
+        id: number
+        amount: number
+        memo: string | null
+        status: string
+        createdAt: string
+        updatedAt: string
+    }>
 }
 
 function StatusBadge({ status }: { status: string }) {
@@ -338,11 +354,13 @@ function DetailDialog({
     open,
     onClose,
     formatDateTime,
+    viewMode = "grouped",
 }: {
     payment: PrinterPaymentEntry | null
     open: boolean
     onClose: () => void
     formatDateTime: (d: Date) => string
+    viewMode?: "grouped" | "all"
 }) {
     const router = useRouter()
     const [status, setStatus] = useState(payment?.status ?? "PENDING")
@@ -351,13 +369,46 @@ function DetailDialog({
     )
     const [confirmApproveOpen, setConfirmApproveOpen] = useState(false)
     const [isApproving, setIsApproving] = useState(false)
+    const [editingEntryMemoId, setEditingEntryMemoId] = useState<number | null>(null)
+    const [editingEntryMemoDraft, setEditingEntryMemoDraft] = useState("")
+    const [savingEntryMemoId, setSavingEntryMemoId] = useState<number | null>(null)
+    const [statusUpdatingId, setStatusUpdatingId] = useState<number | null>(null)
+    const [editingAmountId, setEditingAmountId] = useState<number | null>(null)
+    const [editingAmountDraft, setEditingAmountDraft] = useState("")
+    const [savingAmountId, setSavingAmountId] = useState<number | null>(null)
+    const [editingPrinter, setEditingPrinter] = useState(false)
+    const [printers, setPrinters] = useState<any[]>([])
+    const [selectedPrinterId, setSelectedPrinterId] = useState("")
+    const [savingPrinter, setSavingPrinter] = useState(false)
 
     useEffect(() => {
         if (payment) {
             setStatus(payment.status)
             setPrinterMemo(payment.printerPaymentMemo)
+            setEditingEntryMemoId(null)
+            setEditingPrinter(false)
         }
     }, [payment])
+
+    useEffect(() => {
+        if (open && payment) {
+            getPrinters().then((res) => {
+                if (res.success) setPrinters(res.data || [])
+            })
+            // try to resolve current printer id from entries or payment
+            const firstId = (payment as any).entries?.[0]?.id ? null : null
+            // fallback: find printer id by name
+            const match = printers.find((p: any) => p.name === payment.printerName)
+            if (match) setSelectedPrinterId(String(match.id))
+        }
+    }, [open, payment?.id])
+
+    useEffect(() => {
+        if (payment && printers.length > 0) {
+            const match = printers.find((p: any) => p.name === payment.printerName)
+            if (match) setSelectedPrinterId(String(match.id))
+        }
+    }, [printers, payment?.printerName])
 
     if (!payment) return null
 
@@ -383,13 +434,79 @@ function DetailDialog({
         }
     }
 
+    const handleSavePrinter = async () => {
+        if (!selectedPrinterId) {
+            toast.error("Select a printer");
+            return;
+        }
+        setSavingPrinter(true);
+        try {
+            const ids = payment.entries && payment.entries.length > 0 ? payment.entries.map((e: any) => e.id) : [payment.id];
+            for (const id of ids) {
+                const res = await updatePrinterShopPaymentPrinter(id, Number(selectedPrinterId));
+                if (!res.success) {
+                    toast.error(res.error || "Failed to update printer");
+                    setSavingPrinter(false);
+                    return;
+                }
+            }
+            const newPrinter = printers.find((p: any) => String(p.id) === selectedPrinterId);
+            if (newPrinter) {
+                (payment as any).printerName = newPrinter.name;
+                (payment as any).printerLocation = newPrinter.location || null;
+                (payment as any).printerPhone = newPrinter.phone || null;
+                (payment as any).printerEmail = newPrinter.email || null;
+                if (payment.entries) {
+                    for (const e of payment.entries) {
+                        (e as any).printerName = newPrinter.name;
+                    }
+                }
+            }
+            toast.success("Printer updated");
+            setEditingPrinter(false);
+            router.refresh();
+        } catch {
+            toast.error("Failed to update printer");
+        } finally {
+            setSavingPrinter(false);
+        }
+    };
+
     const rows: { label: string; value: React.ReactNode }[] = [
         {
             label: "Printer",
-            value: (
-                <span className="font-black text-primarycolor">
-                    {payment.printerName}
-                </span>
+            value: editingPrinter ? (
+                <div className="flex items-center gap-2">
+                    <Select value={selectedPrinterId} onValueChange={setSelectedPrinterId}>
+                        <SelectTrigger className="h-8 rounded-lg border-2 border-primarycolor/20 bg-white font-black text-xs flex-1">
+                            <SelectValue placeholder="Select printer..." />
+                        </SelectTrigger>
+                        <SelectContent className="rounded-xl border-2 max-h-[200px]">
+                            {printers.map((pr: any) => (
+                                <SelectItem key={pr.id} value={String(pr.id)} className="text-xs font-bold">
+                                    {pr.name} {pr.location ? `— ${pr.location}` : ""}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                    <Button size="sm" disabled={savingPrinter} onClick={handleSavePrinter} className="h-8 px-3 rounded-lg bg-primarycolor hover:bg-secondarycolor text-white font-black text-[8px] uppercase tracking-widest gap-1">
+                        {savingPrinter ? <Loader2 className="size-3 animate-spin" /> : <Check className="size-3" />} Save
+                    </Button>
+                    <Button variant="ghost" size="sm" onClick={() => setEditingPrinter(false)} className="h-8 w-8 p-0 rounded-lg">
+                        <X className="size-3" />
+                    </Button>
+                </div>
+            ) : (
+                <div className="flex items-center justify-between gap-2 group">
+                    <span className="font-black text-primarycolor">{payment.printerName}</span>
+                    <button
+                        onClick={() => setEditingPrinter(true)}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity size-7 rounded-lg bg-slate-100 hover:bg-primarycolor/10 text-slate-500 hover:text-primarycolor flex items-center justify-center shrink-0"
+                        title="Edit printer"
+                    >
+                        <Pencil className="size-3.5" />
+                    </button>
+                </div>
             ),
         },
         ...(payment.printerLocation
@@ -446,7 +563,7 @@ function DetailDialog({
     return (
         <>
             <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
-                <DialogContent className="sm:max-w-lg w-[95vw] rounded-[2.5rem] border-4 border-primarycolor/5 bg-white p-0 overflow-hidden shadow-2xl max-h-[90vh] flex flex-col">
+                <DialogContent className="sm:max-w-3xl lg:max-w-5xl w-[95vw] lg:w-[92vw] rounded-[2.5rem] border-4 border-primarycolor/5 bg-white p-0 overflow-hidden shadow-2xl max-h-[90vh] flex flex-col">
                     <DialogHeader className="p-4 md:p-6 pb-3 md:pb-4 border-b border-slate-100 shrink-0">
                         <div className="flex items-center gap-3 md:gap-4">
                             <div className="size-10 md:size-12 rounded-xl md:rounded-2xl bg-primarycolor/10 flex items-center justify-center text-primarycolor shrink-0">
@@ -551,38 +668,195 @@ function DetailDialog({
                             ))}
                         </div>
 
-                        <div className="rounded-2xl border-2 border-slate-100 bg-slate-50/50 p-3 space-y-3">
-                            <div>
-                                <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground mb-1.5">
-                                    Printer Memo
-                                </p>
-                                <EditableMemo
-                                    label="Printer Memo"
-                                    value={printerMemo}
-                                    accent="font-bold text-indigo-700"
-                                    onSave={async (v) => {
-                                        const res =
-                                            await updatePrinterPaymentMemo(
-                                                payment.id,
-                                                v
-                                            )
-                                        if (res.success) {
-                                            setPrinterMemo(v || null)
-                                            toast.success(
-                                                "Printer memo updated successfully"
-                                            )
-                                            router.refresh()
-                                            return true
-                                        }
-                                        toast.error(
-                                            res.error ||
-                                                "Failed to update printer memo"
-                                        )
-                                        return false
-                                    }}
-                                />
+                        {payment.entries && payment.entries.length > 0 && (
+                            <div className="rounded-2xl border-2 border-slate-100 bg-white overflow-hidden">
+                                <div className="px-4 py-2.5 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
+                                    <p className="text-[9px] font-black uppercase tracking-widest text-primarycolor">Individual Records ({payment.entries.length})</p>
+                                    <span className="text-[9px] font-black text-primarycolor">{payment.amount.toLocaleString()} ETB total</span>
+                                </div>
+                                <div className="max-h-[320px] overflow-y-auto">
+                                    <table className="w-full text-left border-collapse">
+                                        <thead className="sticky top-0 bg-slate-50">
+                                            <tr className="border-b border-slate-100">
+                                                <th className="p-2.5 text-[8px] font-black uppercase tracking-widest text-muted-foreground">#</th>
+                                                <th className="p-2.5 text-[8px] font-black uppercase tracking-widest text-muted-foreground text-right">Amount</th>
+                                                <th className="p-2.5 text-[8px] font-black uppercase tracking-widest text-muted-foreground">Date</th>
+                                                <th className="p-2.5 text-[8px] font-black uppercase tracking-widest text-muted-foreground">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {payment.entries.map((e: any, idx: number) => (
+                                                <React.Fragment key={e.id}>
+                                                    <tr key={`${e.id}-main`} className="border-b-0 align-top">
+                                                        <td className="p-2.5 text-xs font-bold text-slate-600">{idx + 1}</td>
+                                                        <td className="p-2.5 text-right whitespace-nowrap min-w-[140px]">
+                                                            {editingAmountId === e.id ? (
+                                                                <div className="flex items-center gap-1.5 justify-end">
+                                                                    <Input
+                                                                        type="number"
+                                                                        value={editingAmountDraft}
+                                                                        onChange={(ev) => setEditingAmountDraft(ev.target.value)}
+                                                                        onWheel={(ev) => ev.currentTarget.blur()}
+                                                                        className="h-7 w-[110px] rounded-lg border-2 border-primarycolor/20 bg-white font-black text-xs text-right px-2"
+                                                                        autoFocus
+                                                                    />
+                                                                    <Button
+                                                                        size="sm"
+                                                                        disabled={savingAmountId === e.id}
+                                                                        onClick={async () => {
+                                                                            const parsed = parseFloat(editingAmountDraft);
+                                                                            if (isNaN(parsed) || parsed <= 0) {
+                                                                                toast.error("Enter valid amount > 0");
+                                                                                return;
+                                                                            }
+                                                                            setSavingAmountId(e.id);
+                                                                            const res = await updatePrinterShopPaymentAmount(e.id, parsed);
+                                                                            setSavingAmountId(null);
+                                                                            if (res.success) {
+                                                                                const old = Number(e.amount || 0);
+                                                                                e.amount = parsed;
+                                                                                // update aggregated total
+                                                                                const diff = parsed - old;
+                                                                                (payment as any).amount = Number((payment as any).amount || 0) + diff;
+                                                                                toast.success("Amount updated");
+                                                                                setEditingAmountId(null);
+                                                                                router.refresh();
+                                                                            } else {
+                                                                                toast.error(res.error || "Failed");
+                                                                            }
+                                                                        }}
+                                                                        className="h-7 px-2 rounded-lg bg-primarycolor hover:bg-secondarycolor text-white font-black text-[8px] uppercase tracking-widest gap-1"
+                                                                    >
+                                                                        {savingAmountId === e.id ? <Loader2 className="size-3 animate-spin" /> : <Check className="size-3" />} Save
+                                                                    </Button>
+                                                                    <Button
+                                                                        variant="ghost"
+                                                                        size="sm"
+                                                                        onClick={() => setEditingAmountId(null)}
+                                                                        className="h-7 w-7 p-0 rounded-lg text-muted-foreground"
+                                                                    >
+                                                                        <X className="size-3" />
+                                                                    </Button>
+                                                                </div>
+                                                            ) : (
+                                                                <div className="flex items-center justify-end gap-1.5 group">
+                                                                    <span className="text-xs font-black text-primarycolor">{Number(e.amount || 0).toLocaleString()} ETB</span>
+                                                                    <button
+                                                                        onClick={() => {
+                                                                            setEditingAmountId(e.id);
+                                                                            setEditingAmountDraft(String(e.amount ?? ""));
+                                                                        }}
+                                                                        className="opacity-0 group-hover:opacity-100 transition-opacity size-6 rounded-lg bg-slate-100 hover:bg-primarycolor/10 text-slate-500 hover:text-primarycolor flex items-center justify-center shrink-0"
+                                                                        title="Edit amount"
+                                                                    >
+                                                                        <Pencil className="size-3" />
+                                                                    </button>
+                                                                </div>
+                                                            )}
+                                                        </td>
+                                                        <td className="p-2.5 text-[10px] font-bold text-muted-foreground whitespace-nowrap">{formatDateTime(new Date(e.createdAt))}</td>
+                                                        <td className="p-2.5">
+                                                            <div className="flex items-center gap-1.5">
+                                                                <Select
+                                                                    value={e.status}
+                                                                    onValueChange={async (v) => {
+                                                                        setStatusUpdatingId(e.id);
+                                                                        const res = await updatePrinterShopPaymentStatus(e.id, v);
+                                                                        setStatusUpdatingId(null);
+                                                                        if (res.success) {
+                                                                            e.status = v;
+                                                                            toast.success(`Status → ${v}`);
+                                                                            router.refresh();
+                                                                        } else {
+                                                                            toast.error(res.error || "Failed");
+                                                                        }
+                                                                    }}
+                                                                    disabled={statusUpdatingId === e.id}
+                                                                >
+                                                                    <SelectTrigger className="h-7 w-[110px] rounded-lg border-2 border-slate-200 bg-white font-black text-[8px] uppercase tracking-widest">
+                                                                        <SelectValue />
+                                                                    </SelectTrigger>
+                                                                    <SelectContent className="rounded-xl border-2">
+                                                                        <SelectItem value="APPROVED" className="text-[10px] font-black">APPROVED</SelectItem>
+                                                                        <SelectItem value="PENDING" className="text-[10px] font-black">PENDING</SelectItem>
+                                                                        <SelectItem value="REJECTED" className="text-[10px] font-black">REJECTED</SelectItem>
+                                                                    </SelectContent>
+                                                                </Select>
+                                                                {statusUpdatingId === e.id && <Loader2 className="size-3 animate-spin text-muted-foreground" />}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr key={`${e.id}-memo`} className="border-b border-slate-100">
+                                                        <td colSpan={4} className="p-2.5 pt-0">
+                                                            <div className="rounded-xl bg-slate-50/70 border border-slate-100 p-2.5">
+                                                                <div className="flex items-center justify-between mb-1.5">
+                                                                    <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground">Memo</span>
+                                                                    {editingEntryMemoId !== e.id && (
+                                                                        <button
+                                                                            onClick={() => {
+                                                                                setEditingEntryMemoId(e.id);
+                                                                                setEditingEntryMemoDraft(e.memo || "");
+                                                                            }}
+                                                                            className="size-6 rounded-lg bg-white border border-slate-200 hover:bg-primarycolor/10 text-slate-500 hover:text-primarycolor flex items-center justify-center shrink-0"
+                                                                            title="Edit memo (empty allowed)"
+                                                                        >
+                                                                            <Pencil className="size-3" />
+                                                                        </button>
+                                                                    )}
+                                                                </div>
+                                                                {editingEntryMemoId === e.id ? (
+                                                                    <div className="space-y-1.5">
+                                                                        <textarea
+                                                                            value={editingEntryMemoDraft}
+                                                                            onChange={(ev) => setEditingEntryMemoDraft(ev.target.value)}
+                                                                            className="w-full h-16 rounded-lg border-2 border-primarycolor/20 bg-white font-bold text-xs p-2 resize-none focus:outline-none focus:ring-1 focus:ring-primarycolor/20"
+                                                                            placeholder="Memo (empty allowed)"
+                                                                            autoFocus
+                                                                        />
+                                                                        <div className="flex items-center gap-1.5">
+                                                                            <Button
+                                                                                size="sm"
+                                                                                disabled={savingEntryMemoId === e.id}
+                                                                                onClick={async () => {
+                                                                                    setSavingEntryMemoId(e.id);
+                                                                                    const res = await updatePrinterShopPaymentMemo(e.id, editingEntryMemoDraft);
+                                                                                    setSavingEntryMemoId(null);
+                                                                                    if (res.success) {
+                                                                                        toast.success("Memo updated");
+                                                                                        e.memo = editingEntryMemoDraft || null;
+                                                                                        setEditingEntryMemoId(null);
+                                                                                        router.refresh();
+                                                                                    } else {
+                                                                                        toast.error(res.error || "Failed");
+                                                                                    }
+                                                                                }}
+                                                                                className="h-7 px-2.5 rounded-lg bg-primarycolor hover:bg-secondarycolor text-white font-black text-[8px] uppercase tracking-widest gap-1"
+                                                                            >
+                                                                                {savingEntryMemoId === e.id ? <Loader2 className="size-3 animate-spin" /> : <Check className="size-3" />} Save
+                                                                            </Button>
+                                                                            <Button
+                                                                                variant="ghost"
+                                                                                size="sm"
+                                                                                onClick={() => setEditingEntryMemoId(null)}
+                                                                                className="h-7 px-2 rounded-lg text-muted-foreground font-black text-[8px] uppercase tracking-widest"
+                                                                            >
+                                                                                <X className="size-3" /> Cancel
+                                                                            </Button>
+                                                                        </div>
+                                                                    </div>
+                                                                ) : (
+                                                                    <p className="text-xs font-bold text-slate-600 break-words min-h-[16px]">{e.memo ? e.memo : <span className="text-slate-300 italic text-[11px]">No memo — click edit to add</span>}</p>
+                                                                )}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </React.Fragment>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
-                        </div>
+                        )}
 
                         {payment.image && (
                             <div className="rounded-2xl overflow-hidden border-2 border-slate-100">
@@ -667,6 +941,7 @@ export default function PrinterPaymentsTable({
     const [shopFilter, setShopFilter] = useState("ALL")
     const [searchQuery, setSearchQuery] = useState("")
     const [printOpen, setPrintOpen] = useState(false)
+    const [viewMode, setViewMode] = useState<"grouped" | "all">("grouped")
 
     const printers = useMemo(() => {
         const map = new Map<string, string>()
@@ -682,9 +957,42 @@ export default function PrinterPaymentsTable({
         ).sort((a, b) => a.localeCompare(b))
     }, [payments])
 
+    const groupedData = useMemo(() => {
+        const map = new Map<string, PrinterPaymentEntry>()
+        for (const p of payments) {
+            const key = `${p.orderId ?? "no-order"}__${p.printerName}`
+            const existing = map.get(key)
+            if (existing) {
+                existing.amount += p.amount
+                const entry = p.entries?.[0] ?? { id: p.id, amount: p.amount, memo: p.memo, status: p.status, createdAt: p.createdAt, updatedAt: p.updatedAt }
+                existing.entries = [...(existing.entries || []), entry]
+                if (new Date(p.createdAt).getTime() > new Date(existing.createdAt).getTime()) {
+                    existing.createdAt = p.createdAt
+                    existing.updatedAt = p.updatedAt
+                    existing.status = p.status
+                    existing.memo = p.memo || existing.memo
+                    existing.printerPaymentMemo = p.printerPaymentMemo || existing.printerPaymentMemo
+                }
+                existing.count = (existing.count || 1) + 1
+            } else {
+                map.set(key, {
+                    ...p,
+                    entries: p.entries ? [...p.entries] : [{ id: p.id, amount: p.amount, memo: p.memo, status: p.status, createdAt: p.createdAt, updatedAt: p.updatedAt }],
+                    count: p.count ?? 1,
+                })
+            }
+        }
+        for (const g of map.values()) {
+            if (g.entries) g.entries.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        }
+        return Array.from(map.values()).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    }, [payments])
+
+    const baseData = viewMode === "grouped" ? groupedData : payments
+
     const filtered = useMemo(() => {
         const q = searchQuery.trim().toLowerCase()
-        return payments.filter((p) => {
+        return baseData.filter((p) => {
             if (statusFilter !== "ALL" && p.status !== statusFilter) {
                 return false
             }
@@ -702,7 +1010,7 @@ export default function PrinterPaymentsTable({
             }
             return true
         })
-    }, [payments, statusFilter, printerFilter, shopFilter, searchQuery])
+    }, [baseData, statusFilter, printerFilter, shopFilter, searchQuery])
 
     const columns = useMemo<ColumnDef<PrinterPaymentEntry>[]>(
         () => [
@@ -755,6 +1063,9 @@ export default function PrinterPaymentsTable({
                     <span className="text-right font-black text-sm text-primarycolor block whitespace-nowrap">
                         {row.original.amount.toLocaleString()}{" "}
                         <span className="text-[9px]">ETB</span>
+                        {(row.original.count ?? 0) > 1 && (
+                            <span className="ml-1.5 inline-flex items-center px-1.5 py-0.5 rounded bg-primarycolor/10 text-primarycolor text-[8px] font-black">×{row.original.count}</span>
+                        )}
                     </span>
                 ),
             },
@@ -855,19 +1166,39 @@ export default function PrinterPaymentsTable({
         <div>
             {/* Filters */}
             <div className="p-4 md:p-5 border-b border-slate-200 bg-slate-50/60 space-y-3">
-                <div className="flex items-center gap-2 text-primarycolor flex-1">
-                    <SlidersHorizontal className="size-4" />
-                    <h3 className="text-[10px] font-black uppercase tracking-widest">
-                        Filter Payments
-                    </h3>
-                </div>
-                <Button
-                    variant="outline"
-                    onClick={() => setPrintOpen(true)}
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div className="flex items-center gap-2 text-primarycolor">
+                        <SlidersHorizontal className="size-4" />
+                        <h3 className="text-[10px] font-black uppercase tracking-widest">
+                            Filter Payments
+                        </h3>
+                    </div>
+                    <div className="flex items-center gap-1 p-1 rounded-xl bg-white border-2 border-slate-200">
+                        <Button
+                            variant={viewMode === "grouped" ? "default" : "ghost"}
+                            size="sm"
+                            onClick={() => setViewMode("grouped")}
+                            className={cn("h-7 rounded-lg font-black text-[9px] uppercase tracking-widest px-3", viewMode === "grouped" ? "bg-primarycolor text-white shadow-sm" : "text-muted-foreground hover:text-primarycolor")}
+                        >
+                            Grouped by Order
+                        </Button>
+                        <Button
+                            variant={viewMode === "all" ? "default" : "ghost"}
+                            size="sm"
+                            onClick={() => setViewMode("all")}
+                            className={cn("h-7 rounded-lg font-black text-[9px] uppercase tracking-widest px-3", viewMode === "all" ? "bg-primarycolor text-white shadow-sm" : "text-muted-foreground hover:text-primarycolor")}
+                        >
+                            List All
+                        </Button>
+                    </div>
+                    <Button
+                        variant="outline"
+                        onClick={() => setPrintOpen(true)}
                     className="h-9 rounded-xl border-2 border-primarycolor/20 bg-white text-primarycolor hover:bg-primarycolor hover:text-white font-black text-[9px] uppercase tracking-widest gap-1.5 shadow-sm"
                 >
                     <Printer className="size-3.5" /> Print
                 </Button>
+                </div>
                 <div className="flex flex-col lg:flex-row lg:items-center gap-3">
                     <div className="relative flex-1">
                         <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
@@ -1051,7 +1382,7 @@ export default function PrinterPaymentsTable({
                                     <div className="grid grid-cols-2 gap-3">
                                         <div>
                                             <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">
-                                                Amount
+                                                Amount {(item.count ?? 0) > 1 && <span className="ml-1 inline-flex px-1 py-0.5 rounded bg-primarycolor/10 text-primarycolor text-[7px] font-black align-middle">×{item.count}</span>}
                                             </p>
                                             <p className="font-black text-primarycolor">
                                                 {item.amount.toLocaleString()} ETB
@@ -1134,16 +1465,18 @@ export default function PrinterPaymentsTable({
                 open={detailOpen}
                 onClose={() => setDetailOpen(false)}
                 formatDateTime={formatDateTime}
+                viewMode={viewMode}
             />
 
             {printOpen && (
                 <PrintPaymentsDialog
-                    payments={filtered}
+                    payments={payments}
                     printers={printers}
                     shops={shops}
                     defaultStatus={statusFilter}
                     defaultPrinter={printerFilter}
                     defaultShop={shopFilter}
+                    defaultViewMode={viewMode}
                     open={printOpen}
                     onClose={() => setPrintOpen(false)}
                 />

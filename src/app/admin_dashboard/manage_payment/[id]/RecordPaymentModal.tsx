@@ -60,13 +60,15 @@ import {
     Upload,
     ShieldCheck,
     Printer,
+    Info,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { getChecks, createCheck } from "@/app/actions/check-actions";
 import { createPayment } from "@/app/actions/payment-actions";
-import { getPrinters } from "@/app/actions/printer-actions";
+import { getPrinterPaymentsForOrder } from "@/app/actions/printer-shop-payment-actions";
+import PrinterShopPaymentDialog from "./PrinterShopPaymentDialog";
 
 interface Props {
     isOpen: boolean;
@@ -79,7 +81,7 @@ interface Props {
     showPrinterPayment?: boolean;
 }
 
-export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName, orderId, orderTotal, orderPaid, showPrinterPayment = false }: Props) {
+export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName, orderId, orderTotal, orderPaid, showPrinterPayment = true }: Props) {
     const router = useRouter();
     const [paymentType, setPaymentType] = useState<string>("DIRECT");
     const [amount, setAmount] = useState<string>("");
@@ -89,10 +91,9 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName, 
     const [approveDirect, setApproveDirect] = useState(false);
     const [showApproveConfirm, setShowApproveConfirm] = useState(false);
 
-    const [printers, setPrinters] = useState<any[]>([]);
-    const [isForPrinter, setIsForPrinter] = useState(false);
-    const [selectedPrinter, setSelectedPrinter] = useState("");
-    const [printerPaymentMemo, setPrinterPaymentMemo] = useState("");
+    const [printerRecords, setPrinterRecords] = useState<any[]>([]);
+    const [printerRecordsLoading, setPrinterRecordsLoading] = useState(false);
+    const [showPrinterDialog, setShowPrinterDialog] = useState(false);
 
     const [checks, setChecks] = useState<any[]>([]);
     const [openCheckSearch, setOpenCheckSearch] = useState(false);
@@ -119,18 +120,18 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName, 
         }
     }, [isOpen, paymentType]);
 
+    // Fetch printer payments for this order (new table) for short list
     useEffect(() => {
-        if (isOpen && showPrinterPayment) {
-            loadPrinters();
+        if (!isOpen || !orderId) {
+            setPrinterRecords([]);
+            return;
         }
-    }, [isOpen, showPrinterPayment]);
-
-    const loadPrinters = async () => {
-        const res = await getPrinters();
-        if (res.success) {
-            setPrinters(res.data || []);
-        }
-    };
+        setPrinterRecordsLoading(true);
+        getPrinterPaymentsForOrder(orderId).then((res) => {
+            if (res.success) setPrinterRecords(res.data || []);
+            setPrinterRecordsLoading(false);
+        });
+    }, [isOpen, orderId]);
 
     // Auto-sync check amount with payment amount when opening new check form
     useEffect(() => {
@@ -228,11 +229,6 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName, 
             return;
         }
 
-        if (isForPrinter && !selectedPrinter) {
-            toast.error("Select a printer for this payment");
-            return;
-        }
-
         if (paymentType === "DIRECT" && approveDirect) {
             setShowApproveConfirm(true);
             return;
@@ -253,9 +249,6 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName, 
                 orderid: orderId ? String(orderId) : null,
                 memo: memo || null,
                 is_for_previous_debts: orderId ? null : (isForPreviousDebts || null),
-                is_for_printer: isForPrinter || null,
-                printer_id: isForPrinter && selectedPrinter ? Number(selectedPrinter) : null,
-                printer_payment_memo: isForPrinter && printerPaymentMemo ? printerPaymentMemo : null,
                 approve: paymentType === "DIRECT" && approveDirect || null,
             });
 
@@ -271,9 +264,6 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName, 
                 setShowNewCheck(false);
                 setIsForPreviousDebts(false);
                 setApproveDirect(false);
-                setIsForPrinter(false);
-                setSelectedPrinter("");
-                setPrinterPaymentMemo("");
                 router.refresh();
             } else {
                 toast.error(res.error);
@@ -307,7 +297,7 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName, 
                                 {shopName}
                             </DialogDescription>
                             {orderId && (
-                                <p className="text-[8px] font-black text-indigo-600 uppercase tracking-widest mt-0.5">
+                                <p className="text-[8px] font-black text-primarycolor uppercase tracking-widest mt-0.5">
                                     <ListOrdered className="size-2.5 inline mr-1" />
                                     #ORD-{orderId}
                                 </p>
@@ -416,72 +406,43 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName, 
                         </div>
                     </div>
 
-                    {showPrinterPayment && (
-                        <>
-                            <div className="flex items-center gap-3 p-4 rounded-2xl bg-indigo-50 border-2 border-indigo-200">
-                                <div
-                                    onClick={() => setIsForPrinter(!isForPrinter)}
-                                    className={cn(
-                                        "relative w-11 h-6 rounded-full transition-colors cursor-pointer shrink-0",
-                                        isForPrinter ? "bg-indigo-500" : "bg-slate-300"
-                                    )}
+                                        {/* Printer payments short list (new table) */}
+                    {orderId && (
+                        <div className="space-y-3 p-4 rounded-2xl bg-primarycolor/5 border-2 border-primarycolor/10">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2 text-primarycolor">
+                                    <Printer className="size-4" />
+                                    <h4 className="text-[10px] font-black uppercase tracking-widest">Printer Payments</h4>
+                                </div>
+                                <Button
+                                    type="button"
+                                    onClick={() => setShowPrinterDialog(true)}
+                                    className="h-9 rounded-xl bg-primarycolor hover:bg-secondarycolor text-white font-black text-[9px] uppercase tracking-widest gap-1.5 px-3"
                                 >
-                                    <div className={cn(
-                                        "absolute top-0.5 left-0.5 size-5 rounded-full bg-white shadow-sm transition-transform",
-                                        isForPrinter && "translate-x-5"
-                                    )} />
-                                </div>
-                                <div className="min-w-0">
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-indigo-800">Payment for Printer</p>
-                                    <p className="text-[8px] font-bold text-indigo-600/70">Mark this payment as a payment to a printer</p>
-                                </div>
+                                    <Plus className="size-3.5" /> Payment for Printer
+                                </Button>
                             </div>
-
-                            {isForPrinter && (
-                                <div className="space-y-4 p-4 md:p-5 rounded-2xl bg-indigo-50/50 border-2 border-indigo-100">
-                                    <div className="flex items-center gap-2 text-indigo-700">
-                                        <Printer className="size-4" />
-                                        <h4 className="text-[10px] font-black uppercase tracking-widest">Printer Details</h4>
+                            <div className="max-h-[160px] overflow-y-auto space-y-2 pr-1">
+                                {printerRecordsLoading ? (
+                                    <div className="flex items-center justify-center py-6 gap-2 text-muted-foreground">
+                                        <Loader2 className="size-4 animate-spin" />
+                                        <span className="text-xs font-bold">Loading...</span>
                                     </div>
-
-                                    <div className="space-y-2">
-                                        <label className="text-[9px] font-black uppercase tracking-widest text-primarycolor ml-1">Select Printer</label>
-                                        <Select value={selectedPrinter} onValueChange={setSelectedPrinter}>
-                                            <SelectTrigger className="h-11 md:h-12 rounded-xl border-2 border-indigo-200 font-bold text-xs">
-                                                <SelectValue placeholder="Select a printer..." />
-                                            </SelectTrigger>
-                                            <SelectContent className="rounded-2xl p-2 border-2 bg-white max-h-[220px]">
-                                                {printers.length === 0 && (
-                                                    <div className="p-4 text-center text-xs font-bold text-muted-foreground">
-                                                        No printers found
-                                                    </div>
-                                                )}
-                                                {printers.map((p: any) => (
-                                                    <SelectItem key={p.id} value={String(p.id)} className="rounded-xl h-10 font-bold text-xs">
-                                                        {p.name}{p.location ? ` - ${p.location}` : ""}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <label className="text-[9px] font-black uppercase tracking-widest text-primarycolor ml-1">
-                                            Printer Memo <span className="text-muted-foreground/40">(optional)</span>
-                                        </label>
-                                        <div className="relative">
-                                            <FileText className="absolute left-3 md:left-4 top-3 md:top-3.5 size-3.5 md:size-4 text-muted-foreground" />
-                                            <textarea
-                                                value={printerPaymentMemo}
-                                                onChange={(e) => setPrinterPaymentMemo(e.target.value)}
-                                                className="h-16 md:h-20 w-full pl-9 md:pl-10 pt-2.5 rounded-xl border-2 border-indigo-200 font-bold text-xs resize-none focus:outline-none focus:ring-2 focus:ring-primarycolor/20"
-                                                placeholder="Add a note for the printer payment..."
-                                            />
+                                ) : printerRecords.length === 0 ? (
+                                    <p className="text-[10px] font-bold text-muted-foreground text-center py-4">No printer payments recorded for this order yet</p>
+                                ) : (
+                                    printerRecords.map((r:any) => (
+                                        <div key={r.id} className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-primarycolor/10">
+                                            <div className="min-w-0">
+                                                <p className="font-bold text-xs text-primarycolor truncate">{r.printer?.name || 'Unknown Printer'}</p>
+                                                <p className="text-[8px] font-bold text-muted-foreground truncate">{r.memo || 'No memo'} • {r.createdAt ? new Date(r.createdAt).toLocaleDateString() : ''}</p>
+                                            </div>
+                                            <span className="font-black text-primarycolor text-xs shrink-0 ml-3">{Number(r.amount||0).toLocaleString()} ETB</span>
                                         </div>
-                                    </div>
-                                </div>
-                            )}
-                        </>
+                                    ))
+                                )}
+                            </div>
+                        </div>
                     )}
 
                     {paymentType === "DIRECT" && (
@@ -801,6 +762,23 @@ export default function RecordPaymentModal({ isOpen, onClose, shopId, shopName, 
                     </Button>
                 </DialogFooter>
             </DialogContent>
+
+            <PrinterShopPaymentDialog
+                isOpen={showPrinterDialog}
+                onClose={() => {
+                    setShowPrinterDialog(false);
+                    if (orderId) {
+                        getPrinterPaymentsForOrder(orderId).then((res) => {
+                            if (res.success) setPrinterRecords(res.data || []);
+                        });
+                    }
+                }}
+                shopId={shopId}
+                shopName={shopName}
+                orderId={orderId ?? null}
+                orderTotal={orderTotal ?? null}
+                orderPaid={orderPaid ?? null}
+            />
 
             {/* Auto-approve confirmation */}
             <AlertDialog open={showApproveConfirm} onOpenChange={setShowApproveConfirm}>

@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useMemo, useState, useEffect } from "react"
 import {
     Dialog,
     DialogContent,
@@ -56,6 +56,15 @@ interface PrinterPaymentEntry {
     memo: string | null
     printerPaymentMemo: string | null
     image: string | null
+    count?: number
+    entries?: Array<{
+        id: number
+        amount: number
+        memo: string | null
+        status: string
+        createdAt: string
+        updatedAt: string
+    }>
 }
 
 type FontSizeKey = "XS" | "S" | "M" | "B" | "XL"
@@ -142,6 +151,7 @@ function PrintPaymentsDialog({
     defaultStatus,
     defaultPrinter,
     defaultShop,
+    defaultViewMode = "grouped",
     open,
     onClose,
 }: {
@@ -151,12 +161,14 @@ function PrintPaymentsDialog({
     defaultStatus: string
     defaultPrinter: string
     defaultShop: string
+    defaultViewMode?: "grouped" | "all"
     open: boolean
     onClose: () => void
 }) {
     const [status, setStatus] = useState(defaultStatus)
     const [printer, setPrinter] = useState(defaultPrinter)
     const [shop, setShop] = useState(defaultShop)
+    const [printViewMode, setPrintViewMode] = useState<"grouped" | "all">(defaultViewMode)
     const [fontSize, setFontSize] = useState<FontSizeKey>("M")
     const [memoMode, setMemoMode] = useState<MemoMode>("own-line")
     const [allBold, setAllBold] = useState(false)
@@ -169,7 +181,11 @@ function PrintPaymentsDialog({
     const [printSubtitle, setPrintSubtitle] = useState("")
     const [isPrinting, setIsPrinting] = useState(false)
 
-    const data = useMemo(() => {
+    useEffect(() => {
+        if (open) setPrintViewMode(defaultViewMode)
+    }, [open, defaultViewMode])
+
+    const individualFiltered = useMemo(() => {
         return payments.filter((p) => {
             if (status !== "ALL" && p.status !== status) return false
             if (printer !== "ALL" && p.printerName !== printer) return false
@@ -177,6 +193,39 @@ function PrintPaymentsDialog({
             return true
         })
     }, [payments, status, printer, shop])
+
+    const groupedForPrint = useMemo(() => {
+        const map = new Map<string, PrinterPaymentEntry>()
+        for (const p of individualFiltered) {
+            const key = `${p.orderId ?? "no-order"}__${p.printerName}`
+            const existing = map.get(key)
+            if (existing) {
+                existing.amount += p.amount
+                const entry = p.entries?.[0] ?? { id: p.id, amount: p.amount, memo: p.memo, status: p.status, createdAt: p.createdAt, updatedAt: p.updatedAt }
+                existing.entries = [...(existing.entries || []), entry]
+                if (new Date(p.createdAt).getTime() > new Date(existing.createdAt).getTime()) {
+                    existing.createdAt = p.createdAt
+                    existing.updatedAt = p.updatedAt
+                    existing.status = p.status
+                    existing.memo = p.memo || existing.memo
+                    existing.printerPaymentMemo = p.printerPaymentMemo || existing.printerPaymentMemo
+                }
+                existing.count = (existing.count || 1) + 1
+            } else {
+                map.set(key, {
+                    ...p,
+                    entries: p.entries ? [...p.entries] : [{ id: p.id, amount: p.amount, memo: p.memo, status: p.status, createdAt: p.createdAt, updatedAt: p.updatedAt }],
+                    count: p.count ?? 1,
+                } as PrinterPaymentEntry)
+            }
+        }
+        for (const g of map.values()) {
+            if (g.entries) g.entries.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        }
+        return Array.from(map.values()).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    }, [individualFiltered])
+
+    const data = printViewMode === "grouped" ? groupedForPrint : individualFiltered
 
     const totalAmount = useMemo(
         () => data.reduce((sum, p) => sum + p.amount, 0),
@@ -511,6 +560,31 @@ function PrintPaymentsDialog({
                                     </Select>
                                 </div>
                             </div>
+                        </div>
+
+                        <div className="rounded-2xl border-2 border-slate-100 bg-slate-50/60 p-4 space-y-3">
+                            <p className="text-[10px] font-black uppercase tracking-widest text-primarycolor">
+                                Print Mode
+                            </p>
+                            <div className="flex items-center gap-2 p-1 rounded-xl bg-white border-2 border-slate-200 w-fit">
+                                <Button
+                                    variant={printViewMode === "grouped" ? "default" : "ghost"}
+                                    size="sm"
+                                    onClick={() => setPrintViewMode("grouped")}
+                                    className={cn("h-7 rounded-lg font-black text-[9px] uppercase tracking-widest px-3", printViewMode === "grouped" ? "bg-primarycolor text-white shadow-sm" : "text-muted-foreground hover:text-primarycolor")}
+                                >
+                                    Grouped by Order
+                                </Button>
+                                <Button
+                                    variant={printViewMode === "all" ? "default" : "ghost"}
+                                    size="sm"
+                                    onClick={() => setPrintViewMode("all")}
+                                    className={cn("h-7 rounded-lg font-black text-[9px] uppercase tracking-widest px-3", printViewMode === "all" ? "bg-primarycolor text-white shadow-sm" : "text-muted-foreground hover:text-primarycolor")}
+                                >
+                                    List All
+                                </Button>
+                            </div>
+                            <p className="text-[9px] font-bold text-muted-foreground">Grouped merges same order + printer (sum amount). List All shows each payment individually.</p>
                         </div>
 
                         <div className="rounded-2xl border-2 border-slate-100 bg-slate-50/60 p-4 space-y-3">

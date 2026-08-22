@@ -10,63 +10,60 @@ function parseOrderId(orderid: string | null | undefined): number | null {
 }
 
 export default async function PrinterPaymentsPage() {
-    const [payments, orders] = await Promise.all([
-        (prisma as any).payments.findMany({
-            where: { is_for_printer: true, is_deleted: false },
-            include: {
-                printer: true,
-                shop: true,
-                check: true,
-            },
-            orderBy: { createdAt: "desc" },
-        }),
-        (async () => {
-            const paymentRows = await (prisma as any).payments.findMany({
-                where: { is_for_printer: true, is_deleted: false },
-                select: { orderid: true },
-            });
-            const orderIds = [
-                ...new Set(
-                    paymentRows
-                        .map((p: any) => parseOrderId(p.orderid))
-                        .filter((id: any): id is number => Number.isInteger(id))
-                ),
-            ];
-            if (!orderIds.length) return [];
-            return (prisma as any).orders.findMany({
-                where: { id: { in: orderIds } },
-                select: { id: true, total_amount: true, status: true },
-            });
-        })(),
-    ]);
+    // Source of truth is now payment_records_from_shop_to_printer — merge same order + same printer
+    const rawRecords = await (prisma as any).payment_records_from_shop_to_printer.findMany({
+        where: { is_deleted: false },
+        include: {
+            printer: true,
+            shop: true,
+            orders: { select: { id: true, total_amount: true, status: true } },
+        },
+        orderBy: { createdAt: "desc" },
+    });
 
-    const orderMap = Object.fromEntries(
-        orders.map((o: any) => [o.id, o])
-    );
+    const orderIds = [...new Set((rawRecords as any[]).map((r) => r.orderId).filter((id: any): id is number => Number.isInteger(id)))];
+    const orders = orderIds.length
+        ? await (prisma as any).orders.findMany({
+              where: { id: { in: orderIds } },
+              select: { id: true, total_amount: true, status: true },
+          })
+        : [];
 
-    const records = payments.map((p: any) => {
-        const orderId = parseOrderId(p.orderid);
+    const orderMap = Object.fromEntries(orders.map((o: any) => [o.id, o]));
+
+    // Individual records (one row per payment) — client will group when toggle is on
+    const records = (rawRecords as any[]).map((r) => {
+        const orderId: number | null = r.orderId ?? r.orders?.id ?? null;
+        const amt = Number(r.amount || 0);
+        const entry = {
+            id: r.id,
+            amount: amt,
+            memo: r.memo || null,
+            status: r.status || "PENDING",
+            createdAt: r.createdAt?.toISOString?.() ?? r.createdAt,
+            updatedAt: r.updatedAt?.toISOString?.() ?? r.updatedAt,
+        };
         return {
-            id: p.id,
-            printerName: p.printer?.name || "Unknown",
-            printerLocation: p.printer?.location || null,
-            printerPhone: p.printer?.phone || null,
-            printerEmail: p.printer?.email || null,
+            id: r.id,
+            printerName: r.printer?.name || "Unknown",
+            printerLocation: r.printer?.location || null,
+            printerPhone: r.printer?.phone || null,
+            printerEmail: r.printer?.email || null,
             orderId,
-            orderTotal: orderMap[orderId as number]?.total_amount ?? null,
-            orderStatus: orderMap[orderId as number]?.status ?? null,
-            shopName: p.shop?.name || "Unknown",
-            amount: p.amount,
-            paymentType: p.payment_type,
-            status: p.status,
-            checkInfo: p.check
-                ? `${p.check.bankname || "Unknown"} - ${p.check.username || ""}`
-                : null,
-            createdAt: p.createdAt?.toISOString?.() ?? p.createdAt,
-            updatedAt: p.updatedAt?.toISOString?.() ?? p.updatedAt,
-            memo: p.memo || null,
-            printerPaymentMemo: p.printer_payment_memo || null,
-            image: p.image || null,
+            orderTotal: orderId != null ? orderMap[orderId]?.total_amount ?? r.orders?.total_amount ?? null : null,
+            orderStatus: orderId != null ? orderMap[orderId]?.status ?? r.orders?.status ?? null : null,
+            shopName: r.shop?.name || "Unknown",
+            amount: amt,
+            paymentType: "SHOP_TO_PRINTER",
+            status: r.status || "PENDING",
+            checkInfo: null,
+            createdAt: r.createdAt?.toISOString?.() ?? r.createdAt,
+            updatedAt: r.updatedAt?.toISOString?.() ?? r.updatedAt,
+            memo: r.memo || null,
+            printerPaymentMemo: r.memo || null,
+            image: null,
+            count: 1,
+            entries: [entry],
         };
     });
 
