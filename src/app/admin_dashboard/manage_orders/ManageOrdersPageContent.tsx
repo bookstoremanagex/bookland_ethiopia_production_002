@@ -119,21 +119,33 @@ export default function ManageOrdersPageContent({
   const [orderList, setOrderList] = useState<AdminOrder[]>(orders);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
 
-  // Restore page after revalidatePath re-renders with fresh server data (must run before the sync effect below)
+  // Hydration-safe restore: server and initial client both render page 0, then
+  // after mount we jump to the saved page without causing a hydration mismatch.
   useEffect(() => {
     const saved = localStorage.getItem("mo_page");
-    if (saved) {
-      const savedIndex = parseInt(saved);
-      if (!isNaN(savedIndex) && savedIndex >= 0 && savedIndex !== pagination.pageIndex) {
-        setPagination((prev) => ({ ...prev, pageIndex: savedIndex }));
-      }
+    const idx = saved ? parseInt(saved, 10) : 0;
+    if (!isNaN(idx) && idx >= 0 && idx !== 0) {
+      setPagination((prev) => (prev.pageIndex === idx ? prev : { ...prev, pageIndex: idx }));
     }
-  }, [orders]);
+  }, []);
 
-  // Keep the current page synced so server refreshes (revalidatePath) never lose your place
+  // Persist page — stays exactly where the user left it across reloads / revalidations
   useEffect(() => {
     localStorage.setItem("mo_page", String(pagination.pageIndex));
   }, [pagination.pageIndex]);
+
+  // Sync server data without losing the current page (router.refresh / revalidatePath)
+  useEffect(() => {
+    setOrderList(orders);
+  }, [orders]);
+
+  // Clamp pageIndex if the list shrinks (e.g. delete last item on last page)
+  useEffect(() => {
+    const maxPage = Math.max(0, Math.ceil(orderList.length / pagination.pageSize) - 1);
+    if (pagination.pageIndex > maxPage) {
+      setPagination((prev) => ({ ...prev, pageIndex: maxPage }));
+    }
+  }, [orderList.length, pagination.pageIndex, pagination.pageSize]);
 
   // Save page index before modal opens
   const openOrderModal = (order: AdminOrder) => {
@@ -290,9 +302,9 @@ export default function ManageOrdersPageContent({
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    autoResetPageIndex: false,
     state: { sorting, globalFilter, pagination },
     onGlobalFilterChange: setGlobalFilter,
-    pageCount: Math.ceil(orderList.length / pagination.pageSize),
   });
 
   return (
@@ -543,7 +555,7 @@ export default function ManageOrdersPageContent({
 
         {/* Pagination */}
         <div className="flex items-center justify-between px-6 py-4 border-t border-slate-100 bg-slate-50/50">
-          <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+          <div suppressHydrationWarning className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
             Page {table.getState().pagination.pageIndex + 1} of{" "}
             {table.getPageCount() || 1}
             <span className="ml-4 opacity-50">
@@ -579,8 +591,6 @@ export default function ManageOrdersPageContent({
         onClose={() => setIsModalOpen(false)}
         order={selectedOrder}
         onApproved={(updatedOrder) => {
-          // Save current page to localStorage before revalidatePath remounts the component
-          localStorage.setItem("mo_page", String(table.getState().pagination.pageIndex));
           setOrderList((prev) =>
             prev.map((o) =>
               o.id === updatedOrder.id
@@ -591,7 +601,6 @@ export default function ManageOrdersPageContent({
           setIsModalOpen(false);
         }}
         onDeleted={(deletedOrderId) => {
-          localStorage.setItem("mo_page", String(table.getState().pagination.pageIndex));
           setOrderList((prev) => prev.filter((o) => o.id !== deletedOrderId));
           setSelectedOrder(null);
           setIsModalOpen(false);
