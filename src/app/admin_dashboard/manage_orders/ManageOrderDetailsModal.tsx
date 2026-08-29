@@ -112,6 +112,7 @@ interface Props {
         memo: string | null;
         orderid: string | null;
         is_for_printer?: boolean | null;
+        is_for_previous_debts?: boolean | null;
         payment_for_printer?: number | null;
         printer_id?: number | null;
     }>;
@@ -389,6 +390,7 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
         if (!order) return;
         const fontSize = fontMap[printFontSize];
         const isHalf = printPageWidth === "half";
+        const linkedPaidForPrint = (payments || []).filter((p: any) => p.status === "APPROVED" && !p.is_for_printer && !p.is_for_previous_debts && (p.orderid?.replace(/^ORD-/i, "") === String(order.id) || p.orderid === String(order.id))).reduce((s: number, p: any) => s + (p.amount || 0), 0);
 
         const getStoreForEdition = (editionId: number): string => {
             const storeMap = new Map<number, { name: string; qty: number }[]>();
@@ -596,7 +598,7 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
   </table>
   <div class="sep"></div>
   <div class="meta" style="text-align:right"><strong>Total: ${order.total_amount.toLocaleString()} ETB</strong></div>
-  <div class="meta" style="text-align:right">Paid: ${order.amount_paid.toLocaleString()} ETB | Remaining: ${(order.total_amount - order.amount_paid).toLocaleString()} ETB</div>
+  <div class="meta" style="text-align:right">Paid: ${linkedPaidForPrint.toLocaleString()} ETB | Remaining: ${(order.total_amount - linkedPaidForPrint).toLocaleString()} ETB</div>
 </body>
 </html>`;
         }
@@ -611,6 +613,7 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
 
     const handlePrint = useCallback(() => {
         if (!order) return;
+        const linkedPaidForPrint2 = (payments || []).filter((p: any) => p.status === "APPROVED" && !p.is_for_printer && !p.is_for_previous_debts && (p.orderid?.replace(/^ORD-/i, "") === String(order.id) || p.orderid === String(order.id))).reduce((s: number, p: any) => s + (p.amount || 0), 0);
         const itemsHtml = order.order_items.map((item: any) => `
             <tr>
                 <td>${item.bookedition?.books?.title || "Unknown"}</td>
@@ -657,8 +660,8 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
   </table>
   <div class="sep"></div>
   <div class="row"><strong>Total</strong><strong>${order.total_amount.toLocaleString()} ETB</strong></div>
-  <div class="row"><span>Paid</span><span>${order.amount_paid.toLocaleString()} ETB</span></div>
-  <div class="row"><span>Remaining</span><span>${(order.total_amount - order.amount_paid).toLocaleString()} ETB</span></div>
+  <div class="row"><span>Paid</span><span>${linkedPaidForPrint2.toLocaleString()} ETB</span></div>
+  <div class="row"><span>Remaining</span><span>${(order.total_amount - linkedPaidForPrint2).toLocaleString()} ETB</span></div>
   <div class="sep"></div>
   <div class="row"><span>Status: ${order.is_approved ? "Approved" : "Pending"}</span><span>Delivery: ${order.delivery ? "Delivered" : "Not Delivered"}</span></div>
 </body>
@@ -667,19 +670,19 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
         printWin.document.close();
         printWin.focus();
         printWin.print();
-    }, [order]);
+    }, [order, payments]);
 
     if (!order) return null;
 
-    const remainingBalance = order.total_amount - order.amount_paid;
-    const paymentPct = order.total_amount > 0 ? Math.round((order.amount_paid / order.total_amount) * 100) : 0;
     const filteredPayments = (payments || []).filter(
-        (p) => p.status === "APPROVED" && (
+        (p) => p.status === "APPROVED" && !p.is_for_printer && !p.is_for_previous_debts && (
             p.orderid?.replace(/^ORD-/i, "") === String(order.id) ||
             p.orderid === String(order.id)
         )
     );
     const calculatedPaid = filteredPayments.reduce((sum, p) => sum + (p.amount || 0), 0);
+    const remainingBalance = order.total_amount - calculatedPaid;
+    const paymentPct = order.total_amount > 0 ? Math.round((calculatedPaid / order.total_amount) * 100) : 0;
 
     // Calculate totals per book and per edition
     const bookTotals = bookAllocations.map(ba => {
@@ -1535,7 +1538,7 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
             shopName={order?.bookshopes?.name || ""}
             orderId={order?.id ?? null}
             orderTotal={order?.total_amount ?? null}
-            orderPaid={order?.amount_paid ?? null}
+            orderPaid={calculatedPaid ?? null}
         />
 
         {/* Delete Order Confirmation */}

@@ -1,4 +1,4 @@
-import { getAllOrders, getAllShopsDebt } from "@/app/actions/order-actions";
+import { getAllOrders, getAllShopsDebt, getApprovedOrderPayments } from "@/app/actions/order-actions";
 import { getCurrentSession } from "@/app/actions/auth-actions";
 import ManageOrdersPageContent from "./ManageOrdersPageContent";
 
@@ -6,6 +6,9 @@ export default async function ManageOrdersPage() {
     const res = await getAllOrders();
     const orders = res.success ? res.data || [] : [];
     const session = await getCurrentSession();
+
+    const paymentsRes = await getApprovedOrderPayments();
+    const orderPayments = paymentsRes.success ? (paymentsRes.data as any[]) : [];
 
     const debtRes = await getAllShopsDebt();
     const shopData = (debtRes.success ? debtRes.data || [] : []).map((shop) => ({
@@ -34,7 +37,7 @@ export default async function ManageOrdersPage() {
                     <p className="text-muted-foreground font-bold">{(debtRes as any).error}</p>
                 </div>
             )}
-            <ManageOrdersPageContent orders={orders as any} userRole={session?.role} shops={shopData} />
+            <ManageOrdersPageContent orders={orders as any} userRole={session?.role} shops={shopData} orderPayments={orderPayments as any} />
         </>
     );
 }

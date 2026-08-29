@@ -1544,3 +1544,20 @@ export async function setOrderHideRemaining(orderId: number, hide: boolean) {
     return { success: false, error: error?.message || "Failed to update" };
   }
 }
+
+export async function getApprovedOrderPayments() {
+  try {
+    const payments = await (prisma as any).payments.findMany({
+      where: {
+        is_deleted: false,
+        status: "APPROVED",
+        orderid: { not: null },
+      },
+      select: { id: true, amount: true, orderid: true, is_for_printer: true, is_for_previous_debts: true, createdAt: true, payment_type: true, status: true, memo: true },
+    });
+    return { success: true, data: payments };
+  } catch (error) {
+    console.error("Get approved order payments error:", error);
+    return { success: false, error: "Failed to fetch order payments" };
+  }
+}

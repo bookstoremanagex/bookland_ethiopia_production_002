@@ -102,12 +102,21 @@ interface ManageOrdersPageContentProps {
   orders: AdminOrder[];
   userRole?: string | null;
   shops: ShopRow[];
+  orderPayments?: Array<{
+    id: number;
+    amount: number;
+    orderid: string | null;
+    status: string;
+    is_for_printer?: boolean | null;
+    is_for_previous_debts?: boolean | null;
+  }>;
 }
 
 export default function ManageOrdersPageContent({
   orders,
   userRole,
   shops,
+  orderPayments = [],
 }: ManageOrdersPageContentProps) {
   const { formatDate } = useCalendar();
   const searchParams = useSearchParams();
@@ -169,6 +178,19 @@ export default function ManageOrdersPageContent({
     () => orderList.filter((o) => !o.is_approved).length,
     [orderList],
   );
+
+  // Strict per-order paid: only APPROVED payments directly linked via orderid (ORD-{id} or {id}), excluding printer/previous-debt payments
+  const orderPaidMap = useMemo(() => {
+    const map = new Map<number, number>();
+    for (const p of orderPayments || []) {
+      if (!p.orderid) continue;
+      if (p.is_for_printer || p.is_for_previous_debts) continue;
+      const oid = parseInt(String(p.orderid).replace(/^ORD-/i, ""));
+      if (isNaN(oid)) continue;
+      map.set(oid, (map.get(oid) || 0) + (p.amount || 0));
+    }
+    return map;
+  }, [orderPayments]);
 
   const columns: ColumnDef<AdminOrder>[] = [
     {
@@ -251,18 +273,23 @@ export default function ManageOrdersPageContent({
       accessorKey: "total_amount",
       header: "Financials",
       cell: ({ row }) => {
-        const debt = row.original.total_amount - row.original.amount_paid;
+        const linkedPaid = orderPaidMap.get(row.original.id) || 0;
+        const debt = row.original.total_amount - linkedPaid;
         return (
           <div className="flex flex-col">
             <span className="font-black text-primarycolor">
               {row.original.total_amount.toLocaleString()}{" "}
               <span className="text-[10px] opacity-40">ETB</span>
             </span>
-            {debt > 0 && (
+            {debt > 0 ? (
               <span className="text-[9px] font-bold text-rose-500 uppercase tracking-widest flex items-center gap-1">
                 <Banknote className="size-3" /> {debt.toLocaleString()} debt
               </span>
-            )}
+            ) : linkedPaid > 0 ? (
+              <span className="text-[9px] font-bold text-emerald-600 uppercase tracking-widest flex items-center gap-1">
+                <Banknote className="size-3" /> {linkedPaid.toLocaleString()} paid
+              </span>
+            ) : null}
           </div>
         );
       },
@@ -590,6 +617,7 @@ export default function ManageOrdersPageContent({
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         order={selectedOrder}
+        payments={orderPayments as any}
         onApproved={(updatedOrder) => {
           setOrderList((prev) =>
             prev.map((o) =>
