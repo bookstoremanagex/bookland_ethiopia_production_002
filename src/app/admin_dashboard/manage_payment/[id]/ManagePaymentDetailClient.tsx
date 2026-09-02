@@ -2133,7 +2133,15 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
                 shopName={shop.name}
                 orderId={paymentOrderId}
                 orderTotal={(() => { const o = orders.find((x: any) => x.id === paymentOrderId); return o ? o.total_amount : null; })()}
-                orderPaid={(() => { const o = orders.find((x: any) => x.id === paymentOrderId); return o ? o.amount_paid : null; })()}
+                orderPaid={(() => {
+                    const o = orders.find((x: any) => x.id === paymentOrderId);
+                    if (!o) return null;
+                    const linkedP = payments.filter(p =>
+                        p.status === "APPROVED" && p.orderid != null &&
+                        (p.orderid === String(o.id) || p.orderid === `ORD-${o.id}` || p.orderid.replace(/^ORD-/i, "") === String(o.id))
+                    );
+                    return linkedP.reduce((s, p) => s + p.amount, 0);
+                })()}
             />
 
             {/* Change Printer Dialog */}
