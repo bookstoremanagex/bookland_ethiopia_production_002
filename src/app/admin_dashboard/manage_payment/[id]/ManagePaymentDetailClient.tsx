@@ -45,6 +45,7 @@ import {
     BarChart3,
     Printer,
     Pencil,
+    Settings2,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -223,6 +224,11 @@ interface RoundPayment {
     bookTitle: string;
 }
 
+type AllPaymentItem = Payment & {
+    source: "order" | "round";
+    bookTitle: string | null;
+};
+
 interface Props {
     shop: ShopInfo;
     payments: Payment[];
@@ -347,6 +353,11 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
     const [confirmAction, setConfirmAction] = useState<"reject" | "delete" | "pending" | null>(null);
     const [showConfirmDialog, setShowConfirmDialog] = useState(false);
     const [actionProcessing, setActionProcessing] = useState(false);
+    const [advancedPayment, setAdvancedPayment] = useState<AllPaymentItem | null>(null);
+    const [showAdvancedDialog, setShowAdvancedDialog] = useState(false);
+    const [showApprovedDeleteConfirm, setShowApprovedDeleteConfirm] = useState(false);
+    const [approvedDeleteText, setApprovedDeleteText] = useState("");
+    const [approvedDeleteProcessing, setApprovedDeleteProcessing] = useState(false);
     const [editingMemoId, setEditingMemoId] = useState<number | null>(null);
     const [editingMemoValue, setEditingMemoValue] = useState("");
     const [savingMemoId, setSavingMemoId] = useState<number | null>(null);
@@ -1403,6 +1414,17 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
                                                 <MoreHorizontal className="size-4" />
                                             </Button>
                                         )}
+                                        {payment.status === "APPROVED" && isAdmin && (
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() => { setAdvancedPayment(payment); setApprovedDeleteText(""); setShowAdvancedDialog(true); }}
+                                                className="h-9 w-9 p-0 rounded-xl hover:bg-slate-100 text-muted-foreground hover:text-primarycolor"
+                                                title="Advanced Options"
+                                            >
+                                                <Settings2 className="size-4" />
+                                            </Button>
+                                        )}
                                     </div>
                                 </div>
                             ))}
@@ -2293,6 +2315,129 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
                                 )}
                             >
                                 {actionProcessing ? "Processing..." : confirmAction === "reject" ? "Reject" : confirmAction === "pending" ? "Set Pending" : "Remove"}
+                            </Button>
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
+            {/* Advanced Options Dialog (approved payments only) */}
+            <AlertDialog open={showAdvancedDialog} onOpenChange={(o) => { if (!o) { setShowAdvancedDialog(false); setAdvancedPayment(null); } }}>
+                <AlertDialogContent className="rounded-[2rem] border-2 border-primarycolor/5 p-0 max-w-sm overflow-hidden">
+                    <AlertDialogHeader className="p-6 pb-4 border-b border-slate-100">
+                        <AlertDialogTitle className="text-lg font-black text-primarycolor uppercase tracking-tight italic">
+                            Advanced Options
+                        </AlertDialogTitle>
+                        <AlertDialogDescription className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">
+                            Payment #{advancedPayment?.id} — {formatAmount(advancedPayment?.amount || 0)} ETB ({advancedPayment?.payment_type})
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <div className="p-4 space-y-2">
+                        <div className="rounded-2xl border-2 border-rose-100 bg-rose-50/50 p-3 flex items-center gap-3">
+                            <div className="size-10 rounded-xl bg-rose-100 flex items-center justify-center text-rose-600 shrink-0">
+                                <Trash2 className="size-5" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                                <p className="text-[10px] font-black text-rose-700 uppercase tracking-widest">Danger Zone</p>
+                                <p className="text-[9px] font-bold text-rose-600/70">Irreversible actions for this approved payment.</p>
+                            </div>
+                        </div>
+                        <Button
+                            variant="outline"
+                            className="w-full h-14 rounded-2xl border-2 border-rose-200 text-rose-600 hover:bg-rose-50 font-black uppercase tracking-widest text-[10px] gap-3 justify-start px-5"
+                            onClick={() => {
+                                setShowAdvancedDialog(false);
+                                setApprovedDeleteText("");
+                                setTimeout(() => {
+                                    setShowApprovedDeleteConfirm(true);
+                                }, 200);
+                            }}
+                        >
+                            <Trash2 className="size-4" /> Delete Payment
+                        </Button>
+                    </div>
+                    <AlertDialogFooter className="p-4 pt-0">
+                        <AlertDialogCancel asChild>
+                            <Button variant="ghost" className="w-full h-12 rounded-2xl font-black uppercase tracking-widest text-[10px]">
+                                Cancel
+                            </Button>
+                        </AlertDialogCancel>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
+            {/* Approved Payment Delete Confirmation — requires typed sentence */}
+            <AlertDialog open={showApprovedDeleteConfirm} onOpenChange={(o) => { if (!o) { setShowApprovedDeleteConfirm(false); setApprovedDeleteText(""); setAdvancedPayment(null); } }}>
+                <AlertDialogContent className="rounded-[2rem] border-2 border-primarycolor/5 p-6 max-w-sm">
+                    <AlertDialogHeader>
+                        <AlertDialogTitle className="text-lg font-black text-primarycolor uppercase tracking-tight italic">
+                            Delete Approved Payment
+                        </AlertDialogTitle>
+                        <AlertDialogDescription className="text-[10px] font-bold text-muted-foreground">
+                            <span className="block mb-2">
+                                You are about to permanently delete payment <span className="text-rose-600 font-black">#{advancedPayment?.id}</span> of{" "}
+                                <span className="text-rose-600 font-black">{formatAmount(advancedPayment?.amount || 0)} ETB</span> ({advancedPayment?.payment_type}).
+                                This payment has already been approved and applied to the debt. Deleting it will reverse it from every record.
+                                This action <span className="text-rose-600 font-black">cannot be undone</span>.
+                            </span>
+                            <span className="block mb-1 text-rose-600 font-black uppercase tracking-widest text-[9px]">
+                                Type the following sentence to confirm:
+                            </span>
+                            <span className="block p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 font-black text-[11px] break-words">
+                                I am sure I want to delete payment #{advancedPayment?.id}
+                            </span>
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <div className="py-3">
+                        <input
+                            type="text"
+                            value={approvedDeleteText}
+                            onChange={(e) => setApprovedDeleteText(e.target.value)}
+                            placeholder={`Type: I am sure I want to delete payment #${advancedPayment?.id}`}
+                            autoFocus
+                            className="w-full h-12 px-4 rounded-2xl border-2 border-rose-200 bg-white font-bold text-sm outline-none focus:border-rose-500 transition-colors"
+                        />
+                    </div>
+                    <AlertDialogFooter className="gap-2 pt-1">
+                        <AlertDialogCancel asChild>
+                            <Button variant="outline" className="h-12 rounded-2xl border-2 font-black uppercase tracking-widest text-[10px] flex-1">
+                                Cancel
+                            </Button>
+                        </AlertDialogCancel>
+                        <AlertDialogAction asChild>
+                            <Button
+                                onClick={async () => {
+                                    if (!advancedPayment) return;
+                                    setApprovedDeleteProcessing(true);
+                                    try {
+                                        let res;
+                                        if (advancedPayment.source === "round") {
+                                            res = await deleteRoundPayment(advancedPayment.id);
+                                        } else {
+                                            res = await deletePayment(advancedPayment.id);
+                                        }
+                                        if (res.success) {
+                                            toast.success("Payment deleted from all records");
+                                            setShowApprovedDeleteConfirm(false);
+                                            setApprovedDeleteText("");
+                                            setAdvancedPayment(null);
+                                            router.refresh();
+                                        } else {
+                                            toast.error(res.error || "Failed to delete payment");
+                                        }
+                                    } catch {
+                                        toast.error("Failed to delete payment");
+                                    } finally {
+                                        setApprovedDeleteProcessing(false);
+                                    }
+                                }}
+                                disabled={
+                                    approvedDeleteProcessing ||
+                                    approvedDeleteText.trim() !== `I am sure I want to delete payment #${advancedPayment?.id}`
+                                }
+                                className="h-12 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black uppercase tracking-widest text-[10px] flex-1"
+                            >
+                                {approvedDeleteProcessing ? "Deleting..." : "Delete Permanently"}
                             </Button>
                         </AlertDialogAction>
                     </AlertDialogFooter>
