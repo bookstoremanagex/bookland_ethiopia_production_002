@@ -988,7 +988,7 @@ export async function approveOrder(
 
         return true;
       },
-      { timeout: 60000 },
+      { timeout: 180000 },
     );
 
     revalidatePath("/admin_dashboard/manage_orders");
