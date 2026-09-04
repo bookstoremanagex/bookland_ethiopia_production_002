@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import {
     ArrowLeft,
@@ -11,9 +11,14 @@ import {
     CheckCircle2,
     Clock,
     XCircle,
+    Loader2,
+    Printer,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCalendar } from "@/lib/calendar-context";
+import { formatDate as formatCalendarDate } from "@/lib/calendar-utils";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 import {
     Table,
     TableBody,
@@ -22,6 +27,16 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import {
+    Dialog,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
+import ManageOrderDetailsModal from "@/app/admin_dashboard/manage_orders/ManageOrderDetailsModal";
+import { getOrderById } from "@/app/actions/order-actions";
+import type { AdminOrder } from "@/app/admin_dashboard/manage_orders/ManageOrdersPageContent";
 
 const formatAmount = (n: number) =>
     Number.isInteger(n)
@@ -80,13 +95,19 @@ interface Props {
 export default function DebtBreakdownClient({ shopId, shopName, orders, payments, roundRecords, roundPayments }: Props) {
     const { formatDate } = useCalendar();
 
+    // Local editable copy so approve/update/delete from the details modal reflects here
+    const [orderList, setOrderList] = useState<OrderRow[]>(orders);
+    const [selectedOrder, setSelectedOrder] = useState<AdminOrder | null>(null);
+    const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+    const [loadingOrderId, setLoadingOrderId] = useState<number | null>(null);
+
     const requestedOrders = useMemo(
-        () => orders.filter((o) => o.order_type === "requested" && o.is_approved),
-        [orders]
+        () => orderList.filter((o) => o.order_type === "requested" && o.is_approved),
+        [orderList]
     );
     const roundOrders = useMemo(
-        () => orders.filter((o) => o.order_type === "on round"),
-        [orders]
+        () => orderList.filter((o) => o.order_type === "on round"),
+        [orderList]
     );
 
     const orderDebt = useMemo(() => requestedOrders.reduce((s, o) => s + (o.total_amount || 0), 0), [requestedOrders]);
@@ -121,6 +142,227 @@ export default function DebtBreakdownClient({ shopId, shopName, orders, payments
         </span>
     );
 
+    const [memoView, setMemoView] = useState<{ title: string; text: string } | null>(null);
+
+    const openOrderDetails = async (orderId: number) => {
+        setLoadingOrderId(orderId);
+        try {
+            const res = await getOrderById(orderId);
+            if (res.success && res.data) {
+                setSelectedOrder(res.data as AdminOrder);
+                setIsOrderModalOpen(true);
+            } else {
+                toast.error(res.error || "Failed to fetch order");
+            }
+        } catch {
+            toast.error("An unexpected error occurred while fetching the order");
+        } finally {
+            setLoadingOrderId(null);
+        }
+    };
+
+    const OrderIdButton = ({ id }: { id: number }) => (
+        <button
+            type="button"
+            onClick={() => openOrderDetails(id)}
+            className="flex items-center gap-1.5 font-black text-primarycolor text-sm hover:text-secondarycolor hover:underline underline-offset-2 transition-colors cursor-pointer"
+            title="View order details"
+        >
+            {loadingOrderId === id && <Loader2 className="size-3 animate-spin" />}
+            #ORD-{id}
+        </button>
+    );
+
+    // ── Print options state ──
+    const [printOptionsOpen, setPrintOptionsOpen] = useState(false);
+    const [printFontSize, setPrintFontSize] = useState<"extra-big" | "big" | "medium" | "small" | "extra-small">("medium");
+    const [printBold, setPrintBold] = useState(false);
+    const [printIncludeRequested, setPrintIncludeRequested] = useState(true);
+    const [printIncludeRoundOrders, setPrintIncludeRoundOrders] = useState(true);
+    const [printIncludeRounds, setPrintIncludeRounds] = useState(true);
+    const [printIncludePayments, setPrintIncludePayments] = useState(true);
+    const [printIncludeCalc, setPrintIncludeCalc] = useState(true);
+
+    const printFontMap: Record<typeof printFontSize, string> = {
+        "extra-big": "22px",
+        "big": "18px",
+        "medium": "15px",
+        "small": "12px",
+        "extra-small": "10px",
+    };
+
+    const escHtml = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+    const handleDebtPrint = () => {
+        const fontSize = parseInt(printFontMap[printFontSize]);
+        const weight = printBold ? "700" : "400";
+        const now = new Date();
+        const ethDate = formatCalendarDate(now, "ethiopian", "EEE, MMMM dd, yyyy");
+        const gregDate = formatCalendarDate(now, "gregorian", "EEE, MMMM dd, yyyy");
+
+        const sectionHead = (title: string, total: string) => `
+            <div class="sec-head"><span>${escHtml(title)}</span><span>${escHtml(total)}</span></div>`;
+
+        const tableShell = (headers: string[], rowsHtml: string, totalLabel: string, totalValue: string) => `
+            <table>
+                <thead><tr>${headers.map(h => `<th${h === "Total Amount" || h === "Total Price" || h === "Amount" ? ' class="r"' : ""}>${escHtml(h)}</th>`).join("")}</tr></thead>
+                <tbody>${rowsHtml}</tbody>
+                <tfoot><tr class="total-row"><td colspan="${headers.length - 1}">${escHtml(totalLabel)}</td><td class="r">${escHtml(totalValue)}</td></tr></tfoot>
+            </table>`;
+
+        const dateCell = (d: string | Date) => formatDate(new Date(d), "MMM dd, yyyy HH:mm");
+
+        // Section 1: Requested Orders
+        const s1 = printIncludeRequested ? `
+            ${sectionHead("1. Total Order Debt (Requested)", `${formatAmount(orderDebt)} ETB`)}
+            ${tableShell(
+                ["Order", "Date", "Total Amount"],
+                requestedOrders.length === 0
+                    ? `<tr><td colspan="3" class="empty">No approved requested orders</td></tr>`
+                    : requestedOrders.map(o => `<tr><td>#ORD-${o.id}</td><td>${dateCell(o.createdAt)}</td><td class="r">${formatAmount(o.total_amount || 0)} ETB</td></tr>`).join(""),
+                "Total Order Debt (Requested)",
+                `${formatAmount(orderDebt)} ETB`
+            )}` : "";
+
+        // Section 2: Round Orders
+        const s2 = printIncludeRoundOrders ? `
+            ${sectionHead("2. Round Orders Debt", `${formatAmount(roundOrderDebt)} ETB`)}
+            ${tableShell(
+                ["Order", "Date", "Total Amount"],
+                roundOrders.length === 0
+                    ? `<tr><td colspan="3" class="empty">No round orders</td></tr>`
+                    : roundOrders.map(o => `<tr><td>#ORD-${o.id}</td><td>${dateCell(o.createdAt)}</td><td class="r">${formatAmount(o.total_amount || 0)} ETB</td></tr>`).join(""),
+                "Total Round Orders Debt",
+                `${formatAmount(roundOrderDebt)} ETB`
+            )}` : "";
+
+        // Section 3: Rounds
+        const s3 = printIncludeRounds ? `
+            ${sectionHead("3. Rounds", `${formatAmount(roundsDebt)} ETB`)}
+            ${tableShell(
+                ["Round", "Book", "Date", "Total Price"],
+                roundRecords.length === 0
+                    ? `<tr><td colspan="4" class="empty">No round records</td></tr>`
+                    : roundRecords.map(r => `<tr><td>#${r.id}</td><td>${escHtml(r.RoundBooks?.book?.title || "Unknown")}</td><td>${dateCell(r.createdAt)}</td><td class="r">${formatAmount(r.totalprice || 0)} ETB</td></tr>`).join(""),
+                "Total Rounds Debt",
+                `${formatAmount(roundsDebt)} ETB`
+            )}` : "";
+
+        // Section 4: Payments History
+        const s4 = printIncludePayments ? `
+            ${sectionHead("4. Payments (Payment History)", `${formatAmount(totalPaid)} ETB`)}
+            ${tableShell(
+                ["Date", "Source", "Type", "Reference", "Memo", "Status", "Amount"],
+                allPaymentItems.length === 0
+                    ? `<tr><td colspan="7" class="empty">No payments recorded</td></tr>`
+                    : allPaymentItems.map(p => {
+                        const ref = p.source === "order" && p.orderid
+                            ? `#ORD-${p.orderid.replace(/^ORD-/i, "")}`
+                            : (p.bookTitle || "—");
+                        const memoShort = p.memo ? (p.memo.length > 30 ? `${p.memo.slice(0, 30)}…` : p.memo) : "—";
+                        return `<tr><td class="nw">${dateCell(p.createdAt)}</td><td>${p.source === "order" ? "Order" : "Round"}</td><td>${escHtml(p.payment_type)}</td><td>${escHtml(ref)}</td><td>${escHtml(memoShort)}</td><td>${escHtml(p.status)}</td><td class="r">${formatAmount(p.amount || 0)} ETB</td></tr>`;
+                    }).join(""),
+                "Total Paid",
+                `${formatAmount(totalPaid)} ETB`
+            )}` : "";
+
+        // Section 5: Debt Calculation
+        const s5 = printIncludeCalc ? `
+            <div class="sec-head"><span>5. How The Remaining Debt Is Calculated</span><span></span></div>
+            <div class="calc">
+                <p class="calc-sub">Step 1 — Total Debt (adding the three debts)</p>
+                <div class="calc-row"><span>Total Order Debt (Requested)</span><span>${formatAmount(orderDebt)} ETB</span></div>
+                <div class="calc-row"><span>+ Round Orders Debt</span><span>${formatAmount(roundOrderDebt)} ETB</span></div>
+                <div class="calc-row"><span>+ Rounds</span><span>${formatAmount(roundsDebt)} ETB</span></div>
+                <div class="calc-row calc-total"><span>= Total Debt</span><span>${formatAmount(totalDebt)} ETB</span></div>
+                <p class="calc-sub">Step 2 — Subtract Total Paid</p>
+                <div class="calc-row"><span>Total Debt</span><span>${formatAmount(totalDebt)} ETB</span></div>
+                <div class="calc-row"><span>- Total Paid</span><span>${formatAmount(totalPaid)} ETB</span></div>
+                <div class="calc-row calc-total"><span>= ${remaining > 0 ? "Remaining Debt" : "Fully Paid"}</span><span>${formatAmount(remaining)} ETB</span></div>
+            </div>` : "";
+
+        const printContent = `
+<!DOCTYPE html>
+<html>
+<head>
+<title>Debt Breakdown - ${escHtml(shopName)}</title>
+<style>
+    @page {
+        size: A4 portrait;
+        margin: 10mm;
+        @bottom-center { content: "Page " counter(page); font-size: 9px; color: #555; }
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: ${fontSize}px;
+        font-weight: ${weight};
+        color: #111;
+        padding: 16px 20px;
+    }
+    h1 { font-size: ${fontSize + 10}px; font-weight: ${weight}; color: #111; margin-bottom: 2px; }
+    .shop { font-size: ${fontSize + 1}px; color: #111; margin-bottom: 6px; }
+    .dates { font-size: ${fontSize - 1}px; color: #111; margin-bottom: 10px; }
+    .summary { display: flex; justify-content: space-between; border: 2px solid #333; padding: 8px 10px; margin-bottom: 6px; font-size: ${fontSize}px; }
+    .sec-head { display: flex; justify-content: space-between; align-items: baseline; margin: 16px 0 6px; border-bottom: 2px solid #333; padding-bottom: 3px; font-size: ${fontSize + 1}px; color: #111; }
+    table { width: 100%; border-collapse: collapse; }
+    th { background: #eee; border: 1px solid #999; padding: 5px 8px; text-align: left; font-size: ${fontSize - 1}px; font-weight: ${weight}; }
+    td { border: 1px solid #bbb; padding: 4px 8px; font-size: ${fontSize}px; }
+    .r { text-align: right; white-space: nowrap; }
+    .nw { white-space: nowrap; }
+    .empty { text-align: center; font-style: italic; padding: 10px; }
+    tfoot td { background: #f5f5f5; border-top: 2px solid #999; }
+    .calc { border: 1.5px solid #bbb; padding: 10px 12px; margin-bottom: 14px; }
+    .calc-sub { font-size: ${fontSize - 1}px; margin: 6px 0 4px; }
+    .calc-row { display: flex; justify-content: space-between; padding: 2px 0; font-size: ${fontSize}px; }
+    .calc-total { border-top: 1.5px dashed #999; margin-top: 3px; padding-top: 4px; }
+</style>
+</head>
+<body>
+    <h1>Debt Breakdown</h1>
+    <div class="shop">${escHtml(shopName)}</div>
+    <div class="dates">
+        <div>Ethiopian: ${ethDate}</div>
+        <div>Gregorian: ${gregDate}</div>
+    </div>
+    <div class="summary">
+        <span>Total Debt: ${formatAmount(totalDebt)} ETB</span>
+        <span>Total Paid: ${formatAmount(totalPaid)} ETB</span>
+        <span>Remaining: ${formatAmount(remaining)} ETB</span>
+    </div>
+    ${s1}
+    ${s2}
+    ${s3}
+    ${s4}
+    ${s5}
+</body>
+</html>`;
+
+        const printWin = window.open("", "_blank", "width=900,height=700");
+        if (!printWin) {
+            toast.error("Failed to open print window");
+            return;
+        }
+        printWin.document.write(printContent);
+        printWin.document.close();
+        printWin.focus();
+        printWin.print();
+    };
+
+    const MemoCell = ({ memo, title }: { memo: string | null; title: string }) => {
+        if (!memo) return <span className="text-[10px] font-bold text-slate-300">—</span>;
+        return (
+            <button
+                type="button"
+                onClick={() => setMemoView({ title, text: memo })}
+                className="block max-w-[140px] truncate text-left text-[10px] font-bold text-primarycolor hover:text-secondarycolor hover:underline underline-offset-2 transition-colors cursor-pointer"
+                title="Click to view full memo"
+            >
+                {memo}
+            </button>
+        );
+    };
+
     return (
         <div className="p-4 md:p-10 space-y-6 md:space-y-8 bg-[#F8FAFC] min-h-screen">
             <Link href={`/admin_dashboard/manage_payment/${shopId}`}>
@@ -135,6 +377,16 @@ export default function DebtBreakdownClient({ shopId, shopName, orders, payments
                     Debt <span className="text-secondarycolor not-italic">Breakdown</span>
                     <span className="text-sm font-bold text-muted-foreground ml-3 normal-case italic tracking-normal">{shopName}</span>
                 </h1>
+            </div>
+
+            {/* Print button */}
+            <div className="flex justify-end">
+                <Button
+                    onClick={() => setPrintOptionsOpen(true)}
+                    className="h-11 px-6 rounded-2xl bg-primarycolor hover:bg-secondarycolor text-white font-black uppercase tracking-widest text-[10px] shadow-lg shadow-primarycolor/30 gap-2"
+                >
+                    <Printer className="size-4" /> Print
+                </Button>
             </div>
 
             {/* Remaining summary */}
@@ -183,7 +435,7 @@ export default function DebtBreakdownClient({ shopId, shopName, orders, payments
                         ) : (
                             requestedOrders.map((o) => (
                                 <TableRow key={o.id}>
-                                    <TableCell className="font-black text-primarycolor text-sm">#ORD-{o.id}</TableCell>
+                                    <TableCell><OrderIdButton id={o.id} /></TableCell>
                                     <TableCell className="text-[10px] font-bold text-muted-foreground whitespace-nowrap">
                                         {formatDate(new Date(o.createdAt), "MMM dd, yyyy HH:mm")}
                                     </TableCell>
@@ -228,7 +480,7 @@ export default function DebtBreakdownClient({ shopId, shopName, orders, payments
                         ) : (
                             roundOrders.map((o) => (
                                 <TableRow key={o.id}>
-                                    <TableCell className="font-black text-primarycolor text-sm">#ORD-{o.id}</TableCell>
+                                    <TableCell><OrderIdButton id={o.id} /></TableCell>
                                     <TableCell className="text-[10px] font-bold text-muted-foreground whitespace-nowrap">
                                         {formatDate(new Date(o.createdAt), "MMM dd, yyyy HH:mm")}
                                     </TableCell>
@@ -302,13 +554,14 @@ export default function DebtBreakdownClient({ shopId, shopName, orders, payments
                     <span className="text-lg font-black text-emerald-700">{formatAmount(totalPaid)} ETB</span>
                 </div>
                 <div className="overflow-x-auto -mx-2 px-2">
-                    <Table className="min-w-[720px]">
+                    <Table className="min-w-[820px]">
                     <TableHeader>
                         <TableRow>
                             <TableHead>Date</TableHead>
                             <TableHead>Source</TableHead>
                             <TableHead>Type</TableHead>
                             <TableHead>Reference</TableHead>
+                            <TableHead>Memo</TableHead>
                             <TableHead>Status</TableHead>
                             <TableHead className="text-right">Amount</TableHead>
                         </TableRow>
@@ -316,7 +569,7 @@ export default function DebtBreakdownClient({ shopId, shopName, orders, payments
                     <TableBody>
                         {allPaymentItems.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={6} className="text-center text-[10px] font-black uppercase tracking-widest text-slate-400 py-8">
+                                <TableCell colSpan={7} className="text-center text-[10px] font-black uppercase tracking-widest text-slate-400 py-8">
                                     No payments recorded
                                 </TableCell>
                             </TableRow>
@@ -341,6 +594,9 @@ export default function DebtBreakdownClient({ shopId, shopName, orders, payments
                                             : p.bookTitle || "—"}
                                     </TableCell>
                                     <TableCell>
+                                        <MemoCell memo={p.memo} title={`${p.source === "order" ? "Order" : "Round"} Payment #${p.id}`} />
+                                    </TableCell>
+                                    <TableCell>
                                         <span className="flex items-center gap-1.5">
                                             {p.status === "APPROVED" ? <CheckCircle2 className="size-3 text-emerald-600" />
                                             : p.status === "REJECTED" ? <XCircle className="size-3 text-rose-600" />
@@ -353,7 +609,7 @@ export default function DebtBreakdownClient({ shopId, shopName, orders, payments
                             ))
                         )}
                         <TableRow className="bg-emerald-50/50">
-                            <TableCell colSpan={5} className="font-black text-[10px] uppercase tracking-widest text-emerald-700">Total Paid</TableCell>
+                            <TableCell colSpan={6} className="font-black text-[10px] uppercase tracking-widest text-emerald-700">Total Paid</TableCell>
                             <TableCell className="text-right font-black text-emerald-700 whitespace-nowrap">{formatAmount(totalPaid)} ETB</TableCell>
                         </TableRow>
                     </TableBody>
@@ -425,6 +681,153 @@ export default function DebtBreakdownClient({ shopId, shopName, orders, payments
                     </span>
                 </div>
             </div>
+
+            {/* Print options dialog */}
+            <Dialog open={printOptionsOpen} onOpenChange={setPrintOptionsOpen}>
+                <DialogContent className="sm:max-w-md w-[95vw] rounded-[2rem] border-2 border-primarycolor/10 max-h-[90dvh] overflow-y-auto">
+                    <DialogHeader>
+                        <DialogTitle className="text-sm font-black uppercase italic text-primarycolor flex items-center gap-2">
+                            <Printer className="size-4" /> Print Options
+                        </DialogTitle>
+                    </DialogHeader>
+
+                    <div className="space-y-3">
+                        {/* Font size */}
+                        <div className="bg-white rounded-2xl p-3 border-2 border-primarycolor/5">
+                            <p className="text-[8px] font-black text-primarycolor uppercase tracking-widest italic mb-2">Font Size</p>
+                            <div className="flex flex-wrap gap-1.5">
+                                {(["extra-big", "big", "medium", "small", "extra-small"] as const).map(size => (
+                                    <label
+                                        key={size}
+                                        className={cn(
+                                            "flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border-2 cursor-pointer transition-colors",
+                                            printFontSize === size
+                                                ? "border-primarycolor bg-primarycolor/5"
+                                                : "border-slate-100 bg-white hover:border-slate-200"
+                                        )}
+                                    >
+                                        <input
+                                            type="radio"
+                                            name="debt-font-size"
+                                            checked={printFontSize === size}
+                                            onChange={() => setPrintFontSize(size)}
+                                            className="size-3 accent-primarycolor shrink-0"
+                                        />
+                                        <span className="font-bold text-slate-700 text-[9px] uppercase tracking-widest">
+                                            {size === "extra-big" ? "X.Big" : size === "big" ? "Big" : size === "medium" ? "Medium" : size === "small" ? "Small" : "X.Small"}
+                                        </span>
+                                    </label>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Bold */}
+                        <div className="bg-white rounded-2xl p-3 border-2 border-primarycolor/5">
+                            <p className="text-[8px] font-black text-primarycolor uppercase tracking-widest italic mb-2">Font Style</p>
+                            <label className="flex items-center gap-2 px-3 py-2 rounded-xl border-2 border-slate-100 cursor-pointer hover:border-slate-200 w-fit">
+                                <input
+                                    type="checkbox"
+                                    checked={printBold}
+                                    onChange={e => setPrintBold(e.target.checked)}
+                                    className="size-3.5 accent-primarycolor"
+                                />
+                                <span className="font-bold text-slate-700 text-[10px] uppercase tracking-widest">All Bold</span>
+                            </label>
+                        </div>
+
+                        {/* Tables to include */}
+                        <div className="bg-white rounded-2xl p-3 border-2 border-primarycolor/5">
+                            <p className="text-[8px] font-black text-primarycolor uppercase tracking-widest italic mb-2">Tables To Include</p>
+                            <div className="flex flex-wrap gap-1.5">
+                                {[
+                                    { id: "requested", label: "Order Debt (Requested)", state: printIncludeRequested, set: setPrintIncludeRequested },
+                                    { id: "roundOrders", label: "Round Orders Debt", state: printIncludeRoundOrders, set: setPrintIncludeRoundOrders },
+                                    { id: "rounds", label: "Rounds", state: printIncludeRounds, set: setPrintIncludeRounds },
+                                    { id: "payments", label: "Payments History", state: printIncludePayments, set: setPrintIncludePayments },
+                                    { id: "calc", label: "Debt Calculation", state: printIncludeCalc, set: setPrintIncludeCalc },
+                                ].map(opt => (
+                                    <label
+                                        key={opt.id}
+                                        className="flex items-center gap-1.5 px-2 py-1.5 rounded-xl border-2 border-slate-100 cursor-pointer hover:border-primarycolor/30 transition-colors"
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            checked={opt.state}
+                                            onChange={e => opt.set(e.target.checked)}
+                                            className="size-3 accent-primarycolor rounded shrink-0"
+                                        />
+                                        <span className="font-bold text-slate-700 text-[9px] leading-tight">{opt.label}</span>
+                                    </label>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    <DialogFooter className="pt-1">
+                        <div className="flex gap-2 w-full">
+                            <Button
+                                variant="outline"
+                                onClick={() => setPrintOptionsOpen(false)}
+                                className="flex-1 rounded-2xl h-10 font-black uppercase tracking-widest text-[9px] border-2"
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                onClick={() => {
+                                    setPrintOptionsOpen(false);
+                                    handleDebtPrint();
+                                }}
+                                className="flex-1 rounded-2xl h-10 font-black uppercase tracking-widest text-[9px] bg-primarycolor hover:bg-secondarycolor text-white shadow-lg gap-1.5"
+                            >
+                                <Printer className="size-3.5" /> Print
+                            </Button>
+                        </div>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            {/* Memo detail dialog */}
+            <Dialog open={!!memoView} onOpenChange={(open) => !open && setMemoView(null)}>
+                <DialogContent className="max-w-md rounded-[2rem] border-2 border-primarycolor/10">
+                    <DialogHeader>
+                        <DialogTitle className="text-[10px] font-black uppercase tracking-widest text-primarycolor">
+                            Memo — {memoView?.title}
+                        </DialogTitle>
+                    </DialogHeader>
+                    <p className="text-sm font-bold text-foreground whitespace-pre-wrap break-words leading-relaxed">
+                        {memoView?.text}
+                    </p>
+                </DialogContent>
+            </Dialog>
+
+            {/* Order details modal (same as manage orders) */}
+            <ManageOrderDetailsModal
+                isOpen={isOrderModalOpen}
+                onClose={() => setIsOrderModalOpen(false)}
+                order={selectedOrder}
+                payments={payments as any}
+                onApproved={(updated) => {
+                    setOrderList((prev) =>
+                        prev.map((o) => (o.id === updated.id ? { ...o, is_approved: true, status: "Approved" } : o))
+                    );
+                    setIsOrderModalOpen(false);
+                }}
+                onDeleted={(deletedId) => {
+                    setOrderList((prev) => prev.filter((o) => o.id !== deletedId));
+                    setSelectedOrder(null);
+                    setIsOrderModalOpen(false);
+                }}
+                onUpdated={(updated) => {
+                    setOrderList((prev) =>
+                        prev.map((o) =>
+                            o.id === (updated as any).id
+                                ? { ...o, total_amount: updated.total_amount, amount_paid: updated.amount_paid, status: updated.status, is_approved: (updated as any).is_approved }
+                                : o
+                        )
+                    );
+                    setSelectedOrder(updated);
+                }}
+            />
         </div>
     );
 }
