@@ -1415,9 +1415,14 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                             {filteredPayments.length > 0 && (
                                 <div className="mt-3 pt-3 border-t border-emerald-100 space-y-1.5">
                                     {filteredPayments.map((payment) => (
-                                        <div key={payment.id} className="flex items-center justify-between text-[9px]">
-                                            <span className="font-bold text-muted-foreground">{formatDate(new Date(payment.createdAt), "MMM dd, yyyy")}</span>
-                                            <span className="font-black text-emerald-700">{payment.amount.toLocaleString()} ETB</span>
+                                        <div key={payment.id}>
+                                            <div className="flex items-center justify-between text-[9px]">
+                                                <span className="font-bold text-muted-foreground">{formatDate(new Date(payment.createdAt), "MMM dd, yyyy")}</span>
+                                                <span className="font-black text-emerald-700">{payment.amount.toLocaleString()} ETB</span>
+                                            </div>
+                                            {payment.memo && (
+                                                <p className="text-[8px] font-bold text-muted-foreground/70 italic truncate">Memo: "{payment.memo}"</p>
+                                            )}
                                         </div>
                                     ))}
                                 </div>

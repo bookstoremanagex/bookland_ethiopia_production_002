@@ -106,6 +106,15 @@ export default function DebtBreakdownClient({ shopId, shopName, orders, payments
         [orderList]
     );
     const roundOrders = useMemo(
+        () => orderList.filter((o) => o.order_type === "on round" && o.is_approved),
+        [orderList]
+    );
+    // Display lists: show every order — non-approved rows get an orange bg but are excluded from sums
+    const requestedDisplay = useMemo(
+        () => orderList.filter((o) => o.order_type === "requested"),
+        [orderList]
+    );
+    const roundDisplay = useMemo(
         () => orderList.filter((o) => o.order_type === "on round"),
         [orderList]
     );
@@ -128,7 +137,10 @@ export default function DebtBreakdownClient({ shopId, shopName, orders, payments
         );
     }, [payments, roundPayments]);
 
-    const totalPaid = useMemo(() => allPaymentItems.reduce((s, p) => s + (p.amount || 0), 0), [allPaymentItems]);
+    const totalPaid = useMemo(
+        () => allPaymentItems.filter((p) => p.status === "APPROVED").reduce((s, p) => s + (p.amount || 0), 0),
+        [allPaymentItems]
+    );
     const remaining = totalDebt - totalPaid;
 
     const StatusBadge = ({ status }: { status: string }) => (
@@ -396,7 +408,7 @@ export default function DebtBreakdownClient({ shopId, shopName, orders, payments
                     <p className="text-base font-black text-primarycolor">{formatAmount(totalDebt)} ETB</p>
                 </div>
                 <div className="space-y-0.5">
-                    <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Total Paid (Payment History)</p>
+                    <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Total Paid (Payment History — Approved Only)</p>
                     <p className="text-base font-black text-emerald-700">{formatAmount(totalPaid)} ETB</p>
                 </div>
                 <div className="space-y-0.5">
@@ -412,7 +424,7 @@ export default function DebtBreakdownClient({ shopId, shopName, orders, payments
                 <div className="flex flex-wrap items-center justify-between gap-2">
                     <div className="flex items-center gap-2 text-amber-700">
                         <ListOrdered className="size-4" />
-                        <h3 className="text-[10px] font-black uppercase tracking-widest">1. Total Order Debt (Requested)</h3>
+                        <h3 className="text-[10px] font-black uppercase tracking-widest">1. Total Order Debt (Requested — Approved Only)</h3>
                     </div>
                     <span className="text-lg font-black text-amber-700">{formatAmount(orderDebt)} ETB</span>
                 </div>
@@ -426,25 +438,32 @@ export default function DebtBreakdownClient({ shopId, shopName, orders, payments
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {requestedOrders.length === 0 ? (
+                        {requestedDisplay.length === 0 ? (
                             <TableRow>
                                 <TableCell colSpan={3} className="text-center text-[10px] font-black uppercase tracking-widest text-slate-400 py-8">
-                                    No approved requested orders
+                                    No requested orders
                                 </TableCell>
                             </TableRow>
                         ) : (
-                            requestedOrders.map((o) => (
-                                <TableRow key={o.id}>
-                                    <TableCell><OrderIdButton id={o.id} /></TableCell>
+                            requestedDisplay.map((o) => (
+                                <TableRow key={o.id} className={cn(!o.is_approved && "bg-orange-50/80")}>
+                                    <TableCell>
+                                        <div className="flex flex-col gap-1">
+                                            <OrderIdButton id={o.id} />
+                                            {!o.is_approved && (
+                                                <span className="px-1.5 py-0.5 rounded text-[7px] font-black uppercase tracking-widest bg-orange-100 text-orange-700 w-fit">Not Approved</span>
+                                            )}
+                                        </div>
+                                    </TableCell>
                                     <TableCell className="text-[10px] font-bold text-muted-foreground whitespace-nowrap">
                                         {formatDate(new Date(o.createdAt), "MMM dd, yyyy HH:mm")}
                                     </TableCell>
-                                    <TableCell className="text-right font-black text-sm whitespace-nowrap">{formatAmount(o.total_amount || 0)} ETB</TableCell>
+                                    <TableCell className={cn("text-right font-black text-sm whitespace-nowrap", !o.is_approved && "text-orange-600")}>{formatAmount(o.total_amount || 0)} ETB</TableCell>
                                 </TableRow>
                             ))
                         )}
                         <TableRow className="bg-amber-50/50">
-                            <TableCell colSpan={2} className="font-black text-[10px] uppercase tracking-widest text-amber-700">Total Order Debt (Requested)</TableCell>
+                            <TableCell colSpan={2} className="font-black text-[10px] uppercase tracking-widest text-amber-700">Total Order Debt (Approved Only)</TableCell>
                             <TableCell className="text-right font-black text-amber-700 whitespace-nowrap">{formatAmount(orderDebt)} ETB</TableCell>
                         </TableRow>
                     </TableBody>
@@ -457,7 +476,7 @@ export default function DebtBreakdownClient({ shopId, shopName, orders, payments
                 <div className="flex flex-wrap items-center justify-between gap-2">
                     <div className="flex items-center gap-2 text-indigo-700">
                         <ListOrdered className="size-4" />
-                        <h3 className="text-[10px] font-black uppercase tracking-widest">2. Round Orders Debt <span className="normal-case font-bold text-muted-foreground tracking-normal">(orders registered in the orders table with round type)</span></h3>
+                        <h3 className="text-[10px] font-black uppercase tracking-widest">2. Round Orders Debt <span className="normal-case font-bold text-muted-foreground tracking-normal">(approved orders with round type)</span></h3>
                     </div>
                     <span className="text-lg font-black text-indigo-700">{formatAmount(roundOrderDebt)} ETB</span>
                 </div>
@@ -471,25 +490,32 @@ export default function DebtBreakdownClient({ shopId, shopName, orders, payments
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {roundOrders.length === 0 ? (
+                        {roundDisplay.length === 0 ? (
                             <TableRow>
                                 <TableCell colSpan={3} className="text-center text-[10px] font-black uppercase tracking-widest text-slate-400 py-8">
                                     No round orders
                                 </TableCell>
                             </TableRow>
                         ) : (
-                            roundOrders.map((o) => (
-                                <TableRow key={o.id}>
-                                    <TableCell><OrderIdButton id={o.id} /></TableCell>
+                            roundDisplay.map((o) => (
+                                <TableRow key={o.id} className={cn(!o.is_approved && "bg-orange-50/80")}>
+                                    <TableCell>
+                                        <div className="flex flex-col gap-1">
+                                            <OrderIdButton id={o.id} />
+                                            {!o.is_approved && (
+                                                <span className="px-1.5 py-0.5 rounded text-[7px] font-black uppercase tracking-widest bg-orange-100 text-orange-700 w-fit">Not Approved</span>
+                                            )}
+                                        </div>
+                                    </TableCell>
                                     <TableCell className="text-[10px] font-bold text-muted-foreground whitespace-nowrap">
                                         {formatDate(new Date(o.createdAt), "MMM dd, yyyy HH:mm")}
                                     </TableCell>
-                                    <TableCell className="text-right font-black text-sm whitespace-nowrap">{formatAmount(o.total_amount || 0)} ETB</TableCell>
+                                    <TableCell className={cn("text-right font-black text-sm whitespace-nowrap", !o.is_approved && "text-orange-600")}>{formatAmount(o.total_amount || 0)} ETB</TableCell>
                                 </TableRow>
                             ))
                         )}
                         <TableRow className="bg-indigo-50/50">
-                            <TableCell colSpan={2} className="font-black text-[10px] uppercase tracking-widest text-indigo-700">Total Round Orders Debt</TableCell>
+                            <TableCell colSpan={2} className="font-black text-[10px] uppercase tracking-widest text-indigo-700">Total Round Orders Debt (Approved Only)</TableCell>
                             <TableCell className="text-right font-black text-indigo-700 whitespace-nowrap">{formatAmount(roundOrderDebt)} ETB</TableCell>
                         </TableRow>
                     </TableBody>
@@ -575,7 +601,7 @@ export default function DebtBreakdownClient({ shopId, shopName, orders, payments
                             </TableRow>
                         ) : (
                             allPaymentItems.map((p) => (
-                                <TableRow key={`${p.source}-${p.id}`}>
+                                <TableRow key={`${p.source}-${p.id}`} className={cn(p.status !== "APPROVED" && "bg-orange-50/80")}>
                                     <TableCell className="text-[10px] font-bold text-muted-foreground whitespace-nowrap">
                                         {formatDate(new Date(p.createdAt), "MMM dd, yyyy HH:mm")}
                                     </TableCell>
@@ -604,12 +630,12 @@ export default function DebtBreakdownClient({ shopId, shopName, orders, payments
                                             <StatusBadge status={p.status} />
                                         </span>
                                     </TableCell>
-                                    <TableCell className="text-right font-black text-sm">{formatAmount(p.amount || 0)} ETB</TableCell>
+                                    <TableCell className={cn("text-right font-black text-sm", p.status !== "APPROVED" && "text-orange-600")}>{formatAmount(p.amount || 0)} ETB</TableCell>
                                 </TableRow>
                             ))
                         )}
                         <TableRow className="bg-emerald-50/50">
-                            <TableCell colSpan={6} className="font-black text-[10px] uppercase tracking-widest text-emerald-700">Total Paid</TableCell>
+                            <TableCell colSpan={6} className="font-black text-[10px] uppercase tracking-widest text-emerald-700">Total Paid (Approved Only)</TableCell>
                             <TableCell className="text-right font-black text-emerald-700 whitespace-nowrap">{formatAmount(totalPaid)} ETB</TableCell>
                         </TableRow>
                     </TableBody>
@@ -649,7 +675,7 @@ export default function DebtBreakdownClient({ shopId, shopName, orders, payments
 
                 {/* Step 2: subtraction */}
                 <div className="rounded-2xl border-2 border-slate-100 bg-slate-50/50 p-4 md:p-6 space-y-3">
-                    <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Step 2 — Subtract Total Paid (all payments in the payment history)</p>
+                    <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Step 2 — Subtract Total Paid (approved payments in the payment history)</p>
                     <div className="font-mono text-sm md:text-base font-black space-y-1.5">
                         <div className="flex items-center justify-between text-rose-700">
                             <span>Total Debt</span>

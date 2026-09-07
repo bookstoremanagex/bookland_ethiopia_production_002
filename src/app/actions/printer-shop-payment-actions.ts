@@ -143,3 +143,26 @@ export async function updatePrinterShopPaymentPrinter(id: number, printerId: num
     return { success: false, error: "Failed to update printer" };
   }
 }
+
+export async function deletePrinterShopPayment(id: number) {
+  try {
+    const session = await getCurrentSession();
+    if (!session) return { success: false, error: "Unauthorized" };
+    const pid = Number(id);
+    if (!pid) return { success: false, error: "Invalid payment id" };
+    const record = await (prisma as any).payment_records_from_shop_to_printer.findUnique({
+      where: { id: pid },
+      select: { id: true, is_deleted: true },
+    });
+    if (!record || record.is_deleted) return { success: false, error: "Payment not found" };
+    await (prisma as any).payment_records_from_shop_to_printer.update({
+      where: { id: pid },
+      data: { is_deleted: true, updatedAt: new Date() },
+    });
+    revalidatePath(`/admin_dashboard/printing/payments`);
+    return { success: true };
+  } catch (error) {
+    console.error("deletePrinterShopPayment error:", error);
+    return { success: false, error: "Failed to delete payment" };
+  }
+}

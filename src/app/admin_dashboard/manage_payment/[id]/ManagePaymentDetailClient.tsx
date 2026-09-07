@@ -265,7 +265,7 @@ const formatAmount = (n: number) =>
         ? n.toLocaleString()
         : n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-export default function ManagePaymentDetailClient({ shop, payments, orders, roundRecords, roundPayments, totals, previousDebt, roundBooksTotals }: Props) {
+export default function ManagePaymentDetailClient({ shop, payments, orders, roundRecords, roundPayments, previousDebt, roundBooksTotals }: Props) {
     const { formatDate } = useCalendar();
     const router = useRouter();
     const [isAdmin, setIsAdmin] = useState(false);
@@ -360,15 +360,27 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
         };
     }, [allPayments]);
 
+    // Approved-only payment sums (order + round sources)
+    const approvedPaidStats = useMemo(() => {
+        const orderSum = allPayments
+            .filter((p) => p.source === "order" && p.status === "APPROVED")
+            .reduce((s, p) => s + (p.amount || 0), 0);
+        const roundSum = allPayments
+            .filter((p) => p.source === "round" && p.status === "APPROVED")
+            .reduce((s, p) => s + (p.amount || 0), 0);
+        return { orderSum, roundSum, total: orderSum + roundSum };
+    }, [allPayments]);
+
     // Debt breakdown — gross debts by source, total paid against them, and remaining
+    // (approved orders only on the debt side; approved payments only on the paid side)
     const debtBreakdown = useMemo(() => {
         const requestedOrders = orders.filter((o) => o.order_type === "requested" && o.is_approved);
-        const roundOrders = orders.filter((o) => o.order_type === "on round");
+        const roundOrders = orders.filter((o) => o.order_type === "on round" && o.is_approved);
         const orderDebt = requestedOrders.reduce((s, o) => s + (o.total_amount || 0), 0);
         const roundOrderDebt = roundOrders.reduce((s, o) => s + (o.total_amount || 0), 0);
         const roundsDebt = roundRecords.reduce((s, r) => s + (r.totalprice || 0), 0);
         const totalDebt = orderDebt + roundOrderDebt + roundsDebt;
-        const totalPaid = paymentInfoStats.totalAmount;
+        const totalPaid = approvedPaidStats.total;
         return {
             orderDebt,
             roundOrderDebt,
@@ -377,7 +389,28 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
             totalPaid,
             remaining: totalDebt - totalPaid,
         };
-    }, [orders, roundRecords, paymentInfoStats.totalAmount]);
+    }, [orders, roundRecords, approvedPaidStats.total]);
+
+    // Top-side Totals Card figures — only APPROVED payments count toward "paid"
+    const prevDebtPaid = useMemo(
+        () => payments.filter((p) => p.is_for_previous_debts && p.status === "APPROVED").reduce((s, p) => s + (p.amount || 0), 0),
+        [payments]
+    );
+    // Main Totals Card figures (per user spec):
+    // - Order Debt = ALL approved orders (requested + on-round) from the orders table
+    // - Order Paid = every APPROVED order-source payment (linked to an order or generally recorded)
+    // - Round Debt = rounds table only (roundrecords)
+    // - Round Paid = every APPROVED round-source payment
+    const cardOrderDebt = useMemo(
+        () => orders.filter((o) => o.is_approved).reduce((s, o) => s + (o.total_amount || 0), 0),
+        [orders]
+    );
+    const cardOrderRemaining = cardOrderDebt - approvedPaidStats.orderSum;
+    const cardRoundDebt = debtBreakdown.roundsDebt;
+    const cardRoundRemaining = cardRoundDebt - approvedPaidStats.roundSum;
+    const cardTotalDebt = previousDebtValue + cardOrderDebt + cardRoundDebt;
+    const cardTotalPaid = approvedPaidStats.total;
+    const cardTotalRemaining = cardTotalDebt - cardTotalPaid;
 
     useEffect(() => {
         if (hideRemToggleOrder) {
@@ -573,9 +606,9 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
                 </div>
             </Link>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-9 gap-6 md:gap-8">
                 {/* Shop Info Card — accordion on mobile, full card on desktop */}
-                <div className="lg:col-span-2 bg-white rounded-[2rem] border-2 border-primarycolor/5 shadow-xl overflow-hidden">
+                <div className="lg:col-span-5 bg-white rounded-[2rem] border-2 border-primarycolor/5 shadow-xl overflow-hidden">
                     {/* Desktop: full card */}
                     <div className="hidden md:block p-6 md:p-8 space-y-6">
                         <div className="flex items-center gap-4">
@@ -663,53 +696,74 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
                 </div>
 
                 {/* Totals Card — accordion on mobile showing remaining, full card on desktop */}
-                <div className="bg-primarycolor rounded-[2rem] text-white shadow-xl relative overflow-hidden">
+                <div className="lg:col-span-4 bg-primarycolor rounded-[2rem] text-white shadow-xl relative overflow-hidden">
                     {/* Desktop: full card */}
                     <div className="hidden md:block p-6 md:p-8 space-y-5">
                         <div className="absolute top-0 right-0 size-40 bg-white/5 rounded-full -mr-20 -mt-20 blur-2xl" />
-                        <div className="space-y-1 relative">
-                            <div className="flex items-center justify-between">
-                                <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Previous Debt</p>
-                                {isAdmin && (
-                                    <button
-                                        onClick={() => { setDebtInputValue(previousDebtValue.toString()); setIsDebtDialogOpen(true); }}
-                                        className="text-[8px] font-black uppercase tracking-widest text-white/50 hover:text-white transition-colors cursor-pointer"
-                                    >
-                                        Edit
-                                    </button>
-                                )}
+                        {/* Section 1: Previous debt + order debt */}
+                        <div className="space-y-4 relative">
+                            <div className="space-y-1">
+                                <div className="flex items-center justify-between">
+                                    <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Previous Debt</p>
+                                    {isAdmin && (
+                                        <button
+                                            onClick={() => { setDebtInputValue(previousDebtValue.toString()); setIsDebtDialogOpen(true); }}
+                                            className="text-[8px] font-black uppercase tracking-widest text-white/50 hover:text-white transition-colors cursor-pointer"
+                                        >
+                                            Edit
+                                        </button>
+                                    )}
+                                </div>
+                                <p className="text-lg font-black">{previousDebtValue.toLocaleString()} ETB</p>
+                                <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Paid for Previous Debt (Approved)</p>
+                                <p className="text-sm font-bold text-emerald-200">{prevDebtPaid.toLocaleString()} ETB</p>
                             </div>
-                            <p className="text-lg font-black">{previousDebtValue.toLocaleString()} ETB</p>
+                            <div className="space-y-1">
+                                <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Order Debt (All Approved Orders)</p>
+                                <p className="text-xl font-black">{cardOrderDebt.toLocaleString()} ETB</p>
+                                <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Order Paid (Approved Payments)</p>
+                                <p className="text-sm font-bold text-emerald-200">{approvedPaidStats.orderSum.toLocaleString()} ETB</p>
+                                <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Order Remaining (Order Debt - Order Paid)</p>
+                                <p className={cn(
+                                    "text-base font-black",
+                                    cardOrderRemaining > 0 ? "text-rose-200" : "text-emerald-200"
+                                )}>
+                                    {cardOrderRemaining.toLocaleString()} ETB
+                                </p>
+                            </div>
                         </div>
-                        <div className="space-y-1 relative">
-                            <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Order Debt</p>
-                            <p className="text-xl font-black">{(totals.totalDebt - previousDebtValue).toLocaleString()} ETB</p>
+                        {/* Section 2: Round debt */}
+                        <div className="pt-4 border-t border-white/20 relative space-y-1">
+                            <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Total Round Debt (Rounds Table)</p>
+                            <p className="text-xl font-black">{cardRoundDebt.toLocaleString()} ETB</p>
+                            <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Total Round Paid (Approved Payments)</p>
+                            <p className="text-sm font-bold text-emerald-200">{approvedPaidStats.roundSum.toLocaleString()} ETB</p>
+                            <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Round Remaining (Round Debt - Round Paid)</p>
+                            <p className={cn(
+                                "text-base font-black",
+                                cardRoundRemaining > 0 ? "text-rose-200" : "text-emerald-200"
+                            )}>
+                                {cardRoundRemaining.toLocaleString()} ETB
+                            </p>
                         </div>
-                        <div className="pt-4 border-t border-white/20 relative space-y-3">
-                            <div className="flex items-center justify-between">
-                                <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Total Debt</p>
-                                <p className="text-2xl font-black">{totals.totalDebt.toLocaleString()} ETB</p>
+                        {/* Section 3: Grand totals */}
+                        <div className="pt-4 border-t border-white/20 relative space-y-4">
+                            <div className="space-y-1">
+                                <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Total Debt (Previous + Order + Round)</p>
+                                <p className="text-2xl font-black">{cardTotalDebt.toLocaleString()} ETB</p>
                             </div>
-                            <div className="flex items-center justify-between">
-                                <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Total Paid</p>
-                                <p className="text-xl font-bold text-emerald-200">{totals.totalPaid.toLocaleString()} ETB</p>
-                            </div>
-                            <div className="flex items-center justify-between">
-                                <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Unpaid Round Debt</p>
-                                <p className="text-lg font-bold text-amber-200">{totals.unpaidRoundDebt.toLocaleString()} ETB</p>
+                            <div className="space-y-1">
+                                <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Total Paid (Approved Payments)</p>
+                                <p className="text-xl font-bold text-emerald-200">{cardTotalPaid.toLocaleString()} ETB</p>
                             </div>
                             <div className="pt-3 border-t border-white/20">
-                                <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Remaining</p>
+                                <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Total Remaining (Total Debt - Total Paid)</p>
                                 <p className={cn(
                                     "text-3xl font-black mt-1",
-                                    totals.totalRemaining + totals.unpaidRoundDebt > 0 ? "text-rose-200" : "text-emerald-200"
+                                    cardTotalRemaining > 0 ? "text-rose-200" : "text-emerald-200"
                                 )}>
-                                    {(totals.totalRemaining + totals.unpaidRoundDebt).toLocaleString()} ETB
+                                    {cardTotalRemaining.toLocaleString()} ETB
                                 </p>
-                                <div className="flex items-center gap-4 mt-1 text-[8px] font-black uppercase tracking-widest opacity-40">
-                                    <span>Order: {totals.totalRemaining.toLocaleString()} ETB</span>
-                                    <span>Round: {totals.unpaidRoundDebt.toLocaleString()} ETB</span>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -720,64 +774,83 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
                                 <AccordionTrigger className="px-5 py-4 hover:no-underline [&>svg]:text-white/60">
                                     <div className="flex items-center justify-between w-full">
                                         <div>
-                                            <p className="text-[8px] font-black uppercase tracking-widest opacity-60 text-left">Remaining</p>
+                                            <p className="text-[8px] font-black uppercase tracking-widest opacity-60 text-left">Total Remaining</p>
                                             <p className={cn(
                                                 "text-xl font-black text-left",
-                                                totals.totalRemaining > 0 ? "text-rose-200" : "text-emerald-200"
+                                                cardTotalRemaining > 0 ? "text-rose-200" : "text-emerald-200"
                                             )}>
-                                                {totals.totalRemaining.toLocaleString()} ETB
+                                                {cardTotalRemaining.toLocaleString()} ETB
                                             </p>
                                         </div>
                                         <div className="text-right">
-                                            <p className="text-[8px] font-black uppercase tracking-widest opacity-60">Debt</p>
-                                            <p className="text-sm font-black">{totals.totalDebt.toLocaleString()} ETB</p>
+                                            <p className="text-[8px] font-black uppercase tracking-widest opacity-60">Total Debt</p>
+                                            <p className="text-sm font-black">{cardTotalDebt.toLocaleString()} ETB</p>
                                         </div>
                                     </div>
                                 </AccordionTrigger>
                                 <AccordionContent className="px-5 pb-5">
                                     <div className="space-y-4 pt-1">
-                                        <div className="space-y-1">
-                                            <div className="flex items-center justify-between">
-                                                <p className="text-[8px] font-black uppercase tracking-widest opacity-60">Previous Debt</p>
-                                                {isAdmin && (
-                                                    <button
-                                                        onClick={() => { setDebtInputValue(previousDebtValue.toString()); setIsDebtDialogOpen(true); }}
-                                                        className="text-[7px] font-black uppercase tracking-widest text-white/50 hover:text-white transition-colors cursor-pointer"
-                                                    >
-                                                        Edit
-                                                    </button>
-                                                )}
+                                        {/* Section 1: Previous debt + order debt */}
+                                        <div className="space-y-3">
+                                            <div className="space-y-1">
+                                                <div className="flex items-center justify-between">
+                                                    <p className="text-[8px] font-black uppercase tracking-widest opacity-60">Previous Debt</p>
+                                                    {isAdmin && (
+                                                        <button
+                                                            onClick={() => { setDebtInputValue(previousDebtValue.toString()); setIsDebtDialogOpen(true); }}
+                                                            className="text-[7px] font-black uppercase tracking-widest text-white/50 hover:text-white transition-colors cursor-pointer"
+                                                        >
+                                                            Edit
+                                                        </button>
+                                                    )}
+                                                </div>
+                                                <p className="text-sm font-black">{previousDebtValue.toLocaleString()} ETB</p>
+                                                <p className="text-[8px] font-black uppercase tracking-widest opacity-60">Paid for Previous Debt (Approved)</p>
+                                                <p className="text-xs font-bold text-emerald-200">{prevDebtPaid.toLocaleString()} ETB</p>
                                             </div>
-                                            <p className="text-sm font-black">{previousDebtValue.toLocaleString()} ETB</p>
+                                            <div className="space-y-1">
+                                                <p className="text-[8px] font-black uppercase tracking-widest opacity-60">Order Debt (All Approved Orders)</p>
+                                                <p className="text-base font-black">{cardOrderDebt.toLocaleString()} ETB</p>
+                                                <p className="text-[8px] font-black uppercase tracking-widest opacity-60">Order Paid (Approved Payments)</p>
+                                                <p className="text-xs font-bold text-emerald-200">{approvedPaidStats.orderSum.toLocaleString()} ETB</p>
+                                                <p className="text-[8px] font-black uppercase tracking-widest opacity-60">Order Remaining (Order Debt - Order Paid)</p>
+                                                <p className={cn(
+                                                    "text-sm font-black",
+                                                    cardOrderRemaining > 0 ? "text-rose-200" : "text-emerald-200"
+                                                )}>
+                                                    {cardOrderRemaining.toLocaleString()} ETB
+                                                </p>
+                                            </div>
                                         </div>
-                                        <div className="space-y-1">
-                                            <p className="text-[8px] font-black uppercase tracking-widest opacity-60">Order Debt</p>
-                                            <p className="text-base font-black">{(totals.totalDebt - previousDebtValue).toLocaleString()} ETB</p>
+                                        {/* Section 2: Round debt */}
+                                        <div className="pt-3 border-t border-white/20 space-y-1">
+                                            <p className="text-[8px] font-black uppercase tracking-widest opacity-60">Total Round Debt (Rounds Table)</p>
+                                            <p className="text-base font-black">{cardRoundDebt.toLocaleString()} ETB</p>
+                                            <p className="text-[8px] font-black uppercase tracking-widest opacity-60">Total Round Paid (Approved Payments)</p>
+                                            <p className="text-xs font-bold text-emerald-200">{approvedPaidStats.roundSum.toLocaleString()} ETB</p>
+                                            <p className="text-[8px] font-black uppercase tracking-widest opacity-60">Round Remaining (Round Debt - Round Paid)</p>
+                                            <p className={cn(
+                                                "text-sm font-black",
+                                                cardRoundRemaining > 0 ? "text-rose-200" : "text-emerald-200"
+                                            )}>
+                                                {cardRoundRemaining.toLocaleString()} ETB
+                                            </p>
                                         </div>
-                                        <div className="pt-3 border-t border-white/20 space-y-3">
-                                            <div className="flex items-center justify-between">
-                                                <p className="text-[8px] font-black uppercase tracking-widest opacity-60">Total Debt</p>
-                                                <p className="text-lg font-black">{totals.totalDebt.toLocaleString()} ETB</p>
+                                        {/* Section 3: Grand totals */}
+                                        <div className="pt-3 border-t border-white/20 space-y-4">
+                                            <div className="space-y-1">
+                                                <p className="text-[8px] font-black uppercase tracking-widest opacity-60">Total Debt (Previous + Order + Round)</p>
+                                                <p className="text-lg font-black">{cardTotalDebt.toLocaleString()} ETB</p>
                                             </div>
-                                            <div className="flex items-center justify-between">
-                                                <p className="text-[8px] font-black uppercase tracking-widest opacity-60">Total Paid</p>
-                                                <p className="text-base font-bold text-emerald-200">{totals.totalPaid.toLocaleString()} ETB</p>
-                                            </div>
-                                            <div className="flex items-center justify-between">
-                                                <p className="text-[8px] font-black uppercase tracking-widest opacity-60">Unpaid Round Debt</p>
-                                                <p className="text-sm font-bold text-amber-200">{totals.unpaidRoundDebt.toLocaleString()} ETB</p>
+                                            <div className="space-y-1">
+                                                <p className="text-[8px] font-black uppercase tracking-widest opacity-60">Total Paid (Approved Payments)</p>
+                                                <p className="text-base font-bold text-emerald-200">{cardTotalPaid.toLocaleString()} ETB</p>
                                             </div>
                                             <div className="pt-2 border-t border-white/20">
-                                                <div className="flex items-center justify-between">
-                                                    <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Remaining</p>
-                                                    <p className={cn("text-lg font-black", totals.totalRemaining + totals.unpaidRoundDebt > 0 ? "text-rose-200" : "text-emerald-200")}>
-                                                        {(totals.totalRemaining + totals.unpaidRoundDebt).toLocaleString()} ETB
-                                                    </p>
-                                                </div>
-                                                <div className="flex items-center gap-3 mt-0.5 text-[7px] font-black uppercase tracking-widest opacity-40">
-                                                    <span>Order: {totals.totalRemaining.toLocaleString()} ETB</span>
-                                                    <span>Round: {totals.unpaidRoundDebt.toLocaleString()} ETB</span>
-                                                </div>
+                                                <p className="text-[9px] font-black uppercase tracking-widest opacity-60">Total Remaining (Total Debt - Total Paid)</p>
+                                                <p className={cn("text-lg font-black mt-1", cardTotalRemaining > 0 ? "text-rose-200" : "text-emerald-200")}>
+                                                    {cardTotalRemaining.toLocaleString()} ETB
+                                                </p>
                                             </div>
                                         </div>
                                     </div>
@@ -788,7 +861,7 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
                 </div>
 
                 {/* Check Summary Card — hidden on mobile */}
-                <div className="hidden sm:block bg-white rounded-[2rem] border-2 border-primarycolor/5 p-6 shadow-xl space-y-4">
+                <div className="lg:col-span-3 hidden sm:block bg-white rounded-[2rem] border-2 border-primarycolor/5 p-6 shadow-xl space-y-4">
                     <div className="flex items-center gap-2 text-primarycolor mb-1">
                         <Banknote className="size-4" />
                         <h3 className="text-[10px] font-black uppercase tracking-widest">Check Summary</h3>
@@ -829,15 +902,28 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
                 </div>
 
                 {/* Total Info Card — hidden on mobile */}
-                <div className="hidden sm:block bg-white rounded-[2rem] border-2 border-primarycolor/5 p-6 shadow-xl space-y-4">
+                <div className="lg:col-span-3 hidden sm:block bg-white rounded-[2rem] border-2 border-primarycolor/5 p-6 shadow-xl space-y-4">
                     <div className="flex items-center gap-2 text-slate-700 mb-1">
                         <FileText className="size-4" />
                         <h3 className="text-[10px] font-black uppercase tracking-widest">Total Info</h3>
                     </div>
                     {(() => {
-                        const unpaidOrderDebt = orders
-                            .filter((o) => o.order_type === "requested" && o.is_approved)
-                            .reduce((sum, o) => sum + ((o.total_amount || 0) - (o.amount_paid || 0)), 0);
+                        // Approved order-source payments NOT linked to an exact order of this shop
+                        // (no orderid, unparseable, or pointing to a non-existent order) reduce the order debt too
+                        const orderIds = new Set(orders.map((o) => o.id));
+                        const unlinkedApprovedPaid = payments
+                            .filter((p) => p.status === "APPROVED")
+                            .filter((p) => {
+                                const oid = p.orderid ? parseInt(String(p.orderid).replace(/^ORD-/i, "")) : NaN;
+                                return isNaN(oid) || !orderIds.has(oid);
+                            })
+                            .reduce((s, p) => s + (p.amount || 0), 0);
+                        const unpaidOrderDebt = Math.max(0,
+                            orders
+                                .filter((o) => o.order_type === "requested" && o.is_approved)
+                                .reduce((sum, o) => sum + ((o.total_amount || 0) - (o.amount_paid || 0)), 0)
+                            - unlinkedApprovedPaid
+                        );
                         const roundOrderUnpaid = orders
                             .filter((o) => o.order_type === "on round")
                             .reduce((sum, o) => sum + ((o.total_amount || 0) - (o.amount_paid || 0)), 0);
@@ -874,7 +960,7 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
                 </div>
 
                 {/* Round Books Summary Card — Accordion on mobile, regular card on desktop */}
-                <div className="bg-white rounded-[2rem] border-2 border-primarycolor/5 p-0 sm:p-6 shadow-xl">
+                <div className="lg:col-span-3 bg-white rounded-[2rem] border-2 border-primarycolor/5 p-0 sm:p-6 shadow-xl">
                     {/* Desktop: regular card */}
                     <div className="hidden sm:block space-y-4">
                         <div className="flex items-center gap-2 text-indigo-600 mb-1">
@@ -936,7 +1022,7 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
                 </div>
 
                 {/* Payment Info Card */}
-                <div className="lg:col-span-3 bg-white rounded-[2rem] border-2 border-primarycolor/5 p-0 sm:p-6 shadow-xl">
+                <div className="lg:col-span-9 bg-white rounded-[2rem] border-2 border-primarycolor/5 p-0 sm:p-6 shadow-xl">
                     <div className="hidden sm:block space-y-4">
                         <div className="flex items-center gap-2 text-emerald-700 mb-1">
                             <DollarSign className="size-4" />
@@ -1014,7 +1100,7 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
                 </div>
 
                 {/* Debt Breakdown Card */}
-                <div className="lg:col-span-3 bg-white rounded-[2rem] border-2 border-primarycolor/5 p-0 sm:p-6 shadow-xl">
+                <div className="lg:col-span-9 bg-white rounded-[2rem] border-2 border-primarycolor/5 p-0 sm:p-6 shadow-xl">
                     <div className="hidden sm:block space-y-4">
                         <div className="flex items-center gap-2 text-rose-700 mb-1">
                             <BarChart3 className="size-4" />
@@ -1022,11 +1108,11 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                             <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-amber-50 border border-amber-100">
-                                <span className="text-[10px] font-bold text-amber-600">Total Order Debt (Requested)</span>
+                                <span className="text-[10px] font-bold text-amber-600">Total Order Debt (Requested — Approved Only)</span>
                                 <span className="text-sm font-black text-amber-700">{formatAmount(debtBreakdown.orderDebt)} ETB</span>
                             </div>
                             <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-indigo-50 border border-indigo-100">
-                                <span className="text-[10px] font-bold text-indigo-600">Round Orders Debt</span>
+                                <span className="text-[10px] font-bold text-indigo-600">Round Orders Debt (Approved Only)</span>
                                 <span className="text-sm font-black text-indigo-700">{formatAmount(debtBreakdown.roundOrderDebt)} ETB</span>
                             </div>
                             <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-purple-50 border border-purple-100">
@@ -1036,8 +1122,8 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
                         </div>
                         <div className="space-y-2 rounded-2xl border-2 border-slate-100 bg-slate-50/50 p-4">
                             {[
-                                { label: "Total Order Debt (Requested)", value: debtBreakdown.orderDebt },
-                                { label: "Round Orders Debt", value: debtBreakdown.roundOrderDebt },
+                                { label: "Total Order Debt (Requested — Approved Only)", value: debtBreakdown.orderDebt },
+                                { label: "Round Orders Debt (Approved Only)", value: debtBreakdown.roundOrderDebt },
                                 { label: "Rounds", value: debtBreakdown.roundsDebt },
                             ].map((row) => (
                                 <div key={row.label} className="flex items-center justify-between py-1.5 px-3 rounded-xl bg-white border border-slate-100">
@@ -1052,7 +1138,7 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-emerald-50 border border-emerald-100">
-                                <span className="text-[10px] font-bold text-emerald-600">Total Paid</span>
+                                <span className="text-[10px] font-bold text-emerald-600">Total Paid (Approved Only)</span>
                                 <span className="text-sm font-black text-emerald-700">{formatAmount(debtBreakdown.totalPaid)} ETB</span>
                             </div>
                             <div className={cn(
@@ -1090,11 +1176,11 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
                                 <AccordionContent className="px-5 pb-5">
                                     <div className="space-y-2.5">
                                         <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-amber-50 border border-amber-100">
-                                            <span className="text-[10px] font-bold text-amber-600">Total Order Debt (Requested)</span>
+                                            <span className="text-[10px] font-bold text-amber-600">Total Order Debt (Requested — Approved Only)</span>
                                             <span className="text-sm font-black text-amber-700">{formatAmount(debtBreakdown.orderDebt)} ETB</span>
                                         </div>
                                         <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-indigo-50 border border-indigo-100">
-                                            <span className="text-[10px] font-bold text-indigo-600">Round Orders Debt</span>
+                                            <span className="text-[10px] font-bold text-indigo-600">Round Orders Debt (Approved Only)</span>
                                             <span className="text-sm font-black text-indigo-700">{formatAmount(debtBreakdown.roundOrderDebt)} ETB</span>
                                         </div>
                                         <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-purple-50 border border-purple-100">
@@ -1103,8 +1189,8 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
                                         </div>
                                         <div className="space-y-2 rounded-2xl border-2 border-slate-100 bg-slate-50/50 p-3">
                                             {[
-                                                { label: "Total Order Debt (Requested)", value: debtBreakdown.orderDebt },
-                                                { label: "Round Orders Debt", value: debtBreakdown.roundOrderDebt },
+                                                { label: "Total Order Debt (Requested — Approved Only)", value: debtBreakdown.orderDebt },
+                                                { label: "Round Orders Debt (Approved Only)", value: debtBreakdown.roundOrderDebt },
                                                 { label: "Rounds", value: debtBreakdown.roundsDebt },
                                             ].map((row) => (
                                                 <div key={row.label} className="flex items-center justify-between py-1.5 px-3 rounded-xl bg-white border border-slate-100">
@@ -1118,7 +1204,7 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
                                             </div>
                                         </div>
                                         <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-emerald-50 border border-emerald-100">
-                                            <span className="text-[10px] font-bold text-emerald-600">Total Paid</span>
+                                            <span className="text-[10px] font-bold text-emerald-600">Total Paid (Approved Only)</span>
                                             <span className="text-sm font-black text-emerald-700">{formatAmount(debtBreakdown.totalPaid)} ETB</span>
                                         </div>
                                         <div className={cn(
@@ -1161,9 +1247,22 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
                             </AccordionTrigger>
                             <AccordionContent className="px-5 pb-5">
                                 {(() => {
-                                    const unpaidOrderDebt = orders
-                                        .filter((o) => o.order_type === "requested" && o.is_approved)
-                                        .reduce((sum, o) => sum + ((o.total_amount || 0) - (o.amount_paid || 0)), 0);
+                                    // Approved order-source payments NOT linked to an exact order of this shop
+                                    // (no orderid, unparseable, or pointing to a non-existent order) reduce the order debt too
+                                    const orderIds = new Set(orders.map((o) => o.id));
+                                    const unlinkedApprovedPaid = payments
+                                        .filter((p) => p.status === "APPROVED")
+                                        .filter((p) => {
+                                            const oid = p.orderid ? parseInt(String(p.orderid).replace(/^ORD-/i, "")) : NaN;
+                                            return isNaN(oid) || !orderIds.has(oid);
+                                        })
+                                        .reduce((s, p) => s + (p.amount || 0), 0);
+                                    const unpaidOrderDebt = Math.max(0,
+                                        orders
+                                            .filter((o) => o.order_type === "requested" && o.is_approved)
+                                            .reduce((sum, o) => sum + ((o.total_amount || 0) - (o.amount_paid || 0)), 0)
+                                        - unlinkedApprovedPaid
+                                    );
                                     const roundOrderUnpaid = orders
                                         .filter((o) => o.order_type === "on round")
                                         .reduce((sum, o) => sum + ((o.total_amount || 0) - (o.amount_paid || 0)), 0);
@@ -2172,7 +2271,7 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
                             </p>
                             <p className="text-[9px] font-black text-muted-foreground">
                                 Enter the new previous debt amount for <span className="text-primarycolor">{shop.name}</span>.
-                                Total debt is the sum of order debt and previous debt.
+                                Total debt is the sum of previous debt, order debt and round debt.
                             </p>
                         </div>
                     </AlertDialogHeader>
@@ -2187,10 +2286,10 @@ export default function ManagePaymentDetailClient({ shop, payments, orders, roun
                         />
                         <div className="mt-3 p-3 rounded-xl bg-amber-50 border border-amber-100">
                             <p className="text-[9px] font-bold text-amber-700">
-                                New Total Debt: {(totals.totalDebt - previousDebtValue + (parseFloat(debtInputValue) || 0)).toLocaleString()} ETB
+                                New Total Debt: {(cardTotalDebt - previousDebtValue + (parseFloat(debtInputValue) || 0)).toLocaleString()} ETB
                             </p>
                             <p className="text-[9px] font-bold text-amber-700">
-                                New Remaining: {(totals.totalDebt - previousDebtValue + (parseFloat(debtInputValue) || 0) - totals.totalPaid).toLocaleString()} ETB
+                                New Remaining: {(cardTotalDebt - previousDebtValue + (parseFloat(debtInputValue) || 0) - cardTotalPaid).toLocaleString()} ETB
                             </p>
                         </div>
                     </div>

@@ -68,6 +68,7 @@ import {
     updatePrinterShopPaymentStatus,
     updatePrinterShopPaymentAmount,
     updatePrinterShopPaymentPrinter,
+    deletePrinterShopPayment,
 } from "@/app/actions/printer-shop-payment-actions"
 import { getPrinters } from "@/app/actions/printer-actions"
 import { cn } from "@/lib/utils"
@@ -88,6 +89,7 @@ import {
     ShieldAlert,
     CheckCircle2,
     Printer,
+    Trash2,
 } from "lucide-react"
 import { useCalendar } from "@/lib/calendar-context"
 import PrintPaymentsDialog from "./PrintPaymentsDialog"
@@ -380,6 +382,9 @@ function DetailDialog({
     const [printers, setPrinters] = useState<any[]>([])
     const [selectedPrinterId, setSelectedPrinterId] = useState("")
     const [savingPrinter, setSavingPrinter] = useState(false)
+    const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
+    const [deleteText, setDeleteText] = useState("")
+    const [isDeleting, setIsDeleting] = useState(false)
 
     useEffect(() => {
         if (payment) {
@@ -387,6 +392,8 @@ function DetailDialog({
             setPrinterMemo(payment.printerPaymentMemo)
             setEditingEntryMemoId(null)
             setEditingPrinter(false)
+            setDeleteConfirmOpen(false)
+            setDeleteText("")
         }
     }, [payment])
 
@@ -466,9 +473,32 @@ function DetailDialog({
             setEditingPrinter(false);
             router.refresh();
         } catch {
-            toast.error("Failed to update printer");
+            toast.error("Failed to update printer")
         } finally {
-            setSavingPrinter(false);
+            setSavingPrinter(false)
+        }
+    };
+
+    const deleteSentence = `I am sure I want to delete payment #${payment?.id}`
+
+    const handleDelete = async () => {
+        if (!payment) return
+        setIsDeleting(true)
+        try {
+            const res = await deletePrinterShopPayment(payment.id)
+            if (res.success) {
+                toast.success("Payment deleted")
+                setDeleteConfirmOpen(false)
+                setDeleteText("")
+                onClose()
+                router.refresh()
+            } else {
+                toast.error(res.error || "Failed to delete payment")
+            }
+        } catch {
+            toast.error("Failed to delete payment")
+        } finally {
+            setIsDeleting(false)
         }
     };
 
@@ -644,6 +674,32 @@ function DetailDialog({
                                 </p>
                             </div>
                         )}
+
+                        {/* Danger zone — delete payment */}
+                        <div className="rounded-2xl border-2 border-rose-200 bg-rose-50/70 p-4 md:p-5 space-y-3">
+                            <div className="flex items-center gap-2 text-rose-700">
+                                <ShieldAlert className="size-4" />
+                                <p className="text-[10px] font-black uppercase tracking-widest">
+                                    Danger Zone
+                                </p>
+                            </div>
+                            <p className="text-[10px] font-bold text-rose-700/80 leading-relaxed">
+                                Deleting this payment will permanently remove it
+                                from the printer payment records.
+                                <span className="text-rose-600 font-black">
+                                    {" "}
+                                    This action cannot be undone.
+                                </span>
+                            </p>
+                            <Button
+                                onClick={() => setDeleteConfirmOpen(true)}
+                                disabled={isDeleting}
+                                className="w-full sm:w-auto h-10 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black text-[10px] uppercase tracking-widest gap-2"
+                            >
+                                <Trash2 className="size-4" />
+                                Delete Payment
+                            </Button>
+                        </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                             {rows.map((r, i) => (
@@ -917,6 +973,89 @@ function DetailDialog({
                                     <CheckCircle2 className="size-4" />
                                 )}
                                 Confirm & Approve
+                            </Button>
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
+            {/* Delete Payment Confirmation — requires typed sentence */}
+            <AlertDialog
+                open={deleteConfirmOpen}
+                onOpenChange={(o) => {
+                    if (!o) {
+                        setDeleteConfirmOpen(false)
+                        setDeleteText("")
+                    }
+                }}
+            >
+                <AlertDialogContent className="rounded-[2rem] border-2 border-rose-200 p-6 max-w-sm shadow-2xl">
+                    <AlertDialogHeader>
+                        <AlertDialogTitle className="text-lg font-black text-rose-700 uppercase italic">
+                            Delete{" "}
+                            <span className="text-rose-900 not-italic">
+                                Payment
+                            </span>
+                        </AlertDialogTitle>
+                        <AlertDialogDescription className="text-[11px] font-bold text-muted-foreground leading-relaxed">
+                            <span className="block mb-2">
+                                You are about to permanently delete payment{" "}
+                                <span className="text-rose-600 font-black">
+                                    #{payment.id}
+                                </span>{" "}
+                                of{" "}
+                                <span className="text-rose-600 font-black">
+                                    {payment.amount.toLocaleString()} ETB
+                                </span>{" "}
+                                to{" "}
+                                <span className="text-rose-600 font-black">
+                                    {payment.printerName}
+                                </span>
+                                . It will be removed from every record.
+                                <span className="text-rose-600 font-black">
+                                    {" "}
+                                    This action cannot be undone.
+                                </span>
+                            </span>
+                            <span className="block mb-1 text-rose-600 font-black uppercase tracking-widest text-[9px]">
+                                Type the following sentence to confirm:
+                            </span>
+                            <span className="block p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 font-black text-[11px] break-words">
+                                {deleteSentence}
+                            </span>
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <div className="py-3">
+                        <input
+                            type="text"
+                            value={deleteText}
+                            onChange={(e) => setDeleteText(e.target.value)}
+                            placeholder={`Type: ${deleteSentence}`}
+                            autoFocus
+                            className="w-full h-12 px-4 rounded-2xl border-2 border-rose-200 bg-white font-bold text-sm outline-none focus:border-rose-500 transition-colors"
+                        />
+                    </div>
+                    <AlertDialogFooter className="gap-2 pt-1">
+                        <AlertDialogCancel asChild>
+                            <Button
+                                variant="outline"
+                                className="h-12 rounded-2xl border-2 font-black uppercase tracking-widest text-[10px] flex-1"
+                            >
+                                Cancel
+                            </Button>
+                        </AlertDialogCancel>
+                        <AlertDialogAction asChild>
+                            <Button
+                                onClick={handleDelete}
+                                disabled={isDeleting || deleteText.trim() !== deleteSentence}
+                                className="h-12 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black uppercase tracking-widest text-[10px] flex-1"
+                            >
+                                {isDeleting ? (
+                                    <Loader2 className="size-4 animate-spin" />
+                                ) : (
+                                    <Trash2 className="size-4" />
+                                )}
+                                Delete Permanently
                             </Button>
                         </AlertDialogAction>
                     </AlertDialogFooter>

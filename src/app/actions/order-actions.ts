@@ -341,12 +341,16 @@ export async function createOrder(data: {
     }
 
     // 2. Create the order
+    // For CHECK orders the upfront money is NOT applied to the order here — it
+    // lives in the linked PENDING payment record and is applied to amount_paid
+    // only when the check payment is approved.
+    const isCheckOrder = data.payment_type === "CHECK";
     const order = await (prisma as any).orders.create({
       data: {
         bookShopId: Number(data.bookShopId),
         order_type: data.order_type,
         memo: data.memo,
-        amount_paid: data.amount_paid,
+        amount_paid: isCheckOrder ? 0 : (data.amount_paid || 0),
         payment_type: data.payment_type || "DIRECT",
         check_id: data.check_id || null,
         total_amount: totalAmount,
@@ -362,21 +366,39 @@ export async function createOrder(data: {
       },
     });
 
-    // 2b. If payment_type is CHECK, create a payment record
-    if (data.payment_type === "CHECK" && data.check_id && data.amount_paid > 0) {
+    // 2b. Record upfront payments in the payment history, tagged and linked to the order
+    if ((data.amount_paid || 0) > 0) {
       try {
-        await (prisma as any).payments.create({
-          data: {
-            shopId: Number(data.bookShopId),
-            amount: data.amount_paid,
-            payment_type: "CHECK",
-            checkId: data.check_id,
-            status: "PENDING",
-            updatedAt: new Date(),
-          },
-        });
+        if (isCheckOrder && data.check_id) {
+          // CHECK: linked PENDING record — applied to the order on approval
+          await (prisma as any).payments.create({
+            data: {
+              shopId: Number(data.bookShopId),
+              amount: data.amount_paid,
+              payment_type: "CHECK",
+              checkId: data.check_id,
+              orderid: String(order.id),
+              memo: "Upfront payment",
+              status: "PENDING",
+              updatedAt: new Date(),
+            },
+          });
+        } else {
+          // DIRECT: cash already received and applied to the order — record as APPROVED
+          await (prisma as any).payments.create({
+            data: {
+              shopId: Number(data.bookShopId),
+              amount: data.amount_paid,
+              payment_type: "DIRECT",
+              orderid: String(order.id),
+              memo: "Upfront payment",
+              status: "APPROVED",
+              updatedAt: new Date(),
+            },
+          });
+        }
       } catch (paymentErr) {
-        console.error("Failed to create payment record for check order:", paymentErr);
+        console.error("Failed to create upfront payment record:", paymentErr);
       }
     }
 

@@ -30,9 +30,8 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { Printer, Banknote, FileText, Loader2, ChevronsUpDown, Check, AlertTriangle, Info } from "lucide-react";
+import { Printer, Banknote, FileText, Loader2, ChevronsUpDown, Check, Info } from "lucide-react";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
 import { getPrinters } from "@/app/actions/printer-actions";
 import { getPrinterPaymentsForOrder, createPrinterShopPayment } from "@/app/actions/printer-shop-payment-actions";
 
@@ -136,7 +135,6 @@ export default function PrinterShopPaymentDialog({ isOpen, onClose, shopId, shop
   const entered = parseFloat(amount);
   const sumAfter = !isNaN(entered) && entered > 0 ? totalPrinterPaid + entered : totalPrinterPaid;
   const totalPaidNum = orderPaid ?? 0;
-  const exceeds = totalPaidNum > 0 && sumAfter > totalPaidNum;
 
   return (
     <Dialog open={isOpen} onOpenChange={(o) => !o && onClose()}>
@@ -278,27 +276,17 @@ export default function PrinterShopPaymentDialog({ isOpen, onClose, shopId, shop
                   Amount (ETB) <span className="text-rose-500">*</span>
                 </label>
                 <div className="relative">
-                  <span className={cn("absolute left-4 top-1/2 -translate-y-1/2 font-black text-sm", exceeds ? "text-rose-400" : "text-primarycolor/40")}>ETB</span>
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 font-black text-sm text-primarycolor/40">ETB</span>
                   <Input
                     type="number"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                     onWheel={(e) => e.currentTarget.blur()}
-                    className={cn(
-                      "h-11 pl-14 rounded-xl border-2 font-bold text-sm focus:ring-2",
-                      exceeds
-                        ? "border-rose-300 focus:border-rose-500 focus:ring-rose-200 bg-rose-50/50 text-rose-700"
-                        : "border-primarycolor/20 focus:border-primarycolor focus:ring-primarycolor/20 bg-white"
-                    )}
+                    className="h-11 pl-14 rounded-xl border-2 border-primarycolor/20 font-bold text-sm focus:border-primarycolor focus:ring-2 focus:ring-primarycolor/20 bg-white"
                     placeholder="0.00"
                   />
                 </div>
-                {exceeds && (
-                  <p className="text-[9px] font-black text-rose-600 ml-1 flex items-center gap-1">
-                    <AlertTriangle className="size-3" /> Total printer payments ({sumAfter.toLocaleString()} ETB) will exceed total paid ({totalPaidNum.toLocaleString()} ETB) — still can be recorded.
-                  </p>
-                )}
-                {!exceeds && orderPaid != null && (
+                {orderPaid != null && (
                   <p className="text-[9px] font-bold text-muted-foreground ml-1 flex items-center gap-1">
                     <Info className="size-3" /> Total paid for order: {totalPaidNum.toLocaleString()} ETB · After this: {sumAfter.toLocaleString()} ETB
                   </p>
