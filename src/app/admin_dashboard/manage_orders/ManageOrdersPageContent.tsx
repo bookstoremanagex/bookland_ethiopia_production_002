@@ -58,6 +58,7 @@ export type AdminOrder = {
   delivery: boolean;
   delivered_by: number | null;
   createdAt: string | Date;
+  order_made_by?: { id: number; name: string } | null;
   bookShopId: number;
   bookshopes: {
     id: number;
@@ -240,6 +241,24 @@ export default function ManageOrdersPageContent({
           <span className="text-[8px] text-muted-foreground font-semibold tracking-wider whitespace-nowrap">
             {formatDate(new Date(row.original.createdAt))}
           </span>
+          <span className="text-[8px] text-muted-foreground font-semibold tracking-wider whitespace-nowrap">
+            {(() => {
+              const hour = new Date(row.original.createdAt).getHours();
+              return hour >= 5 && hour < 12
+                ? "Mr"
+                : hour >= 12 && hour < 17
+                ? "An"
+                : hour >= 17 && hour < 20
+                ? "Ev"
+                : "Ng";
+            })()}
+            {" · "}
+            {new Date(row.original.createdAt).toLocaleTimeString("en-US", {
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: true,
+            })}
+          </span>
         </div>
       ),
     },
@@ -307,16 +326,6 @@ export default function ManageOrdersPageContent({
             <Clock className="size-3.5" /> Pending
           </div>
         ),
-    },
-    {
-      accessorKey: "createdAt",
-      header: "Date",
-      cell: ({ row }) => (
-        <div className="flex items-center gap-1.5 text-muted-foreground text-[10px] font-bold">
-          <Calendar className="size-3.5" />
-          {formatDate(new Date(row.original.createdAt))}
-        </div>
-      ),
     },
   ];
 

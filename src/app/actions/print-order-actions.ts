@@ -329,6 +329,7 @@ export async function quickCreateEdition(data: {
   total_print_count?: number;
   number_of_pages?: number;
   production_price?: number;
+  cover_price?: number;
 }) {
   try {
     const edition = await (prisma as any).bookedition.create({
@@ -340,6 +341,7 @@ export async function quickCreateEdition(data: {
         number_of_pages: data.number_of_pages || 0,
         production_price: data.production_price || 0,
         selling_price: data.production_price || 0,
+        cover_price: data.cover_price ?? undefined,
         updatedAt: new Date(),
       },
     });

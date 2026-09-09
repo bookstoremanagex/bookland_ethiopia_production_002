@@ -875,6 +875,26 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
                             <div className="text-right shrink-0">
                                 <p className="text-[7px] sm:text-[8px] font-black text-muted-foreground uppercase tracking-widest">Placed on</p>
                                 <p className="font-bold text-slate-700 text-[10px] sm:text-sm">{formatDate(new Date(order.createdAt))}</p>
+                                {(() => {
+                                    const d = new Date(order.createdAt);
+                                    const hour = d.getHours();
+                                    const timeRange =
+                                        hour >= 5 && hour < 12
+                                            ? "Morning"
+                                            : hour >= 12 && hour < 17
+                                            ? "Afternoon"
+                                            : hour >= 17 && hour < 20
+                                            ? "Evening"
+                                            : "Night";
+                                    return (
+                                        <p className="font-bold text-slate-700 text-[9px] sm:text-xs">
+                                            {d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true })}
+                                            <span className="text-[7px] sm:text-[8px] font-black uppercase tracking-widest text-muted-foreground"> ({timeRange})</span>
+                                        </p>
+                                    );
+                                })()}
+                                <p className="text-[7px] sm:text-[8px] font-black text-muted-foreground uppercase tracking-widest mt-1 sm:mt-2">Order Made By</p>
+                                <p className="font-bold text-slate-700 text-[10px] sm:text-sm">{order.order_made_by?.name || "Unknown"}</p>
                             </div>
                         </div>
                         {shopDebt && shopDebt.totalDebt > 0 && (

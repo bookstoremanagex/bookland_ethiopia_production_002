@@ -30,6 +30,7 @@ model accounts {
   damagedbooks   damagedbooks[]
   notes          notes[]
   roles          roles[]
+  orders         orders[]
 }
 
 model bookedition {
@@ -41,6 +42,7 @@ model bookedition {
   binding_cost                Float?
   design_cost                 Float?
   translation_cost            Float?
+  cover_price                 Float?
   memo                        String?
   book_image_url              String?
   visiblitiy_to_printer       Boolean                 @default(true)
@@ -124,6 +126,7 @@ model books {
   language                      String?
   edition                       String?
   category                      String?
+  short_name                    String?
   publication_year              String
   copyright_registration_number String?
   print_batch_id                String?
@@ -222,27 +225,30 @@ model bookshopes {
 }
 
 model orders {
-  id                                   Int                                    @id @default(autoincrement())
-  bookShopId                           Int
-  order_type                           String // "requested" or "on round"
-  memo                                 String?                                @db.Text
-  hide_remaining                       Boolean                                @default(false)
-  is_approved                          Boolean                                @default(false)
-  total_amount                         Float                                  @default(0)
-  amount_paid                          Float                                  @default(0)
-  payment_type                         String?                                @default("DIRECT") // "DIRECT" | "CHECK"
-  check_id                             Int?
-  status                               String                                 @default("Pending")
-  is_deleted                           Boolean                                @default(false)
-  allocation_summary                   String?                                @db.Text
-  delivery                             Boolean                                @default(false)
-  delivered_by                         Int?
-  locked_editions                      locked_editions[]
-  updatedAt                            DateTime                               @updatedAt
-  createdAt                            DateTime                               @default(now())
-  bookshopes                           bookshopes                             @relation(fields: [bookShopId], references: [id], onDelete: Cascade)
-  checks                               checks?                                @relation(fields: [check_id], references: [id])
-  order_items                          order_items[]
+  id                 Int               @id @default(autoincrement())
+  bookShopId         Int
+  order_type         String // "requested" or "on round"
+  memo               String?           @db.Text
+  hide_remaining     Boolean           @default(false)
+  is_approved        Boolean           @default(false)
+  total_amount       Float             @default(0)
+  amount_paid        Float             @default(0)
+  payment_type       String?           @default("DIRECT") // "DIRECT" | "CHECK"
+  check_id           Int?
+  status             String            @default("Pending")
+  is_deleted         Boolean           @default(false)
+  allocation_summary String?           @db.Text
+  delivery           Boolean           @default(false)
+  delivered_by       Int?
+  locked_editions    locked_editions[]
+  updatedAt          DateTime          @updatedAt
+  createdAt          DateTime          @default(now())
+  bookshopes         bookshopes        @relation(fields: [bookShopId], references: [id], onDelete: Cascade)
+  checks             checks?           @relation(fields: [check_id], references: [id])
+  order_items        order_items[]
+  order_made_by_id   Int?
+  order_made_by      accounts?         @relation(fields: [order_made_by_id], references: [id])
+
   payment_records_from_shop_to_printer payment_records_from_shop_to_printer[]
 }
 

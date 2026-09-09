@@ -30,6 +30,7 @@ model accounts {
   damagedbooks   damagedbooks[]
   notes          notes[]
   roles          roles[]
+   orders         orders[]
 }
 
 model bookedition {
@@ -41,6 +42,7 @@ model bookedition {
   binding_cost                Float?
   design_cost                 Float?
   translation_cost            Float?
+  cover_price   Float?
   memo                        String?
   book_image_url              String?
   visiblitiy_to_printer       Boolean                 @default(true)
@@ -124,6 +126,7 @@ model books {
   language                      String?
   edition                       String?
   category                      String?
+  short_name  String?
   publication_year              String
   copyright_registration_number String?
   print_batch_id                String?
@@ -243,6 +246,9 @@ model orders {
   bookshopes         bookshopes        @relation(fields: [bookShopId], references: [id], onDelete: Cascade)
   checks             checks?           @relation(fields: [check_id], references: [id])
   order_items        order_items[]
+   order_made_by_id   Int?
+  order_made_by      accounts?         @relation(fields: [order_made_by_id], references: [id])
+
   payment_records_from_shop_to_printer payment_records_from_shop_to_printer[]
 }
 

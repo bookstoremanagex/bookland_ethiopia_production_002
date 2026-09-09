@@ -72,6 +72,7 @@ export default function EditionDetailsClient({ initialEdition, stores }: Edition
         other_expenses: edition.other_expenses?.toString() || "",
         transportation_cost: edition.transportation_cost?.toString() || "",
         translation_cost: edition.translation_cost?.toString() || "",
+        cover_price: edition.cover_price?.toString() || "",
         translator_cost: edition.translator_cost?.toString() || "",
         cover_design_cost: edition.cover_design_cost?.toString() || "",
         text_design_cost: edition.text_design_cost?.toString() || "",
@@ -100,6 +101,7 @@ export default function EditionDetailsClient({ initialEdition, stores }: Edition
             other_expenses: edition.other_expenses?.toString() || "",
             transportation_cost: edition.transportation_cost?.toString() || "",
             translation_cost: edition.translation_cost?.toString() || "",
+            cover_price: edition.cover_price?.toString() || "",
             translator_cost: edition.translator_cost?.toString() || "",
             cover_design_cost: edition.cover_design_cost?.toString() || "",
             text_design_cost: edition.text_design_cost?.toString() || "",
@@ -623,6 +625,19 @@ export default function EditionDetailsClient({ initialEdition, stores }: Edition
                                                     type="number" step="0.01"
                                                     value={formData.production_price}
                                                     onChange={(e) => setFormData({ ...formData, production_price: e.target.value })}
+                                                    className="h-12 md:h-14 pl-8 md:pl-10 bg-primarycolor/5 border-2 border-transparent focus:border-primarycolor rounded-xl md:rounded-2xl font-black text-sm md:text-base"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="space-y-3">
+                                            <label className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Cover Price (Optional)</label>
+                                            <div className="relative">
+                                                <DollarSign className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 size-3 md:size-4 text-muted-foreground" />
+                                                <Input
+                                                    disabled={!isEditing}
+                                                    type="number" step="0.01"
+                                                    value={formData.cover_price}
+                                                    onChange={(e) => setFormData({ ...formData, cover_price: e.target.value })}
                                                     className="h-12 md:h-14 pl-8 md:pl-10 bg-primarycolor/5 border-2 border-transparent focus:border-primarycolor rounded-xl md:rounded-2xl font-black text-sm md:text-base"
                                                 />
                                             </div>

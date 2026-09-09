@@ -14,7 +14,8 @@ import {
   X,
   Edit2,
   Copyright,
-  ArrowUpDown
+  ArrowUpDown,
+  Type
 } from 'lucide-react';
 import { Button } from '../../ui/button';
 import { Input } from '../../ui/input';
@@ -186,6 +187,7 @@ export default function BasicInfo({
                         {renderEditableField('pen_name', 'Pen Name', User)}
                         {renderEditableField('language', 'Language', Globe)}
                         {renderEditableField('category', 'Book Category', Layers)}
+                        {renderEditableField('short_name', 'Short Name', Type)}
                         {renderEditableField('publication_year', 'Year', Calendar)}
                         <div className="hidden lg:block">{renderEditableField('edition', 'Edition', Layers)}</div>
                         {renderEditableField('isbn', 'ISBN Code', Hash)}

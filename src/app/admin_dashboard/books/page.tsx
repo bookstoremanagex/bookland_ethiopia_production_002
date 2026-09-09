@@ -2,6 +2,7 @@ import React from 'react'
 import { getBooks } from '../../actions/get-books'
 import { BooksTable } from '../../../components/admin_dashboard_components/BooksTable'
 import { checkCurrentUserRole } from '../../actions/book-shop-actions'
+import BooksPrintDialog from './BooksPrintDialog'
 
 export default async function BooksPage() {
     const permission = await checkCurrentUserRole("Viewing Books")
@@ -26,6 +27,7 @@ export default async function BooksPage() {
                     <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Books <span className="text-secondarycolor not-italic">Management</span></h1>
                     <p className="text-muted-foreground font-bold tracking-tight">Precision control over your inventory with advanced filtering.</p>
                 </div>
+                <BooksPrintDialog />
             </div>
 
             {response.success ? (

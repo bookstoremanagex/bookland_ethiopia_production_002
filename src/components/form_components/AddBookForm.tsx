@@ -56,6 +56,7 @@ export function AddBookForm({ className }: AddBookFormProps) {
     resolver: zodResolver(bookSchema),
     defaultValues: {
       title: "",
+      short_name: "",
       author: "",
       pen_name: "",
       isbn: "",
@@ -169,6 +170,22 @@ export function AddBookForm({ className }: AddBookFormProps) {
                   {errors.title.message}
                 </p>
               )}
+            </div>
+
+            {/* Short Name */}
+            <div className="space-y-2 group">
+              <label
+                htmlFor="short_name"
+                className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor"
+              >
+                Short Name
+              </label>
+              <Input
+                id="short_name"
+                placeholder="e.g. Gatsby (used in lists)"
+                {...register("short_name")}
+                className="border-primarycolor/20 focus:border-primarycolor focus:ring-primarycolor/20"
+              />
             </div>
 
             {/* Author */}

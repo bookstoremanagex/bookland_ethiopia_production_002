@@ -4512,6 +4512,7 @@ export namespace Prisma {
     damagedbooks: number
     notes: number
     roles: number
+    orders: number
   }
 
   export type AccountsCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4519,6 +4520,7 @@ export namespace Prisma {
     damagedbooks?: boolean | AccountsCountOutputTypeCountDamagedbooksArgs
     notes?: boolean | AccountsCountOutputTypeCountNotesArgs
     roles?: boolean | AccountsCountOutputTypeCountRolesArgs
+    orders?: boolean | AccountsCountOutputTypeCountOrdersArgs
   }
 
   // Custom InputTypes
@@ -4558,6 +4560,13 @@ export namespace Prisma {
    */
   export type AccountsCountOutputTypeCountRolesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: rolesWhereInput
+  }
+
+  /**
+   * AccountsCountOutputType without action
+   */
+  export type AccountsCountOutputTypeCountOrdersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ordersWhereInput
   }
 
 
@@ -5536,6 +5545,7 @@ export namespace Prisma {
     damagedbooks?: boolean | accounts$damagedbooksArgs<ExtArgs>
     notes?: boolean | accounts$notesArgs<ExtArgs>
     roles?: boolean | accounts$rolesArgs<ExtArgs>
+    orders?: boolean | accounts$ordersArgs<ExtArgs>
     _count?: boolean | AccountsCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["accounts"]>
 
@@ -5561,6 +5571,7 @@ export namespace Prisma {
     damagedbooks?: boolean | accounts$damagedbooksArgs<ExtArgs>
     notes?: boolean | accounts$notesArgs<ExtArgs>
     roles?: boolean | accounts$rolesArgs<ExtArgs>
+    orders?: boolean | accounts$ordersArgs<ExtArgs>
     _count?: boolean | AccountsCountOutputTypeDefaultArgs<ExtArgs>
   }
 
@@ -5571,6 +5582,7 @@ export namespace Prisma {
       damagedbooks: Prisma.$damagedbooksPayload<ExtArgs>[]
       notes: Prisma.$notesPayload<ExtArgs>[]
       roles: Prisma.$rolesPayload<ExtArgs>[]
+      orders: Prisma.$ordersPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -5928,6 +5940,7 @@ export namespace Prisma {
     damagedbooks<T extends accounts$damagedbooksArgs<ExtArgs> = {}>(args?: Subset<T, accounts$damagedbooksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$damagedbooksPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     notes<T extends accounts$notesArgs<ExtArgs> = {}>(args?: Subset<T, accounts$notesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$notesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     roles<T extends accounts$rolesArgs<ExtArgs> = {}>(args?: Subset<T, accounts$rolesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$rolesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    orders<T extends accounts$ordersArgs<ExtArgs> = {}>(args?: Subset<T, accounts$ordersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ordersPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6407,6 +6420,30 @@ export namespace Prisma {
   }
 
   /**
+   * accounts.orders
+   */
+  export type accounts$ordersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the orders
+     */
+    select?: ordersSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the orders
+     */
+    omit?: ordersOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ordersInclude<ExtArgs> | null
+    where?: ordersWhereInput
+    orderBy?: ordersOrderByWithRelationInput | ordersOrderByWithRelationInput[]
+    cursor?: ordersWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: OrdersScalarFieldEnum | OrdersScalarFieldEnum[]
+  }
+
+  /**
    * accounts without action
    */
   export type accountsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6445,6 +6482,7 @@ export namespace Prisma {
     binding_cost: number | null
     design_cost: number | null
     translation_cost: number | null
+    cover_price: number | null
     total_print_count: number | null
     book_id: number | null
     number_of_pages: number | null
@@ -6472,6 +6510,7 @@ export namespace Prisma {
     binding_cost: number | null
     design_cost: number | null
     translation_cost: number | null
+    cover_price: number | null
     total_print_count: number | null
     book_id: number | null
     number_of_pages: number | null
@@ -6500,6 +6539,7 @@ export namespace Prisma {
     binding_cost: number | null
     design_cost: number | null
     translation_cost: number | null
+    cover_price: number | null
     memo: string | null
     book_image_url: string | null
     visiblitiy_to_printer: boolean | null
@@ -6535,6 +6575,7 @@ export namespace Prisma {
     binding_cost: number | null
     design_cost: number | null
     translation_cost: number | null
+    cover_price: number | null
     memo: string | null
     book_image_url: string | null
     visiblitiy_to_printer: boolean | null
@@ -6570,6 +6611,7 @@ export namespace Prisma {
     binding_cost: number
     design_cost: number
     translation_cost: number
+    cover_price: number
     memo: number
     book_image_url: number
     visiblitiy_to_printer: number
@@ -6606,6 +6648,7 @@ export namespace Prisma {
     binding_cost?: true
     design_cost?: true
     translation_cost?: true
+    cover_price?: true
     total_print_count?: true
     book_id?: true
     number_of_pages?: true
@@ -6633,6 +6676,7 @@ export namespace Prisma {
     binding_cost?: true
     design_cost?: true
     translation_cost?: true
+    cover_price?: true
     total_print_count?: true
     book_id?: true
     number_of_pages?: true
@@ -6661,6 +6705,7 @@ export namespace Prisma {
     binding_cost?: true
     design_cost?: true
     translation_cost?: true
+    cover_price?: true
     memo?: true
     book_image_url?: true
     visiblitiy_to_printer?: true
@@ -6696,6 +6741,7 @@ export namespace Prisma {
     binding_cost?: true
     design_cost?: true
     translation_cost?: true
+    cover_price?: true
     memo?: true
     book_image_url?: true
     visiblitiy_to_printer?: true
@@ -6731,6 +6777,7 @@ export namespace Prisma {
     binding_cost?: true
     design_cost?: true
     translation_cost?: true
+    cover_price?: true
     memo?: true
     book_image_url?: true
     visiblitiy_to_printer?: true
@@ -6853,6 +6900,7 @@ export namespace Prisma {
     binding_cost: number | null
     design_cost: number | null
     translation_cost: number | null
+    cover_price: number | null
     memo: string | null
     book_image_url: string | null
     visiblitiy_to_printer: boolean
@@ -6907,6 +6955,7 @@ export namespace Prisma {
     binding_cost?: boolean
     design_cost?: boolean
     translation_cost?: boolean
+    cover_price?: boolean
     memo?: boolean
     book_image_url?: boolean
     visiblitiy_to_printer?: boolean
@@ -6955,6 +7004,7 @@ export namespace Prisma {
     binding_cost?: boolean
     design_cost?: boolean
     translation_cost?: boolean
+    cover_price?: boolean
     memo?: boolean
     book_image_url?: boolean
     visiblitiy_to_printer?: boolean
@@ -6981,7 +7031,7 @@ export namespace Prisma {
     purchasing_right_cost?: boolean
   }
 
-  export type bookeditionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "edition_name" | "selling_price" | "production_price" | "printing_cost" | "binding_cost" | "design_cost" | "translation_cost" | "memo" | "book_image_url" | "visiblitiy_to_printer" | "total_print_count" | "book_id" | "number_of_pages" | "bookId" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt" | "editing_cost" | "other_expenses" | "transportation_cost" | "count_remening_for_transfer" | "translator_cost" | "cover_design_cost" | "text_design_cost" | "editor_cost" | "typewriting_cost" | "store_cost" | "distribution_cost" | "advertisement_cost" | "purchasing_right_cost", ExtArgs["result"]["bookedition"]>
+  export type bookeditionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "edition_name" | "selling_price" | "production_price" | "printing_cost" | "binding_cost" | "design_cost" | "translation_cost" | "cover_price" | "memo" | "book_image_url" | "visiblitiy_to_printer" | "total_print_count" | "book_id" | "number_of_pages" | "bookId" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt" | "editing_cost" | "other_expenses" | "transportation_cost" | "count_remening_for_transfer" | "translator_cost" | "cover_design_cost" | "text_design_cost" | "editor_cost" | "typewriting_cost" | "store_cost" | "distribution_cost" | "advertisement_cost" | "purchasing_right_cost", ExtArgs["result"]["bookedition"]>
   export type bookeditionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     locked_editions?: boolean | bookedition$locked_editionsArgs<ExtArgs>
     books?: boolean | booksDefaultArgs<ExtArgs>
@@ -7019,6 +7069,7 @@ export namespace Prisma {
       binding_cost: number | null
       design_cost: number | null
       translation_cost: number | null
+      cover_price: number | null
       memo: string | null
       book_image_url: string | null
       visiblitiy_to_printer: boolean
@@ -7430,6 +7481,7 @@ export namespace Prisma {
     readonly binding_cost: FieldRef<"bookedition", 'Float'>
     readonly design_cost: FieldRef<"bookedition", 'Float'>
     readonly translation_cost: FieldRef<"bookedition", 'Float'>
+    readonly cover_price: FieldRef<"bookedition", 'Float'>
     readonly memo: FieldRef<"bookedition", 'String'>
     readonly book_image_url: FieldRef<"bookedition", 'String'>
     readonly visiblitiy_to_printer: FieldRef<"bookedition", 'Boolean'>
@@ -10109,6 +10161,7 @@ export namespace Prisma {
     language: string | null
     edition: string | null
     category: string | null
+    short_name: string | null
     publication_year: string | null
     copyright_registration_number: string | null
     print_batch_id: string | null
@@ -10148,6 +10201,7 @@ export namespace Prisma {
     language: string | null
     edition: string | null
     category: string | null
+    short_name: string | null
     publication_year: string | null
     copyright_registration_number: string | null
     print_batch_id: string | null
@@ -10187,6 +10241,7 @@ export namespace Prisma {
     language: number
     edition: number
     category: number
+    short_name: number
     publication_year: number
     copyright_registration_number: number
     print_batch_id: number
@@ -10258,6 +10313,7 @@ export namespace Prisma {
     language?: true
     edition?: true
     category?: true
+    short_name?: true
     publication_year?: true
     copyright_registration_number?: true
     print_batch_id?: true
@@ -10297,6 +10353,7 @@ export namespace Prisma {
     language?: true
     edition?: true
     category?: true
+    short_name?: true
     publication_year?: true
     copyright_registration_number?: true
     print_batch_id?: true
@@ -10336,6 +10393,7 @@ export namespace Prisma {
     language?: true
     edition?: true
     category?: true
+    short_name?: true
     publication_year?: true
     copyright_registration_number?: true
     print_batch_id?: true
@@ -10462,6 +10520,7 @@ export namespace Prisma {
     language: string | null
     edition: string | null
     category: string | null
+    short_name: string | null
     publication_year: string
     copyright_registration_number: string | null
     print_batch_id: string | null
@@ -10520,6 +10579,7 @@ export namespace Prisma {
     language?: boolean
     edition?: boolean
     category?: boolean
+    short_name?: boolean
     publication_year?: boolean
     copyright_registration_number?: boolean
     print_batch_id?: boolean
@@ -10566,6 +10626,7 @@ export namespace Prisma {
     language?: boolean
     edition?: boolean
     category?: boolean
+    short_name?: boolean
     publication_year?: boolean
     copyright_registration_number?: boolean
     print_batch_id?: boolean
@@ -10593,7 +10654,7 @@ export namespace Prisma {
     available_for_retail?: boolean
   }
 
-  export type booksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "book_sort_index" | "unique_identification_code" | "isbn" | "title" | "author" | "translator" | "designer" | "language" | "edition" | "category" | "publication_year" | "copyright_registration_number" | "print_batch_id" | "book_sku" | "number_of_pages" | "info" | "book_image_url" | "status" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt" | "productionstatus" | "default_edition_id" | "pen_name" | "translator_cost" | "cover_design_cost" | "text_design_cost" | "editor_cost" | "typewriting_cost" | "store_cost" | "distribution_cost" | "advertisement_cost" | "purchasing_right_cost" | "available_for_retail", ExtArgs["result"]["books"]>
+  export type booksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "book_sort_index" | "unique_identification_code" | "isbn" | "title" | "author" | "translator" | "designer" | "language" | "edition" | "category" | "short_name" | "publication_year" | "copyright_registration_number" | "print_batch_id" | "book_sku" | "number_of_pages" | "info" | "book_image_url" | "status" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt" | "productionstatus" | "default_edition_id" | "pen_name" | "translator_cost" | "cover_design_cost" | "text_design_cost" | "editor_cost" | "typewriting_cost" | "store_cost" | "distribution_cost" | "advertisement_cost" | "purchasing_right_cost" | "available_for_retail", ExtArgs["result"]["books"]>
   export type booksInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     round_book?: boolean | books$round_bookArgs<ExtArgs>
     bookedition?: boolean | books$bookeditionArgs<ExtArgs>
@@ -10622,6 +10683,7 @@ export namespace Prisma {
       language: string | null
       edition: string | null
       category: string | null
+      short_name: string | null
       publication_year: string
       copyright_registration_number: string | null
       print_batch_id: string | null
@@ -11031,6 +11093,7 @@ export namespace Prisma {
     readonly language: FieldRef<"books", 'String'>
     readonly edition: FieldRef<"books", 'String'>
     readonly category: FieldRef<"books", 'String'>
+    readonly short_name: FieldRef<"books", 'String'>
     readonly publication_year: FieldRef<"books", 'String'>
     readonly copyright_registration_number: FieldRef<"books", 'String'>
     readonly print_batch_id: FieldRef<"books", 'String'>
@@ -14809,6 +14872,7 @@ export namespace Prisma {
     amount_paid: number | null
     check_id: number | null
     delivered_by: number | null
+    order_made_by_id: number | null
   }
 
   export type OrdersSumAggregateOutputType = {
@@ -14818,6 +14882,7 @@ export namespace Prisma {
     amount_paid: number | null
     check_id: number | null
     delivered_by: number | null
+    order_made_by_id: number | null
   }
 
   export type OrdersMinAggregateOutputType = {
@@ -14838,6 +14903,7 @@ export namespace Prisma {
     delivered_by: number | null
     updatedAt: Date | null
     createdAt: Date | null
+    order_made_by_id: number | null
   }
 
   export type OrdersMaxAggregateOutputType = {
@@ -14858,6 +14924,7 @@ export namespace Prisma {
     delivered_by: number | null
     updatedAt: Date | null
     createdAt: Date | null
+    order_made_by_id: number | null
   }
 
   export type OrdersCountAggregateOutputType = {
@@ -14878,6 +14945,7 @@ export namespace Prisma {
     delivered_by: number
     updatedAt: number
     createdAt: number
+    order_made_by_id: number
     _all: number
   }
 
@@ -14889,6 +14957,7 @@ export namespace Prisma {
     amount_paid?: true
     check_id?: true
     delivered_by?: true
+    order_made_by_id?: true
   }
 
   export type OrdersSumAggregateInputType = {
@@ -14898,6 +14967,7 @@ export namespace Prisma {
     amount_paid?: true
     check_id?: true
     delivered_by?: true
+    order_made_by_id?: true
   }
 
   export type OrdersMinAggregateInputType = {
@@ -14918,6 +14988,7 @@ export namespace Prisma {
     delivered_by?: true
     updatedAt?: true
     createdAt?: true
+    order_made_by_id?: true
   }
 
   export type OrdersMaxAggregateInputType = {
@@ -14938,6 +15009,7 @@ export namespace Prisma {
     delivered_by?: true
     updatedAt?: true
     createdAt?: true
+    order_made_by_id?: true
   }
 
   export type OrdersCountAggregateInputType = {
@@ -14958,6 +15030,7 @@ export namespace Prisma {
     delivered_by?: true
     updatedAt?: true
     createdAt?: true
+    order_made_by_id?: true
     _all?: true
   }
 
@@ -15065,6 +15138,7 @@ export namespace Prisma {
     delivered_by: number | null
     updatedAt: Date
     createdAt: Date
+    order_made_by_id: number | null
     _count: OrdersCountAggregateOutputType | null
     _avg: OrdersAvgAggregateOutputType | null
     _sum: OrdersSumAggregateOutputType | null
@@ -15104,10 +15178,12 @@ export namespace Prisma {
     delivered_by?: boolean
     updatedAt?: boolean
     createdAt?: boolean
+    order_made_by_id?: boolean
     locked_editions?: boolean | orders$locked_editionsArgs<ExtArgs>
     bookshopes?: boolean | bookshopesDefaultArgs<ExtArgs>
     checks?: boolean | orders$checksArgs<ExtArgs>
     order_items?: boolean | orders$order_itemsArgs<ExtArgs>
+    order_made_by?: boolean | orders$order_made_byArgs<ExtArgs>
     payment_records_from_shop_to_printer?: boolean | orders$payment_records_from_shop_to_printerArgs<ExtArgs>
     _count?: boolean | OrdersCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["orders"]>
@@ -15132,14 +15208,16 @@ export namespace Prisma {
     delivered_by?: boolean
     updatedAt?: boolean
     createdAt?: boolean
+    order_made_by_id?: boolean
   }
 
-  export type ordersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "bookShopId" | "order_type" | "memo" | "hide_remaining" | "is_approved" | "total_amount" | "amount_paid" | "payment_type" | "check_id" | "status" | "is_deleted" | "allocation_summary" | "delivery" | "delivered_by" | "updatedAt" | "createdAt", ExtArgs["result"]["orders"]>
+  export type ordersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "bookShopId" | "order_type" | "memo" | "hide_remaining" | "is_approved" | "total_amount" | "amount_paid" | "payment_type" | "check_id" | "status" | "is_deleted" | "allocation_summary" | "delivery" | "delivered_by" | "updatedAt" | "createdAt" | "order_made_by_id", ExtArgs["result"]["orders"]>
   export type ordersInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     locked_editions?: boolean | orders$locked_editionsArgs<ExtArgs>
     bookshopes?: boolean | bookshopesDefaultArgs<ExtArgs>
     checks?: boolean | orders$checksArgs<ExtArgs>
     order_items?: boolean | orders$order_itemsArgs<ExtArgs>
+    order_made_by?: boolean | orders$order_made_byArgs<ExtArgs>
     payment_records_from_shop_to_printer?: boolean | orders$payment_records_from_shop_to_printerArgs<ExtArgs>
     _count?: boolean | OrdersCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -15151,6 +15229,7 @@ export namespace Prisma {
       bookshopes: Prisma.$bookshopesPayload<ExtArgs>
       checks: Prisma.$checksPayload<ExtArgs> | null
       order_items: Prisma.$order_itemsPayload<ExtArgs>[]
+      order_made_by: Prisma.$accountsPayload<ExtArgs> | null
       payment_records_from_shop_to_printer: Prisma.$payment_records_from_shop_to_printerPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -15171,6 +15250,7 @@ export namespace Prisma {
       delivered_by: number | null
       updatedAt: Date
       createdAt: Date
+      order_made_by_id: number | null
     }, ExtArgs["result"]["orders"]>
     composites: {}
   }
@@ -15515,6 +15595,7 @@ export namespace Prisma {
     bookshopes<T extends bookshopesDefaultArgs<ExtArgs> = {}>(args?: Subset<T, bookshopesDefaultArgs<ExtArgs>>): Prisma__bookshopesClient<$Result.GetResult<Prisma.$bookshopesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     checks<T extends orders$checksArgs<ExtArgs> = {}>(args?: Subset<T, orders$checksArgs<ExtArgs>>): Prisma__checksClient<$Result.GetResult<Prisma.$checksPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     order_items<T extends orders$order_itemsArgs<ExtArgs> = {}>(args?: Subset<T, orders$order_itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$order_itemsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    order_made_by<T extends orders$order_made_byArgs<ExtArgs> = {}>(args?: Subset<T, orders$order_made_byArgs<ExtArgs>>): Prisma__accountsClient<$Result.GetResult<Prisma.$accountsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     payment_records_from_shop_to_printer<T extends orders$payment_records_from_shop_to_printerArgs<ExtArgs> = {}>(args?: Subset<T, orders$payment_records_from_shop_to_printerArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$payment_records_from_shop_to_printerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -15562,6 +15643,7 @@ export namespace Prisma {
     readonly delivered_by: FieldRef<"orders", 'Int'>
     readonly updatedAt: FieldRef<"orders", 'DateTime'>
     readonly createdAt: FieldRef<"orders", 'DateTime'>
+    readonly order_made_by_id: FieldRef<"orders", 'Int'>
   }
     
 
@@ -15969,6 +16051,25 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: Order_itemsScalarFieldEnum | Order_itemsScalarFieldEnum[]
+  }
+
+  /**
+   * orders.order_made_by
+   */
+  export type orders$order_made_byArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the accounts
+     */
+    select?: accountsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the accounts
+     */
+    omit?: accountsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: accountsInclude<ExtArgs> | null
+    where?: accountsWhereInput
   }
 
   /**
@@ -51508,6 +51609,7 @@ export namespace Prisma {
     binding_cost: 'binding_cost',
     design_cost: 'design_cost',
     translation_cost: 'translation_cost',
+    cover_price: 'cover_price',
     memo: 'memo',
     book_image_url: 'book_image_url',
     visiblitiy_to_printer: 'visiblitiy_to_printer',
@@ -51577,6 +51679,7 @@ export namespace Prisma {
     language: 'language',
     edition: 'edition',
     category: 'category',
+    short_name: 'short_name',
     publication_year: 'publication_year',
     copyright_registration_number: 'copyright_registration_number',
     print_batch_id: 'print_batch_id',
@@ -51675,7 +51778,8 @@ export namespace Prisma {
     delivery: 'delivery',
     delivered_by: 'delivered_by',
     updatedAt: 'updatedAt',
-    createdAt: 'createdAt'
+    createdAt: 'createdAt',
+    order_made_by_id: 'order_made_by_id'
   };
 
   export type OrdersScalarFieldEnum = (typeof OrdersScalarFieldEnum)[keyof typeof OrdersScalarFieldEnum]
@@ -52280,6 +52384,7 @@ export namespace Prisma {
     language: 'language',
     edition: 'edition',
     category: 'category',
+    short_name: 'short_name',
     publication_year: 'publication_year',
     copyright_registration_number: 'copyright_registration_number',
     print_batch_id: 'print_batch_id',
@@ -52729,6 +52834,7 @@ export namespace Prisma {
     damagedbooks?: DamagedbooksListRelationFilter
     notes?: NotesListRelationFilter
     roles?: RolesListRelationFilter
+    orders?: OrdersListRelationFilter
   }
 
   export type accountsOrderByWithRelationInput = {
@@ -52747,6 +52853,7 @@ export namespace Prisma {
     damagedbooks?: damagedbooksOrderByRelationAggregateInput
     notes?: notesOrderByRelationAggregateInput
     roles?: rolesOrderByRelationAggregateInput
+    orders?: ordersOrderByRelationAggregateInput
     _relevance?: accountsOrderByRelevanceInput
   }
 
@@ -52769,6 +52876,7 @@ export namespace Prisma {
     damagedbooks?: DamagedbooksListRelationFilter
     notes?: NotesListRelationFilter
     roles?: RolesListRelationFilter
+    orders?: OrdersListRelationFilter
   }, "id">
 
   export type accountsOrderByWithAggregationInput = {
@@ -52819,6 +52927,7 @@ export namespace Prisma {
     binding_cost?: FloatNullableFilter<"bookedition"> | number | null
     design_cost?: FloatNullableFilter<"bookedition"> | number | null
     translation_cost?: FloatNullableFilter<"bookedition"> | number | null
+    cover_price?: FloatNullableFilter<"bookedition"> | number | null
     memo?: StringNullableFilter<"bookedition"> | string | null
     book_image_url?: StringNullableFilter<"bookedition"> | string | null
     visiblitiy_to_printer?: BoolFilter<"bookedition"> | boolean
@@ -52864,6 +52973,7 @@ export namespace Prisma {
     binding_cost?: SortOrderInput | SortOrder
     design_cost?: SortOrderInput | SortOrder
     translation_cost?: SortOrderInput | SortOrder
+    cover_price?: SortOrderInput | SortOrder
     memo?: SortOrderInput | SortOrder
     book_image_url?: SortOrderInput | SortOrder
     visiblitiy_to_printer?: SortOrder
@@ -52913,6 +53023,7 @@ export namespace Prisma {
     binding_cost?: FloatNullableFilter<"bookedition"> | number | null
     design_cost?: FloatNullableFilter<"bookedition"> | number | null
     translation_cost?: FloatNullableFilter<"bookedition"> | number | null
+    cover_price?: FloatNullableFilter<"bookedition"> | number | null
     memo?: StringNullableFilter<"bookedition"> | string | null
     book_image_url?: StringNullableFilter<"bookedition"> | string | null
     visiblitiy_to_printer?: BoolFilter<"bookedition"> | boolean
@@ -52958,6 +53069,7 @@ export namespace Prisma {
     binding_cost?: SortOrderInput | SortOrder
     design_cost?: SortOrderInput | SortOrder
     translation_cost?: SortOrderInput | SortOrder
+    cover_price?: SortOrderInput | SortOrder
     memo?: SortOrderInput | SortOrder
     book_image_url?: SortOrderInput | SortOrder
     visiblitiy_to_printer?: SortOrder
@@ -53001,6 +53113,7 @@ export namespace Prisma {
     binding_cost?: FloatNullableWithAggregatesFilter<"bookedition"> | number | null
     design_cost?: FloatNullableWithAggregatesFilter<"bookedition"> | number | null
     translation_cost?: FloatNullableWithAggregatesFilter<"bookedition"> | number | null
+    cover_price?: FloatNullableWithAggregatesFilter<"bookedition"> | number | null
     memo?: StringNullableWithAggregatesFilter<"bookedition"> | string | null
     book_image_url?: StringNullableWithAggregatesFilter<"bookedition"> | string | null
     visiblitiy_to_printer?: BoolWithAggregatesFilter<"bookedition"> | boolean
@@ -53192,6 +53305,7 @@ export namespace Prisma {
     language?: StringNullableFilter<"books"> | string | null
     edition?: StringNullableFilter<"books"> | string | null
     category?: StringNullableFilter<"books"> | string | null
+    short_name?: StringNullableFilter<"books"> | string | null
     publication_year?: StringFilter<"books"> | string
     copyright_registration_number?: StringNullableFilter<"books"> | string | null
     print_batch_id?: StringNullableFilter<"books"> | string | null
@@ -53235,6 +53349,7 @@ export namespace Prisma {
     language?: SortOrderInput | SortOrder
     edition?: SortOrderInput | SortOrder
     category?: SortOrderInput | SortOrder
+    short_name?: SortOrderInput | SortOrder
     publication_year?: SortOrder
     copyright_registration_number?: SortOrderInput | SortOrder
     print_batch_id?: SortOrderInput | SortOrder
@@ -53283,6 +53398,7 @@ export namespace Prisma {
     language?: StringNullableFilter<"books"> | string | null
     edition?: StringNullableFilter<"books"> | string | null
     category?: StringNullableFilter<"books"> | string | null
+    short_name?: StringNullableFilter<"books"> | string | null
     publication_year?: StringFilter<"books"> | string
     copyright_registration_number?: StringNullableFilter<"books"> | string | null
     print_batch_id?: StringNullableFilter<"books"> | string | null
@@ -53325,6 +53441,7 @@ export namespace Prisma {
     language?: SortOrderInput | SortOrder
     edition?: SortOrderInput | SortOrder
     category?: SortOrderInput | SortOrder
+    short_name?: SortOrderInput | SortOrder
     publication_year?: SortOrder
     copyright_registration_number?: SortOrderInput | SortOrder
     print_batch_id?: SortOrderInput | SortOrder
@@ -53372,6 +53489,7 @@ export namespace Prisma {
     language?: StringNullableWithAggregatesFilter<"books"> | string | null
     edition?: StringNullableWithAggregatesFilter<"books"> | string | null
     category?: StringNullableWithAggregatesFilter<"books"> | string | null
+    short_name?: StringNullableWithAggregatesFilter<"books"> | string | null
     publication_year?: StringWithAggregatesFilter<"books"> | string
     copyright_registration_number?: StringNullableWithAggregatesFilter<"books"> | string | null
     print_batch_id?: StringNullableWithAggregatesFilter<"books"> | string | null
@@ -53701,10 +53819,12 @@ export namespace Prisma {
     delivered_by?: IntNullableFilter<"orders"> | number | null
     updatedAt?: DateTimeFilter<"orders"> | Date | string
     createdAt?: DateTimeFilter<"orders"> | Date | string
+    order_made_by_id?: IntNullableFilter<"orders"> | number | null
     locked_editions?: Locked_editionsListRelationFilter
     bookshopes?: XOR<BookshopesScalarRelationFilter, bookshopesWhereInput>
     checks?: XOR<ChecksNullableScalarRelationFilter, checksWhereInput> | null
     order_items?: Order_itemsListRelationFilter
+    order_made_by?: XOR<AccountsNullableScalarRelationFilter, accountsWhereInput> | null
     payment_records_from_shop_to_printer?: Payment_records_from_shop_to_printerListRelationFilter
   }
 
@@ -53726,10 +53846,12 @@ export namespace Prisma {
     delivered_by?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
     createdAt?: SortOrder
+    order_made_by_id?: SortOrderInput | SortOrder
     locked_editions?: locked_editionsOrderByRelationAggregateInput
     bookshopes?: bookshopesOrderByWithRelationInput
     checks?: checksOrderByWithRelationInput
     order_items?: order_itemsOrderByRelationAggregateInput
+    order_made_by?: accountsOrderByWithRelationInput
     payment_records_from_shop_to_printer?: payment_records_from_shop_to_printerOrderByRelationAggregateInput
     _relevance?: ordersOrderByRelevanceInput
   }
@@ -53755,10 +53877,12 @@ export namespace Prisma {
     delivered_by?: IntNullableFilter<"orders"> | number | null
     updatedAt?: DateTimeFilter<"orders"> | Date | string
     createdAt?: DateTimeFilter<"orders"> | Date | string
+    order_made_by_id?: IntNullableFilter<"orders"> | number | null
     locked_editions?: Locked_editionsListRelationFilter
     bookshopes?: XOR<BookshopesScalarRelationFilter, bookshopesWhereInput>
     checks?: XOR<ChecksNullableScalarRelationFilter, checksWhereInput> | null
     order_items?: Order_itemsListRelationFilter
+    order_made_by?: XOR<AccountsNullableScalarRelationFilter, accountsWhereInput> | null
     payment_records_from_shop_to_printer?: Payment_records_from_shop_to_printerListRelationFilter
   }, "id">
 
@@ -53780,6 +53904,7 @@ export namespace Prisma {
     delivered_by?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
     createdAt?: SortOrder
+    order_made_by_id?: SortOrderInput | SortOrder
     _count?: ordersCountOrderByAggregateInput
     _avg?: ordersAvgOrderByAggregateInput
     _max?: ordersMaxOrderByAggregateInput
@@ -53808,6 +53933,7 @@ export namespace Prisma {
     delivered_by?: IntNullableWithAggregatesFilter<"orders"> | number | null
     updatedAt?: DateTimeWithAggregatesFilter<"orders"> | Date | string
     createdAt?: DateTimeWithAggregatesFilter<"orders"> | Date | string
+    order_made_by_id?: IntNullableWithAggregatesFilter<"orders"> | number | null
   }
 
   export type order_itemsWhereInput = {
@@ -56747,6 +56873,7 @@ export namespace Prisma {
     damagedbooks?: damagedbooksCreateNestedManyWithoutAccountsInput
     notes?: notesCreateNestedManyWithoutAccountsInput
     roles?: rolesCreateNestedManyWithoutAccountsInput
+    orders?: ordersCreateNestedManyWithoutOrder_made_byInput
   }
 
   export type accountsUncheckedCreateInput = {
@@ -56765,6 +56892,7 @@ export namespace Prisma {
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutAccountsInput
     notes?: notesUncheckedCreateNestedManyWithoutAccountsInput
     roles?: rolesUncheckedCreateNestedManyWithoutAccountsInput
+    orders?: ordersUncheckedCreateNestedManyWithoutOrder_made_byInput
   }
 
   export type accountsUpdateInput = {
@@ -56782,6 +56910,7 @@ export namespace Prisma {
     damagedbooks?: damagedbooksUpdateManyWithoutAccountsNestedInput
     notes?: notesUpdateManyWithoutAccountsNestedInput
     roles?: rolesUpdateManyWithoutAccountsNestedInput
+    orders?: ordersUpdateManyWithoutOrder_made_byNestedInput
   }
 
   export type accountsUncheckedUpdateInput = {
@@ -56800,6 +56929,7 @@ export namespace Prisma {
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutAccountsNestedInput
     notes?: notesUncheckedUpdateManyWithoutAccountsNestedInput
     roles?: rolesUncheckedUpdateManyWithoutAccountsNestedInput
+    orders?: ordersUncheckedUpdateManyWithoutOrder_made_byNestedInput
   }
 
   export type accountsCreateManyInput = {
@@ -56851,6 +56981,7 @@ export namespace Prisma {
     binding_cost?: number | null
     design_cost?: number | null
     translation_cost?: number | null
+    cover_price?: number | null
     memo?: string | null
     book_image_url?: string | null
     visiblitiy_to_printer?: boolean
@@ -56895,6 +57026,7 @@ export namespace Prisma {
     binding_cost?: number | null
     design_cost?: number | null
     translation_cost?: number | null
+    cover_price?: number | null
     memo?: string | null
     book_image_url?: string | null
     visiblitiy_to_printer?: boolean
@@ -56938,6 +57070,7 @@ export namespace Prisma {
     binding_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_price?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
     visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
@@ -56982,6 +57115,7 @@ export namespace Prisma {
     binding_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_price?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
     visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
@@ -57026,6 +57160,7 @@ export namespace Prisma {
     binding_cost?: number | null
     design_cost?: number | null
     translation_cost?: number | null
+    cover_price?: number | null
     memo?: string | null
     book_image_url?: string | null
     visiblitiy_to_printer?: boolean
@@ -57060,6 +57195,7 @@ export namespace Prisma {
     binding_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_price?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
     visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
@@ -57094,6 +57230,7 @@ export namespace Prisma {
     binding_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_price?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
     visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
@@ -57275,6 +57412,7 @@ export namespace Prisma {
     language?: string | null
     edition?: string | null
     category?: string | null
+    short_name?: string | null
     publication_year: string
     copyright_registration_number?: string | null
     print_batch_id?: string | null
@@ -57318,6 +57456,7 @@ export namespace Prisma {
     language?: string | null
     edition?: string | null
     category?: string | null
+    short_name?: string | null
     publication_year: string
     copyright_registration_number?: string | null
     print_batch_id?: string | null
@@ -57360,6 +57499,7 @@ export namespace Prisma {
     language?: NullableStringFieldUpdateOperationsInput | string | null
     edition?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
+    short_name?: NullableStringFieldUpdateOperationsInput | string | null
     publication_year?: StringFieldUpdateOperationsInput | string
     copyright_registration_number?: NullableStringFieldUpdateOperationsInput | string | null
     print_batch_id?: NullableStringFieldUpdateOperationsInput | string | null
@@ -57403,6 +57543,7 @@ export namespace Prisma {
     language?: NullableStringFieldUpdateOperationsInput | string | null
     edition?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
+    short_name?: NullableStringFieldUpdateOperationsInput | string | null
     publication_year?: StringFieldUpdateOperationsInput | string
     copyright_registration_number?: NullableStringFieldUpdateOperationsInput | string | null
     print_batch_id?: NullableStringFieldUpdateOperationsInput | string | null
@@ -57446,6 +57587,7 @@ export namespace Prisma {
     language?: string | null
     edition?: string | null
     category?: string | null
+    short_name?: string | null
     publication_year: string
     copyright_registration_number?: string | null
     print_batch_id?: string | null
@@ -57484,6 +57626,7 @@ export namespace Prisma {
     language?: NullableStringFieldUpdateOperationsInput | string | null
     edition?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
+    short_name?: NullableStringFieldUpdateOperationsInput | string | null
     publication_year?: StringFieldUpdateOperationsInput | string
     copyright_registration_number?: NullableStringFieldUpdateOperationsInput | string | null
     print_batch_id?: NullableStringFieldUpdateOperationsInput | string | null
@@ -57523,6 +57666,7 @@ export namespace Prisma {
     language?: NullableStringFieldUpdateOperationsInput | string | null
     edition?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
+    short_name?: NullableStringFieldUpdateOperationsInput | string | null
     publication_year?: StringFieldUpdateOperationsInput | string
     copyright_registration_number?: NullableStringFieldUpdateOperationsInput | string | null
     print_batch_id?: NullableStringFieldUpdateOperationsInput | string | null
@@ -57870,6 +58014,7 @@ export namespace Prisma {
     bookshopes: bookshopesCreateNestedOneWithoutOrdersInput
     checks?: checksCreateNestedOneWithoutOrdersInput
     order_items?: order_itemsCreateNestedManyWithoutOrderInput
+    order_made_by?: accountsCreateNestedOneWithoutOrdersInput
     payment_records_from_shop_to_printer?: payment_records_from_shop_to_printerCreateNestedManyWithoutOrdersInput
   }
 
@@ -57891,6 +58036,7 @@ export namespace Prisma {
     delivered_by?: number | null
     updatedAt?: Date | string
     createdAt?: Date | string
+    order_made_by_id?: number | null
     locked_editions?: locked_editionsUncheckedCreateNestedManyWithoutOrdersInput
     order_items?: order_itemsUncheckedCreateNestedManyWithoutOrderInput
     payment_records_from_shop_to_printer?: payment_records_from_shop_to_printerUncheckedCreateNestedManyWithoutOrdersInput
@@ -57915,6 +58061,7 @@ export namespace Prisma {
     bookshopes?: bookshopesUpdateOneRequiredWithoutOrdersNestedInput
     checks?: checksUpdateOneWithoutOrdersNestedInput
     order_items?: order_itemsUpdateManyWithoutOrderNestedInput
+    order_made_by?: accountsUpdateOneWithoutOrdersNestedInput
     payment_records_from_shop_to_printer?: payment_records_from_shop_to_printerUpdateManyWithoutOrdersNestedInput
   }
 
@@ -57936,6 +58083,7 @@ export namespace Prisma {
     delivered_by?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    order_made_by_id?: NullableIntFieldUpdateOperationsInput | number | null
     locked_editions?: locked_editionsUncheckedUpdateManyWithoutOrdersNestedInput
     order_items?: order_itemsUncheckedUpdateManyWithoutOrderNestedInput
     payment_records_from_shop_to_printer?: payment_records_from_shop_to_printerUncheckedUpdateManyWithoutOrdersNestedInput
@@ -57959,6 +58107,7 @@ export namespace Prisma {
     delivered_by?: number | null
     updatedAt?: Date | string
     createdAt?: Date | string
+    order_made_by_id?: number | null
   }
 
   export type ordersUpdateManyMutationInput = {
@@ -57996,6 +58145,7 @@ export namespace Prisma {
     delivered_by?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    order_made_by_id?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type order_itemsCreateInput = {
@@ -61180,6 +61330,12 @@ export namespace Prisma {
     none?: rolesWhereInput
   }
 
+  export type OrdersListRelationFilter = {
+    every?: ordersWhereInput
+    some?: ordersWhereInput
+    none?: ordersWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -61198,6 +61354,10 @@ export namespace Prisma {
   }
 
   export type rolesOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ordersOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -61453,6 +61613,7 @@ export namespace Prisma {
     binding_cost?: SortOrder
     design_cost?: SortOrder
     translation_cost?: SortOrder
+    cover_price?: SortOrder
     memo?: SortOrder
     book_image_url?: SortOrder
     visiblitiy_to_printer?: SortOrder
@@ -61487,6 +61648,7 @@ export namespace Prisma {
     binding_cost?: SortOrder
     design_cost?: SortOrder
     translation_cost?: SortOrder
+    cover_price?: SortOrder
     total_print_count?: SortOrder
     book_id?: SortOrder
     number_of_pages?: SortOrder
@@ -61515,6 +61677,7 @@ export namespace Prisma {
     binding_cost?: SortOrder
     design_cost?: SortOrder
     translation_cost?: SortOrder
+    cover_price?: SortOrder
     memo?: SortOrder
     book_image_url?: SortOrder
     visiblitiy_to_printer?: SortOrder
@@ -61550,6 +61713,7 @@ export namespace Prisma {
     binding_cost?: SortOrder
     design_cost?: SortOrder
     translation_cost?: SortOrder
+    cover_price?: SortOrder
     memo?: SortOrder
     book_image_url?: SortOrder
     visiblitiy_to_printer?: SortOrder
@@ -61584,6 +61748,7 @@ export namespace Prisma {
     binding_cost?: SortOrder
     design_cost?: SortOrder
     translation_cost?: SortOrder
+    cover_price?: SortOrder
     total_print_count?: SortOrder
     book_id?: SortOrder
     number_of_pages?: SortOrder
@@ -61789,6 +61954,7 @@ export namespace Prisma {
     language?: SortOrder
     edition?: SortOrder
     category?: SortOrder
+    short_name?: SortOrder
     publication_year?: SortOrder
     copyright_registration_number?: SortOrder
     print_batch_id?: SortOrder
@@ -61843,6 +62009,7 @@ export namespace Prisma {
     language?: SortOrder
     edition?: SortOrder
     category?: SortOrder
+    short_name?: SortOrder
     publication_year?: SortOrder
     copyright_registration_number?: SortOrder
     print_batch_id?: SortOrder
@@ -61882,6 +62049,7 @@ export namespace Prisma {
     language?: SortOrder
     edition?: SortOrder
     category?: SortOrder
+    short_name?: SortOrder
     publication_year?: SortOrder
     copyright_registration_number?: SortOrder
     print_batch_id?: SortOrder
@@ -62098,12 +62266,6 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
-  export type OrdersListRelationFilter = {
-    every?: ordersWhereInput
-    some?: ordersWhereInput
-    none?: ordersWhereInput
-  }
-
   export type PaymentsListRelationFilter = {
     every?: paymentsWhereInput
     some?: paymentsWhereInput
@@ -62120,10 +62282,6 @@ export namespace Prisma {
     every?: payment_records_from_shop_to_printerWhereInput
     some?: payment_records_from_shop_to_printerWhereInput
     none?: payment_records_from_shop_to_printerWhereInput
-  }
-
-  export type ordersOrderByRelationAggregateInput = {
-    _count?: SortOrder
   }
 
   export type paymentsOrderByRelationAggregateInput = {
@@ -62217,6 +62375,11 @@ export namespace Prisma {
     isNot?: checksWhereInput | null
   }
 
+  export type AccountsNullableScalarRelationFilter = {
+    is?: accountsWhereInput | null
+    isNot?: accountsWhereInput | null
+  }
+
   export type ordersOrderByRelevanceInput = {
     fields: ordersOrderByRelevanceFieldEnum | ordersOrderByRelevanceFieldEnum[]
     sort: SortOrder
@@ -62241,6 +62404,7 @@ export namespace Prisma {
     delivered_by?: SortOrder
     updatedAt?: SortOrder
     createdAt?: SortOrder
+    order_made_by_id?: SortOrder
   }
 
   export type ordersAvgOrderByAggregateInput = {
@@ -62250,6 +62414,7 @@ export namespace Prisma {
     amount_paid?: SortOrder
     check_id?: SortOrder
     delivered_by?: SortOrder
+    order_made_by_id?: SortOrder
   }
 
   export type ordersMaxOrderByAggregateInput = {
@@ -62270,6 +62435,7 @@ export namespace Prisma {
     delivered_by?: SortOrder
     updatedAt?: SortOrder
     createdAt?: SortOrder
+    order_made_by_id?: SortOrder
   }
 
   export type ordersMinOrderByAggregateInput = {
@@ -62290,6 +62456,7 @@ export namespace Prisma {
     delivered_by?: SortOrder
     updatedAt?: SortOrder
     createdAt?: SortOrder
+    order_made_by_id?: SortOrder
   }
 
   export type ordersSumOrderByAggregateInput = {
@@ -62299,6 +62466,7 @@ export namespace Prisma {
     amount_paid?: SortOrder
     check_id?: SortOrder
     delivered_by?: SortOrder
+    order_made_by_id?: SortOrder
   }
 
   export type order_itemsCountOrderByAggregateInput = {
@@ -62346,11 +62514,6 @@ export namespace Prisma {
     in?: $Enums.damagedbooks_type[] | null
     notIn?: $Enums.damagedbooks_type[] | null
     not?: NestedEnumdamagedbooks_typeNullableFilter<$PrismaModel> | $Enums.damagedbooks_type | null
-  }
-
-  export type AccountsNullableScalarRelationFilter = {
-    is?: accountsWhereInput | null
-    isNot?: accountsWhereInput | null
   }
 
   export type BooksNullableScalarRelationFilter = {
@@ -64608,6 +64771,13 @@ export namespace Prisma {
     connect?: rolesWhereUniqueInput | rolesWhereUniqueInput[]
   }
 
+  export type ordersCreateNestedManyWithoutOrder_made_byInput = {
+    create?: XOR<ordersCreateWithoutOrder_made_byInput, ordersUncheckedCreateWithoutOrder_made_byInput> | ordersCreateWithoutOrder_made_byInput[] | ordersUncheckedCreateWithoutOrder_made_byInput[]
+    connectOrCreate?: ordersCreateOrConnectWithoutOrder_made_byInput | ordersCreateOrConnectWithoutOrder_made_byInput[]
+    createMany?: ordersCreateManyOrder_made_byInputEnvelope
+    connect?: ordersWhereUniqueInput | ordersWhereUniqueInput[]
+  }
+
   export type activityLogsUncheckedCreateNestedManyWithoutAccountInput = {
     create?: XOR<activityLogsCreateWithoutAccountInput, activityLogsUncheckedCreateWithoutAccountInput> | activityLogsCreateWithoutAccountInput[] | activityLogsUncheckedCreateWithoutAccountInput[]
     connectOrCreate?: activityLogsCreateOrConnectWithoutAccountInput | activityLogsCreateOrConnectWithoutAccountInput[]
@@ -64634,6 +64804,13 @@ export namespace Prisma {
     connectOrCreate?: rolesCreateOrConnectWithoutAccountsInput | rolesCreateOrConnectWithoutAccountsInput[]
     createMany?: rolesCreateManyAccountsInputEnvelope
     connect?: rolesWhereUniqueInput | rolesWhereUniqueInput[]
+  }
+
+  export type ordersUncheckedCreateNestedManyWithoutOrder_made_byInput = {
+    create?: XOR<ordersCreateWithoutOrder_made_byInput, ordersUncheckedCreateWithoutOrder_made_byInput> | ordersCreateWithoutOrder_made_byInput[] | ordersUncheckedCreateWithoutOrder_made_byInput[]
+    connectOrCreate?: ordersCreateOrConnectWithoutOrder_made_byInput | ordersCreateOrConnectWithoutOrder_made_byInput[]
+    createMany?: ordersCreateManyOrder_made_byInputEnvelope
+    connect?: ordersWhereUniqueInput | ordersWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -64708,6 +64885,20 @@ export namespace Prisma {
     deleteMany?: rolesScalarWhereInput | rolesScalarWhereInput[]
   }
 
+  export type ordersUpdateManyWithoutOrder_made_byNestedInput = {
+    create?: XOR<ordersCreateWithoutOrder_made_byInput, ordersUncheckedCreateWithoutOrder_made_byInput> | ordersCreateWithoutOrder_made_byInput[] | ordersUncheckedCreateWithoutOrder_made_byInput[]
+    connectOrCreate?: ordersCreateOrConnectWithoutOrder_made_byInput | ordersCreateOrConnectWithoutOrder_made_byInput[]
+    upsert?: ordersUpsertWithWhereUniqueWithoutOrder_made_byInput | ordersUpsertWithWhereUniqueWithoutOrder_made_byInput[]
+    createMany?: ordersCreateManyOrder_made_byInputEnvelope
+    set?: ordersWhereUniqueInput | ordersWhereUniqueInput[]
+    disconnect?: ordersWhereUniqueInput | ordersWhereUniqueInput[]
+    delete?: ordersWhereUniqueInput | ordersWhereUniqueInput[]
+    connect?: ordersWhereUniqueInput | ordersWhereUniqueInput[]
+    update?: ordersUpdateWithWhereUniqueWithoutOrder_made_byInput | ordersUpdateWithWhereUniqueWithoutOrder_made_byInput[]
+    updateMany?: ordersUpdateManyWithWhereWithoutOrder_made_byInput | ordersUpdateManyWithWhereWithoutOrder_made_byInput[]
+    deleteMany?: ordersScalarWhereInput | ordersScalarWhereInput[]
+  }
+
   export type IntFieldUpdateOperationsInput = {
     set?: number
     increment?: number
@@ -64770,6 +64961,20 @@ export namespace Prisma {
     update?: rolesUpdateWithWhereUniqueWithoutAccountsInput | rolesUpdateWithWhereUniqueWithoutAccountsInput[]
     updateMany?: rolesUpdateManyWithWhereWithoutAccountsInput | rolesUpdateManyWithWhereWithoutAccountsInput[]
     deleteMany?: rolesScalarWhereInput | rolesScalarWhereInput[]
+  }
+
+  export type ordersUncheckedUpdateManyWithoutOrder_made_byNestedInput = {
+    create?: XOR<ordersCreateWithoutOrder_made_byInput, ordersUncheckedCreateWithoutOrder_made_byInput> | ordersCreateWithoutOrder_made_byInput[] | ordersUncheckedCreateWithoutOrder_made_byInput[]
+    connectOrCreate?: ordersCreateOrConnectWithoutOrder_made_byInput | ordersCreateOrConnectWithoutOrder_made_byInput[]
+    upsert?: ordersUpsertWithWhereUniqueWithoutOrder_made_byInput | ordersUpsertWithWhereUniqueWithoutOrder_made_byInput[]
+    createMany?: ordersCreateManyOrder_made_byInputEnvelope
+    set?: ordersWhereUniqueInput | ordersWhereUniqueInput[]
+    disconnect?: ordersWhereUniqueInput | ordersWhereUniqueInput[]
+    delete?: ordersWhereUniqueInput | ordersWhereUniqueInput[]
+    connect?: ordersWhereUniqueInput | ordersWhereUniqueInput[]
+    update?: ordersUpdateWithWhereUniqueWithoutOrder_made_byInput | ordersUpdateWithWhereUniqueWithoutOrder_made_byInput[]
+    updateMany?: ordersUpdateManyWithWhereWithoutOrder_made_byInput | ordersUpdateManyWithWhereWithoutOrder_made_byInput[]
+    deleteMany?: ordersScalarWhereInput | ordersScalarWhereInput[]
   }
 
   export type locked_editionsCreateNestedManyWithoutBookeditionInput = {
@@ -65712,6 +65917,12 @@ export namespace Prisma {
     connect?: order_itemsWhereUniqueInput | order_itemsWhereUniqueInput[]
   }
 
+  export type accountsCreateNestedOneWithoutOrdersInput = {
+    create?: XOR<accountsCreateWithoutOrdersInput, accountsUncheckedCreateWithoutOrdersInput>
+    connectOrCreate?: accountsCreateOrConnectWithoutOrdersInput
+    connect?: accountsWhereUniqueInput
+  }
+
   export type payment_records_from_shop_to_printerCreateNestedManyWithoutOrdersInput = {
     create?: XOR<payment_records_from_shop_to_printerCreateWithoutOrdersInput, payment_records_from_shop_to_printerUncheckedCreateWithoutOrdersInput> | payment_records_from_shop_to_printerCreateWithoutOrdersInput[] | payment_records_from_shop_to_printerUncheckedCreateWithoutOrdersInput[]
     connectOrCreate?: payment_records_from_shop_to_printerCreateOrConnectWithoutOrdersInput | payment_records_from_shop_to_printerCreateOrConnectWithoutOrdersInput[]
@@ -65784,6 +65995,16 @@ export namespace Prisma {
     update?: order_itemsUpdateWithWhereUniqueWithoutOrderInput | order_itemsUpdateWithWhereUniqueWithoutOrderInput[]
     updateMany?: order_itemsUpdateManyWithWhereWithoutOrderInput | order_itemsUpdateManyWithWhereWithoutOrderInput[]
     deleteMany?: order_itemsScalarWhereInput | order_itemsScalarWhereInput[]
+  }
+
+  export type accountsUpdateOneWithoutOrdersNestedInput = {
+    create?: XOR<accountsCreateWithoutOrdersInput, accountsUncheckedCreateWithoutOrdersInput>
+    connectOrCreate?: accountsCreateOrConnectWithoutOrdersInput
+    upsert?: accountsUpsertWithoutOrdersInput
+    disconnect?: accountsWhereInput | boolean
+    delete?: accountsWhereInput | boolean
+    connect?: accountsWhereUniqueInput
+    update?: XOR<XOR<accountsUpdateToOneWithWhereWithoutOrdersInput, accountsUpdateWithoutOrdersInput>, accountsUncheckedUpdateWithoutOrdersInput>
   }
 
   export type payment_records_from_shop_to_printerUpdateManyWithoutOrdersNestedInput = {
@@ -67795,6 +68016,61 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ordersCreateWithoutOrder_made_byInput = {
+    order_type: string
+    memo?: string | null
+    hide_remaining?: boolean
+    is_approved?: boolean
+    total_amount?: number
+    amount_paid?: number
+    payment_type?: string | null
+    status?: string
+    is_deleted?: boolean
+    allocation_summary?: string | null
+    delivery?: boolean
+    delivered_by?: number | null
+    updatedAt?: Date | string
+    createdAt?: Date | string
+    locked_editions?: locked_editionsCreateNestedManyWithoutOrdersInput
+    bookshopes: bookshopesCreateNestedOneWithoutOrdersInput
+    checks?: checksCreateNestedOneWithoutOrdersInput
+    order_items?: order_itemsCreateNestedManyWithoutOrderInput
+    payment_records_from_shop_to_printer?: payment_records_from_shop_to_printerCreateNestedManyWithoutOrdersInput
+  }
+
+  export type ordersUncheckedCreateWithoutOrder_made_byInput = {
+    id?: number
+    bookShopId: number
+    order_type: string
+    memo?: string | null
+    hide_remaining?: boolean
+    is_approved?: boolean
+    total_amount?: number
+    amount_paid?: number
+    payment_type?: string | null
+    check_id?: number | null
+    status?: string
+    is_deleted?: boolean
+    allocation_summary?: string | null
+    delivery?: boolean
+    delivered_by?: number | null
+    updatedAt?: Date | string
+    createdAt?: Date | string
+    locked_editions?: locked_editionsUncheckedCreateNestedManyWithoutOrdersInput
+    order_items?: order_itemsUncheckedCreateNestedManyWithoutOrderInput
+    payment_records_from_shop_to_printer?: payment_records_from_shop_to_printerUncheckedCreateNestedManyWithoutOrdersInput
+  }
+
+  export type ordersCreateOrConnectWithoutOrder_made_byInput = {
+    where: ordersWhereUniqueInput
+    create: XOR<ordersCreateWithoutOrder_made_byInput, ordersUncheckedCreateWithoutOrder_made_byInput>
+  }
+
+  export type ordersCreateManyOrder_made_byInputEnvelope = {
+    data: ordersCreateManyOrder_made_byInput | ordersCreateManyOrder_made_byInput[]
+    skipDuplicates?: boolean
+  }
+
   export type activityLogsUpsertWithWhereUniqueWithoutAccountInput = {
     where: activityLogsWhereUniqueInput
     update: XOR<activityLogsUpdateWithoutAccountInput, activityLogsUncheckedUpdateWithoutAccountInput>
@@ -67921,6 +68197,46 @@ export namespace Prisma {
     deletedAt?: DateTimeFilter<"roles"> | Date | string
   }
 
+  export type ordersUpsertWithWhereUniqueWithoutOrder_made_byInput = {
+    where: ordersWhereUniqueInput
+    update: XOR<ordersUpdateWithoutOrder_made_byInput, ordersUncheckedUpdateWithoutOrder_made_byInput>
+    create: XOR<ordersCreateWithoutOrder_made_byInput, ordersUncheckedCreateWithoutOrder_made_byInput>
+  }
+
+  export type ordersUpdateWithWhereUniqueWithoutOrder_made_byInput = {
+    where: ordersWhereUniqueInput
+    data: XOR<ordersUpdateWithoutOrder_made_byInput, ordersUncheckedUpdateWithoutOrder_made_byInput>
+  }
+
+  export type ordersUpdateManyWithWhereWithoutOrder_made_byInput = {
+    where: ordersScalarWhereInput
+    data: XOR<ordersUpdateManyMutationInput, ordersUncheckedUpdateManyWithoutOrder_made_byInput>
+  }
+
+  export type ordersScalarWhereInput = {
+    AND?: ordersScalarWhereInput | ordersScalarWhereInput[]
+    OR?: ordersScalarWhereInput[]
+    NOT?: ordersScalarWhereInput | ordersScalarWhereInput[]
+    id?: IntFilter<"orders"> | number
+    bookShopId?: IntFilter<"orders"> | number
+    order_type?: StringFilter<"orders"> | string
+    memo?: StringNullableFilter<"orders"> | string | null
+    hide_remaining?: BoolFilter<"orders"> | boolean
+    is_approved?: BoolFilter<"orders"> | boolean
+    total_amount?: FloatFilter<"orders"> | number
+    amount_paid?: FloatFilter<"orders"> | number
+    payment_type?: StringNullableFilter<"orders"> | string | null
+    check_id?: IntNullableFilter<"orders"> | number | null
+    status?: StringFilter<"orders"> | string
+    is_deleted?: BoolFilter<"orders"> | boolean
+    allocation_summary?: StringNullableFilter<"orders"> | string | null
+    delivery?: BoolFilter<"orders"> | boolean
+    delivered_by?: IntNullableFilter<"orders"> | number | null
+    updatedAt?: DateTimeFilter<"orders"> | Date | string
+    createdAt?: DateTimeFilter<"orders"> | Date | string
+    order_made_by_id?: IntNullableFilter<"orders"> | number | null
+  }
+
   export type locked_editionsCreateWithoutBookeditionInput = {
     amount_locked?: number
     status?: $Enums.locked_editions_status
@@ -67963,6 +68279,7 @@ export namespace Prisma {
     language?: string | null
     edition?: string | null
     category?: string | null
+    short_name?: string | null
     publication_year: string
     copyright_registration_number?: string | null
     print_batch_id?: string | null
@@ -68005,6 +68322,7 @@ export namespace Prisma {
     language?: string | null
     edition?: string | null
     category?: string | null
+    short_name?: string | null
     publication_year: string
     copyright_registration_number?: string | null
     print_batch_id?: string | null
@@ -68349,6 +68667,7 @@ export namespace Prisma {
     language?: NullableStringFieldUpdateOperationsInput | string | null
     edition?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
+    short_name?: NullableStringFieldUpdateOperationsInput | string | null
     publication_year?: StringFieldUpdateOperationsInput | string
     copyright_registration_number?: NullableStringFieldUpdateOperationsInput | string | null
     print_batch_id?: NullableStringFieldUpdateOperationsInput | string | null
@@ -68391,6 +68710,7 @@ export namespace Prisma {
     language?: NullableStringFieldUpdateOperationsInput | string | null
     edition?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
+    short_name?: NullableStringFieldUpdateOperationsInput | string | null
     publication_year?: StringFieldUpdateOperationsInput | string
     copyright_registration_number?: NullableStringFieldUpdateOperationsInput | string | null
     print_batch_id?: NullableStringFieldUpdateOperationsInput | string | null
@@ -68660,6 +68980,7 @@ export namespace Prisma {
     binding_cost?: number | null
     design_cost?: number | null
     translation_cost?: number | null
+    cover_price?: number | null
     memo?: string | null
     book_image_url?: string | null
     visiblitiy_to_printer?: boolean
@@ -68703,6 +69024,7 @@ export namespace Prisma {
     binding_cost?: number | null
     design_cost?: number | null
     translation_cost?: number | null
+    cover_price?: number | null
     memo?: string | null
     book_image_url?: string | null
     visiblitiy_to_printer?: boolean
@@ -68793,6 +69115,7 @@ export namespace Prisma {
     binding_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_price?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
     visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
@@ -68836,6 +69159,7 @@ export namespace Prisma {
     binding_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_price?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
     visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
@@ -68916,6 +69240,7 @@ export namespace Prisma {
     binding_cost?: number | null
     design_cost?: number | null
     translation_cost?: number | null
+    cover_price?: number | null
     memo?: string | null
     book_image_url?: string | null
     visiblitiy_to_printer?: boolean
@@ -68959,6 +69284,7 @@ export namespace Prisma {
     binding_cost?: number | null
     design_cost?: number | null
     translation_cost?: number | null
+    cover_price?: number | null
     memo?: string | null
     book_image_url?: string | null
     visiblitiy_to_printer?: boolean
@@ -69055,6 +69381,7 @@ export namespace Prisma {
     binding_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_price?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
     visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
@@ -69098,6 +69425,7 @@ export namespace Prisma {
     binding_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_price?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
     visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
@@ -69219,6 +69547,7 @@ export namespace Prisma {
     binding_cost?: number | null
     design_cost?: number | null
     translation_cost?: number | null
+    cover_price?: number | null
     memo?: string | null
     book_image_url?: string | null
     visiblitiy_to_printer?: boolean
@@ -69262,6 +69591,7 @@ export namespace Prisma {
     binding_cost?: number | null
     design_cost?: number | null
     translation_cost?: number | null
+    cover_price?: number | null
     memo?: string | null
     book_image_url?: string | null
     visiblitiy_to_printer?: boolean
@@ -69430,6 +69760,7 @@ export namespace Prisma {
     binding_cost?: FloatNullableFilter<"bookedition"> | number | null
     design_cost?: FloatNullableFilter<"bookedition"> | number | null
     translation_cost?: FloatNullableFilter<"bookedition"> | number | null
+    cover_price?: FloatNullableFilter<"bookedition"> | number | null
     memo?: StringNullableFilter<"bookedition"> | string | null
     book_image_url?: StringNullableFilter<"bookedition"> | string | null
     visiblitiy_to_printer?: BoolFilter<"bookedition"> | boolean
@@ -69516,6 +69847,7 @@ export namespace Prisma {
     binding_cost?: number | null
     design_cost?: number | null
     translation_cost?: number | null
+    cover_price?: number | null
     memo?: string | null
     book_image_url?: string | null
     visiblitiy_to_printer?: boolean
@@ -69559,6 +69891,7 @@ export namespace Prisma {
     binding_cost?: number | null
     design_cost?: number | null
     translation_cost?: number | null
+    cover_price?: number | null
     memo?: string | null
     book_image_url?: string | null
     visiblitiy_to_printer?: boolean
@@ -69616,6 +69949,7 @@ export namespace Prisma {
     bookshopes: bookshopesCreateNestedOneWithoutOrdersInput
     checks?: checksCreateNestedOneWithoutOrdersInput
     order_items?: order_itemsCreateNestedManyWithoutOrderInput
+    order_made_by?: accountsCreateNestedOneWithoutOrdersInput
     payment_records_from_shop_to_printer?: payment_records_from_shop_to_printerCreateNestedManyWithoutOrdersInput
   }
 
@@ -69637,6 +69971,7 @@ export namespace Prisma {
     delivered_by?: number | null
     updatedAt?: Date | string
     createdAt?: Date | string
+    order_made_by_id?: number | null
     order_items?: order_itemsUncheckedCreateNestedManyWithoutOrderInput
     payment_records_from_shop_to_printer?: payment_records_from_shop_to_printerUncheckedCreateNestedManyWithoutOrdersInput
   }
@@ -69665,6 +70000,7 @@ export namespace Prisma {
     binding_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_price?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
     visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
@@ -69708,6 +70044,7 @@ export namespace Prisma {
     binding_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_price?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
     visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
@@ -69771,6 +70108,7 @@ export namespace Prisma {
     bookshopes?: bookshopesUpdateOneRequiredWithoutOrdersNestedInput
     checks?: checksUpdateOneWithoutOrdersNestedInput
     order_items?: order_itemsUpdateManyWithoutOrderNestedInput
+    order_made_by?: accountsUpdateOneWithoutOrdersNestedInput
     payment_records_from_shop_to_printer?: payment_records_from_shop_to_printerUpdateManyWithoutOrdersNestedInput
   }
 
@@ -69792,6 +70130,7 @@ export namespace Prisma {
     delivered_by?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    order_made_by_id?: NullableIntFieldUpdateOperationsInput | number | null
     order_items?: order_itemsUncheckedUpdateManyWithoutOrderNestedInput
     payment_records_from_shop_to_printer?: payment_records_from_shop_to_printerUncheckedUpdateManyWithoutOrdersNestedInput
   }
@@ -69804,6 +70143,7 @@ export namespace Prisma {
     binding_cost?: number | null
     design_cost?: number | null
     translation_cost?: number | null
+    cover_price?: number | null
     memo?: string | null
     book_image_url?: string | null
     visiblitiy_to_printer?: boolean
@@ -69847,6 +70187,7 @@ export namespace Prisma {
     binding_cost?: number | null
     design_cost?: number | null
     translation_cost?: number | null
+    cover_price?: number | null
     memo?: string | null
     book_image_url?: string | null
     visiblitiy_to_printer?: boolean
@@ -69945,6 +70286,7 @@ export namespace Prisma {
     binding_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_price?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
     visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
@@ -69988,6 +70330,7 @@ export namespace Prisma {
     binding_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_price?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
     visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
@@ -70125,6 +70468,7 @@ export namespace Prisma {
     locked_editions?: locked_editionsCreateNestedManyWithoutOrdersInput
     checks?: checksCreateNestedOneWithoutOrdersInput
     order_items?: order_itemsCreateNestedManyWithoutOrderInput
+    order_made_by?: accountsCreateNestedOneWithoutOrdersInput
     payment_records_from_shop_to_printer?: payment_records_from_shop_to_printerCreateNestedManyWithoutOrdersInput
   }
 
@@ -70145,6 +70489,7 @@ export namespace Prisma {
     delivered_by?: number | null
     updatedAt?: Date | string
     createdAt?: Date | string
+    order_made_by_id?: number | null
     locked_editions?: locked_editionsUncheckedCreateNestedManyWithoutOrdersInput
     order_items?: order_itemsUncheckedCreateNestedManyWithoutOrderInput
     payment_records_from_shop_to_printer?: payment_records_from_shop_to_printerUncheckedCreateNestedManyWithoutOrdersInput
@@ -70305,29 +70650,6 @@ export namespace Prisma {
   export type ordersUpdateManyWithWhereWithoutBookshopesInput = {
     where: ordersScalarWhereInput
     data: XOR<ordersUpdateManyMutationInput, ordersUncheckedUpdateManyWithoutBookshopesInput>
-  }
-
-  export type ordersScalarWhereInput = {
-    AND?: ordersScalarWhereInput | ordersScalarWhereInput[]
-    OR?: ordersScalarWhereInput[]
-    NOT?: ordersScalarWhereInput | ordersScalarWhereInput[]
-    id?: IntFilter<"orders"> | number
-    bookShopId?: IntFilter<"orders"> | number
-    order_type?: StringFilter<"orders"> | string
-    memo?: StringNullableFilter<"orders"> | string | null
-    hide_remaining?: BoolFilter<"orders"> | boolean
-    is_approved?: BoolFilter<"orders"> | boolean
-    total_amount?: FloatFilter<"orders"> | number
-    amount_paid?: FloatFilter<"orders"> | number
-    payment_type?: StringNullableFilter<"orders"> | string | null
-    check_id?: IntNullableFilter<"orders"> | number | null
-    status?: StringFilter<"orders"> | string
-    is_deleted?: BoolFilter<"orders"> | boolean
-    allocation_summary?: StringNullableFilter<"orders"> | string | null
-    delivery?: BoolFilter<"orders"> | boolean
-    delivered_by?: IntNullableFilter<"orders"> | number | null
-    updatedAt?: DateTimeFilter<"orders"> | Date | string
-    createdAt?: DateTimeFilter<"orders"> | Date | string
   }
 
   export type paymentsUpsertWithWhereUniqueWithoutShopInput = {
@@ -70567,6 +70889,46 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type accountsCreateWithoutOrdersInput = {
+    account_type: string
+    account_email: string
+    phonenumber?: string | null
+    password: string
+    account_status?: boolean
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    name?: string
+    activitylogs?: activityLogsCreateNestedManyWithoutAccountInput
+    damagedbooks?: damagedbooksCreateNestedManyWithoutAccountsInput
+    notes?: notesCreateNestedManyWithoutAccountsInput
+    roles?: rolesCreateNestedManyWithoutAccountsInput
+  }
+
+  export type accountsUncheckedCreateWithoutOrdersInput = {
+    id?: number
+    account_type: string
+    account_email: string
+    phonenumber?: string | null
+    password: string
+    account_status?: boolean
+    is_deleted?: boolean
+    updatedAt: Date | string
+    createdAt?: Date | string
+    deletedAt?: Date | string
+    name?: string
+    activitylogs?: activityLogsUncheckedCreateNestedManyWithoutAccountInput
+    damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutAccountsInput
+    notes?: notesUncheckedCreateNestedManyWithoutAccountsInput
+    roles?: rolesUncheckedCreateNestedManyWithoutAccountsInput
+  }
+
+  export type accountsCreateOrConnectWithoutOrdersInput = {
+    where: accountsWhereUniqueInput
+    create: XOR<accountsCreateWithoutOrdersInput, accountsUncheckedCreateWithoutOrdersInput>
+  }
+
   export type payment_records_from_shop_to_printerCreateWithoutOrdersInput = {
     amount?: number | null
     memo?: string | null
@@ -70726,6 +71088,52 @@ export namespace Prisma {
     data: XOR<order_itemsUpdateManyMutationInput, order_itemsUncheckedUpdateManyWithoutOrderInput>
   }
 
+  export type accountsUpsertWithoutOrdersInput = {
+    update: XOR<accountsUpdateWithoutOrdersInput, accountsUncheckedUpdateWithoutOrdersInput>
+    create: XOR<accountsCreateWithoutOrdersInput, accountsUncheckedCreateWithoutOrdersInput>
+    where?: accountsWhereInput
+  }
+
+  export type accountsUpdateToOneWithWhereWithoutOrdersInput = {
+    where?: accountsWhereInput
+    data: XOR<accountsUpdateWithoutOrdersInput, accountsUncheckedUpdateWithoutOrdersInput>
+  }
+
+  export type accountsUpdateWithoutOrdersInput = {
+    account_type?: StringFieldUpdateOperationsInput | string
+    account_email?: StringFieldUpdateOperationsInput | string
+    phonenumber?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    account_status?: BoolFieldUpdateOperationsInput | boolean
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: StringFieldUpdateOperationsInput | string
+    activitylogs?: activityLogsUpdateManyWithoutAccountNestedInput
+    damagedbooks?: damagedbooksUpdateManyWithoutAccountsNestedInput
+    notes?: notesUpdateManyWithoutAccountsNestedInput
+    roles?: rolesUpdateManyWithoutAccountsNestedInput
+  }
+
+  export type accountsUncheckedUpdateWithoutOrdersInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    account_type?: StringFieldUpdateOperationsInput | string
+    account_email?: StringFieldUpdateOperationsInput | string
+    phonenumber?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    account_status?: BoolFieldUpdateOperationsInput | boolean
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: StringFieldUpdateOperationsInput | string
+    activitylogs?: activityLogsUncheckedUpdateManyWithoutAccountNestedInput
+    damagedbooks?: damagedbooksUncheckedUpdateManyWithoutAccountsNestedInput
+    notes?: notesUncheckedUpdateManyWithoutAccountsNestedInput
+    roles?: rolesUncheckedUpdateManyWithoutAccountsNestedInput
+  }
+
   export type payment_records_from_shop_to_printerUpsertWithWhereUniqueWithoutOrdersInput = {
     where: payment_records_from_shop_to_printerWhereUniqueInput
     update: XOR<payment_records_from_shop_to_printerUpdateWithoutOrdersInput, payment_records_from_shop_to_printerUncheckedUpdateWithoutOrdersInput>
@@ -70760,6 +71168,7 @@ export namespace Prisma {
     locked_editions?: locked_editionsCreateNestedManyWithoutOrdersInput
     bookshopes: bookshopesCreateNestedOneWithoutOrdersInput
     checks?: checksCreateNestedOneWithoutOrdersInput
+    order_made_by?: accountsCreateNestedOneWithoutOrdersInput
     payment_records_from_shop_to_printer?: payment_records_from_shop_to_printerCreateNestedManyWithoutOrdersInput
   }
 
@@ -70781,6 +71190,7 @@ export namespace Prisma {
     delivered_by?: number | null
     updatedAt?: Date | string
     createdAt?: Date | string
+    order_made_by_id?: number | null
     locked_editions?: locked_editionsUncheckedCreateNestedManyWithoutOrdersInput
     payment_records_from_shop_to_printer?: payment_records_from_shop_to_printerUncheckedCreateNestedManyWithoutOrdersInput
   }
@@ -70798,6 +71208,7 @@ export namespace Prisma {
     binding_cost?: number | null
     design_cost?: number | null
     translation_cost?: number | null
+    cover_price?: number | null
     memo?: string | null
     book_image_url?: string | null
     visiblitiy_to_printer?: boolean
@@ -70841,6 +71252,7 @@ export namespace Prisma {
     binding_cost?: number | null
     design_cost?: number | null
     translation_cost?: number | null
+    cover_price?: number | null
     memo?: string | null
     book_image_url?: string | null
     visiblitiy_to_printer?: boolean
@@ -70909,6 +71321,7 @@ export namespace Prisma {
     locked_editions?: locked_editionsUpdateManyWithoutOrdersNestedInput
     bookshopes?: bookshopesUpdateOneRequiredWithoutOrdersNestedInput
     checks?: checksUpdateOneWithoutOrdersNestedInput
+    order_made_by?: accountsUpdateOneWithoutOrdersNestedInput
     payment_records_from_shop_to_printer?: payment_records_from_shop_to_printerUpdateManyWithoutOrdersNestedInput
   }
 
@@ -70930,6 +71343,7 @@ export namespace Prisma {
     delivered_by?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    order_made_by_id?: NullableIntFieldUpdateOperationsInput | number | null
     locked_editions?: locked_editionsUncheckedUpdateManyWithoutOrdersNestedInput
     payment_records_from_shop_to_printer?: payment_records_from_shop_to_printerUncheckedUpdateManyWithoutOrdersNestedInput
   }
@@ -70953,6 +71367,7 @@ export namespace Prisma {
     binding_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_price?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
     visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
@@ -70996,6 +71411,7 @@ export namespace Prisma {
     binding_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_price?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
     visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
@@ -71044,6 +71460,7 @@ export namespace Prisma {
     activitylogs?: activityLogsCreateNestedManyWithoutAccountInput
     notes?: notesCreateNestedManyWithoutAccountsInput
     roles?: rolesCreateNestedManyWithoutAccountsInput
+    orders?: ordersCreateNestedManyWithoutOrder_made_byInput
   }
 
   export type accountsUncheckedCreateWithoutDamagedbooksInput = {
@@ -71061,6 +71478,7 @@ export namespace Prisma {
     activitylogs?: activityLogsUncheckedCreateNestedManyWithoutAccountInput
     notes?: notesUncheckedCreateNestedManyWithoutAccountsInput
     roles?: rolesUncheckedCreateNestedManyWithoutAccountsInput
+    orders?: ordersUncheckedCreateNestedManyWithoutOrder_made_byInput
   }
 
   export type accountsCreateOrConnectWithoutDamagedbooksInput = {
@@ -71079,6 +71497,7 @@ export namespace Prisma {
     language?: string | null
     edition?: string | null
     category?: string | null
+    short_name?: string | null
     publication_year: string
     copyright_registration_number?: string | null
     print_batch_id?: string | null
@@ -71121,6 +71540,7 @@ export namespace Prisma {
     language?: string | null
     edition?: string | null
     category?: string | null
+    short_name?: string | null
     publication_year: string
     copyright_registration_number?: string | null
     print_batch_id?: string | null
@@ -71164,6 +71584,7 @@ export namespace Prisma {
     binding_cost?: number | null
     design_cost?: number | null
     translation_cost?: number | null
+    cover_price?: number | null
     memo?: string | null
     book_image_url?: string | null
     visiblitiy_to_printer?: boolean
@@ -71207,6 +71628,7 @@ export namespace Prisma {
     binding_cost?: number | null
     design_cost?: number | null
     translation_cost?: number | null
+    cover_price?: number | null
     memo?: string | null
     book_image_url?: string | null
     visiblitiy_to_printer?: boolean
@@ -71341,6 +71763,7 @@ export namespace Prisma {
     activitylogs?: activityLogsUpdateManyWithoutAccountNestedInput
     notes?: notesUpdateManyWithoutAccountsNestedInput
     roles?: rolesUpdateManyWithoutAccountsNestedInput
+    orders?: ordersUpdateManyWithoutOrder_made_byNestedInput
   }
 
   export type accountsUncheckedUpdateWithoutDamagedbooksInput = {
@@ -71358,6 +71781,7 @@ export namespace Prisma {
     activitylogs?: activityLogsUncheckedUpdateManyWithoutAccountNestedInput
     notes?: notesUncheckedUpdateManyWithoutAccountsNestedInput
     roles?: rolesUncheckedUpdateManyWithoutAccountsNestedInput
+    orders?: ordersUncheckedUpdateManyWithoutOrder_made_byNestedInput
   }
 
   export type booksUpsertWithoutDamagedbooksInput = {
@@ -71382,6 +71806,7 @@ export namespace Prisma {
     language?: NullableStringFieldUpdateOperationsInput | string | null
     edition?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
+    short_name?: NullableStringFieldUpdateOperationsInput | string | null
     publication_year?: StringFieldUpdateOperationsInput | string
     copyright_registration_number?: NullableStringFieldUpdateOperationsInput | string | null
     print_batch_id?: NullableStringFieldUpdateOperationsInput | string | null
@@ -71424,6 +71849,7 @@ export namespace Prisma {
     language?: NullableStringFieldUpdateOperationsInput | string | null
     edition?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
+    short_name?: NullableStringFieldUpdateOperationsInput | string | null
     publication_year?: StringFieldUpdateOperationsInput | string
     copyright_registration_number?: NullableStringFieldUpdateOperationsInput | string | null
     print_batch_id?: NullableStringFieldUpdateOperationsInput | string | null
@@ -71473,6 +71899,7 @@ export namespace Prisma {
     binding_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_price?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
     visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
@@ -71516,6 +71943,7 @@ export namespace Prisma {
     binding_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_price?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
     visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
@@ -72625,6 +73053,7 @@ export namespace Prisma {
     binding_cost?: number | null
     design_cost?: number | null
     translation_cost?: number | null
+    cover_price?: number | null
     memo?: string | null
     book_image_url?: string | null
     visiblitiy_to_printer?: boolean
@@ -72668,6 +73097,7 @@ export namespace Prisma {
     binding_cost?: number | null
     design_cost?: number | null
     translation_cost?: number | null
+    cover_price?: number | null
     memo?: string | null
     book_image_url?: string | null
     visiblitiy_to_printer?: boolean
@@ -72809,6 +73239,7 @@ export namespace Prisma {
     binding_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_price?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
     visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
@@ -72852,6 +73283,7 @@ export namespace Prisma {
     binding_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_price?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
     visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
@@ -72945,6 +73377,7 @@ export namespace Prisma {
     activitylogs?: activityLogsCreateNestedManyWithoutAccountInput
     damagedbooks?: damagedbooksCreateNestedManyWithoutAccountsInput
     notes?: notesCreateNestedManyWithoutAccountsInput
+    orders?: ordersCreateNestedManyWithoutOrder_made_byInput
   }
 
   export type accountsUncheckedCreateWithoutRolesInput = {
@@ -72962,6 +73395,7 @@ export namespace Prisma {
     activitylogs?: activityLogsUncheckedCreateNestedManyWithoutAccountInput
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutAccountsInput
     notes?: notesUncheckedCreateNestedManyWithoutAccountsInput
+    orders?: ordersUncheckedCreateNestedManyWithoutOrder_made_byInput
   }
 
   export type accountsCreateOrConnectWithoutRolesInput = {
@@ -73018,6 +73452,7 @@ export namespace Prisma {
     activitylogs?: activityLogsUpdateManyWithoutAccountNestedInput
     damagedbooks?: damagedbooksUpdateManyWithoutAccountsNestedInput
     notes?: notesUpdateManyWithoutAccountsNestedInput
+    orders?: ordersUpdateManyWithoutOrder_made_byNestedInput
   }
 
   export type accountsUncheckedUpdateWithoutRolesInput = {
@@ -73035,6 +73470,7 @@ export namespace Prisma {
     activitylogs?: activityLogsUncheckedUpdateManyWithoutAccountNestedInput
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutAccountsNestedInput
     notes?: notesUncheckedUpdateManyWithoutAccountsNestedInput
+    orders?: ordersUncheckedUpdateManyWithoutOrder_made_byNestedInput
   }
 
   export type roletypesUpsertWithoutRolesInput = {
@@ -73235,6 +73671,7 @@ export namespace Prisma {
     language?: string | null
     edition?: string | null
     category?: string | null
+    short_name?: string | null
     publication_year: string
     copyright_registration_number?: string | null
     print_batch_id?: string | null
@@ -73277,6 +73714,7 @@ export namespace Prisma {
     language?: string | null
     edition?: string | null
     category?: string | null
+    short_name?: string | null
     publication_year: string
     copyright_registration_number?: string | null
     print_batch_id?: string | null
@@ -73362,6 +73800,7 @@ export namespace Prisma {
     language?: NullableStringFieldUpdateOperationsInput | string | null
     edition?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
+    short_name?: NullableStringFieldUpdateOperationsInput | string | null
     publication_year?: StringFieldUpdateOperationsInput | string
     copyright_registration_number?: NullableStringFieldUpdateOperationsInput | string | null
     print_batch_id?: NullableStringFieldUpdateOperationsInput | string | null
@@ -73404,6 +73843,7 @@ export namespace Prisma {
     language?: NullableStringFieldUpdateOperationsInput | string | null
     edition?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
+    short_name?: NullableStringFieldUpdateOperationsInput | string | null
     publication_year?: StringFieldUpdateOperationsInput | string
     copyright_registration_number?: NullableStringFieldUpdateOperationsInput | string | null
     print_batch_id?: NullableStringFieldUpdateOperationsInput | string | null
@@ -73482,6 +73922,7 @@ export namespace Prisma {
     damagedbooks?: damagedbooksCreateNestedManyWithoutAccountsInput
     notes?: notesCreateNestedManyWithoutAccountsInput
     roles?: rolesCreateNestedManyWithoutAccountsInput
+    orders?: ordersCreateNestedManyWithoutOrder_made_byInput
   }
 
   export type accountsUncheckedCreateWithoutActivitylogsInput = {
@@ -73499,6 +73940,7 @@ export namespace Prisma {
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutAccountsInput
     notes?: notesUncheckedCreateNestedManyWithoutAccountsInput
     roles?: rolesUncheckedCreateNestedManyWithoutAccountsInput
+    orders?: ordersUncheckedCreateNestedManyWithoutOrder_made_byInput
   }
 
   export type accountsCreateOrConnectWithoutActivitylogsInput = {
@@ -73531,6 +73973,7 @@ export namespace Prisma {
     damagedbooks?: damagedbooksUpdateManyWithoutAccountsNestedInput
     notes?: notesUpdateManyWithoutAccountsNestedInput
     roles?: rolesUpdateManyWithoutAccountsNestedInput
+    orders?: ordersUpdateManyWithoutOrder_made_byNestedInput
   }
 
   export type accountsUncheckedUpdateWithoutActivitylogsInput = {
@@ -73548,6 +73991,7 @@ export namespace Prisma {
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutAccountsNestedInput
     notes?: notesUncheckedUpdateManyWithoutAccountsNestedInput
     roles?: rolesUncheckedUpdateManyWithoutAccountsNestedInput
+    orders?: ordersUncheckedUpdateManyWithoutOrder_made_byNestedInput
   }
 
   export type accountsCreateWithoutNotesInput = {
@@ -73564,6 +74008,7 @@ export namespace Prisma {
     activitylogs?: activityLogsCreateNestedManyWithoutAccountInput
     damagedbooks?: damagedbooksCreateNestedManyWithoutAccountsInput
     roles?: rolesCreateNestedManyWithoutAccountsInput
+    orders?: ordersCreateNestedManyWithoutOrder_made_byInput
   }
 
   export type accountsUncheckedCreateWithoutNotesInput = {
@@ -73581,6 +74026,7 @@ export namespace Prisma {
     activitylogs?: activityLogsUncheckedCreateNestedManyWithoutAccountInput
     damagedbooks?: damagedbooksUncheckedCreateNestedManyWithoutAccountsInput
     roles?: rolesUncheckedCreateNestedManyWithoutAccountsInput
+    orders?: ordersUncheckedCreateNestedManyWithoutOrder_made_byInput
   }
 
   export type accountsCreateOrConnectWithoutNotesInput = {
@@ -73613,6 +74059,7 @@ export namespace Prisma {
     activitylogs?: activityLogsUpdateManyWithoutAccountNestedInput
     damagedbooks?: damagedbooksUpdateManyWithoutAccountsNestedInput
     roles?: rolesUpdateManyWithoutAccountsNestedInput
+    orders?: ordersUpdateManyWithoutOrder_made_byNestedInput
   }
 
   export type accountsUncheckedUpdateWithoutNotesInput = {
@@ -73630,6 +74077,7 @@ export namespace Prisma {
     activitylogs?: activityLogsUncheckedUpdateManyWithoutAccountNestedInput
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutAccountsNestedInput
     roles?: rolesUncheckedUpdateManyWithoutAccountsNestedInput
+    orders?: ordersUncheckedUpdateManyWithoutOrder_made_byNestedInput
   }
 
   export type bookeditionCreateWithoutRound_booksInput = {
@@ -73640,6 +74088,7 @@ export namespace Prisma {
     binding_cost?: number | null
     design_cost?: number | null
     translation_cost?: number | null
+    cover_price?: number | null
     memo?: string | null
     book_image_url?: string | null
     visiblitiy_to_printer?: boolean
@@ -73683,6 +74132,7 @@ export namespace Prisma {
     binding_cost?: number | null
     design_cost?: number | null
     translation_cost?: number | null
+    cover_price?: number | null
     memo?: string | null
     book_image_url?: string | null
     visiblitiy_to_printer?: boolean
@@ -73733,6 +74183,7 @@ export namespace Prisma {
     language?: string | null
     edition?: string | null
     category?: string | null
+    short_name?: string | null
     publication_year: string
     copyright_registration_number?: string | null
     print_batch_id?: string | null
@@ -73775,6 +74226,7 @@ export namespace Prisma {
     language?: string | null
     edition?: string | null
     category?: string | null
+    short_name?: string | null
     publication_year: string
     copyright_registration_number?: string | null
     print_batch_id?: string | null
@@ -73860,6 +74312,7 @@ export namespace Prisma {
     binding_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_price?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
     visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
@@ -73903,6 +74356,7 @@ export namespace Prisma {
     binding_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_price?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
     visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
@@ -73959,6 +74413,7 @@ export namespace Prisma {
     language?: NullableStringFieldUpdateOperationsInput | string | null
     edition?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
+    short_name?: NullableStringFieldUpdateOperationsInput | string | null
     publication_year?: StringFieldUpdateOperationsInput | string
     copyright_registration_number?: NullableStringFieldUpdateOperationsInput | string | null
     print_batch_id?: NullableStringFieldUpdateOperationsInput | string | null
@@ -74001,6 +74456,7 @@ export namespace Prisma {
     language?: NullableStringFieldUpdateOperationsInput | string | null
     edition?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
+    short_name?: NullableStringFieldUpdateOperationsInput | string | null
     publication_year?: StringFieldUpdateOperationsInput | string
     copyright_registration_number?: NullableStringFieldUpdateOperationsInput | string | null
     print_batch_id?: NullableStringFieldUpdateOperationsInput | string | null
@@ -74531,6 +74987,7 @@ export namespace Prisma {
     locked_editions?: locked_editionsCreateNestedManyWithoutOrdersInput
     bookshopes: bookshopesCreateNestedOneWithoutOrdersInput
     order_items?: order_itemsCreateNestedManyWithoutOrderInput
+    order_made_by?: accountsCreateNestedOneWithoutOrdersInput
     payment_records_from_shop_to_printer?: payment_records_from_shop_to_printerCreateNestedManyWithoutOrdersInput
   }
 
@@ -74551,6 +75008,7 @@ export namespace Prisma {
     delivered_by?: number | null
     updatedAt?: Date | string
     createdAt?: Date | string
+    order_made_by_id?: number | null
     locked_editions?: locked_editionsUncheckedCreateNestedManyWithoutOrdersInput
     order_items?: order_itemsUncheckedCreateNestedManyWithoutOrderInput
     payment_records_from_shop_to_printer?: payment_records_from_shop_to_printerUncheckedCreateNestedManyWithoutOrdersInput
@@ -74911,6 +75369,7 @@ export namespace Prisma {
     bookshopes: bookshopesCreateNestedOneWithoutOrdersInput
     checks?: checksCreateNestedOneWithoutOrdersInput
     order_items?: order_itemsCreateNestedManyWithoutOrderInput
+    order_made_by?: accountsCreateNestedOneWithoutOrdersInput
   }
 
   export type ordersUncheckedCreateWithoutPayment_records_from_shop_to_printerInput = {
@@ -74931,6 +75390,7 @@ export namespace Prisma {
     delivered_by?: number | null
     updatedAt?: Date | string
     createdAt?: Date | string
+    order_made_by_id?: number | null
     locked_editions?: locked_editionsUncheckedCreateNestedManyWithoutOrdersInput
     order_items?: order_itemsUncheckedCreateNestedManyWithoutOrderInput
   }
@@ -75054,6 +75514,7 @@ export namespace Prisma {
     bookshopes?: bookshopesUpdateOneRequiredWithoutOrdersNestedInput
     checks?: checksUpdateOneWithoutOrdersNestedInput
     order_items?: order_itemsUpdateManyWithoutOrderNestedInput
+    order_made_by?: accountsUpdateOneWithoutOrdersNestedInput
   }
 
   export type ordersUncheckedUpdateWithoutPayment_records_from_shop_to_printerInput = {
@@ -75074,6 +75535,7 @@ export namespace Prisma {
     delivered_by?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    order_made_by_id?: NullableIntFieldUpdateOperationsInput | number | null
     locked_editions?: locked_editionsUncheckedUpdateManyWithoutOrdersNestedInput
     order_items?: order_itemsUncheckedUpdateManyWithoutOrderNestedInput
   }
@@ -75205,6 +75667,7 @@ export namespace Prisma {
     binding_cost?: number | null
     design_cost?: number | null
     translation_cost?: number | null
+    cover_price?: number | null
     memo?: string | null
     book_image_url?: string | null
     visiblitiy_to_printer?: boolean
@@ -75248,6 +75711,7 @@ export namespace Prisma {
     binding_cost?: number | null
     design_cost?: number | null
     translation_cost?: number | null
+    cover_price?: number | null
     memo?: string | null
     book_image_url?: string | null
     visiblitiy_to_printer?: boolean
@@ -75346,6 +75810,7 @@ export namespace Prisma {
     binding_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_price?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
     visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
@@ -75389,6 +75854,7 @@ export namespace Prisma {
     binding_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_price?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
     visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
@@ -75467,6 +75933,26 @@ export namespace Prisma {
     updatedAt: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+  }
+
+  export type ordersCreateManyOrder_made_byInput = {
+    id?: number
+    bookShopId: number
+    order_type: string
+    memo?: string | null
+    hide_remaining?: boolean
+    is_approved?: boolean
+    total_amount?: number
+    amount_paid?: number
+    payment_type?: string | null
+    check_id?: number | null
+    status?: string
+    is_deleted?: boolean
+    allocation_summary?: string | null
+    delivery?: boolean
+    delivered_by?: number | null
+    updatedAt?: Date | string
+    createdAt?: Date | string
   }
 
   export type activityLogsUpdateWithoutAccountInput = {
@@ -75601,6 +76087,71 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ordersUpdateWithoutOrder_made_byInput = {
+    order_type?: StringFieldUpdateOperationsInput | string
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    hide_remaining?: BoolFieldUpdateOperationsInput | boolean
+    is_approved?: BoolFieldUpdateOperationsInput | boolean
+    total_amount?: FloatFieldUpdateOperationsInput | number
+    amount_paid?: FloatFieldUpdateOperationsInput | number
+    payment_type?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    allocation_summary?: NullableStringFieldUpdateOperationsInput | string | null
+    delivery?: BoolFieldUpdateOperationsInput | boolean
+    delivered_by?: NullableIntFieldUpdateOperationsInput | number | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    locked_editions?: locked_editionsUpdateManyWithoutOrdersNestedInput
+    bookshopes?: bookshopesUpdateOneRequiredWithoutOrdersNestedInput
+    checks?: checksUpdateOneWithoutOrdersNestedInput
+    order_items?: order_itemsUpdateManyWithoutOrderNestedInput
+    payment_records_from_shop_to_printer?: payment_records_from_shop_to_printerUpdateManyWithoutOrdersNestedInput
+  }
+
+  export type ordersUncheckedUpdateWithoutOrder_made_byInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    bookShopId?: IntFieldUpdateOperationsInput | number
+    order_type?: StringFieldUpdateOperationsInput | string
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    hide_remaining?: BoolFieldUpdateOperationsInput | boolean
+    is_approved?: BoolFieldUpdateOperationsInput | boolean
+    total_amount?: FloatFieldUpdateOperationsInput | number
+    amount_paid?: FloatFieldUpdateOperationsInput | number
+    payment_type?: NullableStringFieldUpdateOperationsInput | string | null
+    check_id?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: StringFieldUpdateOperationsInput | string
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    allocation_summary?: NullableStringFieldUpdateOperationsInput | string | null
+    delivery?: BoolFieldUpdateOperationsInput | boolean
+    delivered_by?: NullableIntFieldUpdateOperationsInput | number | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    locked_editions?: locked_editionsUncheckedUpdateManyWithoutOrdersNestedInput
+    order_items?: order_itemsUncheckedUpdateManyWithoutOrderNestedInput
+    payment_records_from_shop_to_printer?: payment_records_from_shop_to_printerUncheckedUpdateManyWithoutOrdersNestedInput
+  }
+
+  export type ordersUncheckedUpdateManyWithoutOrder_made_byInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    bookShopId?: IntFieldUpdateOperationsInput | number
+    order_type?: StringFieldUpdateOperationsInput | string
+    memo?: NullableStringFieldUpdateOperationsInput | string | null
+    hide_remaining?: BoolFieldUpdateOperationsInput | boolean
+    is_approved?: BoolFieldUpdateOperationsInput | boolean
+    total_amount?: FloatFieldUpdateOperationsInput | number
+    amount_paid?: FloatFieldUpdateOperationsInput | number
+    payment_type?: NullableStringFieldUpdateOperationsInput | string | null
+    check_id?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: StringFieldUpdateOperationsInput | string
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    allocation_summary?: NullableStringFieldUpdateOperationsInput | string | null
+    delivery?: BoolFieldUpdateOperationsInput | boolean
+    delivered_by?: NullableIntFieldUpdateOperationsInput | number | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type locked_editionsCreateManyBookeditionInput = {
@@ -76023,6 +76574,7 @@ export namespace Prisma {
     binding_cost?: number | null
     design_cost?: number | null
     translation_cost?: number | null
+    cover_price?: number | null
     memo?: string | null
     book_image_url?: string | null
     visiblitiy_to_printer?: boolean
@@ -76124,6 +76676,7 @@ export namespace Prisma {
     binding_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_price?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
     visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
@@ -76167,6 +76720,7 @@ export namespace Prisma {
     binding_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_price?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
     visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
@@ -76210,6 +76764,7 @@ export namespace Prisma {
     binding_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     design_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     translation_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    cover_price?: NullableFloatFieldUpdateOperationsInput | number | null
     memo?: NullableStringFieldUpdateOperationsInput | string | null
     book_image_url?: NullableStringFieldUpdateOperationsInput | string | null
     visiblitiy_to_printer?: BoolFieldUpdateOperationsInput | boolean
@@ -76358,6 +76913,7 @@ export namespace Prisma {
     delivered_by?: number | null
     updatedAt?: Date | string
     createdAt?: Date | string
+    order_made_by_id?: number | null
   }
 
   export type paymentsCreateManyShopInput = {
@@ -76465,6 +77021,7 @@ export namespace Prisma {
     locked_editions?: locked_editionsUpdateManyWithoutOrdersNestedInput
     checks?: checksUpdateOneWithoutOrdersNestedInput
     order_items?: order_itemsUpdateManyWithoutOrderNestedInput
+    order_made_by?: accountsUpdateOneWithoutOrdersNestedInput
     payment_records_from_shop_to_printer?: payment_records_from_shop_to_printerUpdateManyWithoutOrdersNestedInput
   }
 
@@ -76485,6 +77042,7 @@ export namespace Prisma {
     delivered_by?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    order_made_by_id?: NullableIntFieldUpdateOperationsInput | number | null
     locked_editions?: locked_editionsUncheckedUpdateManyWithoutOrdersNestedInput
     order_items?: order_itemsUncheckedUpdateManyWithoutOrderNestedInput
     payment_records_from_shop_to_printer?: payment_records_from_shop_to_printerUncheckedUpdateManyWithoutOrdersNestedInput
@@ -76507,6 +77065,7 @@ export namespace Prisma {
     delivered_by?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    order_made_by_id?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type paymentsUpdateWithoutShopInput = {
@@ -77670,6 +78229,7 @@ export namespace Prisma {
     delivered_by?: number | null
     updatedAt?: Date | string
     createdAt?: Date | string
+    order_made_by_id?: number | null
   }
 
   export type paymentsUpdateWithoutCheckInput = {
@@ -77749,6 +78309,7 @@ export namespace Prisma {
     locked_editions?: locked_editionsUpdateManyWithoutOrdersNestedInput
     bookshopes?: bookshopesUpdateOneRequiredWithoutOrdersNestedInput
     order_items?: order_itemsUpdateManyWithoutOrderNestedInput
+    order_made_by?: accountsUpdateOneWithoutOrdersNestedInput
     payment_records_from_shop_to_printer?: payment_records_from_shop_to_printerUpdateManyWithoutOrdersNestedInput
   }
 
@@ -77769,6 +78330,7 @@ export namespace Prisma {
     delivered_by?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    order_made_by_id?: NullableIntFieldUpdateOperationsInput | number | null
     locked_editions?: locked_editionsUncheckedUpdateManyWithoutOrdersNestedInput
     order_items?: order_itemsUncheckedUpdateManyWithoutOrderNestedInput
     payment_records_from_shop_to_printer?: payment_records_from_shop_to_printerUncheckedUpdateManyWithoutOrdersNestedInput
@@ -77791,6 +78353,7 @@ export namespace Prisma {
     delivered_by?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    order_made_by_id?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type retail_purchase_itemsCreateManyPurchaseInput = {

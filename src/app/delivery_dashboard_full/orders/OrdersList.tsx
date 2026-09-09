@@ -34,6 +34,7 @@ type OrderRow = {
   is_approved: boolean;
   delivery: boolean;
   createdAt: string | Date;
+  order_made_by?: { id: number; name: string } | null;
   bookshopes: {
     id: number;
     name: string;
@@ -298,6 +299,10 @@ export default function OrdersList({ orders, payments: allPayments }: { orders: 
                       <div className="flex justify-between">
                         <span className="text-muted-foreground font-medium">Date</span>
                         <span className="font-bold text-right">{dateStr} {timeStr}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground font-medium">Order Made By</span>
+                        <span className="font-bold text-right">{o.order_made_by?.name || "Unknown"}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground font-medium">Total Books</span>

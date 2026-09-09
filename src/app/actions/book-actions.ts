@@ -101,6 +101,65 @@ export async function createBook(data: BookFormValues) {
   }
 }
 
+export async function getBooksStorePrintData() {
+  try {
+    // Books currently sitting in stores (any edition with at least 1 unit
+    // across its non-deleted store inventory records). For each qualifying
+    // book, the EARLIEST edition that has store stock provides the price +
+    // cover price shown for the book.
+    const books = await prisma.books.findMany({
+      where: { is_deleted: false },
+      select: {
+        title: true,
+        short_name: true,
+        bookedition: {
+          where: { is_deleted: false },
+          select: {
+            id: true,
+            createdAt: true,
+            selling_price: true,
+            cover_price: true,
+            bookeditionstores: {
+              where: { is_deleted: false },
+              select: { quantity: true },
+            },
+          },
+          orderBy: { createdAt: "asc" },
+        },
+      },
+      orderBy: [
+        { book_sort_index: { sort: "asc", nulls: "last" } },
+        { createdAt: "desc" },
+      ],
+    });
+
+    const data = books
+      .map((book: any) => {
+        const qualifying = (book.bookedition || []).filter(
+          (ed: any) =>
+            (ed.bookeditionstores || []).reduce(
+              (sum: number, s: any) => sum + (s.quantity || 0),
+              0
+            ) >= 1
+        );
+        if (qualifying.length === 0) return null;
+        const earliest = qualifying[0];
+        return {
+          title: book.title as string,
+          short_name: (book.short_name ?? null) as string | null,
+          price: (earliest.selling_price ?? null) as number | null,
+          cover_price: (earliest.cover_price ?? null) as number | null,
+        };
+      })
+      .filter(Boolean);
+
+    return { success: true, data };
+  } catch (error) {
+    console.error("Failed to fetch books for store print:", error);
+    return { success: false, error: "Failed to fetch books for print" };
+  }
+}
+
 export async function updateBook(id: string, data: Partial<BookFormValues>) {
   const permission = await checkCurrentUserRole("Editing Books");
   if (!permission.enabled) {

@@ -101,6 +101,7 @@ export default function CreatePrintOrderButton({ printers, editions, books }: Cr
     const [drawerEditionPages, setDrawerEditionPages] = useState('')
     const [drawerEditionPrice, setDrawerEditionPrice] = useState('')
     const [drawerEditionTotalPrice, setDrawerEditionTotalPrice] = useState('')
+    const [drawerEditionCoverPrice, setDrawerEditionCoverPrice] = useState('')
 
     // New book drawer: book fields + edition fields
     const [drawerBookTitle, setDrawerBookTitle] = useState('')
@@ -113,6 +114,7 @@ export default function CreatePrintOrderButton({ printers, editions, books }: Cr
     const [drawerBookEditionPages, setDrawerBookEditionPages] = useState('')
     const [drawerBookEditionPrice, setDrawerBookEditionPrice] = useState('')
     const [drawerBookEditionTotalPrice, setDrawerBookEditionTotalPrice] = useState('')
+    const [drawerBookEditionCoverPrice, setDrawerBookEditionCoverPrice] = useState('')
 
     const [settingsOpen, setSettingsOpen] = useState(false)
     const [settingsItem, setSettingsItem] = useState<PrintOrderItem | null>(null)
@@ -228,6 +230,7 @@ export default function CreatePrintOrderButton({ printers, editions, books }: Cr
             setDrawerEditionPages('')
             setDrawerEditionPrice('')
             setDrawerEditionTotalPrice('')
+            setDrawerEditionCoverPrice('')
         } else {
             setDrawerBookTitle('')
             setDrawerBookAuthor('')
@@ -239,6 +242,7 @@ export default function CreatePrintOrderButton({ printers, editions, books }: Cr
             setDrawerBookEditionPages('')
             setDrawerBookEditionPrice('')
             setDrawerBookEditionTotalPrice('')
+            setDrawerBookEditionCoverPrice('')
         }
         setIsDrawerOpen(true)
     }
@@ -268,6 +272,7 @@ export default function CreatePrintOrderButton({ printers, editions, books }: Cr
             let pages: string
             let price: string
             let totalPrice: string
+            let coverPrice: string
 
             if (additionMode === 'new-edition') {
                 if (!drawerSelectedBookId) {
@@ -286,6 +291,7 @@ export default function CreatePrintOrderButton({ printers, editions, books }: Cr
                 pages = drawerEditionPages
                 price = drawerEditionPrice
                 totalPrice = drawerEditionTotalPrice
+                coverPrice = drawerEditionCoverPrice
             } else {
                 if (!drawerBookTitle.trim() || !drawerBookAuthor.trim() || !drawerBookCategory.trim() || !drawerBookYear.trim()) {
                     toast.error("Please fill in title, author, category, and publication year")
@@ -310,6 +316,7 @@ export default function CreatePrintOrderButton({ printers, editions, books }: Cr
                 pages = drawerBookEditionPages
                 price = drawerBookEditionPrice
                 totalPrice = drawerBookEditionTotalPrice
+                coverPrice = drawerBookEditionCoverPrice
             }
 
             // Create the edition
@@ -319,6 +326,7 @@ export default function CreatePrintOrderButton({ printers, editions, books }: Cr
                 total_print_count: qty ? parseInt(qty) : undefined,
                 number_of_pages: pages ? parseInt(pages) : undefined,
                 production_price: price ? parseFloat(price) : undefined,
+                cover_price: coverPrice ? parseFloat(coverPrice) : undefined,
             })
 
             if (!editionRes.success || !editionRes.data) {
@@ -1189,6 +1197,22 @@ export default function CreatePrintOrderButton({ printers, editions, books }: Cr
                                             onWheel={(e) => e.currentTarget.blur()}
                                             className="h-12 px-4 rounded-xl border-2 border-slate-200 font-bold"
                                             placeholder="e.g. 150.00"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">Cover Price (Optional, ETB)</label>
+                                        <Input
+                                            type="number"
+                                            min="0"
+                                            step="0.01"
+                                            value={additionMode === 'new-edition' ? drawerEditionCoverPrice : drawerBookEditionCoverPrice}
+                                            onChange={(e) => {
+                                                if (additionMode === 'new-edition') setDrawerEditionCoverPrice(e.target.value)
+                                                else setDrawerBookEditionCoverPrice(e.target.value)
+                                            }}
+                                            onWheel={(e) => e.currentTarget.blur()}
+                                            className="h-12 px-4 rounded-xl border-2 border-slate-200 font-bold"
+                                            placeholder="e.g. 250.00"
                                         />
                                     </div>
                                 </div>

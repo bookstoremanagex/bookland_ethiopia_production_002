@@ -6,6 +6,7 @@ export default async function OrdersPage() {
     where: { is_deleted: false },
     include: {
       bookshopes: { select: { id: true, name: true, location: true, branch: true } },
+      order_made_by: { select: { id: true, name: true } },
       locked_editions: { where: { is_deleted: false } },
       order_items: {
         select: {

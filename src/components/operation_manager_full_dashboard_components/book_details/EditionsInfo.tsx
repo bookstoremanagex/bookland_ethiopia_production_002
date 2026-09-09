@@ -78,6 +78,7 @@ export default function EditionsInfo({ book }: EditionsInfoProps) {
     other_expenses: "",
     transportation_cost: "",
     translation_cost: "",
+    cover_price: "",
     translator_cost: "",
     cover_design_cost: "",
     text_design_cost: "",
@@ -614,6 +615,31 @@ export default function EditionsInfo({ book }: EditionsInfoProps) {
                             }
                             onFocus={(e) => e.target.select()}
                             className="h-14 pl-10 rounded-2xl border-2 font-bold bg-slate-50"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-primarycolor ml-1">
+                          Cover Price <span className="text-[9px] font-bold text-muted-foreground">(Optional)</span>
+                        </label>
+                        <div className="relative">
+                          <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                          <Input
+                            type="number"
+                            step="0.01"
+                            value={formData.cover_price}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                cover_price: e.target.value,
+                              })
+                            }
+                            onWheel={(e) =>
+                              (e.target as HTMLInputElement).blur()
+                            }
+                            onFocus={(e) => e.target.select()}
+                            className="h-14 pl-10 rounded-2xl border-2 font-bold"
                           />
                         </div>
                       </div>

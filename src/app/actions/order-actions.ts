@@ -292,6 +292,8 @@ export async function createOrder(data: {
   items: { bookId: number; quantity: number }[];
 }) {
   try {
+    const session = await getCurrentSession();
+
     // 1. Calculate total amount and prepare items using FIFO
     let totalAmount = 0;
     const finalOrderItems: any[] = [];
@@ -356,6 +358,7 @@ export async function createOrder(data: {
         total_amount: totalAmount,
         is_approved: false,
         status: "Pending",
+        order_made_by_id: session?.id ?? null,
         updatedAt: new Date(),
         order_items: {
           create: finalOrderItems,
@@ -423,7 +426,6 @@ export async function createOrder(data: {
 
     // Create notification
     try {
-      const session = await getCurrentSession();
       const shop = await (prisma as any).bookshopes.findUnique({
         where: { id: Number(data.bookShopId) }
       });
@@ -695,6 +697,9 @@ export async function getAllOrders() {
       include: {
         bookshopes: true,
         checks: true,
+        order_made_by: {
+          select: { id: true, name: true },
+        },
         locked_editions: {
           where: { is_deleted: false },
         },
@@ -726,6 +731,9 @@ export async function getOrderById(orderId: number) {
       include: {
         bookshopes: true,
         checks: true,
+        order_made_by: {
+          select: { id: true, name: true },
+        },
         locked_editions: {
           where: { is_deleted: false },
         },

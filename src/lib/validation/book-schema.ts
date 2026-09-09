@@ -3,6 +3,7 @@ import { z } from "zod";
 export const bookSchema = z.object({
   isbn: z.string().optional().nullable(),
   title: z.string().min(1, "Title is required"),
+  short_name: z.string().optional().nullable(),
   author: z.string().min(1, "Author is required"),
   pen_name: z.string().optional().nullable(),
   translator: z.string().optional().nullable(),

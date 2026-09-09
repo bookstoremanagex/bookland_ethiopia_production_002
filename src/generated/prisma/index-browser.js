@@ -144,6 +144,7 @@ exports.Prisma.BookeditionScalarFieldEnum = {
   binding_cost: 'binding_cost',
   design_cost: 'design_cost',
   translation_cost: 'translation_cost',
+  cover_price: 'cover_price',
   memo: 'memo',
   book_image_url: 'book_image_url',
   visiblitiy_to_printer: 'visiblitiy_to_printer',
@@ -204,6 +205,7 @@ exports.Prisma.BooksScalarFieldEnum = {
   language: 'language',
   edition: 'edition',
   category: 'category',
+  short_name: 'short_name',
   publication_year: 'publication_year',
   copyright_registration_number: 'copyright_registration_number',
   print_batch_id: 'print_batch_id',
@@ -290,7 +292,8 @@ exports.Prisma.OrdersScalarFieldEnum = {
   delivery: 'delivery',
   delivered_by: 'delivered_by',
   updatedAt: 'updatedAt',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  order_made_by_id: 'order_made_by_id'
 };
 
 exports.Prisma.Order_itemsScalarFieldEnum = {
@@ -778,6 +781,7 @@ exports.Prisma.booksOrderByRelevanceFieldEnum = {
   language: 'language',
   edition: 'edition',
   category: 'category',
+  short_name: 'short_name',
   publication_year: 'publication_year',
   copyright_registration_number: 'copyright_registration_number',
   print_batch_id: 'print_batch_id',
