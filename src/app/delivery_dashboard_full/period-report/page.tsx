@@ -6,7 +6,7 @@ import { DateInput } from "@/components/ui/date-input";
 import { getPeriodReportData } from "@/app/actions/get-period-report";
 import {
     CalendarDays, ShoppingCart, Repeat, Banknote, CheckCircle,
-    BookOpen, Store, ArrowUpRight, Wallet, Loader2,
+    BookOpen, Store, ArrowUpRight, Loader2,
     Printer, LayoutGrid, Table2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -179,14 +179,6 @@ export default function PeriodReportPage() {
         <tbody>
             <tr><td class="label">Payments Recorded</td><td class="value">${data.paymentsCount}</td></tr>
             <tr><td class="label">Approved</td><td class="value">${data.approvedPaymentsCount}</td></tr>
-            <tr><td class="label">Approved Amount</td><td class="value positive">${formatBirr(data.totalApprovedAmount)}</td></tr>
-        </tbody>
-    </table>
-    <div class="section-title" style="color:#6366f1;border-bottom:2px solid #6366f1;">Summary</div>
-    <table>
-        <thead><tr><th>Metric</th><th style="text-align:right;">Value</th></tr></thead>
-        <tbody>
-            <tr><td class="label">Total Revenue (Orders + Rounds)</td><td class="value positive">${formatBirr(data.totalSoldAmount + data.totalRoundRevenue)}</td></tr>
         </tbody>
     </table>
     <script>window.onload=function(){setTimeout(function(){window.print()},500)};<\/script>
@@ -329,15 +321,6 @@ export default function PeriodReportPage() {
                                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
                                     <StatCard icon={<Banknote className="size-5" />} label="Payments Recorded" value={data.paymentsCount.toString()} color="emerald" />
                                     <StatCard icon={<CheckCircle className="size-5" />} label="Approved" value={data.approvedPaymentsCount.toString()} color="emerald" />
-                                    <StatCard icon={<Wallet className="size-5" />} label="Approved Amount" value={formatBirr(data.totalApprovedAmount)} color="emerald" />
-                                </div>
-                            </div>
-                            <div>
-                                <h2 className="text-xs md:text-sm font-black uppercase tracking-widest text-slate-400 mb-3 md:mb-4 flex items-center gap-2">
-                                    <Wallet className="size-3.5 md:size-4" /> Summary
-                                </h2>
-                                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
-                                    <StatCard icon={<Wallet className="size-5" />} label="Total Revenue (Orders + Rounds)" value={formatBirr(data.totalSoldAmount + data.totalRoundRevenue)} color="indigo" />
                                 </div>
                             </div>
                         </div>
@@ -366,10 +349,6 @@ export default function PeriodReportPage() {
                                         <TableSection category="Payments" color="emerald" rows={[
                                             { label: "Payments Recorded", value: data.paymentsCount.toString() },
                                             { label: "Approved", value: data.approvedPaymentsCount.toString() },
-                                            { label: "Approved Amount", value: formatBirr(data.totalApprovedAmount), positive: true },
-                                        ]} />
-                                        <TableSection category="Summary" color="slate" rows={[
-                                            { label: "Total Revenue (Orders + Rounds)", value: formatBirr(data.totalSoldAmount + data.totalRoundRevenue), positive: true },
                                         ]} />
                                     </tbody>
                                 </table>
