@@ -162,9 +162,9 @@ export async function getBooksStorePrintData() {
 
 export async function getBooksSettingsData() {
   try {
-    // Books that have at least one edition with stock: either remaining for
-    // transfer >= 1 OR summed store inventory >= 1. Each qualifying edition
-    // is returned as its own row (book info + edition info).
+    // Books that have at least one edition with store stock: summed store
+    // inventory >= 1. Editions with 0 in store are excluded, even if they
+    // still hold remaining-for-transfer units.
     const books = await prisma.books.findMany({
       where: { is_deleted: false },
       select: {
@@ -216,11 +216,7 @@ export async function getBooksSettingsData() {
               0
             ),
           }))
-          .filter(
-            (ed: any) =>
-              (ed.count_remening_for_transfer || 0) >= 1 ||
-              (ed.store_quantity || 0) >= 1
-          );
+          .filter((ed: any) => (ed.store_quantity || 0) >= 1);
         if (editions.length === 0) return null;
         return {
           id: book.id,

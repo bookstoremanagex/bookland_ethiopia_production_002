@@ -245,7 +245,7 @@ export default function BooksSettingsTable({ initialBooks }: { initialBooks: Set
     <div className="space-y-5">
       <div className="flex flex-col md:flex-row md:items-center gap-3 justify-between">
         <p className="text-xs font-bold text-muted-foreground">
-          {filtered.length} books · {rowCount} editions with stock. Only books with at least one edition holding stock (store quantity ≥ 1 or remaining for transfer ≥ 1) are listed. Click any value to edit — changes save per field.
+          {filtered.length} books · {rowCount} editions in store. Only editions with store quantity ≥ 1 are listed (editions with 0 in store are hidden). Click any value to edit — changes save per field.
         </p>
         <div className="relative w-full md:w-72 shrink-0">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
