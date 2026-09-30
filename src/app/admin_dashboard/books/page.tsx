@@ -1,4 +1,6 @@
 import React from 'react'
+import Link from 'next/link'
+import { Settings } from 'lucide-react'
 import { getBooks } from '../../actions/get-books'
 import { BooksTable } from '../../../components/admin_dashboard_components/BooksTable'
 import { checkCurrentUserRole } from '../../actions/book-shop-actions'
@@ -27,7 +29,16 @@ export default async function BooksPage() {
                     <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Books <span className="text-secondarycolor not-italic">Management</span></h1>
                     <p className="text-muted-foreground font-bold tracking-tight">Precision control over your inventory with advanced filtering.</p>
                 </div>
-                <BooksPrintDialog />
+                <div className="flex items-center gap-2">
+                    <BooksPrintDialog />
+                    <Link
+                        href="/admin_dashboard/books/settings"
+                        title="Books & editions settings"
+                        className="hidden md:flex h-12 w-12 p-0 border-2 border-primarycolor/20 text-primarycolor hover:bg-primarycolor/5 rounded-2xl transition-all active:scale-95 items-center justify-center"
+                    >
+                        <Settings className="size-5" />
+                    </Link>
+                </div>
             </div>
 
             {response.success ? (

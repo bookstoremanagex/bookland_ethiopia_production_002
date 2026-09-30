@@ -159,6 +159,86 @@ export async function updateEdition(id: number, data: any) {
     }
 }
 
+export async function updateEditionField(id: number, field: string, value: any) {
+    try {
+        const allowedText = new Set(["edition_name"]);
+        const allowedInt = new Set(["total_print_count", "count_remening_for_transfer", "number_of_pages"]);
+        const allowedFloat = new Set(["selling_price", "cover_price"]);
+
+        if (allowedText.has(field)) {
+            const v = String(value ?? "").trim();
+            if (!v) return { success: false, error: "Value is required" };
+            const updated = await (prisma as any).bookedition.update({
+                where: { id },
+                data: { [field]: v, updatedAt: new Date() },
+            });
+            revalidatePath("/admin_dashboard/books");
+            return { success: true, data: updated };
+        }
+
+        if (allowedInt.has(field)) {
+            const n = value === "" || value == null ? null : parseInt(String(value), 10);
+            if (n == null || Number.isNaN(n) || n < 0) {
+                return { success: false, error: "Enter a valid number (0 or more)" };
+            }
+            // total_print_count keeps remaining consistent (same rule as
+            // updateEditionPrintCount): remaining shifts by the diff, and the
+            // total may not drop below already-transferred units.
+            if (field === "total_print_count") {
+                const edition = await (prisma as any).bookedition.findUnique({
+                    where: { id },
+                    select: { total_print_count: true, count_remening_for_transfer: true },
+                });
+                if (!edition) return { success: false, error: "Edition not found" };
+                const oldTotal = edition.total_print_count || 0;
+                const alreadyTransferred = oldTotal - (edition.count_remening_for_transfer || 0);
+                if (n < alreadyTransferred) {
+                    return { success: false, error: `Total cannot be less than ${alreadyTransferred} (already transferred)` };
+                }
+                const newRemaining = (edition.count_remening_for_transfer || 0) + (n - oldTotal);
+                const updated = await (prisma as any).bookedition.update({
+                    where: { id },
+                    data: { total_print_count: n, count_remening_for_transfer: newRemaining, updatedAt: new Date() },
+                });
+                revalidatePath("/admin_dashboard/books");
+                return { success: true, data: updated };
+            }
+            const updated = await (prisma as any).bookedition.update({
+                where: { id },
+                data: { [field]: n, updatedAt: new Date() },
+            });
+            revalidatePath("/admin_dashboard/books");
+            return { success: true, data: updated };
+        }
+
+        if (allowedFloat.has(field)) {
+            if (field === "cover_price" && (value === "" || value == null)) {
+                const updated = await (prisma as any).bookedition.update({
+                    where: { id },
+                    data: { cover_price: null, updatedAt: new Date() },
+                });
+                revalidatePath("/admin_dashboard/books");
+                return { success: true, data: updated };
+            }
+            const n = parseFloat(String(value));
+            if (Number.isNaN(n) || n < 0) {
+                return { success: false, error: "Enter a valid price (0 or more)" };
+            }
+            const updated = await (prisma as any).bookedition.update({
+                where: { id },
+                data: { [field]: n, updatedAt: new Date() },
+            });
+            revalidatePath("/admin_dashboard/books");
+            return { success: true, data: updated };
+        }
+
+        return { success: false, error: "Field cannot be edited here" };
+    } catch (error: any) {
+        console.error("Failed to update edition field:", error);
+        return { success: false, error: error?.message || "Failed to update edition" };
+    }
+}
+
 export async function assignPrinterToEdition(data: {
     editionId: number;
     totalPrintCount: number;

@@ -160,6 +160,88 @@ export async function getBooksStorePrintData() {
   }
 }
 
+export async function getBooksSettingsData() {
+  try {
+    // Books that have at least one edition with stock: either remaining for
+    // transfer >= 1 OR summed store inventory >= 1. Each qualifying edition
+    // is returned as its own row (book info + edition info).
+    const books = await prisma.books.findMany({
+      where: { is_deleted: false },
+      select: {
+        id: true,
+        unique_identification_code: true,
+        title: true,
+        short_name: true,
+        publication_year: true,
+        author: true,
+        pen_name: true,
+        bookedition: {
+          where: { is_deleted: false },
+          select: {
+            id: true,
+            edition_name: true,
+            total_print_count: true,
+            count_remening_for_transfer: true,
+            selling_price: true,
+            number_of_pages: true,
+            cover_price: true,
+            createdAt: true,
+            bookeditionstores: {
+              where: { is_deleted: false },
+              select: { quantity: true },
+            },
+          },
+          orderBy: { createdAt: "asc" },
+        },
+      },
+      orderBy: [
+        { book_sort_index: { sort: "asc", nulls: "last" } },
+        { createdAt: "desc" },
+      ],
+    });
+
+    const data = (books as any[])
+      .map((book: any) => {
+        const editions = (book.bookedition || [])
+          .map((ed: any) => ({
+            id: ed.id,
+            edition_name: ed.edition_name,
+            total_print_count: ed.total_print_count ?? 0,
+            count_remening_for_transfer: ed.count_remening_for_transfer ?? 0,
+            selling_price: ed.selling_price ?? null,
+            number_of_pages: ed.number_of_pages ?? null,
+            cover_price: ed.cover_price ?? null,
+            store_quantity: (ed.bookeditionstores || []).reduce(
+              (sum: number, s: any) => sum + (s.quantity || 0),
+              0
+            ),
+          }))
+          .filter(
+            (ed: any) =>
+              (ed.count_remening_for_transfer || 0) >= 1 ||
+              (ed.store_quantity || 0) >= 1
+          );
+        if (editions.length === 0) return null;
+        return {
+          id: book.id,
+          unique_identification_code: book.unique_identification_code,
+          title: book.title,
+          short_name: book.short_name ?? null,
+          publication_year: book.publication_year,
+          author: book.author ?? null,
+          pen_name: book.pen_name ?? null,
+          editions,
+        };
+      })
+      .filter(Boolean);
+
+    return { success: true, data };
+  } catch (error) {
+    console.error("Failed to fetch books settings data:", error);
+    return { success: false, error: "Failed to fetch books settings data" };
+  }
+}
+
 export async function updateBook(id: string, data: Partial<BookFormValues>) {
   const permission = await checkCurrentUserRole("Editing Books");
   if (!permission.enabled) {
