@@ -52,7 +52,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useCalendar } from "@/lib/calendar-context";
 import { toast } from "sonner";
-import { getBookStockBreakdown, approveOrder, markOrderDelivered, removeBookFromOrder, removeBooksFromOrder, getShopTotalDebt, deleteOrder, getOrderById } from "@/app/actions/order-actions";
+import { getBookStockBreakdownsBatch, approveOrder, markOrderDelivered, removeBookFromOrder, removeBooksFromOrder, getShopTotalDebt, deleteOrder, getOrderById } from "@/app/actions/order-actions";
 import { OrderModal } from "@/components/deliver_full_dashboard_components/OrderModal";
 import RecordPaymentModal from "@/app/admin_dashboard/manage_payment/[id]/RecordPaymentModal";
 import type { AdminOrder } from "./ManageOrdersPageContent";
@@ -203,12 +203,27 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
         if (!order || uniqueBooks.length === 0) return;
         setIsLoadingStock(true);
         try {
+            // One batched action call instead of one call per book. The response is
+            // keyed by bookId and always carries a key for every requested book, so
+            // walking uniqueBooks in order preserves the original ordering — which the
+            // index-parallel bookAllocations/bookTotals lookups below rely on. Books
+            // with no stock anywhere keep an empty `editions` array, exactly as the
+            // per-book loop left them: they still render, and still block approval
+            // until ignored.
+            const res = await getBookStockBreakdownsBatch(
+                uniqueBooks.map(ub => ({
+                    bookId: ub.bookId,
+                    editionIds: (editionBreakdownPerBook.get(ub.bookId) || []).map(e => e.editionId),
+                })),
+                order.id,
+            );
             const results: BookBreakdown[] = [];
-            for (const ub of uniqueBooks) {
-                const editionsInOrder = (editionBreakdownPerBook.get(ub.bookId) || []).map(e => e.editionId);
-                const res = await getBookStockBreakdown(ub.bookId, editionsInOrder, order.id);
-                if (res.success && res.data) {
-                    results.push({ ...ub, editions: res.data as EditionBreakdown[] });
+            if (res.success && res.data) {
+                for (const ub of uniqueBooks) {
+                    const editions = res.data[String(ub.bookId)];
+                    if (Array.isArray(editions)) {
+                        results.push({ ...ub, editions: editions as EditionBreakdown[] });
+                    }
                 }
             }
             setBookBreakdowns(results);
@@ -226,7 +241,7 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
         } finally {
             setIsLoadingStock(false);
         }
-    }, [order, uniqueBooks]);
+    }, [order, uniqueBooks, editionBreakdownPerBook]);
 
     // All unique stores across all breakdowns (for the global radio, deduplicated by storeId)
     const allStores = useMemo(() => {

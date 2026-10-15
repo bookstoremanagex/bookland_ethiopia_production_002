@@ -5,6 +5,77 @@ import { revalidatePath } from "next/cache";
 import { getCurrentSession } from "./auth-actions";
 import { createNotification } from "./notification-actions";
 
+type EditionBreakdownRow = {
+    editionId: number;
+    editionName: string;
+    price: number;
+    lockedAmount: number;
+    stores: {
+        storeStockId: number;
+        storeId: number;
+        storeName: string;
+        availableQty: number;
+        type: "store" | "printer";
+    }[];
+};
+
+// Only the stock quantity, the owning id and the name are ever read from these
+// parents, so they are selected explicitly rather than pulling whole rows.
+const STOCK_BREAKDOWN_INCLUDE = {
+    bookeditionstores: {
+        where: { is_deleted: false, quantity: { gt: 0 } },
+        select: { id: true, storeId: true, quantity: true, stores: { select: { name: true } } },
+    },
+    bookeditionprinters: {
+        where: { is_deleted: false, quantity: { gt: 0 } },
+        select: { id: true, printerId: true, quantity: true, printer: { select: { name: true } } },
+    },
+} as const;
+
+/**
+ * Turns raw bookedition rows into the per-edition breakdown shape. Locked units are
+ * walked off the store list in order, so the leading stores absorb the lock first,
+ * and editions left with no stock at all are dropped. Shared by the single-book and
+ * batched breakdown actions so both cannot drift apart.
+ */
+function shapeEditionBreakdowns(editions: any[], lockedMap: Record<number, number>): EditionBreakdownRow[] {
+    return editions
+        .map((ed: any) => {
+            const lockedAmount = lockedMap[ed.id] || 0;
+            let remainingToSubtract = lockedAmount;
+            const stores = [
+                ...ed.bookeditionstores.map((s: any) => ({
+                    storeStockId: s.id,
+                    storeId: s.storeId,
+                    storeName: s.stores?.name || "Unknown Store",
+                    availableQty: s.quantity || 0,
+                    type: "store" as const,
+                })),
+                ...ed.bookeditionprinters.map((p: any) => ({
+                    storeStockId: p.id,
+                    storeId: p.printerId,
+                    storeName: p.printer?.name || "Unknown Printer",
+                    availableQty: p.quantity || 0,
+                    type: "printer" as const,
+                })),
+            ].map(st => {
+                if (remainingToSubtract <= 0) return st;
+                const sub = Math.min(st.availableQty, remainingToSubtract);
+                remainingToSubtract -= sub;
+                return { ...st, availableQty: st.availableQty - sub };
+            });
+
+            return {
+                editionId: ed.id,
+                editionName: ed.edition_name,
+                price: ed.selling_price || 0,
+                lockedAmount,
+                stores,
+            };
+        })
+        .filter((edition: any) => edition.stores.length > 0);
+}
+
 export async function getShopRemainingBalance(shopId: number) {
     try {
         const shop = await (prisma as any).bookshopes.findUnique({
@@ -767,16 +838,7 @@ export async function getBookStockBreakdown(bookId: number, editionIds?: number[
     }
     const editions = await (prisma as any).bookedition.findMany({
       where,
-      include: {
-        bookeditionstores: {
-          where: { is_deleted: false, quantity: { gt: 0 } },
-          include: { stores: true },
-        },
-        bookeditionprinters: {
-          where: { is_deleted: false, quantity: { gt: 0 } },
-          include: { printer: true },
-        },
-      },
+      include: STOCK_BREAKDOWN_INCLUDE,
       orderBy: { createdAt: "asc" },
     });
 
@@ -800,45 +862,126 @@ export async function getBookStockBreakdown(bookId: number, editionIds?: number[
       }
     }
 
-    const result = editions
-      .map((ed: any) => {
-        const lockedAmount = lockedMap[ed.id] || 0;
-        let remainingToSubtract = lockedAmount;
-        const stores = [
-          ...ed.bookeditionstores.map((s: any) => ({
-            storeStockId: s.id,
-            storeId: s.storeId,
-            storeName: s.stores?.name || "Unknown Store",
-            availableQty: s.quantity || 0,
-            type: "store" as const,
-          })),
-          ...ed.bookeditionprinters.map((p: any) => ({
-            storeStockId: p.id,
-            storeId: p.printerId,
-            storeName: p.printer?.name || "Unknown Printer",
-            availableQty: p.quantity || 0,
-            type: "printer" as const,
-          })),
-        ].map(st => {
-          if (remainingToSubtract <= 0) return st;
-          const sub = Math.min(st.availableQty, remainingToSubtract);
-          remainingToSubtract -= sub;
-          return { ...st, availableQty: st.availableQty - sub };
-        });
-
-        return {
-          editionId: ed.id,
-          editionName: ed.edition_name,
-          price: ed.selling_price || 0,
-          lockedAmount,
-          stores,
-        };
-      })
-      .filter((edition: any) => edition.stores.length > 0);
-
-    return { success: true, data: result };
+    return { success: true, data: shapeEditionBreakdowns(editions, lockedMap) };
   } catch (error) {
     console.error("Get book stock breakdown error:", error);
+    return { success: false, error: "Failed to fetch stock breakdown" };
+  }
+}
+
+/**
+ * Batched twin of {@link getBookStockBreakdown}: resolves the same breakdown for
+ * many books in a fixed number of queries instead of two per book.
+ *
+ * The order approval dialog used to loop the single-book action once per book
+ * with `await` inside the loop, so opening a dialog with N books cost N sequential
+ * server-action round trips and 2N sequential queries. Here the whole order costs
+ * one round trip and at most three queries, regardless of N.
+ *
+ * `requests` mirrors the single-book arguments — `{ bookId, editionIds }` — and the
+ * result is keyed by `String(bookId)`. Every requested book gets a key even when it
+ * matched no editions, so the caller can zip the response positionally.
+ */
+export async function getBookStockBreakdownsBatch(
+  requests: { bookId: number; editionIds?: number[] }[],
+  excludeOrderId?: number,
+) {
+  try {
+    if (!Array.isArray(requests) || requests.length === 0) {
+      return { success: true, data: {} as Record<string, EditionBreakdownRow[]> };
+    }
+
+    // Collapse duplicate bookIds first (first occurrence wins). Without this a book
+    // requested both scoped and unscoped would land in both query buckets and its
+    // editions would be regrouped — and therefore duplicated — in the response.
+    const normalized: { bookId: number; editionIds: number[] }[] = [];
+    const seenBookIds = new Set<number>();
+    for (const req of requests) {
+      const bookId = Number(req.bookId);
+      if (seenBookIds.has(bookId)) continue;
+      seenBookIds.add(bookId);
+      normalized.push({ bookId, editionIds: (req.editionIds || []).map(Number) });
+    }
+
+    // Books that restrict themselves to specific editions are queried apart from the
+    // books that want every edition. Merging them into a single `id IN (...)` would
+    // let one book's unlisted editions leak into another book's result.
+    const scopedBookIds: number[] = [];
+    const scopedEditionIds: number[] = [];
+    const unscopedBookIds: number[] = [];
+    for (const req of normalized) {
+      if (req.editionIds.length > 0) {
+        scopedBookIds.push(req.bookId);
+        scopedEditionIds.push(...req.editionIds);
+      } else {
+        unscopedBookIds.push(req.bookId);
+      }
+    }
+
+    const pendingEditions: Promise<any[]>[] = [];
+    if (scopedBookIds.length > 0) {
+      pendingEditions.push(
+        (prisma as any).bookedition.findMany({
+          where: {
+            bookId: { in: scopedBookIds },
+            id: { in: [...new Set(scopedEditionIds)] },
+            is_deleted: false,
+          },
+          include: STOCK_BREAKDOWN_INCLUDE,
+          orderBy: { createdAt: "asc" },
+        }),
+      );
+    }
+    if (unscopedBookIds.length > 0) {
+      pendingEditions.push(
+        (prisma as any).bookedition.findMany({
+          where: { bookId: { in: unscopedBookIds }, is_deleted: false },
+          include: STOCK_BREAKDOWN_INCLUDE,
+          orderBy: { createdAt: "asc" },
+        }),
+      );
+    }
+
+    const editionGroups = await Promise.all(pendingEditions);
+
+    // Locks are keyed off the editions we actually got back, so this has to follow
+    // the edition queries rather than ride along with them in the same Promise.all.
+    const allEditionIds = [...new Set(editionGroups.flat().map((ed: any) => ed.id))];
+    const lockedMap: Record<number, number> = {};
+    if (allEditionIds.length > 0) {
+      const lockWhere: any = {
+        editionId: { in: allEditionIds },
+        status: "locked",
+        is_deleted: false,
+      };
+      if (excludeOrderId !== undefined) {
+        lockWhere.order_id = { not: excludeOrderId };
+      }
+      const lockedRecords = await (prisma as any).locked_editions.findMany({ where: lockWhere });
+      for (const lr of lockedRecords) {
+        lockedMap[lr.editionId] = (lockedMap[lr.editionId] || 0) + lr.amount_locked;
+      }
+    }
+
+    // Each book lives in exactly one bucket, so the per-query `createdAt: "asc"`
+    // ordering survives the regroup and the FIFO order is unchanged.
+    const editionsByBook = new Map<number, any[]>();
+    for (const group of editionGroups) {
+      for (const ed of group) {
+        const list = editionsByBook.get(ed.bookId) || [];
+        list.push(ed);
+        editionsByBook.set(ed.bookId, list);
+      }
+    }
+
+    const data: Record<string, EditionBreakdownRow[]> = {};
+    for (const req of normalized) {
+      data[String(req.bookId)] = shapeEditionBreakdowns(editionsByBook.get(req.bookId) || [], lockedMap);
+    }
+
+    return { success: true, data };
+  } catch (error) {
+    console.error("Get book stock breakdowns batch error:", error);
     return { success: false, error: "Failed to fetch stock breakdown" };
   }
 }

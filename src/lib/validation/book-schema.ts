@@ -1,5 +1,13 @@
 import { z } from "zod";
 
+const optionalNumberField = z.preprocess(
+  (value) =>
+    value === "" || value === null || value === undefined || Number.isNaN(value)
+      ? undefined
+      : value,
+  z.coerce.number().optional().nullable(),
+);
+
 export const bookSchema = z.object({
   isbn: z.string().optional().nullable(),
   title: z.string().min(1, "Title is required"),
@@ -14,10 +22,10 @@ export const bookSchema = z.object({
   publication_year: z.string().min(1, "Publication year is required"),
   copyright_registration_number: z.string().optional().nullable(),
   print_batch_id: z.string().optional().nullable(),
-  number_of_pages: z.coerce.number().optional().nullable(),
+  number_of_pages: optionalNumberField,
   info: z.string().optional().nullable(),
   book_image_url: z.string().optional().nullable(),
-  book_sort_index: z.coerce.number().optional().nullable(),
+  book_sort_index: optionalNumberField,
   translator_cost: z.coerce.number().catch(0),
   cover_design_cost: z.coerce.number().catch(0),
   text_design_cost: z.coerce.number().catch(0),

@@ -352,7 +352,7 @@ export function AddBookForm({ className }: AddBookFormProps) {
                 htmlFor="number_of_pages"
                 className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor"
               >
-                Number of Pages
+                Number of Pages <span className="text-[10px] font-normal text-muted-foreground">(Optional)</span>
               </label>
               <Input
                 id="number_of_pages"
@@ -361,8 +361,14 @@ export function AddBookForm({ className }: AddBookFormProps) {
                 {...register("number_of_pages", { valueAsNumber: true })}
                 onWheel={(e) => (e.target as HTMLInputElement).blur()}
                 onFocus={(e) => e.target.select()}
+                aria-invalid={!!errors.number_of_pages}
                 className="border-primarycolor/20 focus:border-primarycolor focus:ring-primarycolor/20"
               />
+              {errors.number_of_pages && (
+                <p className="text-xs font-medium text-destructive animate-in fade-in slide-in-from-top-1">
+                  {errors.number_of_pages.message}
+                </p>
+              )}
             </div>
 
             {/* Sort Index */}
@@ -381,8 +387,14 @@ export function AddBookForm({ className }: AddBookFormProps) {
                 {...register("book_sort_index", { valueAsNumber: true })}
                 onWheel={(e) => (e.target as HTMLInputElement).blur()}
                 onFocus={(e) => e.target.select()}
+                aria-invalid={!!errors.book_sort_index}
                 className="border-primarycolor/20 focus:border-primarycolor focus:ring-primarycolor/20"
               />
+              {errors.book_sort_index && (
+                <p className="text-xs font-medium text-destructive animate-in fade-in slide-in-from-top-1">
+                  {errors.book_sort_index.message}
+                </p>
+              )}
               <p className="text-[9px] font-medium text-muted-foreground">Lower number = higher position in lists</p>
             </div>
 
