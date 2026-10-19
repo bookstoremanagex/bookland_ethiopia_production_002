@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Loader2, Printer } from "lucide-react";
+import { FileText, Loader2, Printer } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/calendar-utils";
@@ -14,30 +14,36 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { getBooksStorePrintData } from "../../actions/book-actions";
-
-interface PrintBook {
-  title: string;
-  short_name: string | null;
-  price: number | null;
-  cover_price: number | null;
-}
+import BooksPrintPreview from "./BooksPrintPreview";
+import type { PrintBook, PrintColumnKind } from "./books-print-layout";
 
 type FontSize = "extra-big" | "big" | "medium" | "small" | "extra-small";
 type SortFirst = "amharic" | "english" | "numbered";
 type SortGroup = "amharic" | "english" | "numbered";
 
-const fontMap: Record<FontSize, string> = {
-  "extra-big": "22px",
-  big: "18px",
-  medium: "15px",
-  small: "12px",
-  "extra-small": "10px",
+interface PreviewPayload {
+  books: PrintBook[];
+  columns: PrintColumnKind[];
+  headers: string[];
+  fontSizePx: number;
+  bold: boolean;
+  ethDate: string;
+  gregDate: string;
+  fileName: string;
+}
+
+const fontMap: Record<FontSize, number> = {
+  "extra-big": 22,
+  big: 18,
+  medium: 15,
+  small: 12,
+  "extra-small": 10,
 };
 
-// Remaining groups follow after the first choice; numbered goes last
-// unless it is chosen first.
+// Remaining groups follow after the first choice. When Amharic is first,
+// the numbered titles come second and the English titles last.
 const groupOrders: Record<SortFirst, SortGroup[]> = {
-  amharic: ["amharic", "english", "numbered"],
+  amharic: ["amharic", "numbered", "english"],
   english: ["english", "amharic", "numbered"],
   numbered: ["numbered", "amharic", "english"],
 };
@@ -78,13 +84,14 @@ const groupComparators: Record<SortGroup, (a: PrintBook, b: PrintBook) => number
     a.title.localeCompare(b.title, "en", { sensitivity: "base", numeric: true }),
 };
 
-const escHtml = (s: string) =>
-  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
-const fmtPrice = (v: number | null) =>
-  v == null || Number.isNaN(Number(v))
-    ? "—"
-    : Number(v).toLocaleString(undefined, { maximumFractionDigits: 2 });
+// Name of the generated file, built from the Ethiopian calendar:
+// "የ ነሐሴ 18 2019 3:20 ጠዋት print"
+const buildPrintFileName = (date: Date) => {
+  const ethDate = formatDate(date, "ethiopian", "MMMM d yyyy");
+  const hours = date.getHours();
+  const minutes = date.getMinutes().toString().padStart(2, "0");
+  return `የ ${ethDate} ${hours}:${minutes} ጠዋት print`;
+};
 
 export default function BooksPrintDialog() {
   const [open, setOpen] = useState(false);
@@ -97,6 +104,8 @@ export default function BooksPrintDialog() {
   const [bold, setBold] = useState(true);
   const [amharicTitles, setAmharicTitles] = useState(false);
   const [sortFirst, setSortFirst] = useState<SortFirst>("amharic");
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [preview, setPreview] = useState<PreviewPayload | null>(null);
 
   const toggleColumns = [
     { key: "number", label: "Number", state: colNumber, set: setColNumber },
@@ -138,98 +147,44 @@ export default function BooksPrintDialog() {
       const ordered = groupOrders[sortFirst].flatMap((g) => groups[g]);
 
       // Amharic headers take priority when toggled
+      const columns: PrintColumnKind[] = [];
       const headers: string[] = [];
-      if (colNumber) headers.push(amharicTitles ? "ተ.ቁ" : "No.");
+      if (colNumber) {
+        columns.push("number");
+        headers.push(amharicTitles ? "ተ.ቁ" : "No.");
+      }
+      columns.push("title");
       headers.push(amharicTitles ? "የመጽሐፉ ሥም" : "Book Title");
-      if (colShortName) headers.push(amharicTitles ? "የማዘዣ ሥሙ" : "Short Name");
-      if (colPrice) headers.push(amharicTitles ? "ዋጋ" : "Price");
-      if (colCoverPrice) headers.push(amharicTitles ? "የጀርባ ዋጋ" : "Cover Price");
-
-      const rowsHtml = ordered
-        .map((b, i) => {
-          const cells: string[] = [];
-          if (colNumber) cells.push(`<td class="c">${i + 1}</td>`);
-          cells.push(`<td>${escHtml(b.title || "—")}</td>`);
-          if (colShortName) cells.push(`<td>${escHtml(b.short_name || "—")}</td>`);
-          if (colPrice) cells.push(`<td class="r">${fmtPrice(b.price)}</td>`);
-          if (colCoverPrice) cells.push(`<td class="r">${fmtPrice(b.cover_price)}</td>`);
-          return `<tr>${cells.join("")}</tr>`;
-        })
-        .join("");
+      if (colShortName) {
+        columns.push("short");
+        headers.push(amharicTitles ? "የማዘዣ ሥሙ" : "Short Name");
+      }
+      if (colPrice) {
+        columns.push("price");
+        headers.push(amharicTitles ? "ዋጋ" : "Price");
+      }
+      if (colCoverPrice) {
+        columns.push("cover");
+        headers.push(amharicTitles ? "የጀርባ ዋጋ" : "Cover Price");
+      }
 
       const now = new Date();
-      const ethDate = formatDate(now, "ethiopian", "EEE, MMMM dd, yyyy");
-      const gregDate = formatDate(now, "gregorian", "EEE, MMMM dd, yyyy");
-      const size = fontMap[fontSize];
-      const weight = bold ? "700" : "400";
-      const colCount = headers.length;
 
-      const printContent = `
-<!DOCTYPE html>
-<html>
-<head>
-<title>Books In Store</title>
-<style>
-    @page {
-        size: A4 portrait;
-        margin: 10mm;
-        @bottom-center { content: "Page " counter(page); font-size: 9px; color: #111; }
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-        font-family: Arial, Helvetica, sans-serif;
-        font-size: ${size};
-        font-weight: ${weight};
-        color: #111;
-    }
-    table { width: 100%; border-collapse: collapse; }
-    thead { display: table-header-group; }
-    .date-row td {
-        border: none;
-        border-bottom: none;
-        padding: 1px 2px;
-        font-size: ${size};
-        color: #111;
-        text-align: left;
-    }
-    .HEAD-row th {
-        background: #eee;
-        border: 1px solid #999;
-        padding: 5px 8px;
-        font-size: ${parseInt(size) - 1}px;
-        font-weight: ${weight};
-        color: #111;
-    }
-    td { border: 1px solid #999; padding: 4px 8px; color: #111; }
-    .r { text-align: right; white-space: nowrap; }
-    .c { text-align: center; }
-    tbody tr { page-break-inside: avoid; }
-</style>
-</head>
-<body>
-    <table>
-        <thead>
-            <tr class="date-row"><td colspan="${colCount}">Ethiopian: ${escHtml(ethDate)}</td></tr>
-            <tr class="date-row"><td colspan="${colCount}">Gregorian: ${escHtml(gregDate)}</td></tr>
-            <tr class="HEAD-row">${headers.map((h) => `<th>${escHtml(h)}</th>`).join("")}</tr>
-        </thead>
-        <tbody>${rowsHtml}</tbody>
-    </table>
-</body>
-</html>`;
-
-      const printWin = window.open("", "_blank", "width=900,height=700");
-      if (!printWin) {
-        toast.error("Failed to open print window");
-        return;
-      }
-      printWin.document.write(printContent);
-      printWin.document.close();
-      printWin.focus();
-      printWin.print();
+      setPreview({
+        books: ordered,
+        columns,
+        headers,
+        fontSizePx: fontMap[fontSize],
+        bold,
+        ethDate: formatDate(now, "ethiopian", "EEE, MMMM dd, yyyy"),
+        gregDate: formatDate(now, "gregorian", "EEE, MMMM dd, yyyy"),
+        fileName: buildPrintFileName(now),
+      });
+      setOpen(false);
+      setPreviewOpen(true);
     } catch (err) {
       console.error(err);
-      toast.error("An error occurred while printing");
+      toast.error("An error occurred while preparing the PDF");
     } finally {
       setIsPrinting(false);
     }
@@ -399,13 +354,28 @@ export default function BooksPrintDialog() {
                 disabled={isPrinting}
                 className="flex-1 rounded-2xl h-10 font-black uppercase tracking-widest text-[9px] bg-primarycolor hover:bg-secondarycolor text-white shadow-lg gap-1.5"
               >
-                {isPrinting ? <Loader2 className="size-3.5 animate-spin" /> : <Printer className="size-3.5" />}
-                Print
+                {isPrinting ? <Loader2 className="size-3.5 animate-spin" /> : <FileText className="size-3.5" />}
+                Preview PDF
               </Button>
             </div>
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {preview && (
+        <BooksPrintPreview
+          open={previewOpen}
+          onOpenChange={setPreviewOpen}
+          books={preview.books}
+          columns={preview.columns}
+          headers={preview.headers}
+          fontSizePx={preview.fontSizePx}
+          bold={preview.bold}
+          ethDate={preview.ethDate}
+          gregDate={preview.gregDate}
+          fileName={preview.fileName}
+        />
+      )}
     </>
   );
 }
