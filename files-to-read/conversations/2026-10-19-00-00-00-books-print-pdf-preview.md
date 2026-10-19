@@ -45,8 +45,11 @@ the browser's own font fallback, and no font subsetting is needed.
   books paginate to 7 pages.
 - The PDF is image-based (JPEG per page) so Amharic works without embedding a
   font. Text is therefore not selectable inside the PDF.
-- Windows cannot store `:` in a filename — the browser sanitises the colon in
-  the downloaded name (e.g. `15_20`). The requested format is kept as-is.
+- **File name (final):** `የ <eth month> <day> <year>` only — e.g.
+  `የ ጥቅምት 9 2019.pdf`. The clock time and the `ጠዋት print` suffix were
+  removed on request; the Ethiopian month/day/year come from
+  `formatDate(date, "ethiopian", "MMMM d yyyy")` in `buildPrintFileName`
+  (`BooksPrintDialog.tsx`). The `የ` prefix is kept.
 
 ## Verification
 - Throwaway script (temp dir, not in repo): column widths fill the content box;

@@ -85,12 +85,10 @@ const groupComparators: Record<SortGroup, (a: PrintBook, b: PrintBook) => number
 };
 
 // Name of the generated file, built from the Ethiopian calendar:
-// "የ ነሐሴ 18 2019 3:20 ጠዋት print"
+// "የ ነሐሴ 18 2019"
 const buildPrintFileName = (date: Date) => {
   const ethDate = formatDate(date, "ethiopian", "MMMM d yyyy");
-  const hours = date.getHours();
-  const minutes = date.getMinutes().toString().padStart(2, "0");
-  return `የ ${ethDate} ${hours}:${minutes} ጠዋት print`;
+  return `የ ${ethDate}`;
 };
 
 export default function BooksPrintDialog() {
