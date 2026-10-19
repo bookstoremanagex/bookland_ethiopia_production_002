@@ -45,11 +45,16 @@ the browser's own font fallback, and no font subsetting is needed.
   books paginate to 7 pages.
 - The PDF is image-based (JPEG per page) so Amharic works without embedding a
   font. Text is therefore not selectable inside the PDF.
-- **File name (final):** `የ <eth month> <day> <year>` only — e.g.
-  `የ ጥቅምት 9 2019.pdf`. The clock time and the `ጠዋት print` suffix were
-  removed on request; the Ethiopian month/day/year come from
-  `formatDate(date, "ethiopian", "MMMM d yyyy")` in `buildPrintFileName`
-  (`BooksPrintDialog.tsx`). The `የ` prefix is kept.
+- **File name (final):** `የ <eth month> <day> <year> <h12>:<mm> <አማርኛ day part>` — e.g.
+  `የ ጥቅምት 9 2019 3:20 ከሰዓት`. The clock is **12-hour** (not 24h) and the
+  Amharic day-part word replaces AM/PM:
+  - 12:00 AM – 5:59 AM → `ሌሊት`
+  - 6:00 AM – 11:59 AM → `ጠዋት`
+  - 12:00 PM – 6:00 PM → `ከሰዓት` (6:00 PM exactly is still ከሰዓት, 6:01 PM is ማታ)
+  - 6:01 PM – 11:59 PM → `ማታ`
+
+  Implemented by `getDayPart(hours, minutes)` + `buildPrintFileName` in
+  `BooksPrintDialog.tsx`; all boundary times verified.
 
 ## Verification
 - Throwaway script (temp dir, not in repo): column widths fill the content box;
