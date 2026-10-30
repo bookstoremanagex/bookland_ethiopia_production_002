@@ -5,7 +5,7 @@ import { TranslationProjectsTable } from '../../../../components/admin_dashboard
 
 export default async function TranslationWorkPage() {
     const response = await getTranslationProjects()
-    const projects = response.success ? response.data : []
+    const projects = response.success ? (response.data ?? []) : []
 
     return (
         <div className="w-full py-10 px-4 md:px-8 max-w-none mx-auto">

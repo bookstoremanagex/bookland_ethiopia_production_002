@@ -22,12 +22,15 @@ import {
     ShieldAlert,
     Edit2,
     Activity,
-    Banknote
+    Banknote,
+    Layers
 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '../../../../../components/ui/button';
 import { Input } from '../../../../../components/ui/input';
 import { DateInput } from '../../../../../components/ui/date-input';
+import TranslatorMultiSelect from '../../../../../components/form_components/TranslatorMultiSelect';
+import BookEditionPicker from '../../../../../components/form_components/BookEditionPicker';
 import { cn } from '../../../../../lib/utils';
 import { format } from 'date-fns';
 import { useCalendar } from '@/lib/calendar-context';
@@ -46,13 +49,30 @@ export default function ProjectDetailsClient({
     const [project, setProject] = useState(initialProject);
     const { formatLong } = useCalendar();
     const [isEditing, setIsEditing] = useState(false);
+
+    // The relation is authoritative; fall back to the legacy single column for
+    // projects created before multiple translators were supported.
+    const getTranslatorIds = (source: any): number[] => {
+        const fromRelation = (source.translator ?? []).map((t: any) => t.id).filter(Boolean);
+        if (fromRelation.length > 0) return fromRelation;
+        return source.translator_id ? [source.translator_id] : [];
+    };
+
+    // `translatorbook.edition` holds the bookedition id as a string.
+    const toEditionId = (edition: unknown): number | undefined => {
+        const numeric = Number(edition);
+        return Number.isInteger(numeric) && numeric > 0 ? numeric : undefined;
+    };
+
     const [editData, setEditData] = useState({
         bookId: project.bookId,
-        translator_id: project.translator_id,
+        edition_id: toEditionId(project.edition),
+        translator_ids: getTranslatorIds(project),
         Status: project.Status,
         cost: project.cost ?? null,
         payment_status: project.payment_status || "PENDING",
         currently_paid: project.currently_paid ?? 0,
+        info: project.info ?? "",
         startDate: project.startDate ? format(new Date(project.startDate), "yyyy-MM-dd") : "",
         endDate: project.endDate ? format(new Date(project.endDate), "yyyy-MM-dd") : "",
     });
@@ -64,17 +84,36 @@ export default function ProjectDetailsClient({
     const pathname = usePathname();
     const dashboardRoot = pathname.split('/').slice(0, 2).join('/');
 
+    const projectEditions: { id: number; edition_name: string }[] =
+        books.find((b: any) => b.id === project.bookId)?.bookedition ?? [];
+    const currentEdition = projectEditions.find((e) => e.id === toEditionId(project.edition));
+    const editionLabel =
+        currentEdition?.edition_name ||
+        (project.edition ? `Edition #${project.edition}` : "No edition");
+
+    const projectTranslators: { id: number; name: string | null }[] =
+        (project.translator ?? []).length > 0
+            ? project.translator
+            : translators.filter((t) => t.id === project.translator_id);
+
     const handleUpdate = async () => {
+        if (!editData.edition_id) {
+            toast.error("Select an edition for this book");
+            return;
+        }
         setIsUpdating(true);
         try {
             const response = await updateTranslationProject(project.id, editData);
             if (response.success) {
                 toast.success("Project updated successfully!");
+                const nextTranslators = (editData.translator_ids ?? [])
+                    .map((id: number) => translators.find(t => t.id === id))
+                    .filter(Boolean);
                 setProject({
                     ...project,
                     ...response.data,
                     books: books.find(b => b.id === editData.bookId) || project.books,
-                    translator: translators.find(t => t.id === editData.translator_id) || project.translator
+                    translator: nextTranslators
                 });
                 setIsEditing(false);
                 router.refresh();
@@ -168,44 +207,66 @@ export default function ProjectDetailsClient({
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                {/* Book Selector */}
-                                <div className="space-y-3">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Assigned Title</label>
-                                    {isEditing ? (
-                                        <select
-                                            value={editData.bookId}
-                                            onChange={(e) => setEditData({ ...editData, bookId: Number(e.target.value) })}
-                                            className="w-full h-14 px-6 bg-primarycolor/5 border-2 border-primarycolor/10 rounded-2xl font-black outline-none focus:border-primarycolor transition-all"
-                                        >
-                                            {books.map(b => (
-                                                <option key={b.id} value={b.id}>{b.title}</option>
-                                            ))}
-                                        </select>
-                                    ) : (
-                                        <div className="flex items-center gap-4 p-4 rounded-2xl bg-primarycolor/5 border-2 border-transparent">
-                                            <BookOpen className="size-5 text-primarycolor" />
-                                            <span className="font-black text-secondarycolor">{project.books.title}</span>
+                                {/* Book + Edition Selector */}
+                                {isEditing ? (
+                                    <div className="md:col-span-2">
+                                        <BookEditionPicker
+                                            books={books}
+                                            bookId={editData.bookId}
+                                            editionId={editData.edition_id}
+                                            onChange={({ bookId, editionId }) =>
+                                                setEditData({ ...editData, bookId: bookId ?? editData.bookId, edition_id: editionId })
+                                            }
+                                        />
+                                    </div>
+                                ) : (
+                                    <>
+                                        <div className="space-y-3">
+                                            <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Assigned Title</label>
+                                            <div className="flex items-center gap-4 p-4 rounded-2xl bg-primarycolor/5 border-2 border-transparent">
+                                                <BookOpen className="size-5 text-primarycolor" />
+                                                <span className="font-black text-secondarycolor">{project.books.title}</span>
+                                            </div>
                                         </div>
-                                    )}
-                                </div>
 
-                                {/* Translator Selector */}
+                                        <div className="space-y-3">
+                                            <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Edition</label>
+                                            <div className="flex items-center gap-4 p-4 rounded-2xl bg-primarycolor/5 border-2 border-transparent">
+                                                <Layers className="size-5 text-primarycolor" />
+                                                <span className="font-black text-secondarycolor">{editionLabel}</span>
+                                            </div>
+                                        </div>
+                                    </>
+                                )}
+
+                                {/* Translator Selector (multiple) */}
                                 <div className="space-y-3">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Lead Translator</label>
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Translators</label>
                                     {isEditing ? (
-                                        <select
-                                            value={editData.translator_id}
-                                            onChange={(e) => setEditData({ ...editData, translator_id: Number(e.target.value) })}
-                                            className="w-full h-14 px-6 bg-primarycolor/5 border-2 border-primarycolor/10 rounded-2xl font-black outline-none focus:border-primarycolor transition-all"
-                                        >
-                                            {translators.map(t => (
-                                                <option key={t.id} value={t.id}>{t.name}</option>
-                                            ))}
-                                        </select>
+                                        <TranslatorMultiSelect
+                                            translators={translators}
+                                            value={editData.translator_ids}
+                                            onChange={(ids) => setEditData({ ...editData, translator_ids: ids })}
+                                            placeholder="Choose one or more translators..."
+                                        />
                                     ) : (
-                                        <div className="flex items-center gap-4 p-4 rounded-2xl bg-primarycolor/5 border-2 border-transparent">
-                                            <User className="size-5 text-primarycolor" />
-                                            <span className="font-black text-secondarycolor">{project.translator.name}</span>
+                                        <div className="flex flex-wrap items-center gap-2 p-4 rounded-2xl bg-primarycolor/5 border-2 border-transparent min-h-[56px]">
+                                            {projectTranslators.length > 0 ? (
+                                                projectTranslators.map((translator, index) => (
+                                                    <span
+                                                        key={translator.id}
+                                                        className="inline-flex items-center gap-1.5 rounded-full bg-white border border-primarycolor/15 px-3 py-1 text-xs font-black text-secondarycolor"
+                                                    >
+                                                        <User className="size-3 text-primarycolor" />
+                                                        {translator.name || "Unknown"}
+                                                        {index === 0 && projectTranslators.length > 1 && (
+                                                            <span className="text-[9px] uppercase tracking-widest text-primarycolor/60">Lead</span>
+                                                        )}
+                                                    </span>
+                                                ))
+                                            ) : (
+                                                <span className="font-black text-secondarycolor">Not assigned</span>
+                                            )}
                                         </div>
                                     )}
                                 </div>
@@ -300,6 +361,24 @@ export default function ProjectDetailsClient({
                                         </div>
                                     )}
                                 </div>
+                            </div>
+
+                            {/* Translation memo */}
+                            <div className="space-y-3">
+                                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Translation Memo</label>
+                                {isEditing ? (
+                                    <textarea
+                                        value={editData.info}
+                                        onChange={(e) => setEditData({ ...editData, info: e.target.value })}
+                                        rows={4}
+                                        placeholder="Notes about this translation work — scope, references, expectations..."
+                                        className="w-full px-6 py-4 bg-primarycolor/5 border-2 border-primarycolor/10 rounded-2xl font-bold outline-none focus:border-primarycolor transition-all resize-y min-h-[120px]"
+                                    />
+                                ) : (
+                                    <div className="p-4 rounded-2xl bg-primarycolor/5 border-2 border-transparent whitespace-pre-wrap font-bold text-sm text-secondarycolor min-h-[56px]">
+                                        {project.info || "No memo yet."}
+                                    </div>
+                                )}
                             </div>
 
                             <div className="pt-10 border-t-2 border-primarycolor/5 grid grid-cols-1 md:grid-cols-2 gap-8">

@@ -483,7 +483,6 @@ export function AddBookForm({ className }: AddBookFormProps) {
                 <option value="DESIGN">Design</option>
                 <option value="PRINTING">Printing</option>
                 <option value="PREPRINTING">Pre-printing</option>
-                <option value="SALES">Sales</option>
               </select>
             </div>
           </div>

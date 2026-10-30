@@ -345,9 +345,7 @@ export const books_productionstatus: {
   TRANSLATION: 'TRANSLATION',
   DESIGN: 'DESIGN',
   PRINTING: 'PRINTING',
-  PREPRINTING: 'PREPRINTING',
-  DISTRIBUTION: 'DISTRIBUTION',
-  SALES: 'SALES'
+  PREPRINTING: 'PREPRINTING'
 };
 
 export type books_productionstatus = (typeof books_productionstatus)[keyof typeof books_productionstatus]
@@ -5128,6 +5126,37 @@ export namespace Prisma {
 
 
   /**
+   * Count Type TranslatorbookCountOutputType
+   */
+
+  export type TranslatorbookCountOutputType = {
+    translator: number
+  }
+
+  export type TranslatorbookCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    translator?: boolean | TranslatorbookCountOutputTypeCountTranslatorArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * TranslatorbookCountOutputType without action
+   */
+  export type TranslatorbookCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TranslatorbookCountOutputType
+     */
+    select?: TranslatorbookCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * TranslatorbookCountOutputType without action
+   */
+  export type TranslatorbookCountOutputTypeCountTranslatorArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: translatorWhereInput
+  }
+
+
+  /**
    * Count Type RoundbooksCountOutputType
    */
 
@@ -6564,6 +6593,7 @@ export namespace Prisma {
     distribution_cost: number | null
     advertisement_cost: number | null
     purchasing_right_cost: number | null
+    productionstatus: $Enums.books_productionstatus | null
   }
 
   export type BookeditionMaxAggregateOutputType = {
@@ -6600,6 +6630,7 @@ export namespace Prisma {
     distribution_cost: number | null
     advertisement_cost: number | null
     purchasing_right_cost: number | null
+    productionstatus: $Enums.books_productionstatus | null
   }
 
   export type BookeditionCountAggregateOutputType = {
@@ -6636,6 +6667,7 @@ export namespace Prisma {
     distribution_cost: number
     advertisement_cost: number
     purchasing_right_cost: number
+    productionstatus: number
     _all: number
   }
 
@@ -6730,6 +6762,7 @@ export namespace Prisma {
     distribution_cost?: true
     advertisement_cost?: true
     purchasing_right_cost?: true
+    productionstatus?: true
   }
 
   export type BookeditionMaxAggregateInputType = {
@@ -6766,6 +6799,7 @@ export namespace Prisma {
     distribution_cost?: true
     advertisement_cost?: true
     purchasing_right_cost?: true
+    productionstatus?: true
   }
 
   export type BookeditionCountAggregateInputType = {
@@ -6802,6 +6836,7 @@ export namespace Prisma {
     distribution_cost?: true
     advertisement_cost?: true
     purchasing_right_cost?: true
+    productionstatus?: true
     _all?: true
   }
 
@@ -6925,6 +6960,7 @@ export namespace Prisma {
     distribution_cost: number | null
     advertisement_cost: number | null
     purchasing_right_cost: number | null
+    productionstatus: $Enums.books_productionstatus | null
     _count: BookeditionCountAggregateOutputType | null
     _avg: BookeditionAvgAggregateOutputType | null
     _sum: BookeditionSumAggregateOutputType | null
@@ -6980,6 +7016,7 @@ export namespace Prisma {
     distribution_cost?: boolean
     advertisement_cost?: boolean
     purchasing_right_cost?: boolean
+    productionstatus?: boolean
     locked_editions?: boolean | bookedition$locked_editionsArgs<ExtArgs>
     books?: boolean | booksDefaultArgs<ExtArgs>
     bookeditionstores?: boolean | bookedition$bookeditionstoresArgs<ExtArgs>
@@ -7029,9 +7066,10 @@ export namespace Prisma {
     distribution_cost?: boolean
     advertisement_cost?: boolean
     purchasing_right_cost?: boolean
+    productionstatus?: boolean
   }
 
-  export type bookeditionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "edition_name" | "selling_price" | "production_price" | "printing_cost" | "binding_cost" | "design_cost" | "translation_cost" | "cover_price" | "memo" | "book_image_url" | "visiblitiy_to_printer" | "total_print_count" | "book_id" | "number_of_pages" | "bookId" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt" | "editing_cost" | "other_expenses" | "transportation_cost" | "count_remening_for_transfer" | "translator_cost" | "cover_design_cost" | "text_design_cost" | "editor_cost" | "typewriting_cost" | "store_cost" | "distribution_cost" | "advertisement_cost" | "purchasing_right_cost", ExtArgs["result"]["bookedition"]>
+  export type bookeditionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "edition_name" | "selling_price" | "production_price" | "printing_cost" | "binding_cost" | "design_cost" | "translation_cost" | "cover_price" | "memo" | "book_image_url" | "visiblitiy_to_printer" | "total_print_count" | "book_id" | "number_of_pages" | "bookId" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt" | "editing_cost" | "other_expenses" | "transportation_cost" | "count_remening_for_transfer" | "translator_cost" | "cover_design_cost" | "text_design_cost" | "editor_cost" | "typewriting_cost" | "store_cost" | "distribution_cost" | "advertisement_cost" | "purchasing_right_cost" | "productionstatus", ExtArgs["result"]["bookedition"]>
   export type bookeditionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     locked_editions?: boolean | bookedition$locked_editionsArgs<ExtArgs>
     books?: boolean | booksDefaultArgs<ExtArgs>
@@ -7094,6 +7132,7 @@ export namespace Prisma {
       distribution_cost: number | null
       advertisement_cost: number | null
       purchasing_right_cost: number | null
+      productionstatus: $Enums.books_productionstatus | null
     }, ExtArgs["result"]["bookedition"]>
     composites: {}
   }
@@ -7506,6 +7545,7 @@ export namespace Prisma {
     readonly distribution_cost: FieldRef<"bookedition", 'Float'>
     readonly advertisement_cost: FieldRef<"bookedition", 'Float'>
     readonly purchasing_right_cost: FieldRef<"bookedition", 'Float'>
+    readonly productionstatus: FieldRef<"bookedition", 'books_productionstatus'>
   }
     
 
@@ -30852,10 +30892,12 @@ export namespace Prisma {
     id: number | null
     book_id: number | null
     bookId: number | null
+    edition: string | null
     translator_id: number | null
     Status: $Enums.translatorbook_Status | null
     cost: number | null
     payment_status: $Enums.translatorbook_payment_status | null
+    info: string | null
     currently_paid: number | null
     startDate: Date | null
     endDate: Date | null
@@ -30869,10 +30911,12 @@ export namespace Prisma {
     id: number | null
     book_id: number | null
     bookId: number | null
+    edition: string | null
     translator_id: number | null
     Status: $Enums.translatorbook_Status | null
     cost: number | null
     payment_status: $Enums.translatorbook_payment_status | null
+    info: string | null
     currently_paid: number | null
     startDate: Date | null
     endDate: Date | null
@@ -30886,10 +30930,12 @@ export namespace Prisma {
     id: number
     book_id: number
     bookId: number
+    edition: number
     translator_id: number
     Status: number
     cost: number
     payment_status: number
+    info: number
     currently_paid: number
     startDate: number
     endDate: number
@@ -30923,10 +30969,12 @@ export namespace Prisma {
     id?: true
     book_id?: true
     bookId?: true
+    edition?: true
     translator_id?: true
     Status?: true
     cost?: true
     payment_status?: true
+    info?: true
     currently_paid?: true
     startDate?: true
     endDate?: true
@@ -30940,10 +30988,12 @@ export namespace Prisma {
     id?: true
     book_id?: true
     bookId?: true
+    edition?: true
     translator_id?: true
     Status?: true
     cost?: true
     payment_status?: true
+    info?: true
     currently_paid?: true
     startDate?: true
     endDate?: true
@@ -30957,10 +31007,12 @@ export namespace Prisma {
     id?: true
     book_id?: true
     bookId?: true
+    edition?: true
     translator_id?: true
     Status?: true
     cost?: true
     payment_status?: true
+    info?: true
     currently_paid?: true
     startDate?: true
     endDate?: true
@@ -31061,10 +31113,12 @@ export namespace Prisma {
     id: number
     book_id: number | null
     bookId: number
+    edition: string | null
     translator_id: number
     Status: $Enums.translatorbook_Status
     cost: number | null
     payment_status: $Enums.translatorbook_payment_status
+    info: string | null
     currently_paid: number
     startDate: Date | null
     endDate: Date | null
@@ -31097,10 +31151,12 @@ export namespace Prisma {
     id?: boolean
     book_id?: boolean
     bookId?: boolean
+    edition?: boolean
     translator_id?: boolean
     Status?: boolean
     cost?: boolean
     payment_status?: boolean
+    info?: boolean
     currently_paid?: boolean
     startDate?: boolean
     endDate?: boolean
@@ -31109,7 +31165,8 @@ export namespace Prisma {
     createdAt?: boolean
     deletedAt?: boolean
     books?: boolean | booksDefaultArgs<ExtArgs>
-    translator?: boolean | translatorDefaultArgs<ExtArgs>
+    translator?: boolean | translatorbook$translatorArgs<ExtArgs>
+    _count?: boolean | TranslatorbookCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["translatorbook"]>
 
 
@@ -31118,10 +31175,12 @@ export namespace Prisma {
     id?: boolean
     book_id?: boolean
     bookId?: boolean
+    edition?: boolean
     translator_id?: boolean
     Status?: boolean
     cost?: boolean
     payment_status?: boolean
+    info?: boolean
     currently_paid?: boolean
     startDate?: boolean
     endDate?: boolean
@@ -31131,26 +31190,29 @@ export namespace Prisma {
     deletedAt?: boolean
   }
 
-  export type translatorbookOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "book_id" | "bookId" | "translator_id" | "Status" | "cost" | "payment_status" | "currently_paid" | "startDate" | "endDate" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt", ExtArgs["result"]["translatorbook"]>
+  export type translatorbookOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "book_id" | "bookId" | "edition" | "translator_id" | "Status" | "cost" | "payment_status" | "info" | "currently_paid" | "startDate" | "endDate" | "is_deleted" | "updatedAt" | "createdAt" | "deletedAt", ExtArgs["result"]["translatorbook"]>
   export type translatorbookInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     books?: boolean | booksDefaultArgs<ExtArgs>
-    translator?: boolean | translatorDefaultArgs<ExtArgs>
+    translator?: boolean | translatorbook$translatorArgs<ExtArgs>
+    _count?: boolean | TranslatorbookCountOutputTypeDefaultArgs<ExtArgs>
   }
 
   export type $translatorbookPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "translatorbook"
     objects: {
       books: Prisma.$booksPayload<ExtArgs>
-      translator: Prisma.$translatorPayload<ExtArgs>
+      translator: Prisma.$translatorPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
       book_id: number | null
       bookId: number
+      edition: string | null
       translator_id: number
       Status: $Enums.translatorbook_Status
       cost: number | null
       payment_status: $Enums.translatorbook_payment_status
+      info: string | null
       currently_paid: number
       startDate: Date | null
       endDate: Date | null
@@ -31499,7 +31561,7 @@ export namespace Prisma {
   export interface Prisma__translatorbookClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     books<T extends booksDefaultArgs<ExtArgs> = {}>(args?: Subset<T, booksDefaultArgs<ExtArgs>>): Prisma__booksClient<$Result.GetResult<Prisma.$booksPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    translator<T extends translatorDefaultArgs<ExtArgs> = {}>(args?: Subset<T, translatorDefaultArgs<ExtArgs>>): Prisma__translatorClient<$Result.GetResult<Prisma.$translatorPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    translator<T extends translatorbook$translatorArgs<ExtArgs> = {}>(args?: Subset<T, translatorbook$translatorArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$translatorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -31532,10 +31594,12 @@ export namespace Prisma {
     readonly id: FieldRef<"translatorbook", 'Int'>
     readonly book_id: FieldRef<"translatorbook", 'Int'>
     readonly bookId: FieldRef<"translatorbook", 'Int'>
+    readonly edition: FieldRef<"translatorbook", 'String'>
     readonly translator_id: FieldRef<"translatorbook", 'Int'>
     readonly Status: FieldRef<"translatorbook", 'translatorbook_Status'>
     readonly cost: FieldRef<"translatorbook", 'Float'>
     readonly payment_status: FieldRef<"translatorbook", 'translatorbook_payment_status'>
+    readonly info: FieldRef<"translatorbook", 'String'>
     readonly currently_paid: FieldRef<"translatorbook", 'Float'>
     readonly startDate: FieldRef<"translatorbook", 'DateTime'>
     readonly endDate: FieldRef<"translatorbook", 'DateTime'>
@@ -31883,6 +31947,30 @@ export namespace Prisma {
      * Limit how many translatorbooks to delete.
      */
     limit?: number
+  }
+
+  /**
+   * translatorbook.translator
+   */
+  export type translatorbook$translatorArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the translator
+     */
+    select?: translatorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the translator
+     */
+    omit?: translatorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: translatorInclude<ExtArgs> | null
+    where?: translatorWhereInput
+    orderBy?: translatorOrderByWithRelationInput | translatorOrderByWithRelationInput[]
+    cursor?: translatorWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TranslatorScalarFieldEnum | TranslatorScalarFieldEnum[]
   }
 
   /**
@@ -51633,7 +51721,8 @@ export namespace Prisma {
     store_cost: 'store_cost',
     distribution_cost: 'distribution_cost',
     advertisement_cost: 'advertisement_cost',
-    purchasing_right_cost: 'purchasing_right_cost'
+    purchasing_right_cost: 'purchasing_right_cost',
+    productionstatus: 'productionstatus'
   };
 
   export type BookeditionScalarFieldEnum = (typeof BookeditionScalarFieldEnum)[keyof typeof BookeditionScalarFieldEnum]
@@ -51999,10 +52088,12 @@ export namespace Prisma {
     id: 'id',
     book_id: 'book_id',
     bookId: 'bookId',
+    edition: 'edition',
     translator_id: 'translator_id',
     Status: 'Status',
     cost: 'cost',
     payment_status: 'payment_status',
+    info: 'info',
     currently_paid: 'currently_paid',
     startDate: 'startDate',
     endDate: 'endDate',
@@ -52521,6 +52612,14 @@ export namespace Prisma {
   export type translatorOrderByRelevanceFieldEnum = (typeof translatorOrderByRelevanceFieldEnum)[keyof typeof translatorOrderByRelevanceFieldEnum]
 
 
+  export const translatorbookOrderByRelevanceFieldEnum: {
+    edition: 'edition',
+    info: 'info'
+  };
+
+  export type translatorbookOrderByRelevanceFieldEnum = (typeof translatorbookOrderByRelevanceFieldEnum)[keyof typeof translatorbookOrderByRelevanceFieldEnum]
+
+
   export const notificationOrderByRelevanceFieldEnum: {
     title: 'title',
     message: 'message',
@@ -52952,6 +53051,7 @@ export namespace Prisma {
     distribution_cost?: FloatNullableFilter<"bookedition"> | number | null
     advertisement_cost?: FloatNullableFilter<"bookedition"> | number | null
     purchasing_right_cost?: FloatNullableFilter<"bookedition"> | number | null
+    productionstatus?: Enumbooks_productionstatusNullableFilter<"bookedition"> | $Enums.books_productionstatus | null
     locked_editions?: Locked_editionsListRelationFilter
     books?: XOR<BooksScalarRelationFilter, booksWhereInput>
     bookeditionstores?: BookeditionstoresListRelationFilter
@@ -52998,6 +53098,7 @@ export namespace Prisma {
     distribution_cost?: SortOrderInput | SortOrder
     advertisement_cost?: SortOrderInput | SortOrder
     purchasing_right_cost?: SortOrderInput | SortOrder
+    productionstatus?: SortOrderInput | SortOrder
     locked_editions?: locked_editionsOrderByRelationAggregateInput
     books?: booksOrderByWithRelationInput
     bookeditionstores?: bookeditionstoresOrderByRelationAggregateInput
@@ -53048,6 +53149,7 @@ export namespace Prisma {
     distribution_cost?: FloatNullableFilter<"bookedition"> | number | null
     advertisement_cost?: FloatNullableFilter<"bookedition"> | number | null
     purchasing_right_cost?: FloatNullableFilter<"bookedition"> | number | null
+    productionstatus?: Enumbooks_productionstatusNullableFilter<"bookedition"> | $Enums.books_productionstatus | null
     locked_editions?: Locked_editionsListRelationFilter
     books?: XOR<BooksScalarRelationFilter, booksWhereInput>
     bookeditionstores?: BookeditionstoresListRelationFilter
@@ -53094,6 +53196,7 @@ export namespace Prisma {
     distribution_cost?: SortOrderInput | SortOrder
     advertisement_cost?: SortOrderInput | SortOrder
     purchasing_right_cost?: SortOrderInput | SortOrder
+    productionstatus?: SortOrderInput | SortOrder
     _count?: bookeditionCountOrderByAggregateInput
     _avg?: bookeditionAvgOrderByAggregateInput
     _max?: bookeditionMaxOrderByAggregateInput
@@ -53138,6 +53241,7 @@ export namespace Prisma {
     distribution_cost?: FloatNullableWithAggregatesFilter<"bookedition"> | number | null
     advertisement_cost?: FloatNullableWithAggregatesFilter<"bookedition"> | number | null
     purchasing_right_cost?: FloatNullableWithAggregatesFilter<"bookedition"> | number | null
+    productionstatus?: Enumbooks_productionstatusNullableWithAggregatesFilter<"bookedition"> | $Enums.books_productionstatus | null
   }
 
   export type bookeditionstoresWhereInput = {
@@ -55081,10 +55185,12 @@ export namespace Prisma {
     id?: IntFilter<"translatorbook"> | number
     book_id?: IntNullableFilter<"translatorbook"> | number | null
     bookId?: IntFilter<"translatorbook"> | number
+    edition?: StringNullableFilter<"translatorbook"> | string | null
     translator_id?: IntFilter<"translatorbook"> | number
     Status?: Enumtranslatorbook_StatusFilter<"translatorbook"> | $Enums.translatorbook_Status
     cost?: FloatNullableFilter<"translatorbook"> | number | null
     payment_status?: Enumtranslatorbook_payment_statusFilter<"translatorbook"> | $Enums.translatorbook_payment_status
+    info?: StringNullableFilter<"translatorbook"> | string | null
     currently_paid?: FloatFilter<"translatorbook"> | number
     startDate?: DateTimeNullableFilter<"translatorbook"> | Date | string | null
     endDate?: DateTimeNullableFilter<"translatorbook"> | Date | string | null
@@ -55093,17 +55199,19 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"translatorbook"> | Date | string
     deletedAt?: DateTimeFilter<"translatorbook"> | Date | string
     books?: XOR<BooksScalarRelationFilter, booksWhereInput>
-    translator?: XOR<TranslatorScalarRelationFilter, translatorWhereInput>
+    translator?: TranslatorListRelationFilter
   }
 
   export type translatorbookOrderByWithRelationInput = {
     id?: SortOrder
     book_id?: SortOrderInput | SortOrder
     bookId?: SortOrder
+    edition?: SortOrderInput | SortOrder
     translator_id?: SortOrder
     Status?: SortOrder
     cost?: SortOrderInput | SortOrder
     payment_status?: SortOrder
+    info?: SortOrderInput | SortOrder
     currently_paid?: SortOrder
     startDate?: SortOrderInput | SortOrder
     endDate?: SortOrderInput | SortOrder
@@ -55112,7 +55220,8 @@ export namespace Prisma {
     createdAt?: SortOrder
     deletedAt?: SortOrder
     books?: booksOrderByWithRelationInput
-    translator?: translatorOrderByWithRelationInput
+    translator?: translatorOrderByRelationAggregateInput
+    _relevance?: translatorbookOrderByRelevanceInput
   }
 
   export type translatorbookWhereUniqueInput = Prisma.AtLeast<{
@@ -55122,10 +55231,12 @@ export namespace Prisma {
     NOT?: translatorbookWhereInput | translatorbookWhereInput[]
     book_id?: IntNullableFilter<"translatorbook"> | number | null
     bookId?: IntFilter<"translatorbook"> | number
+    edition?: StringNullableFilter<"translatorbook"> | string | null
     translator_id?: IntFilter<"translatorbook"> | number
     Status?: Enumtranslatorbook_StatusFilter<"translatorbook"> | $Enums.translatorbook_Status
     cost?: FloatNullableFilter<"translatorbook"> | number | null
     payment_status?: Enumtranslatorbook_payment_statusFilter<"translatorbook"> | $Enums.translatorbook_payment_status
+    info?: StringNullableFilter<"translatorbook"> | string | null
     currently_paid?: FloatFilter<"translatorbook"> | number
     startDate?: DateTimeNullableFilter<"translatorbook"> | Date | string | null
     endDate?: DateTimeNullableFilter<"translatorbook"> | Date | string | null
@@ -55134,17 +55245,19 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"translatorbook"> | Date | string
     deletedAt?: DateTimeFilter<"translatorbook"> | Date | string
     books?: XOR<BooksScalarRelationFilter, booksWhereInput>
-    translator?: XOR<TranslatorScalarRelationFilter, translatorWhereInput>
+    translator?: TranslatorListRelationFilter
   }, "id">
 
   export type translatorbookOrderByWithAggregationInput = {
     id?: SortOrder
     book_id?: SortOrderInput | SortOrder
     bookId?: SortOrder
+    edition?: SortOrderInput | SortOrder
     translator_id?: SortOrder
     Status?: SortOrder
     cost?: SortOrderInput | SortOrder
     payment_status?: SortOrder
+    info?: SortOrderInput | SortOrder
     currently_paid?: SortOrder
     startDate?: SortOrderInput | SortOrder
     endDate?: SortOrderInput | SortOrder
@@ -55166,10 +55279,12 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"translatorbook"> | number
     book_id?: IntNullableWithAggregatesFilter<"translatorbook"> | number | null
     bookId?: IntWithAggregatesFilter<"translatorbook"> | number
+    edition?: StringNullableWithAggregatesFilter<"translatorbook"> | string | null
     translator_id?: IntWithAggregatesFilter<"translatorbook"> | number
     Status?: Enumtranslatorbook_StatusWithAggregatesFilter<"translatorbook"> | $Enums.translatorbook_Status
     cost?: FloatNullableWithAggregatesFilter<"translatorbook"> | number | null
     payment_status?: Enumtranslatorbook_payment_statusWithAggregatesFilter<"translatorbook"> | $Enums.translatorbook_payment_status
+    info?: StringNullableWithAggregatesFilter<"translatorbook"> | string | null
     currently_paid?: FloatWithAggregatesFilter<"translatorbook"> | number
     startDate?: DateTimeNullableWithAggregatesFilter<"translatorbook"> | Date | string | null
     endDate?: DateTimeNullableWithAggregatesFilter<"translatorbook"> | Date | string | null
@@ -57005,6 +57120,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    productionstatus?: $Enums.books_productionstatus | null
     locked_editions?: locked_editionsCreateNestedManyWithoutBookeditionInput
     books: booksCreateNestedOneWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
@@ -57051,6 +57167,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    productionstatus?: $Enums.books_productionstatus | null
     locked_editions?: locked_editionsUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutBookeditionInput
@@ -57094,6 +57211,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     locked_editions?: locked_editionsUpdateManyWithoutBookeditionNestedInput
     books?: booksUpdateOneRequiredWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
@@ -57140,6 +57258,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     locked_editions?: locked_editionsUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutBookeditionNestedInput
@@ -57185,6 +57304,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    productionstatus?: $Enums.books_productionstatus | null
   }
 
   export type bookeditionUpdateManyMutationInput = {
@@ -57219,6 +57339,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
   }
 
   export type bookeditionUncheckedUpdateManyInput = {
@@ -57255,6 +57376,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
   }
 
   export type bookeditionstoresCreateInput = {
@@ -59324,9 +59446,12 @@ export namespace Prisma {
 
   export type translatorbookCreateInput = {
     book_id?: number | null
+    edition?: string | null
+    translator_id: number
     Status?: $Enums.translatorbook_Status
     cost?: number | null
     payment_status?: $Enums.translatorbook_payment_status
+    info?: string | null
     currently_paid?: number
     startDate?: Date | string | null
     endDate?: Date | string | null
@@ -59335,17 +59460,19 @@ export namespace Prisma {
     createdAt?: Date | string
     deletedAt?: Date | string
     books: booksCreateNestedOneWithoutTranslatorbookInput
-    translator: translatorCreateNestedOneWithoutTranslatorbookInput
+    translator?: translatorCreateNestedManyWithoutTranslatorbookInput
   }
 
   export type translatorbookUncheckedCreateInput = {
     id?: number
     book_id?: number | null
     bookId: number
+    edition?: string | null
     translator_id: number
     Status?: $Enums.translatorbook_Status
     cost?: number | null
     payment_status?: $Enums.translatorbook_payment_status
+    info?: string | null
     currently_paid?: number
     startDate?: Date | string | null
     endDate?: Date | string | null
@@ -59353,13 +59480,17 @@ export namespace Prisma {
     updatedAt: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+    translator?: translatorUncheckedCreateNestedManyWithoutTranslatorbookInput
   }
 
   export type translatorbookUpdateInput = {
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
+    edition?: NullableStringFieldUpdateOperationsInput | string | null
+    translator_id?: IntFieldUpdateOperationsInput | number
     Status?: Enumtranslatorbook_StatusFieldUpdateOperationsInput | $Enums.translatorbook_Status
     cost?: NullableFloatFieldUpdateOperationsInput | number | null
     payment_status?: Enumtranslatorbook_payment_statusFieldUpdateOperationsInput | $Enums.translatorbook_payment_status
+    info?: NullableStringFieldUpdateOperationsInput | string | null
     currently_paid?: FloatFieldUpdateOperationsInput | number
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -59368,17 +59499,19 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     books?: booksUpdateOneRequiredWithoutTranslatorbookNestedInput
-    translator?: translatorUpdateOneRequiredWithoutTranslatorbookNestedInput
+    translator?: translatorUpdateManyWithoutTranslatorbookNestedInput
   }
 
   export type translatorbookUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
     bookId?: IntFieldUpdateOperationsInput | number
+    edition?: NullableStringFieldUpdateOperationsInput | string | null
     translator_id?: IntFieldUpdateOperationsInput | number
     Status?: Enumtranslatorbook_StatusFieldUpdateOperationsInput | $Enums.translatorbook_Status
     cost?: NullableFloatFieldUpdateOperationsInput | number | null
     payment_status?: Enumtranslatorbook_payment_statusFieldUpdateOperationsInput | $Enums.translatorbook_payment_status
+    info?: NullableStringFieldUpdateOperationsInput | string | null
     currently_paid?: FloatFieldUpdateOperationsInput | number
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -59386,16 +59519,19 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    translator?: translatorUncheckedUpdateManyWithoutTranslatorbookNestedInput
   }
 
   export type translatorbookCreateManyInput = {
     id?: number
     book_id?: number | null
     bookId: number
+    edition?: string | null
     translator_id: number
     Status?: $Enums.translatorbook_Status
     cost?: number | null
     payment_status?: $Enums.translatorbook_payment_status
+    info?: string | null
     currently_paid?: number
     startDate?: Date | string | null
     endDate?: Date | string | null
@@ -59407,9 +59543,12 @@ export namespace Prisma {
 
   export type translatorbookUpdateManyMutationInput = {
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
+    edition?: NullableStringFieldUpdateOperationsInput | string | null
+    translator_id?: IntFieldUpdateOperationsInput | number
     Status?: Enumtranslatorbook_StatusFieldUpdateOperationsInput | $Enums.translatorbook_Status
     cost?: NullableFloatFieldUpdateOperationsInput | number | null
     payment_status?: Enumtranslatorbook_payment_statusFieldUpdateOperationsInput | $Enums.translatorbook_payment_status
+    info?: NullableStringFieldUpdateOperationsInput | string | null
     currently_paid?: FloatFieldUpdateOperationsInput | number
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -59423,10 +59562,12 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
     bookId?: IntFieldUpdateOperationsInput | number
+    edition?: NullableStringFieldUpdateOperationsInput | string | null
     translator_id?: IntFieldUpdateOperationsInput | number
     Status?: Enumtranslatorbook_StatusFieldUpdateOperationsInput | $Enums.translatorbook_Status
     cost?: NullableFloatFieldUpdateOperationsInput | number | null
     payment_status?: Enumtranslatorbook_payment_statusFieldUpdateOperationsInput | $Enums.translatorbook_payment_status
+    info?: NullableStringFieldUpdateOperationsInput | string | null
     currently_paid?: FloatFieldUpdateOperationsInput | number
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -61513,6 +61654,13 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
+  export type Enumbooks_productionstatusNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.books_productionstatus | Enumbooks_productionstatusFieldRefInput<$PrismaModel> | null
+    in?: $Enums.books_productionstatus[] | null
+    notIn?: $Enums.books_productionstatus[] | null
+    not?: NestedEnumbooks_productionstatusNullableFilter<$PrismaModel> | $Enums.books_productionstatus | null
+  }
+
   export type Locked_editionsListRelationFilter = {
     every?: locked_editionsWhereInput
     some?: locked_editionsWhereInput
@@ -61638,6 +61786,7 @@ export namespace Prisma {
     distribution_cost?: SortOrder
     advertisement_cost?: SortOrder
     purchasing_right_cost?: SortOrder
+    productionstatus?: SortOrder
   }
 
   export type bookeditionAvgOrderByAggregateInput = {
@@ -61702,6 +61851,7 @@ export namespace Prisma {
     distribution_cost?: SortOrder
     advertisement_cost?: SortOrder
     purchasing_right_cost?: SortOrder
+    productionstatus?: SortOrder
   }
 
   export type bookeditionMinOrderByAggregateInput = {
@@ -61738,6 +61888,7 @@ export namespace Prisma {
     distribution_cost?: SortOrder
     advertisement_cost?: SortOrder
     purchasing_right_cost?: SortOrder
+    productionstatus?: SortOrder
   }
 
   export type bookeditionSumOrderByAggregateInput = {
@@ -61798,6 +61949,16 @@ export namespace Prisma {
     _sum?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedIntNullableFilter<$PrismaModel>
     _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type Enumbooks_productionstatusNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.books_productionstatus | Enumbooks_productionstatusFieldRefInput<$PrismaModel> | null
+    in?: $Enums.books_productionstatus[] | null
+    notIn?: $Enums.books_productionstatus[] | null
+    not?: NestedEnumbooks_productionstatusNullableWithAggregatesFilter<$PrismaModel> | $Enums.books_productionstatus | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumbooks_productionstatusNullableFilter<$PrismaModel>
+    _max?: NestedEnumbooks_productionstatusNullableFilter<$PrismaModel>
   }
 
   export type BookeditionScalarRelationFilter = {
@@ -61907,13 +62068,6 @@ export namespace Prisma {
     editionId?: SortOrder
     quantity?: SortOrder
     printerId?: SortOrder
-  }
-
-  export type Enumbooks_productionstatusNullableFilter<$PrismaModel = never> = {
-    equals?: $Enums.books_productionstatus | Enumbooks_productionstatusFieldRefInput<$PrismaModel> | null
-    in?: $Enums.books_productionstatus[] | null
-    notIn?: $Enums.books_productionstatus[] | null
-    not?: NestedEnumbooks_productionstatusNullableFilter<$PrismaModel> | $Enums.books_productionstatus | null
   }
 
   export type BookeditionListRelationFilter = {
@@ -62090,16 +62244,6 @@ export namespace Prisma {
     distribution_cost?: SortOrder
     advertisement_cost?: SortOrder
     purchasing_right_cost?: SortOrder
-  }
-
-  export type Enumbooks_productionstatusNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.books_productionstatus | Enumbooks_productionstatusFieldRefInput<$PrismaModel> | null
-    in?: $Enums.books_productionstatus[] | null
-    notIn?: $Enums.books_productionstatus[] | null
-    not?: NestedEnumbooks_productionstatusNullableWithAggregatesFilter<$PrismaModel> | $Enums.books_productionstatus | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedEnumbooks_productionstatusNullableFilter<$PrismaModel>
-    _max?: NestedEnumbooks_productionstatusNullableFilter<$PrismaModel>
   }
 
   export type Enumlocked_editions_statusFilter<$PrismaModel = never> = {
@@ -63406,19 +63550,32 @@ export namespace Prisma {
     not?: NestedEnumtranslatorbook_payment_statusFilter<$PrismaModel> | $Enums.translatorbook_payment_status
   }
 
-  export type TranslatorScalarRelationFilter = {
-    is?: translatorWhereInput
-    isNot?: translatorWhereInput
+  export type TranslatorListRelationFilter = {
+    every?: translatorWhereInput
+    some?: translatorWhereInput
+    none?: translatorWhereInput
+  }
+
+  export type translatorOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type translatorbookOrderByRelevanceInput = {
+    fields: translatorbookOrderByRelevanceFieldEnum | translatorbookOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
   }
 
   export type translatorbookCountOrderByAggregateInput = {
     id?: SortOrder
     book_id?: SortOrder
     bookId?: SortOrder
+    edition?: SortOrder
     translator_id?: SortOrder
     Status?: SortOrder
     cost?: SortOrder
     payment_status?: SortOrder
+    info?: SortOrder
     currently_paid?: SortOrder
     startDate?: SortOrder
     endDate?: SortOrder
@@ -63441,10 +63598,12 @@ export namespace Prisma {
     id?: SortOrder
     book_id?: SortOrder
     bookId?: SortOrder
+    edition?: SortOrder
     translator_id?: SortOrder
     Status?: SortOrder
     cost?: SortOrder
     payment_status?: SortOrder
+    info?: SortOrder
     currently_paid?: SortOrder
     startDate?: SortOrder
     endDate?: SortOrder
@@ -63458,10 +63617,12 @@ export namespace Prisma {
     id?: SortOrder
     book_id?: SortOrder
     bookId?: SortOrder
+    edition?: SortOrder
     translator_id?: SortOrder
     Status?: SortOrder
     cost?: SortOrder
     payment_status?: SortOrder
+    info?: SortOrder
     currently_paid?: SortOrder
     startDate?: SortOrder
     endDate?: SortOrder
@@ -65125,6 +65286,10 @@ export namespace Prisma {
     divide?: number
   }
 
+  export type NullableEnumbooks_productionstatusFieldUpdateOperationsInput = {
+    set?: $Enums.books_productionstatus | null
+  }
+
   export type locked_editionsUpdateManyWithoutBookeditionNestedInput = {
     create?: XOR<locked_editionsCreateWithoutBookeditionInput, locked_editionsUncheckedCreateWithoutBookeditionInput> | locked_editionsCreateWithoutBookeditionInput[] | locked_editionsUncheckedCreateWithoutBookeditionInput[]
     connectOrCreate?: locked_editionsCreateOrConnectWithoutBookeditionInput | locked_editionsCreateOrConnectWithoutBookeditionInput[]
@@ -65495,10 +65660,6 @@ export namespace Prisma {
     connectOrCreate?: translatorbookCreateOrConnectWithoutBooksInput | translatorbookCreateOrConnectWithoutBooksInput[]
     createMany?: translatorbookCreateManyBooksInputEnvelope
     connect?: translatorbookWhereUniqueInput | translatorbookWhereUniqueInput[]
-  }
-
-  export type NullableEnumbooks_productionstatusFieldUpdateOperationsInput = {
-    set?: $Enums.books_productionstatus | null
   }
 
   export type roundbooksUpdateManyWithoutBookNestedInput = {
@@ -66864,14 +67025,12 @@ export namespace Prisma {
   export type translatorbookCreateNestedManyWithoutTranslatorInput = {
     create?: XOR<translatorbookCreateWithoutTranslatorInput, translatorbookUncheckedCreateWithoutTranslatorInput> | translatorbookCreateWithoutTranslatorInput[] | translatorbookUncheckedCreateWithoutTranslatorInput[]
     connectOrCreate?: translatorbookCreateOrConnectWithoutTranslatorInput | translatorbookCreateOrConnectWithoutTranslatorInput[]
-    createMany?: translatorbookCreateManyTranslatorInputEnvelope
     connect?: translatorbookWhereUniqueInput | translatorbookWhereUniqueInput[]
   }
 
   export type translatorbookUncheckedCreateNestedManyWithoutTranslatorInput = {
     create?: XOR<translatorbookCreateWithoutTranslatorInput, translatorbookUncheckedCreateWithoutTranslatorInput> | translatorbookCreateWithoutTranslatorInput[] | translatorbookUncheckedCreateWithoutTranslatorInput[]
     connectOrCreate?: translatorbookCreateOrConnectWithoutTranslatorInput | translatorbookCreateOrConnectWithoutTranslatorInput[]
-    createMany?: translatorbookCreateManyTranslatorInputEnvelope
     connect?: translatorbookWhereUniqueInput | translatorbookWhereUniqueInput[]
   }
 
@@ -66879,7 +67038,6 @@ export namespace Prisma {
     create?: XOR<translatorbookCreateWithoutTranslatorInput, translatorbookUncheckedCreateWithoutTranslatorInput> | translatorbookCreateWithoutTranslatorInput[] | translatorbookUncheckedCreateWithoutTranslatorInput[]
     connectOrCreate?: translatorbookCreateOrConnectWithoutTranslatorInput | translatorbookCreateOrConnectWithoutTranslatorInput[]
     upsert?: translatorbookUpsertWithWhereUniqueWithoutTranslatorInput | translatorbookUpsertWithWhereUniqueWithoutTranslatorInput[]
-    createMany?: translatorbookCreateManyTranslatorInputEnvelope
     set?: translatorbookWhereUniqueInput | translatorbookWhereUniqueInput[]
     disconnect?: translatorbookWhereUniqueInput | translatorbookWhereUniqueInput[]
     delete?: translatorbookWhereUniqueInput | translatorbookWhereUniqueInput[]
@@ -66893,7 +67051,6 @@ export namespace Prisma {
     create?: XOR<translatorbookCreateWithoutTranslatorInput, translatorbookUncheckedCreateWithoutTranslatorInput> | translatorbookCreateWithoutTranslatorInput[] | translatorbookUncheckedCreateWithoutTranslatorInput[]
     connectOrCreate?: translatorbookCreateOrConnectWithoutTranslatorInput | translatorbookCreateOrConnectWithoutTranslatorInput[]
     upsert?: translatorbookUpsertWithWhereUniqueWithoutTranslatorInput | translatorbookUpsertWithWhereUniqueWithoutTranslatorInput[]
-    createMany?: translatorbookCreateManyTranslatorInputEnvelope
     set?: translatorbookWhereUniqueInput | translatorbookWhereUniqueInput[]
     disconnect?: translatorbookWhereUniqueInput | translatorbookWhereUniqueInput[]
     delete?: translatorbookWhereUniqueInput | translatorbookWhereUniqueInput[]
@@ -66909,10 +67066,16 @@ export namespace Prisma {
     connect?: booksWhereUniqueInput
   }
 
-  export type translatorCreateNestedOneWithoutTranslatorbookInput = {
-    create?: XOR<translatorCreateWithoutTranslatorbookInput, translatorUncheckedCreateWithoutTranslatorbookInput>
-    connectOrCreate?: translatorCreateOrConnectWithoutTranslatorbookInput
-    connect?: translatorWhereUniqueInput
+  export type translatorCreateNestedManyWithoutTranslatorbookInput = {
+    create?: XOR<translatorCreateWithoutTranslatorbookInput, translatorUncheckedCreateWithoutTranslatorbookInput> | translatorCreateWithoutTranslatorbookInput[] | translatorUncheckedCreateWithoutTranslatorbookInput[]
+    connectOrCreate?: translatorCreateOrConnectWithoutTranslatorbookInput | translatorCreateOrConnectWithoutTranslatorbookInput[]
+    connect?: translatorWhereUniqueInput | translatorWhereUniqueInput[]
+  }
+
+  export type translatorUncheckedCreateNestedManyWithoutTranslatorbookInput = {
+    create?: XOR<translatorCreateWithoutTranslatorbookInput, translatorUncheckedCreateWithoutTranslatorbookInput> | translatorCreateWithoutTranslatorbookInput[] | translatorUncheckedCreateWithoutTranslatorbookInput[]
+    connectOrCreate?: translatorCreateOrConnectWithoutTranslatorbookInput | translatorCreateOrConnectWithoutTranslatorbookInput[]
+    connect?: translatorWhereUniqueInput | translatorWhereUniqueInput[]
   }
 
   export type Enumtranslatorbook_StatusFieldUpdateOperationsInput = {
@@ -66931,12 +67094,30 @@ export namespace Prisma {
     update?: XOR<XOR<booksUpdateToOneWithWhereWithoutTranslatorbookInput, booksUpdateWithoutTranslatorbookInput>, booksUncheckedUpdateWithoutTranslatorbookInput>
   }
 
-  export type translatorUpdateOneRequiredWithoutTranslatorbookNestedInput = {
-    create?: XOR<translatorCreateWithoutTranslatorbookInput, translatorUncheckedCreateWithoutTranslatorbookInput>
-    connectOrCreate?: translatorCreateOrConnectWithoutTranslatorbookInput
-    upsert?: translatorUpsertWithoutTranslatorbookInput
-    connect?: translatorWhereUniqueInput
-    update?: XOR<XOR<translatorUpdateToOneWithWhereWithoutTranslatorbookInput, translatorUpdateWithoutTranslatorbookInput>, translatorUncheckedUpdateWithoutTranslatorbookInput>
+  export type translatorUpdateManyWithoutTranslatorbookNestedInput = {
+    create?: XOR<translatorCreateWithoutTranslatorbookInput, translatorUncheckedCreateWithoutTranslatorbookInput> | translatorCreateWithoutTranslatorbookInput[] | translatorUncheckedCreateWithoutTranslatorbookInput[]
+    connectOrCreate?: translatorCreateOrConnectWithoutTranslatorbookInput | translatorCreateOrConnectWithoutTranslatorbookInput[]
+    upsert?: translatorUpsertWithWhereUniqueWithoutTranslatorbookInput | translatorUpsertWithWhereUniqueWithoutTranslatorbookInput[]
+    set?: translatorWhereUniqueInput | translatorWhereUniqueInput[]
+    disconnect?: translatorWhereUniqueInput | translatorWhereUniqueInput[]
+    delete?: translatorWhereUniqueInput | translatorWhereUniqueInput[]
+    connect?: translatorWhereUniqueInput | translatorWhereUniqueInput[]
+    update?: translatorUpdateWithWhereUniqueWithoutTranslatorbookInput | translatorUpdateWithWhereUniqueWithoutTranslatorbookInput[]
+    updateMany?: translatorUpdateManyWithWhereWithoutTranslatorbookInput | translatorUpdateManyWithWhereWithoutTranslatorbookInput[]
+    deleteMany?: translatorScalarWhereInput | translatorScalarWhereInput[]
+  }
+
+  export type translatorUncheckedUpdateManyWithoutTranslatorbookNestedInput = {
+    create?: XOR<translatorCreateWithoutTranslatorbookInput, translatorUncheckedCreateWithoutTranslatorbookInput> | translatorCreateWithoutTranslatorbookInput[] | translatorUncheckedCreateWithoutTranslatorbookInput[]
+    connectOrCreate?: translatorCreateOrConnectWithoutTranslatorbookInput | translatorCreateOrConnectWithoutTranslatorbookInput[]
+    upsert?: translatorUpsertWithWhereUniqueWithoutTranslatorbookInput | translatorUpsertWithWhereUniqueWithoutTranslatorbookInput[]
+    set?: translatorWhereUniqueInput | translatorWhereUniqueInput[]
+    disconnect?: translatorWhereUniqueInput | translatorWhereUniqueInput[]
+    delete?: translatorWhereUniqueInput | translatorWhereUniqueInput[]
+    connect?: translatorWhereUniqueInput | translatorWhereUniqueInput[]
+    update?: translatorUpdateWithWhereUniqueWithoutTranslatorbookInput | translatorUpdateWithWhereUniqueWithoutTranslatorbookInput[]
+    updateMany?: translatorUpdateManyWithWhereWithoutTranslatorbookInput | translatorUpdateManyWithWhereWithoutTranslatorbookInput[]
+    deleteMany?: translatorScalarWhereInput | translatorScalarWhereInput[]
   }
 
   export type Enumnotification_toFieldUpdateOperationsInput = {
@@ -67615,6 +67796,13 @@ export namespace Prisma {
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
+  export type NestedEnumbooks_productionstatusNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.books_productionstatus | Enumbooks_productionstatusFieldRefInput<$PrismaModel> | null
+    in?: $Enums.books_productionstatus[] | null
+    notIn?: $Enums.books_productionstatus[] | null
+    not?: NestedEnumbooks_productionstatusNullableFilter<$PrismaModel> | $Enums.books_productionstatus | null
+  }
+
   export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel> | null
     in?: number[] | null
@@ -67645,13 +67833,6 @@ export namespace Prisma {
     _sum?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedIntNullableFilter<$PrismaModel>
     _max?: NestedIntNullableFilter<$PrismaModel>
-  }
-
-  export type NestedEnumbooks_productionstatusNullableFilter<$PrismaModel = never> = {
-    equals?: $Enums.books_productionstatus | Enumbooks_productionstatusFieldRefInput<$PrismaModel> | null
-    in?: $Enums.books_productionstatus[] | null
-    notIn?: $Enums.books_productionstatus[] | null
-    not?: NestedEnumbooks_productionstatusNullableFilter<$PrismaModel> | $Enums.books_productionstatus | null
   }
 
   export type NestedEnumbooks_productionstatusNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -69004,6 +69185,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    productionstatus?: $Enums.books_productionstatus | null
     locked_editions?: locked_editionsCreateNestedManyWithoutBookeditionInput
     books: booksCreateNestedOneWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersCreateNestedManyWithoutBookeditionInput
@@ -69049,6 +69231,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    productionstatus?: $Enums.books_productionstatus | null
     locked_editions?: locked_editionsUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookeditionInput
@@ -69139,6 +69322,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     locked_editions?: locked_editionsUpdateManyWithoutBookeditionNestedInput
     books?: booksUpdateOneRequiredWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUpdateManyWithoutBookeditionNestedInput
@@ -69184,6 +69368,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     locked_editions?: locked_editionsUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookeditionNestedInput
@@ -69264,6 +69449,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    productionstatus?: $Enums.books_productionstatus | null
     locked_editions?: locked_editionsCreateNestedManyWithoutBookeditionInput
     books: booksCreateNestedOneWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
@@ -69309,6 +69495,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    productionstatus?: $Enums.books_productionstatus | null
     locked_editions?: locked_editionsUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookeditionInput
@@ -69405,6 +69592,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     locked_editions?: locked_editionsUpdateManyWithoutBookeditionNestedInput
     books?: booksUpdateOneRequiredWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
@@ -69450,6 +69638,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     locked_editions?: locked_editionsUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookeditionNestedInput
@@ -69571,6 +69760,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    productionstatus?: $Enums.books_productionstatus | null
     locked_editions?: locked_editionsCreateNestedManyWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersCreateNestedManyWithoutBookeditionInput
@@ -69615,6 +69805,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    productionstatus?: $Enums.books_productionstatus | null
     locked_editions?: locked_editionsUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutBookeditionInput
@@ -69677,9 +69868,12 @@ export namespace Prisma {
 
   export type translatorbookCreateWithoutBooksInput = {
     book_id?: number | null
+    edition?: string | null
+    translator_id: number
     Status?: $Enums.translatorbook_Status
     cost?: number | null
     payment_status?: $Enums.translatorbook_payment_status
+    info?: string | null
     currently_paid?: number
     startDate?: Date | string | null
     endDate?: Date | string | null
@@ -69687,16 +69881,18 @@ export namespace Prisma {
     updatedAt: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
-    translator: translatorCreateNestedOneWithoutTranslatorbookInput
+    translator?: translatorCreateNestedManyWithoutTranslatorbookInput
   }
 
   export type translatorbookUncheckedCreateWithoutBooksInput = {
     id?: number
     book_id?: number | null
+    edition?: string | null
     translator_id: number
     Status?: $Enums.translatorbook_Status
     cost?: number | null
     payment_status?: $Enums.translatorbook_payment_status
+    info?: string | null
     currently_paid?: number
     startDate?: Date | string | null
     endDate?: Date | string | null
@@ -69704,6 +69900,7 @@ export namespace Prisma {
     updatedAt: Date | string
     createdAt?: Date | string
     deletedAt?: Date | string
+    translator?: translatorUncheckedCreateNestedManyWithoutTranslatorbookInput
   }
 
   export type translatorbookCreateOrConnectWithoutBooksInput = {
@@ -69785,6 +69982,7 @@ export namespace Prisma {
     distribution_cost?: FloatNullableFilter<"bookedition"> | number | null
     advertisement_cost?: FloatNullableFilter<"bookedition"> | number | null
     purchasing_right_cost?: FloatNullableFilter<"bookedition"> | number | null
+    productionstatus?: Enumbooks_productionstatusNullableFilter<"bookedition"> | $Enums.books_productionstatus | null
   }
 
   export type damagedbooksUpsertWithWhereUniqueWithoutBooksInput = {
@@ -69826,10 +70024,12 @@ export namespace Prisma {
     id?: IntFilter<"translatorbook"> | number
     book_id?: IntNullableFilter<"translatorbook"> | number | null
     bookId?: IntFilter<"translatorbook"> | number
+    edition?: StringNullableFilter<"translatorbook"> | string | null
     translator_id?: IntFilter<"translatorbook"> | number
     Status?: Enumtranslatorbook_StatusFilter<"translatorbook"> | $Enums.translatorbook_Status
     cost?: FloatNullableFilter<"translatorbook"> | number | null
     payment_status?: Enumtranslatorbook_payment_statusFilter<"translatorbook"> | $Enums.translatorbook_payment_status
+    info?: StringNullableFilter<"translatorbook"> | string | null
     currently_paid?: FloatFilter<"translatorbook"> | number
     startDate?: DateTimeNullableFilter<"translatorbook"> | Date | string | null
     endDate?: DateTimeNullableFilter<"translatorbook"> | Date | string | null
@@ -69871,6 +70071,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    productionstatus?: $Enums.books_productionstatus | null
     books: booksCreateNestedOneWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersCreateNestedManyWithoutBookeditionInput
@@ -69916,6 +70117,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    productionstatus?: $Enums.books_productionstatus | null
     bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutBookeditionInput
     bookshopeditions?: bookshopeditionsUncheckedCreateNestedManyWithoutBookeditionInput
@@ -70024,6 +70226,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     books?: booksUpdateOneRequiredWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUpdateManyWithoutBookeditionNestedInput
@@ -70069,6 +70272,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutBookeditionNestedInput
     bookshopeditions?: bookshopeditionsUncheckedUpdateManyWithoutBookeditionNestedInput
@@ -70167,6 +70371,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    productionstatus?: $Enums.books_productionstatus | null
     locked_editions?: locked_editionsCreateNestedManyWithoutBookeditionInput
     books: booksCreateNestedOneWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
@@ -70212,6 +70417,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    productionstatus?: $Enums.books_productionstatus | null
     locked_editions?: locked_editionsUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutBookeditionInput
@@ -70310,6 +70516,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     locked_editions?: locked_editionsUpdateManyWithoutBookeditionNestedInput
     books?: booksUpdateOneRequiredWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
@@ -70355,6 +70562,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     locked_editions?: locked_editionsUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutBookeditionNestedInput
@@ -71232,6 +71440,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    productionstatus?: $Enums.books_productionstatus | null
     locked_editions?: locked_editionsCreateNestedManyWithoutBookeditionInput
     books: booksCreateNestedOneWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
@@ -71277,6 +71486,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    productionstatus?: $Enums.books_productionstatus | null
     locked_editions?: locked_editionsUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutBookeditionInput
@@ -71391,6 +71601,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     locked_editions?: locked_editionsUpdateManyWithoutBookeditionNestedInput
     books?: booksUpdateOneRequiredWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
@@ -71436,6 +71647,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     locked_editions?: locked_editionsUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutBookeditionNestedInput
@@ -71608,6 +71820,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    productionstatus?: $Enums.books_productionstatus | null
     locked_editions?: locked_editionsCreateNestedManyWithoutBookeditionInput
     books: booksCreateNestedOneWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
@@ -71653,6 +71866,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    productionstatus?: $Enums.books_productionstatus | null
     locked_editions?: locked_editionsUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutBookeditionInput
@@ -71923,6 +72137,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     locked_editions?: locked_editionsUpdateManyWithoutBookeditionNestedInput
     books?: booksUpdateOneRequiredWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
@@ -71968,6 +72183,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     locked_editions?: locked_editionsUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutBookeditionNestedInput
@@ -73077,6 +73293,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    productionstatus?: $Enums.books_productionstatus | null
     locked_editions?: locked_editionsCreateNestedManyWithoutBookeditionInput
     books: booksCreateNestedOneWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
@@ -73122,6 +73339,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    productionstatus?: $Enums.books_productionstatus | null
     locked_editions?: locked_editionsUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutBookeditionInput
@@ -73263,6 +73481,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     locked_editions?: locked_editionsUpdateManyWithoutBookeditionNestedInput
     books?: booksUpdateOneRequiredWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
@@ -73308,6 +73527,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     locked_editions?: locked_editionsUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutBookeditionNestedInput
@@ -73605,9 +73825,12 @@ export namespace Prisma {
 
   export type translatorbookCreateWithoutTranslatorInput = {
     book_id?: number | null
+    edition?: string | null
+    translator_id: number
     Status?: $Enums.translatorbook_Status
     cost?: number | null
     payment_status?: $Enums.translatorbook_payment_status
+    info?: string | null
     currently_paid?: number
     startDate?: Date | string | null
     endDate?: Date | string | null
@@ -73622,9 +73845,12 @@ export namespace Prisma {
     id?: number
     book_id?: number | null
     bookId: number
+    edition?: string | null
+    translator_id: number
     Status?: $Enums.translatorbook_Status
     cost?: number | null
     payment_status?: $Enums.translatorbook_payment_status
+    info?: string | null
     currently_paid?: number
     startDate?: Date | string | null
     endDate?: Date | string | null
@@ -73637,11 +73863,6 @@ export namespace Prisma {
   export type translatorbookCreateOrConnectWithoutTranslatorInput = {
     where: translatorbookWhereUniqueInput
     create: XOR<translatorbookCreateWithoutTranslatorInput, translatorbookUncheckedCreateWithoutTranslatorInput>
-  }
-
-  export type translatorbookCreateManyTranslatorInputEnvelope = {
-    data: translatorbookCreateManyTranslatorInput | translatorbookCreateManyTranslatorInput[]
-    skipDuplicates?: boolean
   }
 
   export type translatorbookUpsertWithWhereUniqueWithoutTranslatorInput = {
@@ -73874,38 +74095,35 @@ export namespace Prisma {
     damagedbooks?: damagedbooksUncheckedUpdateManyWithoutBooksNestedInput
   }
 
-  export type translatorUpsertWithoutTranslatorbookInput = {
+  export type translatorUpsertWithWhereUniqueWithoutTranslatorbookInput = {
+    where: translatorWhereUniqueInput
     update: XOR<translatorUpdateWithoutTranslatorbookInput, translatorUncheckedUpdateWithoutTranslatorbookInput>
     create: XOR<translatorCreateWithoutTranslatorbookInput, translatorUncheckedCreateWithoutTranslatorbookInput>
-    where?: translatorWhereInput
   }
 
-  export type translatorUpdateToOneWithWhereWithoutTranslatorbookInput = {
-    where?: translatorWhereInput
+  export type translatorUpdateWithWhereUniqueWithoutTranslatorbookInput = {
+    where: translatorWhereUniqueInput
     data: XOR<translatorUpdateWithoutTranslatorbookInput, translatorUncheckedUpdateWithoutTranslatorbookInput>
   }
 
-  export type translatorUpdateWithoutTranslatorbookInput = {
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    is_deleted?: BoolFieldUpdateOperationsInput | boolean
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
+  export type translatorUpdateManyWithWhereWithoutTranslatorbookInput = {
+    where: translatorScalarWhereInput
+    data: XOR<translatorUpdateManyMutationInput, translatorUncheckedUpdateManyWithoutTranslatorbookInput>
   }
 
-  export type translatorUncheckedUpdateWithoutTranslatorbookInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    is_deleted?: BoolFieldUpdateOperationsInput | boolean
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
+  export type translatorScalarWhereInput = {
+    AND?: translatorScalarWhereInput | translatorScalarWhereInput[]
+    OR?: translatorScalarWhereInput[]
+    NOT?: translatorScalarWhereInput | translatorScalarWhereInput[]
+    id?: IntFilter<"translator"> | number
+    name?: StringNullableFilter<"translator"> | string | null
+    phoneNumber?: StringNullableFilter<"translator"> | string | null
+    email?: StringNullableFilter<"translator"> | string | null
+    is_deleted?: BoolFilter<"translator"> | boolean
+    updatedAt?: DateTimeFilter<"translator"> | Date | string
+    createdAt?: DateTimeFilter<"translator"> | Date | string
+    deletedAt?: DateTimeFilter<"translator"> | Date | string
+    pen_name?: StringNullableFilter<"translator"> | string | null
   }
 
   export type accountsCreateWithoutActivitylogsInput = {
@@ -74112,6 +74330,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    productionstatus?: $Enums.books_productionstatus | null
     locked_editions?: locked_editionsCreateNestedManyWithoutBookeditionInput
     books: booksCreateNestedOneWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
@@ -74157,6 +74376,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    productionstatus?: $Enums.books_productionstatus | null
     locked_editions?: locked_editionsUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutBookeditionInput
@@ -74336,6 +74556,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     locked_editions?: locked_editionsUpdateManyWithoutBookeditionNestedInput
     books?: booksUpdateOneRequiredWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
@@ -74381,6 +74602,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     locked_editions?: locked_editionsUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutBookeditionNestedInput
@@ -75691,6 +75913,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    productionstatus?: $Enums.books_productionstatus | null
     locked_editions?: locked_editionsCreateNestedManyWithoutBookeditionInput
     books: booksCreateNestedOneWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresCreateNestedManyWithoutBookeditionInput
@@ -75736,6 +75959,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    productionstatus?: $Enums.books_productionstatus | null
     locked_editions?: locked_editionsUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionstores?: bookeditionstoresUncheckedCreateNestedManyWithoutBookeditionInput
     bookeditionprinters?: bookeditionprintersUncheckedCreateNestedManyWithoutBookeditionInput
@@ -75834,6 +76058,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     locked_editions?: locked_editionsUpdateManyWithoutBookeditionNestedInput
     books?: booksUpdateOneRequiredWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
@@ -75879,6 +76104,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     locked_editions?: locked_editionsUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutBookeditionNestedInput
@@ -76598,6 +76824,7 @@ export namespace Prisma {
     distribution_cost?: number | null
     advertisement_cost?: number | null
     purchasing_right_cost?: number | null
+    productionstatus?: $Enums.books_productionstatus | null
   }
 
   export type damagedbooksCreateManyBooksInput = {
@@ -76618,10 +76845,12 @@ export namespace Prisma {
   export type translatorbookCreateManyBooksInput = {
     id?: number
     book_id?: number | null
+    edition?: string | null
     translator_id: number
     Status?: $Enums.translatorbook_Status
     cost?: number | null
     payment_status?: $Enums.translatorbook_payment_status
+    info?: string | null
     currently_paid?: number
     startDate?: Date | string | null
     endDate?: Date | string | null
@@ -76700,6 +76929,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     locked_editions?: locked_editionsUpdateManyWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUpdateManyWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUpdateManyWithoutBookeditionNestedInput
@@ -76744,6 +76974,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
     locked_editions?: locked_editionsUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionstores?: bookeditionstoresUncheckedUpdateManyWithoutBookeditionNestedInput
     bookeditionprinters?: bookeditionprintersUncheckedUpdateManyWithoutBookeditionNestedInput
@@ -76788,6 +77019,7 @@ export namespace Prisma {
     distribution_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     advertisement_cost?: NullableFloatFieldUpdateOperationsInput | number | null
     purchasing_right_cost?: NullableFloatFieldUpdateOperationsInput | number | null
+    productionstatus?: NullableEnumbooks_productionstatusFieldUpdateOperationsInput | $Enums.books_productionstatus | null
   }
 
   export type damagedbooksUpdateWithoutBooksInput = {
@@ -76836,9 +77068,12 @@ export namespace Prisma {
 
   export type translatorbookUpdateWithoutBooksInput = {
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
+    edition?: NullableStringFieldUpdateOperationsInput | string | null
+    translator_id?: IntFieldUpdateOperationsInput | number
     Status?: Enumtranslatorbook_StatusFieldUpdateOperationsInput | $Enums.translatorbook_Status
     cost?: NullableFloatFieldUpdateOperationsInput | number | null
     payment_status?: Enumtranslatorbook_payment_statusFieldUpdateOperationsInput | $Enums.translatorbook_payment_status
+    info?: NullableStringFieldUpdateOperationsInput | string | null
     currently_paid?: FloatFieldUpdateOperationsInput | number
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -76846,16 +77081,18 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    translator?: translatorUpdateOneRequiredWithoutTranslatorbookNestedInput
+    translator?: translatorUpdateManyWithoutTranslatorbookNestedInput
   }
 
   export type translatorbookUncheckedUpdateWithoutBooksInput = {
     id?: IntFieldUpdateOperationsInput | number
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
+    edition?: NullableStringFieldUpdateOperationsInput | string | null
     translator_id?: IntFieldUpdateOperationsInput | number
     Status?: Enumtranslatorbook_StatusFieldUpdateOperationsInput | $Enums.translatorbook_Status
     cost?: NullableFloatFieldUpdateOperationsInput | number | null
     payment_status?: Enumtranslatorbook_payment_statusFieldUpdateOperationsInput | $Enums.translatorbook_payment_status
+    info?: NullableStringFieldUpdateOperationsInput | string | null
     currently_paid?: FloatFieldUpdateOperationsInput | number
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -76863,15 +77100,18 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    translator?: translatorUncheckedUpdateManyWithoutTranslatorbookNestedInput
   }
 
   export type translatorbookUncheckedUpdateManyWithoutBooksInput = {
     id?: IntFieldUpdateOperationsInput | number
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
+    edition?: NullableStringFieldUpdateOperationsInput | string | null
     translator_id?: IntFieldUpdateOperationsInput | number
     Status?: Enumtranslatorbook_StatusFieldUpdateOperationsInput | $Enums.translatorbook_Status
     cost?: NullableFloatFieldUpdateOperationsInput | number | null
     payment_status?: Enumtranslatorbook_payment_statusFieldUpdateOperationsInput | $Enums.translatorbook_payment_status
+    info?: NullableStringFieldUpdateOperationsInput | string | null
     currently_paid?: FloatFieldUpdateOperationsInput | number
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -77970,27 +78210,14 @@ export namespace Prisma {
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type translatorbookCreateManyTranslatorInput = {
-    id?: number
-    book_id?: number | null
-    bookId: number
-    Status?: $Enums.translatorbook_Status
-    cost?: number | null
-    payment_status?: $Enums.translatorbook_payment_status
-    currently_paid?: number
-    startDate?: Date | string | null
-    endDate?: Date | string | null
-    is_deleted?: boolean
-    updatedAt: Date | string
-    createdAt?: Date | string
-    deletedAt?: Date | string
-  }
-
   export type translatorbookUpdateWithoutTranslatorInput = {
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
+    edition?: NullableStringFieldUpdateOperationsInput | string | null
+    translator_id?: IntFieldUpdateOperationsInput | number
     Status?: Enumtranslatorbook_StatusFieldUpdateOperationsInput | $Enums.translatorbook_Status
     cost?: NullableFloatFieldUpdateOperationsInput | number | null
     payment_status?: Enumtranslatorbook_payment_statusFieldUpdateOperationsInput | $Enums.translatorbook_payment_status
+    info?: NullableStringFieldUpdateOperationsInput | string | null
     currently_paid?: FloatFieldUpdateOperationsInput | number
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -78005,9 +78232,12 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
     bookId?: IntFieldUpdateOperationsInput | number
+    edition?: NullableStringFieldUpdateOperationsInput | string | null
+    translator_id?: IntFieldUpdateOperationsInput | number
     Status?: Enumtranslatorbook_StatusFieldUpdateOperationsInput | $Enums.translatorbook_Status
     cost?: NullableFloatFieldUpdateOperationsInput | number | null
     payment_status?: Enumtranslatorbook_payment_statusFieldUpdateOperationsInput | $Enums.translatorbook_payment_status
+    info?: NullableStringFieldUpdateOperationsInput | string | null
     currently_paid?: FloatFieldUpdateOperationsInput | number
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -78021,9 +78251,12 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     book_id?: NullableIntFieldUpdateOperationsInput | number | null
     bookId?: IntFieldUpdateOperationsInput | number
+    edition?: NullableStringFieldUpdateOperationsInput | string | null
+    translator_id?: IntFieldUpdateOperationsInput | number
     Status?: Enumtranslatorbook_StatusFieldUpdateOperationsInput | $Enums.translatorbook_Status
     cost?: NullableFloatFieldUpdateOperationsInput | number | null
     payment_status?: Enumtranslatorbook_payment_statusFieldUpdateOperationsInput | $Enums.translatorbook_payment_status
+    info?: NullableStringFieldUpdateOperationsInput | string | null
     currently_paid?: FloatFieldUpdateOperationsInput | number
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -78031,6 +78264,41 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type translatorUpdateWithoutTranslatorbookInput = {
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type translatorUncheckedUpdateWithoutTranslatorbookInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type translatorUncheckedUpdateManyWithoutTranslatorbookInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    is_deleted?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    pen_name?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type roundrecordsCreateManyRoundBooksInput = {

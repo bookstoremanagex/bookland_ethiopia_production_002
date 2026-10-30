@@ -67,6 +67,7 @@ model bookedition {
   distribution_cost           Float?
   advertisement_cost          Float?
   purchasing_right_cost       Float?
+  productionstatus              books_productionstatus? @default(ON_PRODUCTION)
   locked_editions             locked_editions[]
   books                       books                   @relation(fields: [bookId], references: [id], map: "BookEdition_bookId_fkey")
   bookeditionstores           bookeditionstores[]
@@ -487,10 +488,12 @@ model translatorbook {
   id             Int                           @id @default(autoincrement())
   book_id        Int?
   bookId         Int
+  edition        String?
   translator_id  Int
   Status         translatorbook_Status         @default(NOT_STARTED)
   cost           Float?
   payment_status translatorbook_payment_status @default(PENDING)
+  info String? @db.Text
   currently_paid Float                         @default(0)
   startDate      DateTime?
   endDate        DateTime?
@@ -499,7 +502,7 @@ model translatorbook {
   createdAt      DateTime                      @default(now())
   deletedAt      DateTime                      @default(now())
   books          books                         @relation(fields: [bookId], references: [id], map: "TranslatorBook_bookId_fkey")
-  translator     translator                    @relation(fields: [translator_id], references: [id], map: "TranslatorBook_translator_id_fkey")
+  translator     translator[]                   
 
   @@index([bookId], map: "TranslatorBook_bookId_fkey")
   @@index([translator_id], map: "TranslatorBook_translator_id_fkey")
@@ -895,6 +898,4 @@ enum books_productionstatus {
   DESIGN
   PRINTING
   PREPRINTING
-  DISTRIBUTION
-  SALES
 }

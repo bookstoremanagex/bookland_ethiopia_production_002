@@ -13,7 +13,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Search, ChevronLeft, ChevronRight, PenTool, Calendar, User, Clock, Banknote } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight, PenTool, Calendar, User, Clock, Banknote, CheckCircle2 } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 import { Button } from "../ui/button";
@@ -26,6 +26,7 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import { cn } from "../../lib/utils";
 import { useCalendar } from "@/lib/calendar-context";
 
@@ -34,10 +35,15 @@ export type TranslationProject = {
   books: {
     title: string;
     unique_identification_code: string;
+    /** Fallback when the project's edition can no longer be resolved. */
+    productionstatus?: string | null;
+    bookedition?: { id: number; edition_name: string; productionstatus?: string | null }[];
   };
-  translator: {
-    name: string;
-  };
+  /** Book edition id, stored as a string in `translatorbook.edition`. */
+  edition?: string | null;
+  /** Many-to-many relation; older rows may still only carry `translator_id`. */
+  translator?: { id?: number; name: string | null }[] | { id?: number; name: string | null } | null;
+  translator_id?: number | null;
   Status: string;
   cost: number | null;
   payment_status: string;
@@ -46,6 +52,70 @@ export type TranslationProject = {
   endDate: string | Date | null;
   createdAt: string | Date;
 };
+
+/** Names of every translator on the project (handles array or single object). */
+function translatorNames(project: TranslationProject): string[] {
+  const relation = project.translator;
+  const list = Array.isArray(relation) ? relation : relation ? [relation] : [];
+  return list
+    .map((translator) => translator?.name)
+    .filter((name): name is string => Boolean(name));
+}
+
+/** Resolves the stored edition id to its edition name. */
+function editionName(project: TranslationProject): string | null {
+  if (!project.edition) return null;
+  const match = project.books?.bookedition?.find(
+    (edition) => String(edition.id) === String(project.edition)
+  );
+  return match?.edition_name ?? `Edition #${project.edition}`;
+}
+
+/** Human labels for `books_productionstatus`. */
+const PRODUCTION_STATUS_LABELS: Record<string, string> = {
+  ON_PRODUCTION: "On Production",
+  TRANSLATION: "Translation",
+  DESIGN: "Design",
+  PRINTING: "Printing",
+  PREPRINTING: "Pre-Printing",
+};
+
+/**
+ * Production status that the book/edition carries right now. The project's own
+ * edition wins; older projects without a resolvable edition fall back to the
+ * book-level status.
+ */
+function currentProductionStatus(project: TranslationProject): string | null {
+  const edition = project.edition
+    ? project.books?.bookedition?.find((edition) => String(edition.id) === String(project.edition))
+    : undefined;
+  return edition?.productionstatus ?? project.books?.productionstatus ?? null;
+}
+
+/** True once the title has left the translation stage. */
+function hasPassedTranslationStage(project: TranslationProject): boolean {
+  const status = currentProductionStatus(project);
+  return Boolean(status) && status !== "TRANSLATION";
+}
+
+/** Green badge shown when the title already moved on; hover reveals the stage. */
+function PassedStageBadge({ status }: { status: string }) {
+  return (
+    <TooltipProvider delayDuration={0}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div className="inline-flex cursor-default items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border bg-emerald-500/10 text-emerald-600 border-emerald-500/30">
+            <CheckCircle2 className="size-3" />
+            Passed This Stage
+          </div>
+        </TooltipTrigger>
+        <TooltipContent side="top" className="font-bold">
+          Current status: {PRODUCTION_STATUS_LABELS[status] ?? status}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+}
 
 const statusConfig = {
   NOT_STARTED: { label: "Not Started", color: "bg-muted text-muted-foreground border-muted-foreground/20" },
@@ -76,26 +146,50 @@ export function TranslationProjectsTable({ data }: TranslationProjectsTableProps
       cell: ({ row }) => (
         <div className="flex flex-col">
           <div className="font-black text-primarycolor leading-tight line-clamp-1">{row.original.books?.title}</div>
-          <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{row.original.books?.unique_identification_code}</div>
+          <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+            {row.original.books?.unique_identification_code}
+            {editionName(row.original) && (
+              <span className="ml-1.5 text-primarycolor/70">· {editionName(row.original)}</span>
+            )}
+          </div>
         </div>
       ),
     },
     {
-      accessorKey: "translator.name",
-      header: "Translator",
-      cell: ({ row }) => (
-        <div className="flex items-center gap-2">
-          <div className="size-8 rounded-full bg-secondarycolor/10 flex items-center justify-center text-secondarycolor font-black text-xs border border-secondarycolor/20">
-            {row.original.translator?.name ? row.original.translator.name[0]?.toUpperCase() : "?"}
+      id: "translators",
+      accessorFn: (row) => translatorNames(row).join(", "),
+      header: "Translators",
+      cell: ({ row }) => {
+        const names = translatorNames(row.original);
+        const label = names.length > 0 ? names.join(", ") : "Unknown";
+        return (
+          <div className="flex items-center gap-2">
+            <div className="size-8 shrink-0 rounded-full bg-secondarycolor/10 flex items-center justify-center text-secondarycolor font-black text-xs border border-secondarycolor/20">
+              {names[0] ? names[0][0]?.toUpperCase() : "?"}
+            </div>
+            <div className="font-bold text-secondarycolor line-clamp-1">
+              {label}
+              {names.length > 1 && (
+                <span className="ml-1.5 text-[9px] font-black uppercase tracking-widest text-primarycolor/60">
+                  {names.length} translators
+                </span>
+              )}
+            </div>
           </div>
-          <div className="font-bold text-secondarycolor">{row.original.translator?.name || "Unknown"}</div>
-        </div>
-      ),
+        );
+      },
     },
     {
       accessorKey: "Status",
       header: "Status",
       cell: ({ row }) => {
+        const project = row.original;
+        const productionStatus = currentProductionStatus(project);
+
+        if (productionStatus && productionStatus !== "TRANSLATION") {
+          return <PassedStageBadge status={productionStatus} />;
+        }
+
         const status = row.getValue("Status") as keyof typeof statusConfig;
         const config = statusConfig[status] || statusConfig.NOT_STARTED;
         return (
@@ -233,14 +327,23 @@ export function TranslationProjectsTable({ data }: TranslationProjectsTableProps
                 <div className="flex justify-between items-start">
                   <div className="space-y-1">
                     <h3 className="font-black text-primarycolor text-lg leading-tight">{project.books?.title}</h3>
+                    {editionName(project) && (
+                      <div className="text-[10px] font-black uppercase tracking-widest text-primarycolor/60">
+                        {editionName(project)}
+                      </div>
+                    )}
                     <div className="flex items-center gap-2 text-xs font-bold text-secondarycolor">
                       <User className="size-3" />
-                      {project.translator?.name || "Unknown"}
+                      {translatorNames(project).join(", ") || "Unknown"}
                     </div>
                   </div>
-                  <div className={cn("inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest border", config.color)}>
-                    {config.label}
-                  </div>
+                  {hasPassedTranslationStage(project) ? (
+                    <PassedStageBadge status={currentProductionStatus(project)!} />
+                  ) : (
+                    <div className={cn("inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest border", config.color)}>
+                      {config.label}
+                    </div>
+                  )}
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4 pt-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground border-t-2 border-primarycolor/5">

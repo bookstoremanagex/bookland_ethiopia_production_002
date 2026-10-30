@@ -77,6 +77,11 @@ const menuItems = [
   { title: "Profile", icon: User, url: "/admin_dashboard/profile" },
   { title: "Books", icon: BookOpen, url: "/admin_dashboard/books" },
   { title: "Book Shelf", icon: Library, url: "/admin_dashboard/books/shelf" },
+  {
+    title: "Book Follow Up",
+    icon: ClipboardList,
+    url: "/admin_dashboard/books/follow-up",
+  },
 
   {
     title: "Damaged Books",

@@ -49,8 +49,6 @@ const productionStatusOptions = [
   { label: "Design", value: "DESIGN" },
   { label: "Printing", value: "PRINTING" },
   { label: "Pre-printing", value: "PREPRINTING" },
-  { label: "Distribution", value: "DISTRIBUTION" },
-  { label: "Sales", value: "SALES" },
 ];
 
 interface ProductionTableProps {

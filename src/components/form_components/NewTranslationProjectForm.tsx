@@ -1,40 +1,25 @@
 "use client";
 
-import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { translationProjectSchema, type TranslationProjectFormValues } from "../../lib/validation/translation-project-schema";
 import { createTranslationProject } from "../../app/actions/translation-project-actions";
 import { Button } from "../ui/button";
 import { DateInput } from "../ui/date-input";
-import { cn } from "../../lib/utils";
 import { toast } from "sonner";
 import Link from "next/link";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { Controller } from "react-hook-form";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "../../components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "../../components/ui/popover";
-import { ArrowLeft, Banknote, BookOpen, Calendar, Check, ChevronsUpDown, Clock, PenTool, Plus, User } from "lucide-react";
+import { ArrowLeft, Banknote, Calendar, Clock, FileText, PenTool, Plus, User } from "lucide-react";
+import TranslatorMultiSelect from "./TranslatorMultiSelect";
+import BookEditionPicker, { type PickerBook } from "./BookEditionPicker";
 
 interface NewTranslationProjectFormProps {
-  books: { id: number; title: string; unique_identification_code: string }[];
+  books: PickerBook[];
   translators: { id: number; name: string }[];
 }
 
 export function NewTranslationProjectForm({ books, translators }: NewTranslationProjectFormProps) {
-  const [bookOpen, setBookOpen] = React.useState(false);
-  const [translatorOpen, setTranslatorOpen] = React.useState(false);
   const router = useRouter();
   const pathname = usePathname();
   const dashboardRoot = pathname.split('/').slice(0, 2).join('/');
@@ -45,7 +30,6 @@ export function NewTranslationProjectForm({ books, translators }: NewTranslation
     register,
     handleSubmit,
     control,
-    setValue,
     watch,
     formState: { errors, isSubmitting },
     reset,
@@ -53,13 +37,15 @@ export function NewTranslationProjectForm({ books, translators }: NewTranslation
     resolver: zodResolver(translationProjectSchema) as any,
     defaultValues: {
       bookId: prefillBookId ? Number(books.find(b => b.unique_identification_code === prefillBookId)?.id) : undefined,
-      translator_id: prefillTranslatorId ? Number(prefillTranslatorId) : undefined,
+      edition_id: undefined,
+      translator_ids: prefillTranslatorId ? [Number(prefillTranslatorId)] : [],
       Status: "NOT_STARTED",
       cost: undefined,
       payment_status: "PENDING",
       currently_paid: 0,
       startDate: "",
       endDate: "",
+      info: "",
     },
   });
 
@@ -115,129 +101,55 @@ export function NewTranslationProjectForm({ books, translators }: NewTranslation
         className="bg-card rounded-[1.8rem] md:rounded-[2.5rem] border-2 border-primarycolor/10 shadow-2xl overflow-hidden p-6 md:p-10 space-y-8 md:space-y-10"
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Book Selection */}
-          <div className="space-y-3">
-            <label className="text-sm font-black text-secondarycolor uppercase tracking-widest ml-1 flex items-center gap-2">
-              <BookOpen className="size-4 text-primarycolor" />
-              Select Book
-            </label>
+          {/* Book + Edition */}
+          <div className="md:col-span-2">
             <Controller
               name="bookId"
               control={control}
-              render={({ field }) => (
-                <Popover open={bookOpen} onOpenChange={setBookOpen}>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      className={cn(
-                        "w-full h-14 px-6 bg-background/50 border-2 border-primarycolor/10 focus:border-primarycolor rounded-2xl justify-between font-bold",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value
-                        ? books.find((book) => book.id === field.value)?.title
-                        : "Choose a book..."}
-                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 rounded-2xl border-2 border-primarycolor/10 shadow-2xl">
-                    <Command className="rounded-2xl">
-                      <CommandInput placeholder="Search books..." className="h-12" />
-                      <CommandList className="max-h-[240px]"> {/* ~5 items at 48px each */}
-                        <CommandEmpty>No book found.</CommandEmpty>
-                        <CommandGroup>
-                          {books.map((book) => (
-                            <CommandItem
-                              key={book.id}
-                              value={book.title}
-                              onSelect={() => {
-                                setValue("bookId", book.id);
-                                setBookOpen(false);
-                              }}
-                              className="h-12 px-4 font-bold text-secondarycolor hover:bg-primarycolor/10 cursor-pointer"
-                            >
-                              <Check
-                                className={cn(
-                                  "mr-2 h-4 w-4 text-primarycolor",
-                                  field.value === book.id ? "opacity-100" : "opacity-0"
-                                )}
-                              />
-                              <div className="flex flex-col">
-                                <span className="line-clamp-1">{book.title}</span>
-                                <span className="text-[10px] opacity-50">{book.unique_identification_code}</span>
-                              </div>
-                            </CommandItem>
-                          ))}
-                        </CommandGroup>
-                      </CommandList>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
+              render={({ field: bookField }) => (
+                <Controller
+                  name="edition_id"
+                  control={control}
+                  render={({ field: editionField }) => (
+                    <BookEditionPicker
+                      books={books}
+                      bookId={bookField.value}
+                      editionId={editionField.value}
+                      onChange={({ bookId, editionId }) => {
+                        bookField.onChange(bookId);
+                        editionField.onChange(editionId);
+                      }}
+                      bookError={errors.bookId?.message}
+                      editionError={errors.edition_id?.message}
+                    />
+                  )}
+                />
               )}
             />
-            {errors.bookId && <p className="text-xs font-bold text-destructive ml-1">{errors.bookId.message}</p>}
           </div>
 
-          {/* Translator Selection */}
+          {/* Translator Selection (multiple allowed) */}
           <div className="space-y-3">
             <label className="text-sm font-black text-secondarycolor uppercase tracking-widest ml-1 flex items-center gap-2">
               <User className="size-4 text-primarycolor" />
-              Assign Translator
+              Assign Translators
             </label>
             <Controller
-              name="translator_id"
+              name="translator_ids"
               control={control}
               render={({ field }) => (
-                <Popover open={translatorOpen} onOpenChange={setTranslatorOpen}>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      className={cn(
-                        "w-full h-14 px-6 bg-background/50 border-2 border-primarycolor/10 focus:border-primarycolor rounded-2xl justify-between font-bold",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value
-                        ? translators.find((t) => t.id === field.value)?.name
-                        : "Choose a translator..."}
-                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 rounded-2xl border-2 border-primarycolor/10 shadow-2xl">
-                    <Command className="rounded-2xl">
-                      <CommandInput placeholder="Search translators..." className="h-12" />
-                      <CommandList className="max-h-[240px]">
-                        <CommandEmpty>No translator found.</CommandEmpty>
-                        <CommandGroup>
-                          {translators.map((t) => (
-                            <CommandItem
-                              key={t.id}
-                              value={t.name}
-                              onSelect={() => {
-                                setValue("translator_id", t.id);
-                                setTranslatorOpen(false);
-                              }}
-                              className="h-12 px-4 font-bold text-secondarycolor hover:bg-primarycolor/10 cursor-pointer"
-                            >
-                              <Check
-                                className={cn(
-                                  "mr-2 h-4 w-4 text-primarycolor",
-                                  field.value === t.id ? "opacity-100" : "opacity-0"
-                                )}
-                              />
-                              {t.name}
-                            </CommandItem>
-                          ))}
-                        </CommandGroup>
-                      </CommandList>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
+                <TranslatorMultiSelect
+                  translators={translators}
+                  value={field.value ?? []}
+                  onChange={field.onChange}
+                  placeholder="Choose one or more translators..."
+                  error={errors.translator_ids?.message as string | undefined}
+                />
               )}
             />
-            {errors.translator_id && <p className="text-xs font-bold text-destructive ml-1">{errors.translator_id.message}</p>}
+            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70 ml-1">
+              The first translator you pick is the lead.
+            </p>
           </div>
 
           {/* Status Selection */}
@@ -305,6 +217,21 @@ export function NewTranslationProjectForm({ books, translators }: NewTranslation
               className="w-full h-14 px-6 bg-background/50 border-2 border-primarycolor/10 focus:border-primarycolor rounded-2xl outline-none transition-all font-bold"
             />
             {errors.currently_paid && <p className="text-xs font-bold text-destructive ml-1">{errors.currently_paid.message}</p>}
+          </div>
+
+          {/* Translation memo */}
+          <div className="space-y-3 col-span-1 md:col-span-2">
+            <label className="text-sm font-black text-secondarycolor uppercase tracking-widest ml-1 flex items-center gap-2">
+              <FileText className="size-4 text-primarycolor" />
+              Translation Memo
+            </label>
+            <textarea
+              {...register("info")}
+              rows={4}
+              placeholder="Notes about this translation work — scope, references, expectations..."
+              className="w-full px-6 py-4 bg-background/50 border-2 border-primarycolor/10 focus:border-primarycolor rounded-2xl outline-none transition-all font-bold resize-y min-h-[120px]"
+            />
+            {errors.info && <p className="text-xs font-bold text-destructive ml-1">{errors.info.message}</p>}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 col-span-1 md:col-span-2 pt-4 border-t-2 border-primarycolor/5">

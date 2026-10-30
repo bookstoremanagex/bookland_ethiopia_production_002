@@ -168,7 +168,8 @@ exports.Prisma.BookeditionScalarFieldEnum = {
   store_cost: 'store_cost',
   distribution_cost: 'distribution_cost',
   advertisement_cost: 'advertisement_cost',
-  purchasing_right_cost: 'purchasing_right_cost'
+  purchasing_right_cost: 'purchasing_right_cost',
+  productionstatus: 'productionstatus'
 };
 
 exports.Prisma.BookeditionstoresScalarFieldEnum = {
@@ -468,10 +469,12 @@ exports.Prisma.TranslatorbookScalarFieldEnum = {
   id: 'id',
   book_id: 'book_id',
   bookId: 'bookId',
+  edition: 'edition',
   translator_id: 'translator_id',
   Status: 'Status',
   cost: 'cost',
   payment_status: 'payment_status',
+  info: 'info',
   currently_paid: 'currently_paid',
   startDate: 'startDate',
   endDate: 'endDate',
@@ -873,6 +876,11 @@ exports.Prisma.translatorOrderByRelevanceFieldEnum = {
   pen_name: 'pen_name'
 };
 
+exports.Prisma.translatorbookOrderByRelevanceFieldEnum = {
+  edition: 'edition',
+  info: 'info'
+};
+
 exports.Prisma.notificationOrderByRelevanceFieldEnum = {
   title: 'title',
   message: 'message',
@@ -1000,9 +1008,7 @@ exports.books_productionstatus = exports.$Enums.books_productionstatus = {
   TRANSLATION: 'TRANSLATION',
   DESIGN: 'DESIGN',
   PRINTING: 'PRINTING',
-  PREPRINTING: 'PREPRINTING',
-  DISTRIBUTION: 'DISTRIBUTION',
-  SALES: 'SALES'
+  PREPRINTING: 'PREPRINTING'
 };
 
 exports.locked_editions_status = exports.$Enums.locked_editions_status = {
