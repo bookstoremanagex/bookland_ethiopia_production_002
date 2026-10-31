@@ -13,6 +13,12 @@ import { Store, Printer, Loader2 } from 'lucide-react';
 import { getStores } from '@/app/actions/get-stores';
 import { getStoreInventoryWithDetails } from '@/app/actions/store-inventory-actions';
 import { convertToEthiopian } from '@/lib/calendar-utils';
+import {
+    DEFAULT_TITLE_SORT,
+    TITLE_SORT_OPTIONS,
+    compareTitlesByOrder,
+    type TitleSortOrder,
+} from '@/lib/print-sort';
 
 const ETHIOPIAN_MONTHS = [
     "መስከረም", "ጥቅምት", "ኅዳር", "ታሕሳስ", "ጥር", "የካቲት",
@@ -46,6 +52,7 @@ export default function PrintContentDialog({ open, onOpenChange }: PrintContentD
     const [formalTable, setFormalTable] = useState(false);
     const [showBoth, setShowBoth] = useState(true);
     const [showExclusive, setShowExclusive] = useState(true);
+    const [titleSort, setTitleSort] = useState<TitleSortOrder>(DEFAULT_TITLE_SORT);
     const [generating, setGenerating] = useState(false);
 
     useEffect(() => {
@@ -56,6 +63,7 @@ export default function PrintContentDialog({ open, onOpenChange }: PrintContentD
             setFormalTable(false);
             setShowBoth(true);
             setShowExclusive(true);
+            setTitleSort(DEFAULT_TITLE_SORT);
             setStoreLoading(true);
             getStores().then(res => {
                 if (res.success) setStores(res.data as any[]);
@@ -128,7 +136,7 @@ export default function PrintContentDialog({ open, onOpenChange }: PrintContentD
                     editions: items.filter((i: any) => (i.quantity ?? 0) > 0),
                 }))
                 .filter(entry => entry.editions.length > 0)
-                .sort((a, b) => a.bookTitle.localeCompare(b.bookTitle));
+                .sort((a, b) => compareTitlesByOrder(a.bookTitle, b.bookTitle, titleSort));
 
             if (bookEntries.length === 0) {
                 bodyHtml = `<div style="color:#94a3b8;font-style:italic;padding:20px 0;text-align:center;">No inventory to display</div>`;
@@ -172,10 +180,11 @@ export default function PrintContentDialog({ open, onOpenChange }: PrintContentD
                 bookMapB[title].editions.push(item);
             }
 
-            const allTitles = [...new Set([...Object.keys(bookMapA), ...Object.keys(bookMapB)])].sort();
+            const allTitles = [...new Set([...Object.keys(bookMapA), ...Object.keys(bookMapB)])]
+                .sort((a, b) => compareTitlesByOrder(a, b, titleSort));
             const commonTitles = allTitles.filter(t => bookMapA[t] && bookMapB[t]);
-            const exclusiveTitlesA = allTitles.filter(t => bookMapA[t] && !bookMapB[t]).sort();
-            const exclusiveTitlesB = allTitles.filter(t => !bookMapA[t] && bookMapB[t]).sort();
+            const exclusiveTitlesA = allTitles.filter(t => bookMapA[t] && !bookMapB[t]);
+            const exclusiveTitlesB = allTitles.filter(t => !bookMapA[t] && bookMapB[t]);
             const exclusiveTitles = [...exclusiveTitlesA, ...exclusiveTitlesB];
 
             if (formalTable) {
@@ -582,6 +591,29 @@ export default function PrintContentDialog({ open, onOpenChange }: PrintContentD
                                     className={cn(
                                         "h-7 text-[9px] font-black uppercase tracking-widest rounded-lg",
                                         fontSize === key
+                                            ? "bg-primarycolor text-white"
+                                            : "border border-slate-100 text-muted-foreground hover:border-primarycolor/30"
+                                    )}
+                                >
+                                    {label}
+                                </Button>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div>
+                        <label className="text-[9px] font-black text-muted-foreground uppercase tracking-widest ml-1 block mb-1.5">
+                            Book Order
+                        </label>
+                        <div className="grid grid-cols-2 gap-1.5">
+                            {TITLE_SORT_OPTIONS.map(({ value, label }) => (
+                                <Button
+                                    key={value}
+                                    variant={titleSort === value ? "default" : "outline"}
+                                    onClick={() => setTitleSort(value)}
+                                    className={cn(
+                                        "h-7 px-1 text-[8px] font-black uppercase tracking-tight rounded-lg",
+                                        titleSort === value
                                             ? "bg-primarycolor text-white"
                                             : "border border-slate-100 text-muted-foreground hover:border-primarycolor/30"
                                     )}

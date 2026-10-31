@@ -590,3 +590,126 @@ export async function batchAssignEditionToStores(
     return { success: false, error: "Failed to assign editions to stores" };
   }
 }
+
+export type DetailedInfoEditionRow = {
+    /** 1, 2, 3 ... within this book, so editions stay distinguishable. */
+    editionIndex: number;
+    editionName: string;
+    /** Total copies of this edition across every store. */
+    inStore: number;
+    /** Copies still at the warehouse, waiting to be transferred. */
+    readyToTransfer: number;
+    /** inStore + readyToTransfer. */
+    total: number;
+    sellingPrice: number;
+    totalValue: number;
+};
+
+export type DetailedInfoBookRow = {
+    bookId: number;
+    title: string;
+    author: string;
+    editions: DetailedInfoEditionRow[];
+    totals: {
+        inStore: number;
+        readyToTransfer: number;
+        total: number;
+        totalValue: number;
+    };
+};
+
+/**
+ * Data for the "Print Detailed Info" report on Stores -> Store Options.
+ * An edition is included only when it holds a quantity somewhere: either in a
+ * store or still ready to transfer. Books left with no such edition are dropped.
+ */
+export async function getStoreDetailedInfoRows(): Promise<{
+    success: boolean;
+    data?: DetailedInfoBookRow[];
+    error?: string;
+}> {
+    try {
+        const books = await (prisma as any).books.findMany({
+            where: { is_deleted: false },
+            select: {
+                id: true,
+                title: true,
+                author: true,
+                bookedition: {
+                    where: { is_deleted: false },
+                    select: {
+                        id: true,
+                        edition_name: true,
+                        selling_price: true,
+                        count_remening_for_transfer: true,
+                        bookeditionstores: {
+                            where: { is_deleted: false },
+                            select: { quantity: true },
+                        },
+                    },
+                    orderBy: { createdAt: "asc" },
+                },
+            },
+            orderBy: [
+                { book_sort_index: { sort: "asc", nulls: "last" } },
+                { createdAt: "desc" },
+            ],
+        });
+
+        const data = books
+            .map((book: any) => {
+                const editions = (book.bookedition || [])
+                    .map((edition: any) => {
+                        const inStore = (edition.bookeditionstores || []).reduce(
+                            (sum: number, row: any) => sum + (row.quantity ?? 0),
+                            0
+                        );
+                        const readyToTransfer = Number(edition.count_remening_for_transfer || 0);
+                        const sellingPrice = Number(edition.selling_price || 0);
+                        const total = inStore + readyToTransfer;
+                        return {
+                            editionName: edition.edition_name || "",
+                            inStore,
+                            readyToTransfer,
+                            total,
+                            sellingPrice,
+                            totalValue: sellingPrice * total,
+                        };
+                    })
+                    .filter(
+                        (edition: any) =>
+                            edition.inStore > 0 || edition.readyToTransfer > 0
+                    )
+                    .map((edition: any, index: number) => ({
+                        ...edition,
+                        editionIndex: index + 1,
+                    }));
+
+                if (editions.length === 0) return null;
+
+                const totals = editions.reduce(
+                    (acc: any, edition: any) => ({
+                        inStore: acc.inStore + edition.inStore,
+                        readyToTransfer: acc.readyToTransfer + edition.readyToTransfer,
+                        total: acc.total + edition.total,
+                        totalValue: acc.totalValue + edition.totalValue,
+                    }),
+                    { inStore: 0, readyToTransfer: 0, total: 0, totalValue: 0 }
+                );
+
+                return {
+                    bookId: book.id,
+                    title: book.title || "",
+                    author: book.author || "",
+                    editions,
+                    totals,
+                } as DetailedInfoBookRow;
+            })
+            .filter(Boolean) as DetailedInfoBookRow[];
+
+        return { success: true, data };
+    } catch (error) {
+        console.error("Failed to fetch detailed store info:", error);
+        return { success: false, error: "Failed to fetch detailed store info" };
+    }
+}

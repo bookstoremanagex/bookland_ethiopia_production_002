@@ -20,6 +20,7 @@ export const STATUS_ORDER = [
   "DESIGN",
   "PRINTING",
   "PREPRINTING",
+  "READY",
 ];
 
 export const STATUS_LABELS: Record<string, string> = {
@@ -28,6 +29,7 @@ export const STATUS_LABELS: Record<string, string> = {
   DESIGN: "Design",
   PRINTING: "Printing",
   PREPRINTING: "Pre-Printing",
+  READY: "Ready",
   [NO_STATUS]: "No Status",
 };
 

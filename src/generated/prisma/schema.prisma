@@ -891,4 +891,5 @@ enum books_productionstatus {
   DESIGN
   PRINTING
   PREPRINTING
+  READY
 }

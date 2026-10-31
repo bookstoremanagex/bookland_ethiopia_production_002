@@ -79,6 +79,7 @@ const PRODUCTION_STATUS_LABELS: Record<string, string> = {
   DESIGN: "Design",
   PRINTING: "Printing",
   PREPRINTING: "Pre-Printing",
+  READY: "Ready",
 };
 
 /**

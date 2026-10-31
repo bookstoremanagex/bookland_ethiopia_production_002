@@ -10,6 +10,7 @@ const PRODUCTION_STATUSES: books_productionstatus[] = [
   "DESIGN",
   "PRINTING",
   "PREPRINTING",
+  "READY",
 ];
 
 export type EditionStock = {

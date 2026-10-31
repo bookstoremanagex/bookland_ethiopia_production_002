@@ -281,6 +281,51 @@ always scrolls on its own. Added a thin themed scrollbar (webkit + Firefox
 - Prod baseline: 149 books (143 live), 179 editions (178 live), 0 translation
   projects.
 
+## New enum value — `READY`
+User added `READY` to `books_productionstatus` (schema + live DB; both columns
+are now `enum(...,'PREPRINTING','READY')` and the generated client already
+exports it). Every status list/label was updated so `READY` ("Ready") can be
+chosen for books and editions:
+- `src/lib/validation/book-schema.ts` — Zod enum (book create/update).
+- `src/app/actions/book-follow-up-actions.ts` — `PRODUCTION_STATUSES`
+  (server-side guard for edition status changes).
+- `books/follow-up/follow-up-sort.ts` — `STATUS_ORDER` (last, enum order) +
+  `STATUS_LABELS`; feeds the status filter chips, the chip editor and the
+  editions dialog dropdown.
+- `books/follow-up/StatusBadge.tsx` — emerald badge style for `READY`.
+- `ProductionTable.tsx` — status filter option.
+- `AddBookForm.tsx` — option in the create-book select.
+- both `book_details/BasicInfo.tsx` — option in the editable field.
+- both `TranslationProjectsTable.tsx` — `PRODUCTION_STATUS_LABELS`; `READY`
+  already counts as "passed this stage" via the `!== "TRANSLATION"` check.
+No DB change needed. Verified with a read-only count query against the live DB:
+`prisma.books.count({ where: { productionstatus: "READY" } })` and the same for
+`bookedition` both execute (0 rows so far), proving client + DB accept it.
+`tsc --noEmit` clean, eslint 0 errors.
+
+## In-production-only filtering (admin Books page + Print Options)
+Rule chosen by the user: **only `ON_PRODUCTION` counts as "in production"**.
+- `src/app/actions/get-books.ts`: `getBooks(options?)` gained
+  `{ inProductionOnly?: boolean }`; when set, the `bookedition` include adds
+  `productionstatus: "ON_PRODUCTION"`, so `editionCount` counts only editions
+  still in production. Default (no option) is unchanged for the other callers
+  (shelf, viewer, delivery, production books pages).
+- `admin_dashboard/books/page.tsx` calls `getBooks({ inProductionOnly: true })`.
+  Books with no in-production edition are dropped from the result (table rows),
+  not just shown with 0 editions.
+- `src/app/actions/book-actions.ts` → `getBooksStorePrintData()` (Print Options
+  dialog): the edition `where` now also requires
+  `productionstatus: "ON_PRODUCTION"`; everything else (earliest-edition price
+  pick, store-stock >= 1 rule, sorting) is untouched.
+- Verified against the live DB: 176 of 178 live editions are `ON_PRODUCTION`
+  (so 2 are already excluded), and 130 books qualify for the print list.
+- Follow-up: filtering moved into `getBooks()` itself — with
+  `inProductionOnly` the mapped rows are `.filter(book => book.editionCount > 0)`,
+  so a book whose editions all left `ON_PRODUCTION` disappears from the table.
+  Live check: 142 rows shown, 3 hidden (`ትምህርተ ሺኖዳ`, `Test Translation Book`,
+  `የፍልስፍና ሀሁ`), 177 in-production editions counted.
+`tsc --noEmit` clean, eslint 0 errors.
+
 ## Verification
 - `npx tsc --noEmit` clean; eslint clean on all touched files.
 - Final sweep after the `response.data ?? []` fix in the three
@@ -300,3 +345,104 @@ always scrolls on its own. Added a thin themed scrollbar (webkit + Firefox
 
 ## Blockers
 None.
+
+## Print Detailed Info report (Stores → Store Options)
+New button beside "Print Content" renders a printable report of every edition
+that holds a quantity somewhere.
+- `src/app/actions/store-inventory-actions.ts` → `getStoreDetailedInfoRows()`
+  (+ `DetailedInfoBookRow` / `DetailedInfoEditionRow` types). Per book, per
+  edition: `inStore` = sum of `bookeditionstores.quantity` over all stores,
+  `readyToTransfer` = `count_remening_for_transfer`, `total` = sum of those two,
+  `sellingPrice` = `selling_price`, `totalValue` = price × total. Editions with
+  0 in both quantities are skipped; books left empty are dropped. Books ordered
+  by `book_sort_index` then `createdAt desc`, editions by `createdAt asc`.
+  Edition label is the running index (1, 2, 3 …) inside each book's table.
+- `stores/options/detailed-info-html.ts`: builds the A4 HTML doc with GC +
+  Ethiopian date badges on top and one table per book, plus a per-book Total
+  row. Options: font size (Extra Small/Small/Medium/Big), orientation
+  (Portrait/Landscape, default Landscape), All Bold.
+- `stores/options/DetailedInfoPreview.tsx`: iframe preview, Print / Save PDF
+  via `iframe.contentWindow.print()`.
+- `stores/options/DetailedInfoDialog.tsx`: options dialog that fetches the rows
+  and builds the HTML; wired into `stores/options/page.tsx`.
+- Live DB check: 134 books / 138 edition rows, 91,328 copies,
+  34,229,945.00 total value. `tsc --noEmit` clean, eslint 0 errors.
+
+### Layout revision (user request)
+One single table instead of one table per book:
+- Book column first, and the title cell is merged (`rowspan`) across all of that
+  book's edition rows, with the book's **total price in brackets** next to the
+  title and the author on a small second line.
+- The per-book subtotal row was removed (the total price now lives in the title
+  cell), so the only "Total" column is the per-edition copy total.
+- Edition numbers print only when a book has more than one listed edition;
+  single-edition books leave that cell blank.
+- Alternating tint is applied per book (`tr.alt`) and each book after the first
+  gets a heavier top border, so merged groups still read as separate blocks.
+- Verified by transpiling the real builder and checking the markup: 1 `<table>`,
+  a 3-edition book emits `rowspan="3"` with 7/6/6 cells, a 1-edition book emits
+  `rowspan="1"` with an empty edition cell.
+
+### Dates repeated on every printed page
+The title + both date badges moved out of the document body and into the report
+table's `<thead>` (`tr.doc-head > th[colspan=7]`), so the browser repeats them at
+the top of every page, right above the column headers. The empty-state rendering
+still uses the standalone `.page-header` block.
+- `.doc-head th` resets the generic `th` styling (white background, no borders
+  except the 3px #408A71 bottom rule, centered, no uppercase).
+- Verified by printing an 80-book sample to PDF with headless Chrome: 9 pages,
+  MediaBox 841.92 x 594.96 (A4 landscape, so the print CSS is applied) and every
+  page's content stream contains the header rule colour and 3 badge/column-head
+  fills — i.e. the date badges render on all 9 pages.
+
+### Real PDF viewer + downloader (replaces browser print)
+The report now produces an actual PDF, using the same pipeline as the Books
+print options (`@/lib/print-pdf` + canvas page images), instead of the browser
+print dialog.
+- `src/lib/print-file-name.ts` (new): `buildPrintFileName(date)` —
+  `"የ <Ethiopian MMMM d yyyy> h:mm <dayPart>"` — extracted from
+  `books/BooksPrintDialog.tsx`, which now imports it (no local copy left).
+- `stores/options/detailed-info-layout.ts` (new): page model for A4 portrait
+  (794x1123) and landscape (1123x794) at 96dpi, 7 weighted columns with minimum
+  widths (so "EDITION" never breaks mid-word in portrait), wrapped cells,
+  row heights, and pagination. A book split across pages repeats its merged
+  title with "(cont.)"; edition numbering continues.
+- `stores/options/detailed-info-canvas.ts` (new): renders a page to canvas
+  (title + both dates + rule at the top of EVERY page, merged book cell with the
+  total price in brackets, alternating group tint, heavier border between books,
+  `Page x of y` footer). All text is clipped to its cell.
+- `stores/options/DetailedInfoPreview.tsx` (rewritten): renders each page to a
+  canvas at 2x, shows the JPEG pages in a scrollable preview, and
+  **Download PDF** writes `${fileName}.pdf` via `downloadPdf()`. Preview and PDF
+  use the same bytes.
+- `stores/options/DetailedInfoDialog.tsx`: builds the pages with a canvas
+  text-measure callback and opens the preview; button is now "Preview PDF".
+  Uses `formatDate()` instead of the duplicated Amharic month/weekday arrays.
+- `stores/options/detailed-info-html.ts` deleted (the iframe/print path).
+- Verified visually by rendering the real modules in headless Chrome
+  (landscape + portrait screenshots): headers wrap correctly, merged titles,
+  edition numbers only when >1, dates on page 1 and 2.
+- Layout check with synthetic data: 152 rows kept, 0 overflowing pages, at
+  9/13/16px in both orientations, incl. a 20-edition book that splits with
+  "(cont.)". Live data: 134 books -> 11 pages landscape / 9 portrait at 11px.
+`tsc --noEmit` clean, eslint 0 errors (only pre-existing warnings).
+
+### Title sorting options (Print Content + Print Detailed Info)
+New shared module `src/lib/print-sort.ts`:
+- groups titles into `amharic` | `english` | `numbered` (first character: digit,
+  Ethiopic U+1200–U+137F, otherwise English) and supports all 6 group orders:
+  `am-en-num`, `am-num-en`, `en-am-num`, `en-num-am`, `num-en-am`, `num-am-en`
+  (`TITLE_SORT_OPTIONS` supplies the "Amharic → English → Numbers" labels).
+- inside a group: Amharic by code point (traditional fidel order), English and
+  numbers by `localeCompare("en", { sensitivity: "base", numeric: true })`.
+- `sortTitles(items, order, getTitle)` / `compareTitlesByOrder(a, b, order)`.
+- Books print options (`BooksPrintDialog`) now imports these helpers instead of
+  keeping its own copies (its 3 options map to the same orders as before).
+- `PrintContentDialog`: new "Book Order" selector (6 buttons); single-store list
+  and the two-store title lists are sorted with the chosen order (`#` follows it).
+- `DetailedInfoDialog`: same "Book Order" selector; rows are sorted before the
+  PDF pages are built.
+- Verified all 6 permutations on a mixed sample: `ሀገር | ቤት | ዘመን | Alpha | Beta |
+  zebra | 2nd Edition | 3 Little Pigs | 10 Commandments` for the default, with
+  every other order being a rotation of those three blocks.
+`tsc --noEmit` clean, eslint 0 errors (2 pre-existing warnings).

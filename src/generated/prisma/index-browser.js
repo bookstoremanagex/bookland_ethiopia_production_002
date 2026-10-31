@@ -1008,7 +1008,8 @@ exports.books_productionstatus = exports.$Enums.books_productionstatus = {
   TRANSLATION: 'TRANSLATION',
   DESIGN: 'DESIGN',
   PRINTING: 'PRINTING',
-  PREPRINTING: 'PREPRINTING'
+  PREPRINTING: 'PREPRINTING',
+  READY: 'READY'
 };
 
 exports.locked_editions_status = exports.$Enums.locked_editions_status = {

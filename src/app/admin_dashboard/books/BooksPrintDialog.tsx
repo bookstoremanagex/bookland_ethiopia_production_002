@@ -5,6 +5,7 @@ import { FileText, Loader2, Printer } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/calendar-utils";
+import { buildPrintFileName } from "@/lib/print-file-name";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -16,10 +17,16 @@ import {
 import { getBooksStorePrintData } from "../../actions/book-actions";
 import BooksPrintPreview from "./BooksPrintPreview";
 import type { PrintBook, PrintColumnKind } from "./books-print-layout";
+import {
+  TITLE_GROUP_ORDERS,
+  classifyTitle,
+  compareTitles,
+  type TitleGroup,
+} from "@/lib/print-sort";
 
 type FontSize = "extra-big" | "big" | "medium" | "small" | "extra-small";
 type SortFirst = "amharic" | "english" | "numbered";
-type SortGroup = "amharic" | "english" | "numbered";
+type SortGroup = TitleGroup;
 
 interface PreviewPayload {
   books: PrintBook[];
@@ -43,45 +50,15 @@ const fontMap: Record<FontSize, number> = {
 // Remaining groups follow after the first choice. When Amharic is first,
 // the numbered titles come second and the English titles last.
 const groupOrders: Record<SortFirst, SortGroup[]> = {
-  amharic: ["amharic", "numbered", "english"],
-  english: ["english", "amharic", "numbered"],
-  numbered: ["numbered", "amharic", "english"],
+  amharic: TITLE_GROUP_ORDERS["am-num-en"],
+  english: TITLE_GROUP_ORDERS["en-am-num"],
+  numbered: TITLE_GROUP_ORDERS["num-am-en"],
 };
-
-const isEthiopicChar = (ch: string) => {
-  const cp = ch.codePointAt(0) ?? 0;
-  return cp >= 0x1200 && cp <= 0x137f;
-};
-
-const classifyTitle = (title: string): SortGroup => {
-  const t = (title || "").trim();
-  if (!t) return "english";
-  if (/[0-9]/.test(t[0])) return "numbered";
-  if (isEthiopicChar(t[0])) return "amharic";
-  return "english";
-};
-
-// Code-point comparison: the Unicode Ethiopic block follows the traditional
-// fidel order (ሀ ሁ ሂ ... ለ ሉ ሊ ...), so per-code-point comparison sorts
-// Amharic in its own alphabet order.
-function compareEthiopic(a: string, b: string) {
-  const A = Array.from(a);
-  const B = Array.from(b);
-  const len = Math.min(A.length, B.length);
-  for (let i = 0; i < len; i++) {
-    const ca = A[i].codePointAt(0) ?? 0;
-    const cb = B[i].codePointAt(0) ?? 0;
-    if (ca !== cb) return ca - cb;
-  }
-  return A.length - B.length;
-}
 
 const groupComparators: Record<SortGroup, (a: PrintBook, b: PrintBook) => number> = {
-  amharic: (a, b) => compareEthiopic(a.title, b.title),
-  english: (a, b) =>
-    a.title.localeCompare(b.title, "en", { sensitivity: "base", numeric: true }),
-  numbered: (a, b) =>
-    a.title.localeCompare(b.title, "en", { sensitivity: "base", numeric: true }),
+  amharic: (a, b) => compareTitles(a.title, b.title, "amharic"),
+  english: (a, b) => compareTitles(a.title, b.title, "english"),
+  numbered: (a, b) => compareTitles(a.title, b.title, "numbered"),
 };
 
 // Traditional Ethiopian day parts, used instead of AM/PM in the file name:
@@ -89,25 +66,6 @@ const groupComparators: Record<SortGroup, (a: PrintBook, b: PrintBook) => number
 //  6:00 AM – 11:59 AM → ጠዋት
 // 12:00 PM – 6:00 PM  → ከሰዓት
 //  6:01 PM – 11:59 PM → ማታ
-const getDayPart = (hours: number, minutes: number) => {
-  if (hours < 6) return "ሌሊት";
-  if (hours < 12) return "ጠዋት";
-  if (hours < 18) return "ከሰዓት";
-  if (hours === 18 && minutes === 0) return "ከሰዓት";
-  return "ማታ";
-};
-
-// Name of the generated file, built from the Ethiopian calendar and a 12-hour
-// clock: "የ ነሐሴ 18 2019 3:20 ከሰዓት"
-const buildPrintFileName = (date: Date) => {
-  const ethDate = formatDate(date, "ethiopian", "MMMM d yyyy");
-  const hours = date.getHours();
-  const minutes = date.getMinutes();
-  const hours12 = hours % 12 || 12;
-  const minutesText = minutes.toString().padStart(2, "0");
-  return `የ ${ethDate} ${hours12}:${minutesText} ${getDayPart(hours, minutes)}`;
-};
-
 export default function BooksPrintDialog() {
   const [open, setOpen] = useState(false);
   const [isPrinting, setIsPrinting] = useState(false);

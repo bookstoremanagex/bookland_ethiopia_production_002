@@ -43,6 +43,7 @@ export const bookSchema = z.object({
       "DESIGN",
       "PRINTING",
       "PREPRINTING",
+      "READY",
     ])
     .optional()
     .nullable(),

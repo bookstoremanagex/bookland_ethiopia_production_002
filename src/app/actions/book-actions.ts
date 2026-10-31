@@ -104,16 +104,18 @@ export async function createBook(data: BookFormValues) {
 export async function getBooksStorePrintData() {
   try {
     // Books currently sitting in stores (any edition with at least 1 unit
-    // across its non-deleted store inventory records). For each qualifying
-    // book, the EARLIEST edition that has store stock provides the price +
-    // cover price shown for the book.
+    // across its non-deleted store inventory records). Only editions that are
+    // still in production (`ON_PRODUCTION`) are considered; editions that
+    // already moved to another stage are ignored. For each qualifying book,
+    // the EARLIEST qualifying edition that has store stock provides the price
+    // + cover price shown for the book.
     const books = await prisma.books.findMany({
       where: { is_deleted: false },
       select: {
         title: true,
         short_name: true,
         bookedition: {
-          where: { is_deleted: false },
+          where: { is_deleted: false, productionstatus: "ON_PRODUCTION" },
           select: {
             id: true,
             createdAt: true,

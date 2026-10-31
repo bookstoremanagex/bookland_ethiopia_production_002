@@ -2,7 +2,17 @@
 
 import prisma from "../../lib/prisma";
 
-export async function getBooks() {
+interface GetBooksOptions {
+  /**
+   * Only consider editions that are still in production (`ON_PRODUCTION`).
+   * Used by the admin Books page: editions that already moved on (translation,
+   * design, printing, pre-printing, ready) are not counted, and books left with
+   * no in-production edition are omitted from the result entirely.
+   */
+  inProductionOnly?: boolean;
+}
+
+export async function getBooks(options: GetBooksOptions = {}) {
   try {
     const books = await prisma.books.findMany({
       where: {
@@ -10,7 +20,9 @@ export async function getBooks() {
       },
       include: {
         bookedition: {
-          where: { is_deleted: false },
+          where: options.inProductionOnly
+            ? { is_deleted: false, productionstatus: "ON_PRODUCTION" }
+            : { is_deleted: false },
           select: { id: true },
         },
       },
@@ -20,10 +32,13 @@ export async function getBooks() {
       ],
     });
 
-    const data = books.map(({ bookedition, ...rest }) => ({
-      ...rest,
-      editionCount: bookedition.length,
-    }));
+    const data = books
+      .map(({ bookedition, ...rest }) => ({
+        ...rest,
+        editionCount: bookedition.length,
+      }))
+      // Books with nothing left in production have no row to show.
+      .filter((book) => !options.inProductionOnly || book.editionCount > 0);
 
     return { success: true, data };
   } catch (error) {

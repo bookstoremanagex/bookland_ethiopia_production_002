@@ -9,6 +9,7 @@ const STATUS_STYLES: Record<string, string> = {
   DESIGN: "bg-fuchsia-50 text-fuchsia-700 border-fuchsia-200",
   PRINTING: "bg-indigo-50 text-indigo-700 border-indigo-200",
   PREPRINTING: "bg-violet-50 text-violet-700 border-violet-200",
+  READY: "bg-emerald-50 text-emerald-700 border-emerald-200",
   [NO_STATUS]: "bg-slate-50 text-slate-500 border-slate-200",
 };
 

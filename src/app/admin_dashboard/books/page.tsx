@@ -19,7 +19,7 @@ export default async function BooksPage() {
         )
     }
 
-    const response = await getBooks()
+    const response = await getBooks({ inProductionOnly: true })
     const books = response.success ? response.data : []
 
     return (

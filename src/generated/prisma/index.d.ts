@@ -345,7 +345,8 @@ export const books_productionstatus: {
   TRANSLATION: 'TRANSLATION',
   DESIGN: 'DESIGN',
   PRINTING: 'PRINTING',
-  PREPRINTING: 'PREPRINTING'
+  PREPRINTING: 'PREPRINTING',
+  READY: 'READY'
 };
 
 export type books_productionstatus = (typeof books_productionstatus)[keyof typeof books_productionstatus]
