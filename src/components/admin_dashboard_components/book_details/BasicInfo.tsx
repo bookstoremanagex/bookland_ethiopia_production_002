@@ -32,6 +32,20 @@ interface BasicInfoProps {
   onValueChange: (value: any) => void;
 }
 
+const PRODUCTION_STATUS_OPTIONS = [
+  { label: 'On Production', value: 'ON_PRODUCTION' },
+  { label: 'Translation', value: 'TRANSLATION' },
+  { label: 'Design', value: 'DESIGN' },
+  { label: 'Printing', value: 'PRINTING' },
+  { label: 'Pre-printing', value: 'PREPRINTING' },
+  { label: 'Ready', value: 'READY' },
+];
+
+const formatProductionStatus = (value: any) =>
+  value
+    ? String(value).toLowerCase().replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())
+    : "N/A";
+
 export default function BasicInfo({ 
   book, 
   editingField, 
@@ -43,9 +57,14 @@ export default function BasicInfo({
   onValueChange
 }: BasicInfoProps) {
 
-  const renderEditableField = (field: string, label: string, icon: React.ElementType, type: 'text' | 'number' | 'select' | 'textarea' = 'text', options?: { label: string, value: string }[]) => {
+  // Production status is tracked per edition now. The details page loads the
+  // editions newest-first, so the latest edition is the first one.
+  const latestEdition = book.bookedition?.[0] ?? null;
+
+  const renderEditableField = (field: string, label: string, icon: React.ElementType, type: 'text' | 'number' | 'select' | 'textarea' = 'text', options?: { label: string, value: string }[], override?: { value?: any, disabled?: boolean }) => {
     const isEditing = editingField === field;
-    const value = book[field];
+    const value = override ? override.value : book[field];
+    const disabled = override?.disabled ?? false;
 
     return (
       <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 group relative p-3 sm:p-4 rounded-xl hover:bg-primarycolor/5 transition-all border border-transparent hover:border-primarycolor/10">
@@ -65,6 +84,9 @@ export default function BasicInfo({
                   onChange={(e) => onValueChange(e.target.value)}
                   className="flex h-10 w-full rounded-md border-2 border-primarycolor/20 bg-background px-3 py-1 text-sm font-bold outline-none focus:border-primarycolor"
                 >
+                  {(editValue === '' || editValue === null || editValue === undefined) && (
+                    <option value="">Select...</option>
+                  )}
                   {options?.map(opt => (
                     <option key={opt.value} value={opt.value}>{opt.label}</option>
                   ))}
@@ -95,13 +117,24 @@ export default function BasicInfo({
             </div>
           ) : (
             <div 
-              className="font-black text-secondarycolor text-base sm:text-lg flex items-center gap-2 cursor-pointer group/value"
-              onClick={() => onStartEdit(field, value)}
+              className={cn(
+                "font-black text-secondarycolor text-base sm:text-lg flex items-center gap-2 group/value",
+                disabled ? "cursor-default opacity-70" : "cursor-pointer"
+              )}
+              onClick={() => {
+                if (!disabled) onStartEdit(field, value);
+              }}
             >
-              <span className="truncate">{field === 'productionstatus' ? value?.toLowerCase().replace(/_/g, ' ').replace(/\b\w/g, (l: any) => l.toUpperCase()) : (value || "N/A")}</span>
-              <div className="opacity-40 sm:opacity-0 sm:group-hover/value:opacity-100 transition-opacity bg-primarycolor/10 p-1 rounded-md">
-                <Edit2 className="size-3 text-primarycolor" />
-              </div>
+              <span className="truncate">
+                {field === 'productionstatus' || field === 'edition_productionstatus'
+                  ? formatProductionStatus(value)
+                  : (value || "N/A")}
+              </span>
+              {!disabled && (
+                <div className="opacity-40 sm:opacity-0 sm:group-hover/value:opacity-100 transition-opacity bg-primarycolor/10 p-1 rounded-md">
+                  <Edit2 className="size-3 text-primarycolor" />
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -194,14 +227,14 @@ export default function BasicInfo({
                         {renderEditableField('copyright_registration_number', 'Copyright Reg. No', Copyright)}
                         {renderEditableField('number_of_pages', 'Pages', BookOpen, 'number')}
                         {renderEditableField('book_sort_index', 'Sort Index', ArrowUpDown, 'number')}
-                        {renderEditableField('productionstatus', 'Production Status', Activity, 'select', [
-                            { label: 'On Production', value: 'ON_PRODUCTION' },
-                            { label: 'Translation', value: 'TRANSLATION' },
-                            { label: 'Design', value: 'DESIGN' },
-                            { label: 'Printing', value: 'PRINTING' },
-                            { label: 'Pre-printing', value: 'PREPRINTING' },
-                            { label: 'Ready', value: 'READY' },
-                        ])}
+                        {renderEditableField(
+                            'edition_productionstatus',
+                            'Production Status (Latest Edition)',
+                            Activity,
+                            'select',
+                            PRODUCTION_STATUS_OPTIONS,
+                            { value: latestEdition?.productionstatus ?? null, disabled: !latestEdition }
+                        )}
                     </div>
                 </div>
             </div>

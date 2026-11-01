@@ -25,6 +25,7 @@ import { Button } from '../../../../components/ui/button';
 import { Input } from '../../../../components/ui/input';
 import { cn } from '../../../../lib/utils';
 import { updateBook, uploadBookImageAction } from '../../../actions/book-actions';
+import { updateEditionField } from '../../../actions/edition-actions';
 import { updateTranslationProjectStatus } from '../../../actions/translation-project-actions';
 import { toast } from 'sonner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../../components/ui/tabs";
@@ -94,6 +95,32 @@ export default function EditableBookContent({ book: initialBook, bookShops }: Ed
   const handleSaveEdit = async (field: string) => {
     setIsUpdating(true);
     try {
+      // The Info tab's production status belongs to the latest edition, not the
+      // book itself, so it is saved through the edition action.
+      if (field === 'edition_productionstatus') {
+        const latestEdition = book.bookedition?.[0];
+        if (!latestEdition) {
+          toast.error("This book has no edition to update");
+          return;
+        }
+
+        const response = await updateEditionField(latestEdition.id, 'productionstatus', editValue);
+        if (response.success) {
+          setBook({
+            ...book,
+            bookedition: [
+              { ...latestEdition, productionstatus: response.data?.productionstatus ?? editValue },
+              ...book.bookedition.slice(1),
+            ],
+          });
+          toast.success("Updated production status successfully");
+          setEditingField(null);
+        } else {
+          toast.error(response.error || "Failed to update production status");
+        }
+        return;
+      }
+
       const costFields = ['translator_cost','cover_design_cost','text_design_cost','editor_cost','typewriting_cost','store_cost','distribution_cost','advertisement_cost','purchasing_right_cost'];
       const value = costFields.includes(field)
         ? (editValue === '' || editValue === null || editValue === undefined ? null : parseFloat(editValue))

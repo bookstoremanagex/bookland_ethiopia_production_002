@@ -14,11 +14,67 @@ import {
   createBook,
   uploadBookImageAction,
 } from "../../app/actions/book-actions";
+import { createEdition } from "../../app/actions/edition-actions";
 import { useRouter, usePathname } from "next/navigation";
 import { toast } from "sonner";
 
 interface AddBookFormProps {
   className?: string;
+}
+
+const PRODUCTION_STATUS_OPTIONS = [
+  { label: "On Production", value: "ON_PRODUCTION" },
+  { label: "Translation", value: "TRANSLATION" },
+  { label: "Design", value: "DESIGN" },
+  { label: "Printing", value: "PRINTING" },
+  { label: "Pre-printing", value: "PREPRINTING" },
+  { label: "Ready", value: "READY" },
+];
+
+interface EditionDraft {
+  edition_name: string;
+  total_print_count: string;
+  selling_price: string;
+  productionstatus: string;
+}
+
+const emptyEditionDraft: EditionDraft = {
+  edition_name: "Edition 1",
+  total_print_count: "",
+  selling_price: "",
+  productionstatus: "READY",
+};
+
+function validateEdition(draft: EditionDraft): Record<string, string> {
+  const errors: Record<string, string> = {};
+
+  if (!draft.edition_name.trim()) {
+    errors.edition_name = "Edition name is required";
+  }
+
+  const printCount = Number(draft.total_print_count);
+  if (
+    draft.total_print_count.trim() === "" ||
+    !Number.isInteger(printCount) ||
+    printCount < 0
+  ) {
+    errors.total_print_count = "Enter a valid print count";
+  }
+
+  const sellingPrice = Number(draft.selling_price);
+  if (
+    draft.selling_price.trim() === "" ||
+    !Number.isFinite(sellingPrice) ||
+    sellingPrice < 0
+  ) {
+    errors.selling_price = "Enter a valid selling price";
+  }
+
+  if (!PRODUCTION_STATUS_OPTIONS.some((option) => option.value === draft.productionstatus)) {
+    errors.productionstatus = "Choose a production status";
+  }
+
+  return errors;
 }
 
 export function AddBookForm({ className }: AddBookFormProps) {
@@ -30,6 +86,11 @@ export function AddBookForm({ className }: AddBookFormProps) {
   const [imageFile, setImageFile] = React.useState<File | null>(null);
   const [imagePreview, setImagePreview] = React.useState<string | null>(null);
   const [isUploading, setIsUploading] = React.useState(false);
+
+  // Optional first edition, created right after the book itself.
+  const [addEdition, setAddEdition] = React.useState(false);
+  const [editionDraft, setEditionDraft] = React.useState<EditionDraft>(emptyEditionDraft);
+  const [editionErrors, setEditionErrors] = React.useState<Record<string, string>>({});
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -87,6 +148,16 @@ export function AddBookForm({ className }: AddBookFormProps) {
   });
 
   const onSubmit = async (data: BookFormValues) => {
+    // The edition block is optional, but once it is switched on every field in
+    // it is required (it is validated before the book is created).
+    const editionValidation = addEdition ? validateEdition(editionDraft) : {};
+    if (Object.keys(editionValidation).length > 0) {
+      setEditionErrors(editionValidation);
+      toast.error("Fill in the edition details before saving");
+      return;
+    }
+    setEditionErrors({});
+
     setIsUploading(true);
     try {
       let finalImageUrl = data.book_image_url || "";
@@ -106,12 +177,50 @@ export function AddBookForm({ className }: AddBookFormProps) {
 
       const response = await createBook({
         ...data,
+        // Keep the book's own status in step with the first edition.
+        productionstatus: addEdition
+          ? (editionDraft.productionstatus as BookFormValues["productionstatus"])
+          : data.productionstatus,
         book_image_url: finalImageUrl,
       });
 
       if (response.success) {
-        toast.success("Book added successfully!");
+        let editionCreated = false;
+
+        if (addEdition) {
+          const createdBook = response.data as {
+            id: number;
+            unique_identification_code: string;
+          };
+          const editionRes = await createEdition({
+            edition_name: editionDraft.edition_name.trim(),
+            total_print_count: editionDraft.total_print_count,
+            selling_price: editionDraft.selling_price,
+            productionstatus: editionDraft.productionstatus,
+            bookId: createdBook.id,
+            book_unique_code: createdBook.unique_identification_code,
+          });
+
+          editionCreated = editionRes.success;
+          if (!editionRes.success) {
+            toast.error(
+              `Book saved, but the edition could not be created: ${editionRes.error || "Unknown error"}`,
+            );
+          }
+        }
+
+        if (!addEdition || editionCreated) {
+          toast.success(
+            addEdition
+              ? "Book and edition added successfully!"
+              : "Book added successfully!",
+          );
+        }
+
         reset();
+        setAddEdition(false);
+        setEditionDraft(emptyEditionDraft);
+        setEditionErrors({});
         setImageFile(null);
         setImagePreview(null);
         router.push(`${dashboardRoot}/books`);
@@ -465,27 +574,153 @@ export function AddBookForm({ className }: AddBookFormProps) {
               </select>
             </div>
 
-            {/* Production Status */}
-            <div className="space-y-2 group">
-              <label
-                htmlFor="productionstatus"
-                className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor"
-              >
-                Production Status
-              </label>
-              <select
-                id="productionstatus"
-                {...register("productionstatus")}
-                className="flex h-9 w-full items-center justify-between rounded-lg border-2 border-primarycolor/20 bg-background px-3 py-1 text-sm shadow-sm transition-all focus:outline-none focus:border-primarycolor focus:ring-2 focus:ring-primarycolor/10 disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                <option value="ON_PRODUCTION">On Production</option>
-                <option value="TRANSLATION">Translation</option>
-                <option value="DESIGN">Design</option>
-                <option value="PRINTING">Printing</option>
-                <option value="PREPRINTING">Pre-printing</option>
-                <option value="READY">Ready</option>
-              </select>
-            </div>
+            {/* Production status now lives on the edition below. */}
+            <input type="hidden" {...register("productionstatus")} />
+          </div>
+
+          {/* Optional first edition */}
+          <div className="space-y-4 border-2 border-primarycolor/10 rounded-2xl p-6 bg-primarycolor/5">
+            <label className="flex items-start gap-3 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={addEdition}
+                onChange={(e) => {
+                  setAddEdition(e.target.checked);
+                  setEditionErrors({});
+                }}
+                className="mt-0.5 size-4 rounded border-primarycolor/30 accent-primarycolor"
+              />
+              <div>
+                <span className="text-sm font-semibold text-secondarycolor">
+                  Add an edition to this book
+                </span>
+                <p className="text-[11px] font-medium text-muted-foreground">
+                  Creates the book first, then its first edition. Leave unchecked
+                  to save the book only.
+                </p>
+              </div>
+            </label>
+
+            {addEdition && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 pt-2 animate-in fade-in slide-in-from-top-2 duration-300">
+                {/* Edition Name */}
+                <div className="space-y-2 group">
+                  <label
+                    htmlFor="edition_name"
+                    className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor"
+                  >
+                    Edition Name <span className="text-destructive">*</span>
+                  </label>
+                  <Input
+                    id="edition_name"
+                    value={editionDraft.edition_name}
+                    onChange={(e) => {
+                      setEditionDraft({ ...editionDraft, edition_name: e.target.value });
+                      setEditionErrors((prev) => ({ ...prev, edition_name: "" }));
+                    }}
+                    aria-invalid={!!editionErrors.edition_name}
+                    className="border-primarycolor/20 focus:border-primarycolor focus:ring-primarycolor/20"
+                  />
+                  {editionErrors.edition_name && (
+                    <p className="text-xs font-medium text-destructive animate-in fade-in slide-in-from-top-1">
+                      {editionErrors.edition_name}
+                    </p>
+                  )}
+                </div>
+
+                {/* Print Count */}
+                <div className="space-y-2 group">
+                  <label
+                    htmlFor="edition_print_count"
+                    className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor"
+                  >
+                    Print Count <span className="text-destructive">*</span>
+                  </label>
+                  <Input
+                    id="edition_print_count"
+                    type="number"
+                    min="0"
+                    placeholder="0"
+                    value={editionDraft.total_print_count}
+                    onChange={(e) => {
+                      setEditionDraft({ ...editionDraft, total_print_count: e.target.value });
+                      setEditionErrors((prev) => ({ ...prev, total_print_count: "" }));
+                    }}
+                    onWheel={(e) => (e.target as HTMLInputElement).blur()}
+                    onFocus={(e) => e.target.select()}
+                    aria-invalid={!!editionErrors.total_print_count}
+                    className="border-primarycolor/20 focus:border-primarycolor focus:ring-primarycolor/20"
+                  />
+                  {editionErrors.total_print_count && (
+                    <p className="text-xs font-medium text-destructive animate-in fade-in slide-in-from-top-1">
+                      {editionErrors.total_print_count}
+                    </p>
+                  )}
+                </div>
+
+                {/* Selling Price */}
+                <div className="space-y-2 group">
+                  <label
+                    htmlFor="edition_selling_price"
+                    className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor"
+                  >
+                    Selling Price <span className="text-destructive">*</span>
+                  </label>
+                  <Input
+                    id="edition_selling_price"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    placeholder="0.00"
+                    value={editionDraft.selling_price}
+                    onChange={(e) => {
+                      setEditionDraft({ ...editionDraft, selling_price: e.target.value });
+                      setEditionErrors((prev) => ({ ...prev, selling_price: "" }));
+                    }}
+                    onWheel={(e) => (e.target as HTMLInputElement).blur()}
+                    onFocus={(e) => e.target.select()}
+                    aria-invalid={!!editionErrors.selling_price}
+                    className="border-primarycolor/20 focus:border-primarycolor focus:ring-primarycolor/20"
+                  />
+                  {editionErrors.selling_price && (
+                    <p className="text-xs font-medium text-destructive animate-in fade-in slide-in-from-top-1">
+                      {editionErrors.selling_price}
+                    </p>
+                  )}
+                </div>
+
+                {/* Edition Production Status */}
+                <div className="space-y-2 group">
+                  <label
+                    htmlFor="edition_productionstatus"
+                    className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor"
+                  >
+                    Production Status <span className="text-destructive">*</span>
+                  </label>
+                  <select
+                    id="edition_productionstatus"
+                    value={editionDraft.productionstatus}
+                    onChange={(e) => {
+                      setEditionDraft({ ...editionDraft, productionstatus: e.target.value });
+                      setEditionErrors((prev) => ({ ...prev, productionstatus: "" }));
+                    }}
+                    aria-invalid={!!editionErrors.productionstatus}
+                    className="flex h-9 w-full items-center justify-between rounded-lg border-2 border-primarycolor/20 bg-background px-3 py-1 text-sm shadow-sm transition-all focus:outline-none focus:border-primarycolor focus:ring-2 focus:ring-primarycolor/10 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {PRODUCTION_STATUS_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                  {editionErrors.productionstatus && (
+                    <p className="text-xs font-medium text-destructive animate-in fade-in slide-in-from-top-1">
+                      {editionErrors.productionstatus}
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Cover Image Selection Options */}
@@ -643,6 +878,9 @@ export function AddBookForm({ className }: AddBookFormProps) {
                 reset();
                 setImageFile(null);
                 setImagePreview(null);
+                setAddEdition(false);
+                setEditionDraft(emptyEditionDraft);
+                setEditionErrors({});
               }}
               disabled={isSubmitting || isUploading}
               className="h-14 px-6 rounded-xl md:rounded-2xl border-2 font-black uppercase tracking-widest text-[10px] md:text-xs"

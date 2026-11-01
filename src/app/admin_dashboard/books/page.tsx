@@ -19,7 +19,11 @@ export default async function BooksPage() {
         )
     }
 
-    const response = await getBooks({ inProductionOnly: true })
+    // The table lists every book, regardless of its editions' production
+    // status (books with no editions are included too). The Print Options
+    // dialog keeps its own in-production-only source, so this does not change
+    // what gets printed.
+    const response = await getBooks()
     const books = response.success ? response.data : []
 
     return (

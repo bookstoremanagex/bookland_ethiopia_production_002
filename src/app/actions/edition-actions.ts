@@ -3,6 +3,15 @@
 import prisma from "../../lib/prisma";
 import { revalidatePath } from "next/cache";
 
+const PRODUCTION_STATUSES = new Set([
+    "ON_PRODUCTION",
+    "TRANSLATION",
+    "DESIGN",
+    "PRINTING",
+    "PREPRINTING",
+    "READY",
+]);
+
 export async function getEditionsByBookId(bookId: number) {
     try {
         const editions = await (prisma as any).bookedition.findMany({
@@ -21,9 +30,17 @@ export async function getEditionsByBookId(bookId: number) {
 
 export async function createEdition(data: any) {
     try {
+        if (
+            data.productionstatus != null &&
+            !PRODUCTION_STATUSES.has(String(data.productionstatus))
+        ) {
+            return { success: false, error: "Invalid production status" };
+        }
+
         const edition = await (prisma as any).bookedition.create({
             data: {
                 edition_name: data.edition_name,
+                productionstatus: data.productionstatus ?? undefined,
                 selling_price: parseFloat(data.selling_price) || 0,
                 production_price: parseFloat(data.production_price) || 0,
                 printing_cost: parseFloat(data.printing_cost) || 0,
@@ -229,6 +246,25 @@ export async function updateEditionField(id: number, field: string, value: any) 
                 data: { [field]: n, updatedAt: new Date() },
             });
             revalidatePath("/admin_dashboard/books");
+            return { success: true, data: updated };
+        }
+
+        if (field === "productionstatus") {
+            const status = String(value ?? "");
+            if (!PRODUCTION_STATUSES.has(status)) {
+                return { success: false, error: "Choose a valid production status" };
+            }
+            const updated = await (prisma as any).bookedition.update({
+                where: { id },
+                data: { productionstatus: status, updatedAt: new Date() },
+                include: { books: true },
+            });
+            revalidatePath("/admin_dashboard/books");
+            revalidatePath("/admin_dashboard/books/follow-up");
+            revalidatePath(`/admin_dashboard/books/editions/${id}`);
+            if (updated.books?.unique_identification_code) {
+                revalidatePath(`/admin_dashboard/books/${updated.books.unique_identification_code}`);
+            }
             return { success: true, data: updated };
         }
 

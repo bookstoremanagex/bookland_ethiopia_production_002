@@ -134,6 +134,16 @@ export function renderDetailedPageToCanvas(
   ctx.fillText(`GC: ${page.gregDate}`, page.pageWidth / 2, gregY);
   ctx.fillText(`ወ/ር: ${page.ethDate}`, page.pageWidth / 2, gregY + lineHeight);
 
+  // ── Grand total: the sum of every "Total Price" in the table ─────────────
+  ctx.textAlign = "right";
+  ctx.fillStyle = COLORS.strong;
+  ctx.font = font(fontSizePx, bold ? 800 : 700);
+  ctx.fillText(
+    page.grandTotalText,
+    right,
+    tableTop - 6 - lineHeight / 2 - 6
+  );
+
   ctx.strokeStyle = COLORS.rule;
   ctx.lineWidth = 2;
   const ruleY = tableTop - 6;

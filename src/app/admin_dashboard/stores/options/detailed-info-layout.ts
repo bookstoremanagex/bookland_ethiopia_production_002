@@ -90,6 +90,8 @@ export interface DetailedInfoPage {
   pageHeight: number;
   contentWidth: number;
   titleBlockHeight: number;
+  /** Sum of every Total Price in the report, printed above the table. */
+  grandTotalText: string;
   pageNumber: number;
   pageCount: number;
   ethDate: string;
@@ -281,8 +283,17 @@ export function buildDetailedInfoPages(
     CELL_PADDING_Y * 2 +
     2;
 
-  // Title + dates block, redrawn at the top of every page.
-  const titleBlockHeight = Math.round(titleFont * 1.4) + lineHeight * 2 + 12;
+  // Title + dates block, redrawn at the top of every page. The grand total line
+  // sits between the dates and the table, so its height is reserved here too.
+  const grandTotalBlockHeight = lineHeight + 12;
+  const titleBlockHeight =
+    Math.round(titleFont * 1.4) + lineHeight * 2 + 12 + grandTotalBlockHeight;
+
+  const grandTotal = options.rows.reduce(
+    (sum, book) => sum + book.totals.totalValue,
+    0
+  );
+  const grandTotalText = `Grand Total: ${formatMoney(grandTotal)}`;
 
   const buildTitleCell = (
     book: DetailedInfoBookRow,
@@ -403,6 +414,7 @@ export function buildDetailedInfoPages(
     pageHeight: height,
     contentWidth,
     titleBlockHeight,
+    grandTotalText,
     pageNumber: index + 1,
     pageCount: pageChunks.length,
     ethDate: options.ethDate,

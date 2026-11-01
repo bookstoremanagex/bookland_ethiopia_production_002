@@ -5,9 +5,12 @@ import prisma from "../../lib/prisma";
 interface GetBooksOptions {
   /**
    * Only consider editions that are still in production (`ON_PRODUCTION`).
-   * Used by the admin Books page: editions that already moved on (translation,
-   * design, printing, pre-printing, ready) are not counted, and books left with
-   * no in-production edition are omitted from the result entirely.
+   * Editions that already moved on (translation, design, printing,
+   * pre-printing, ready) are not counted, and books left with no in-production
+   * edition are omitted from the result entirely.
+   *
+   * The admin Books table intentionally does NOT use this flag (it lists every
+   * book); printing still filters to in-production editions separately.
    */
   inProductionOnly?: boolean;
 }

@@ -446,3 +446,75 @@ New shared module `src/lib/print-sort.ts`:
   zebra | 2nd Edition | 3 Little Pigs | 10 Commandments` for the default, with
   every other order being a rotation of those three blocks.
 `tsc --noEmit` clean, eslint 0 errors (2 pre-existing warnings).
+
+### Info-tab status from latest edition + optional edition on Add Book
+- `BasicInfo.tsx` (admin component, shared by admin/operation/inventory):
+  production status now renders the latest edition's status
+  (`book.bookedition[0]`, editions are loaded newest-first) instead of the
+  book-level value. The field key is `edition_productionstatus`; the label is
+  "Production Status (Latest Edition)". With no editions it shows N/A and is
+  not editable. `renderEditableField` gained an optional value/disabled override,
+  and a "Select..." option appears when the current value is null.
+- `edition-actions.ts`: `updateEditionField` accepts `productionstatus` (enum
+  validated) and revalidates the book detail path; `createEdition` accepts and
+  validates `productionstatus` (omitted when callers don't pass it, so existing
+  add-edition flows keep their DB default).
+- `admin/operation_manager/inventory_manager` `EditableBookContent.tsx`:
+  `handleSaveEdit` routes `edition_productionstatus` to
+  `updateEditionField(latestEdition.id, "productionstatus", value)` and updates
+  `book.bookedition[0]` locally (also keeps the Editions tab in sync).
+- `AddBookForm.tsx`: removed the visible book "Production Status" select (hidden
+  ON_PRODUCTION fallback). New optional "Add an edition to this book" checkbox
+  reveals Edition Name (default "Edition 1"), Print Count, Selling Price and
+  Production Status (default READY). Fields are required only while checked and
+  are validated before the book is created. On success the book is created
+  first, then `createEdition` runs with the created book id; failure of the
+  edition shows "Book saved, but the edition could not be created" and still
+  navigates back. Reset clears the edition draft.
+- Live check: 147 books, 144 with editions, exactly 1 book whose book-level
+  status differs from its latest edition (Test translation book 1:
+  book=TRANSLATION, latest edition=ON_PRODUCTION) — confirms the Info tab now
+  reads the edition. Latest-first ordering confirmed on multi-edition books.
+`tsc --noEmit` clean, eslint 0 errors (pre-existing warnings only).
+
+Note: the admin Books page lists only books with an ON_PRODUCTION edition, so a
+book created with the default READY edition will not appear there until its
+edition moves to ON_PRODUCTION.
+
+### Books table now lists every book (print unchanged)
+- `src/app/admin_dashboard/books/page.tsx`: `getBooks({ inProductionOnly: true })`
+  -> `getBooks()`. The table now shows all non-deleted books, including books
+  whose editions are past production and books with no editions at all.
+- Print Options is untouched: `BooksPrintDialog` loads
+  `getBooksStorePrintData()`, which still filters editions to
+  `productionstatus = "ON_PRODUCTION"` and requires store stock. So only
+  currently-in-production books are printed.
+- The `editionCount` column now counts all non-deleted editions of a book
+  (0 for books without editions).
+- Updated the `inProductionOnly` doc comment in `get-books.ts` (the flag still
+  exists for other callers, the admin table just no longer uses it).
+- Live read-only check: 137 books total; 27 have at least one ON_PRODUCTION
+  edition (the old filter); 109 books have no editions and are now visible.
+`tsc --noEmit` clean, eslint 0 errors.
+
+### Grand total above the table (Print Detailed Info)
+Request: show the sum of every "Total Price" in the table as a text line above
+the table, changing nothing else.
+- `stores/options/detailed-info-layout.ts`:
+  - `DetailedInfoPage` gained `grandTotalText`.
+  - `buildDetailedInfoPages` sums `book.totals.totalValue` over all rows (the same
+    value already printed in brackets next to each book title) and formats it as
+    `Grand Total: <amount>`.
+  - `titleBlockHeight` grew by `lineHeight + 12` so the line sits between the
+    dates and the table and pagination accounts for the extra height. The rule
+    stays 6px above the table, so the text is 6px above the rule.
+- `stores/options/detailed-info-canvas.ts`: draws the text right-aligned at the
+  content edge (aligns with the Total Price column) in the strong colour, bold
+  weight matched to the "All Bold" option, on every page. Table, grid, tints,
+  footer and book groups are untouched.
+- Geometry check: the new text's top edge lands exactly on the old table top for
+  every font size (9/11/13/16px), leaving 5.9–8.4px below the Ethiopian date line
+  and 6px above the rule in both orientations; single-page and multi-page
+  pagination re-run with the larger `titleBlockHeight`.
+`tsc --noEmit` clean, eslint 0 errors.
+
