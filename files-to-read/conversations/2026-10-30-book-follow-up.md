@@ -518,3 +518,26 @@ the table, changing nothing else.
   pagination re-run with the larger `titleBlockHeight`.
 `tsc --noEmit` clean, eslint 0 errors.
 
+## 2026-11-02 — Add Book: Short Name + optional edition cover price
+Request: add a Short Name field to the admin Books → Add Book form, and an
+optional Cover Price field to the "Add an edition" block.
+- **Short Name already existed** (committed in HEAD): input at
+  `AddBookForm.tsx` right after Title, `short_name` is in `bookSchema`, in the
+  form defaults, and `createBook` spreads the validated data into
+  `books.create`, so the value is persisted. No change needed; the field may
+  have looked missing in an older running build.
+- `AddBookForm.tsx` edition block:
+  - `EditionDraft` and `emptyEditionDraft` gained `cover_price: ""`.
+  - `validateEdition` only validates cover price when something is typed
+    (finite, >= 0); empty is allowed.
+  - `createEdition` is called with `cover_price: draft.trim() || undefined`, so
+    an empty field leaves the DB column NULL. `createEdition` already maps a
+    provided value through `parseFloat`.
+  - New "Cover Price (Optional)" number input (min 0, step 0.01) sits after
+    Selling Price, with the same error display/clearing pattern as the other
+    edition fields.
+- Cover price already shows in the edition details tabs and Books Settings
+  table, so no other UI change was needed.
+`tsc --noEmit` clean, eslint 0 errors (1 pre-existing `<img>` warning).
+
+

@@ -35,6 +35,7 @@ interface EditionDraft {
   edition_name: string;
   total_print_count: string;
   selling_price: string;
+  cover_price: string;
   productionstatus: string;
 }
 
@@ -42,6 +43,7 @@ const emptyEditionDraft: EditionDraft = {
   edition_name: "Edition 1",
   total_print_count: "",
   selling_price: "",
+  cover_price: "",
   productionstatus: "READY",
 };
 
@@ -68,6 +70,14 @@ function validateEdition(draft: EditionDraft): Record<string, string> {
     sellingPrice < 0
   ) {
     errors.selling_price = "Enter a valid selling price";
+  }
+
+  // Cover price is optional, but whatever is typed must be a valid amount.
+  if (draft.cover_price.trim() !== "") {
+    const coverPrice = Number(draft.cover_price);
+    if (!Number.isFinite(coverPrice) || coverPrice < 0) {
+      errors.cover_price = "Enter a valid cover price";
+    }
   }
 
   if (!PRODUCTION_STATUS_OPTIONS.some((option) => option.value === draft.productionstatus)) {
@@ -196,6 +206,7 @@ export function AddBookForm({ className }: AddBookFormProps) {
             edition_name: editionDraft.edition_name.trim(),
             total_print_count: editionDraft.total_print_count,
             selling_price: editionDraft.selling_price,
+            cover_price: editionDraft.cover_price.trim() || undefined,
             productionstatus: editionDraft.productionstatus,
             bookId: createdBook.id,
             book_unique_code: createdBook.unique_identification_code,
@@ -685,6 +696,40 @@ export function AddBookForm({ className }: AddBookFormProps) {
                   {editionErrors.selling_price && (
                     <p className="text-xs font-medium text-destructive animate-in fade-in slide-in-from-top-1">
                       {editionErrors.selling_price}
+                    </p>
+                  )}
+                </div>
+
+                {/* Cover Price (optional) */}
+                <div className="space-y-2 group">
+                  <label
+                    htmlFor="edition_cover_price"
+                    className="text-sm font-semibold text-secondarycolor transition-colors group-focus-within:text-primarycolor"
+                  >
+                    Cover Price{" "}
+                    <span className="text-[10px] font-normal text-muted-foreground">
+                      (Optional)
+                    </span>
+                  </label>
+                  <Input
+                    id="edition_cover_price"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    placeholder="0.00"
+                    value={editionDraft.cover_price}
+                    onChange={(e) => {
+                      setEditionDraft({ ...editionDraft, cover_price: e.target.value });
+                      setEditionErrors((prev) => ({ ...prev, cover_price: "" }));
+                    }}
+                    onWheel={(e) => (e.target as HTMLInputElement).blur()}
+                    onFocus={(e) => e.target.select()}
+                    aria-invalid={!!editionErrors.cover_price}
+                    className="border-primarycolor/20 focus:border-primarycolor focus:ring-primarycolor/20"
+                  />
+                  {editionErrors.cover_price && (
+                    <p className="text-xs font-medium text-destructive animate-in fade-in slide-in-from-top-1">
+                      {editionErrors.cover_price}
                     </p>
                   )}
                 </div>
