@@ -133,11 +133,11 @@ export default function ManageOrderDetailsModal({ isOpen, onClose, order, onAppr
     const [printIncludePrice, setPrintIncludePrice] = useState(true);
     const [printIncludeSubtotal, setPrintIncludeSubtotal] = useState(true);
     const [printIncludeQty, setPrintIncludeQty] = useState(true);
-    const [printIncludeEdition, setPrintIncludeEdition] = useState(true);
+    const [printIncludeEdition, setPrintIncludeEdition] = useState(false);
     const [printIncludeStore, setPrintIncludeStore] = useState(false);
     const [printIncludeStatus, setPrintIncludeStatus] = useState(true);
     const [printIncludeDelivery, setPrintIncludeDelivery] = useState(true);
-    const [printFontSize, setPrintFontSize] = useState<"big" | "small" | "very-small" | "extra-small">("small");
+    const [printFontSize, setPrintFontSize] = useState<"big" | "small" | "very-small" | "extra-small">("extra-small");
     const [printPageWidth, setPrintPageWidth] = useState<"full" | "half">("full");
     const [printStoreMode, setPrintStoreMode] = useState(false);
     const [ignoredBookIds, setIgnoredBookIds] = useState<number[]>([]);
